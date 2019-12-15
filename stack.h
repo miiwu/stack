@@ -23,11 +23,11 @@ typedef struct LIDO_Stack_Expection
 typedef struct Stack
 {
     STACK_INFO_TYPEDEF __info;
-    char* data;
+    int* data;
     
-    bool (*push)(struct Stack* stack, char atom);
-    bool (*pop)(struct Stack* stack, char* atom);
-    bool (*multi_pop)(struct Stack* stack, char* array, int depth);
+    bool (*push)(struct Stack* stack, int atom);
+    bool (*pop)(struct Stack* stack, int* atom);
+    bool (*multi_pop)(struct Stack* stack, int* array, int depth);
 
     STACK_EXPECTION_TYPEDEF expection;
 }STACK_TYPEDEF,*STACK_TYPEDEF_PTR;

@@ -18,7 +18,7 @@ STACK_CONTROL_TYPEDEF stack_ctrl =
 
 bool stack_control_init(STACK_TYPEDEF_PTR stack,int depth)
 {
-    if ((stack->data = (char*)malloc(sizeof(char) * depth)) == NULL)
+    if ((stack->data = (int*)malloc(sizeof(int) * depth)) == NULL)
         return false;
 
     stack->__info.stack_malloc = true;
@@ -43,12 +43,13 @@ bool stack_control_free(STACK_TYPEDEF_PTR stack)
 
         stack->__info.stack_malloc = false;
         stack->data = NULL;
+        
     }
 
     return true;
 }
 
-bool stack_push(STACK_TYPEDEF_PTR stack, char atom)
+bool stack_push(STACK_TYPEDEF_PTR stack,int atom)
 {
     if(stack->__info.stack_top < stack->__info.stack_depth)    // 如果没有满栈
     {
@@ -64,7 +65,7 @@ bool stack_push(STACK_TYPEDEF_PTR stack, char atom)
     }
 }
 
-bool stack_pop(STACK_TYPEDEF_PTR stack, char* atom)
+bool stack_pop(STACK_TYPEDEF_PTR stack,int* atom)
 {
     if(stack->__info.stack_top > 0)                            // 如果没有空栈
     {
@@ -91,7 +92,7 @@ void stack_default_null_stacl_expection(void)
     printf("stack_null_expectopn. \r\n");
 }
 
-bool stack_multi_pop(STACK_TYPEDEF_PTR stack, char* array,int size)
+bool stack_multi_pop(STACK_TYPEDEF_PTR stack, int* array,int size)
 {
     if (stack->__info.stack_top >= size)                            // 如果没有空栈
     {
@@ -188,15 +189,15 @@ float data_verify_percent(int* input, int* rule, int sizeof_rule)     // 数据�
 
 void main()
 {
-    char atom = 0;
-    char array[100] = { 0 };
+    int atom = 0;
+    int array[100] = { 0 };
     STACK_TYPEDEF stack;
 
     stack_ctrl.init(&stack,100);
 
     for (size_t i = 0; i < 10; i++)
     {
-        stack.push(&stack, i + '0');
+        stack.push(&stack, i);
     }
     stack.multi_pop(&stack, array,10);
 
@@ -206,7 +207,7 @@ void main()
 
     for (size_t i = 0; i < 10; i++)
     {
-        printf("pop: %c ", array[i]);
+        printf("pop: %d ", array[i]);
     }
 
     stack_ctrl.free(&stack);
