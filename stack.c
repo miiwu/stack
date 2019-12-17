@@ -28,7 +28,11 @@ STACK_CONTROL_TYPEDEF stack_ctrl =
     stack_control_free,
     {
         stack_control_chain_stack_init,
-        stack_control_chain_stack_free
+        stack_control_chain_stack_free,
+
+        chain_stack_push,
+        chain_stack_pop,
+        chain_stack_multi_pop
     }
 };
 
@@ -37,9 +41,9 @@ bool stack_control_init(STACK_TYPEDEF_PTR stack, size_t depth)
     if ((stack->data = (char*)malloc(sizeof(char) * depth)) == NULL)
         return false;
 
-    stack->__info.stack_malloc = true;
-    stack->__info.stack_depth = depth;
-    stack->__info.stack_top = 0;
+    stack->info.stack_malloc = true;
+    stack->info.stack_depth = depth;
+    stack->info.stack_top = 0;
 
     stack->push = stack_push;
     stack->pop = stack_pop;
@@ -54,11 +58,11 @@ bool stack_control_init(STACK_TYPEDEF_PTR stack, size_t depth)
 
 bool stack_control_free(STACK_TYPEDEF_PTR stack)
 {
-    if (stack->__info.stack_malloc == true)
+    if (stack->info.stack_malloc == true)
     {
         free(stack->data);
 
-        stack->__info.stack_malloc = false;
+        stack->info.stack_malloc = false;
         stack->data = NULL;
     }
 
@@ -67,9 +71,9 @@ bool stack_control_free(STACK_TYPEDEF_PTR stack)
 
 bool stack_push(STACK_TYPEDEF_PTR stack, STACK_DATA_TYPE atom)
 {
-    if (stack->__info.stack_top < stack->__info.stack_depth)    // 如果没有满栈
+    if (stack->info.stack_top < stack->info.stack_depth)    // 如果没有满栈
     {
-        stack->data[++stack->__info.stack_top] = atom;
+        stack->data[++stack->info.stack_top] = atom;
 
         return true;
     }
@@ -83,10 +87,10 @@ bool stack_push(STACK_TYPEDEF_PTR stack, STACK_DATA_TYPE atom)
 
 bool stack_pop(STACK_TYPEDEF_PTR stack, STACK_DATA_TYPE* atom)
 {
-    if (stack->__info.stack_top > 0)                            // 如果没有空栈
+    if (stack->info.stack_top > 0)                            // 如果没有空栈
     {
-        *atom = stack->data[stack->__info.stack_top];
-        stack->__info.stack_top--;
+        *atom = stack->data[stack->info.stack_top];
+        stack->info.stack_top--;
 
         return true;
     }
@@ -115,11 +119,11 @@ void stack_default_null_heap_expection(void)
 
 bool stack_multi_pop(STACK_TYPEDEF_PTR stack, STACK_DATA_TYPE* array, size_t size)
 {
-    if (stack->__info.stack_top >= size)                            // 如果没有空栈
+    if (stack->info.stack_top >= size)                            // 如果没有空栈
     {
         for (size_t cnt = size; cnt > 0; cnt--)
         {
-            *(array + cnt - 1) = stack->data[stack->__info.stack_top--];
+            *(array + cnt - 1) = stack->data[stack->info.stack_top--];
         }
 
         return true;
@@ -144,12 +148,12 @@ int stack_get_top(STACK_TYPEDEF_PTR stack)
 
 bool stack_control_chain_stack_init(CHAIN_STACK_TYPEDEF_PTR chain_stack, size_t max_depth)
 {
-    chain_stack->__info.stack_crt_depth = 0;
-    chain_stack->__info.stack_max_depth = max_depth;
+    chain_stack->info.stack_crt_depth = 0;
+    chain_stack->info.stack_max_depth = max_depth;
 
-    chain_stack->push = chain_stack_push;
-    chain_stack->pop = chain_stack_pop;
-    chain_stack->multi_pop = chain_stack_multi_pop;
+    //chain_stack->push = chain_stack_push;
+    //chain_stack->pop = chain_stack_pop;
+    //chain_stack->multi_pop = chain_stack_multi_pop;
 
     chain_stack->expection.full_stack = chain_stack_default_full_stacl_expection;
     chain_stack->expection.null_stack = chain_stack_default_null_stacl_expection;
@@ -160,11 +164,11 @@ bool stack_control_chain_stack_init(CHAIN_STACK_TYPEDEF_PTR chain_stack, size_t 
 
 bool stack_control_chain_stack_free(CHAIN_STACK_TYPEDEF_PTR chain_stack)
 {
-    if (chain_stack->__info.stack_malloc == true)
+    if (chain_stack->info.stack_malloc == true)
     {
         free(chain_stack->top);
 
-        chain_stack->__info.stack_malloc = false;
+        chain_stack->info.stack_malloc = false;
         chain_stack->top = NULL;
     }
 
@@ -186,7 +190,7 @@ bool chain_stack_push(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE
 
         return false;
     }
-    if (chain_stack->__info.stack_max_depth <= chain_stack->__info.stack_crt_depth)
+    if (chain_stack->info.stack_max_depth <= chain_stack->info.stack_crt_depth)
     {
         chain_stack->expection.full_stack();
 
@@ -199,7 +203,7 @@ bool chain_stack_push(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE
     for (size_t i = 0; i < sizeof_atom; i++)
         stack_node_temp->data[i] = stack_atom_data_ptr[0][i];
 
-    if (chain_stack->__info.stack_crt_depth == 0)           // 第一次压栈
+    if (chain_stack->info.stack_crt_depth == 0)           // 第一次压栈
     {
         stack_node_temp->next = NULL;
     }
@@ -209,7 +213,7 @@ bool chain_stack_push(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE
     }
 
     chain_stack->top = stack_node_temp;
-    chain_stack->__info.stack_crt_depth++;
+    chain_stack->info.stack_crt_depth++;
 
     return true;
 }
@@ -219,13 +223,13 @@ bool chain_stack_pop(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE 
     CHAIN_STACK_NODE_TYPEDEF_PTR
         stack_node_temp = NULL;
 
-    if (chain_stack->__info.stack_crt_depth == 0)               // 空栈
+    if (chain_stack->info.stack_crt_depth == 0)               // 空栈
     {
         chain_stack->expection.null_stack();
 
         return false;
     }
-    else if (chain_stack->__info.stack_crt_depth == 1)          // 最后一个节点出栈
+    else if (chain_stack->info.stack_crt_depth == 1)          // 最后一个节点出栈
     {
         stack_node_temp = chain_stack->top;
     }
@@ -239,14 +243,14 @@ bool chain_stack_pop(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE 
 
     free(chain_stack->top);    /* 释放存储空间 */
 
-    chain_stack->__info.stack_crt_depth--;
+    chain_stack->info.stack_crt_depth--;
 
     chain_stack->top = stack_node_temp;
 
     return true;
 }
 
-bool chain_stack_multi_pop(CHAIN_STACK_TYPEDEF_PTR chain_stack, char array[][100], size_t depth)
+bool chain_stack_multi_pop(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE* array, size_t depth)
 {
     for (size_t i = 0; i < depth; i++)
     {
@@ -259,13 +263,13 @@ bool chain_stack_multi_pop(CHAIN_STACK_TYPEDEF_PTR chain_stack, char array[][100
 //    CHAIN_STACK_NODE_TYPEDEF_PTR
 //        stack_node_temp = NULL;
 //
-//    if (chain_stack->__info.stack_crt_depth == 0)               // 空栈
+//    if (chain_stack->info.stack_crt_depth == 0)               // 空栈
 //    {
 //        chain_stack->expection.null_stack();
 //
 //        return false;
 //    }
-//    else if (chain_stack->__info.stack_crt_depth == 1)          // 最后一个节点出栈
+//    else if (chain_stack->info.stack_crt_depth == 1)          // 最后一个节点出栈
 //    {
 //        stack_node_temp = chain_stack->top;
 //    }
@@ -279,7 +283,7 @@ bool chain_stack_multi_pop(CHAIN_STACK_TYPEDEF_PTR chain_stack, char array[][100
 //
 //    free(chain_stack->top);    /* 释放存储空间 */
 //
-//    chain_stack->__info.stack_crt_depth--;
+//    chain_stack->info.stack_crt_depth--;
 //
 //    chain_stack->top = stack_node_temp;
 //
@@ -434,6 +438,14 @@ void main()
     char array[10][100] = { 0 };
     CHAIN_STACK_TYPEDEF chain_stack;
 
+    CHAIN_STACK_DATA_TYPE* array_ptr = NULL;
+    CHAIN_STACK_DATA_TYPE array_p[10] = { NULL };
+
+    for (size_t i = 0; i < 10; i++)
+    {
+        array_p[i] = (CHAIN_STACK_DATA_TYPE)calloc(10, sizeof(char));
+    }
+
     stack_ctrl.chain_stack.init(&chain_stack, 10);
 
     for (size_t i = 0; i < 10; i++)
@@ -442,14 +454,14 @@ void main()
 
         temp[0] = i + '0';
 
-        chain_stack.push(&chain_stack, temp,strlen(temp));
+        stack_ctrl.chain_stack.push(&chain_stack, temp,strlen(temp));
     }
 
-    chain_stack.multi_pop(&chain_stack,(char**)&array,10);
+    stack_ctrl.chain_stack.multi_pop(&chain_stack,array_p,10);
 
     for (size_t i = 0; i < 10; i++)
     {
-        printf("pop: %s ", array[i]);
+        printf("pop: %s ", array_p[i]);
     }
    
     stack_ctrl.free(&chain_stack);
