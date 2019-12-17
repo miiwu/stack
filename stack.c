@@ -366,184 +366,184 @@ void chain_stack_default_lack_heap_expection(void)
 {
 	printf("heap_null_expectopn. \r\n");
 }
-
-float _data_verify_percent(int* input, int* rule, size_t sizeof_rule)     // 数据正确率
-{
-	float perc = 0;
-	int
-		correct_num = 0,
-		order_correct_num = 0;
-
-	for (size_t cnt = 0; cnt < sizeof_rule; cnt++)
-	{
-		if (input[cnt] == rule[cnt])
-		{
-			correct_num++;
-		}
-	}
-
-	perc = correct_num / (float)sizeof_rule;
-
-	return perc;
-}
-
-float data_verify_percent(int* input, int* rule, size_t sizeof_rule)     // 数据正确率
-{
-	float perc = 0;
-
-	int record_num[11] = { 0 };
-	size_t
-		record_part_num = 0;
-	int
-		record_part[10] = { 0 },
-		record_part_param[10][10] = { 0 };
-
-	int correct_num = 0;
-
-	for (size_t cnt = 0; cnt < sizeof_rule; cnt++)
-	{
-		for (size_t i = record_num[cnt]; i < sizeof_rule; i++)
-		{
-			if (input[cnt] == rule[i])
-			{
-				record_num[cnt + 1] = i + 1;
-
-				record_part_param[record_part_num][record_part[record_part_num]] = rule[i];
-				record_part[record_part_num]++;
-
-				break;
-			}
-			else if (record_num[cnt] != 0 && cnt != 0)
-			{
-				record_num[cnt + 1] = cnt + 1;
-
-				record_part_num++;
-
-				break;
-			}
-		}
-	}
-
-	for (size_t cnt = 0; cnt <= record_part_num; cnt++)
-	{
-		correct_num += record_part[cnt];
-	}
-
-	perc = correct_num / (float)sizeof_rule;
-
-	return perc;
-}
-
-void main()
-{
-#define CHAIN_STACK_STRING   1
-
-#if defined( STACK_TEST_CHAR)
-	//  char atom = 0;
-	//  char array[100] = { 0 };
-	//  SEQUENCE_STACK_TYPEDEF stack;
-
-	//  stack_ctrl.init(&stack,100);
-
-	//  for (size_t i = 0; i < 10; i++)
-	//  {
-	//      stack.push(&stack, i + '0');
-	//  }
-	//  stack.multi_pop(&stack, array,10);
-
-	//stack_pop(&stack, &atom);
-
-	//printf("pop: %d ", atom);
-
-	//  for (size_t i = 0; i < 10; i++)
-	//  {
-	//      printf("pop: %c ", array[i]);
-	//  }
-
-	//  stack_ctrl.free(&stack);
-
-	//  printf("\r\n");
-#elif defined(CHAIN_STACK_CHAR)
-	//char atom = 0;
-	//char array[100] = { 0 };
-	//CHAIN_SEQUENCE_STACK_TYPEDEF chain_stack;
-
-	//stack_ctrl.chain_stack.init(&chain_stack, 10);
-
-	//for (size_t i = 0; i < 10; i++)
-	//{
-	//    chain_stack.push(&chain_stack, i + '0');
-	//}
-
-	//for (size_t i = 0; i < 10; i++)
-	//{
-	//    chain_stack.pop(&chain_stack, &array[i]);
-
-	//    printf("pop: %c ", array[i]);
-	//}
-
-	//chain_stack.pop(&chain_stack, &array[11]);
-
-	//stack_ctrl.free(&chain_stack);
-
-	//printf("\r\n");
-#elif defined(CHAIN_STACK_STRING)
-
-	char atom = 0;
-	char array[10][100] = { 0 };
-	CHAIN_STACK_TYPEDEF chain_stack;
-
-	CHAIN_STACK_DATA_TYPE* array_ptr = NULL;
-	CHAIN_STACK_DATA_TYPE array_p[10] = { NULL };
-
-	for (size_t i = 0; i < 10; i++)
-	{
-		array_p[i] = (CHAIN_STACK_DATA_TYPE)calloc(10, sizeof(char));
-	}
-
-	stack_ctrl.chain_stack.init(&chain_stack, 10);
-
-	stack_ctrl.chain_stack.config_expection(&chain_stack, true, true, true,
-		chain_stack.expection.full_stack, chain_stack.expection.full_stack, chain_stack.expection.full_stack);
-
-	for (char i = 0; i < 11; i++)
-	{
-		char temp[20] = { 0 };
-
-		temp[0] = i + '0';
-
-		chain_stack_ctrl.push(&chain_stack, temp, strlen(temp));
-	}
-
-	chain_stack_ctrl.get(&chain_stack, array[0]);
-
-	printf("get: %s \r\n", array[0]);
-
-	//	chain_stack_ctrl.multi_pop(&chain_stack, array_p, 10);
-
-		//for (size_t i = 0; i < 10; i++)
-		//{
-		//	printf("pop: %s ", array_p[i]);
-		//}
-
-	stack_ctrl.chain_stack.free(&chain_stack);
-
-	chain_stack_ctrl.delete(&chain_stack);
-
-	printf(" \r\n end\r\n");
-
-#elif  defined(DATA_VERIFY)
-	//int
-	//    array[10] = { 0,1,3,0,5,6,7,0,9,1 },
-	//    rule[10] = { 1,2,3,4,5,6,7,8,9,1 };
-
-	//int size = 10;
-
-	//data_verify_percent(array,rule,size);
-
-	//printf("*:%f \r\n", data_verify_percent(array, rule, size));
-	//printf("_:%f \r\n", _data_verify_percent(array, rule, size));
-#endif
-
-	return;
-}
+//
+//float _data_verify_percent(int* input, int* rule, size_t sizeof_rule)     // 数据正确率
+//{
+//	float perc = 0;
+//	int
+//		correct_num = 0,
+//		order_correct_num = 0;
+//
+//	for (size_t cnt = 0; cnt < sizeof_rule; cnt++)
+//	{
+//		if (input[cnt] == rule[cnt])
+//		{
+//			correct_num++;
+//		}
+//	}
+//
+//	perc = correct_num / (float)sizeof_rule;
+//
+//	return perc;
+//}
+//
+//float data_verify_percent(int* input, int* rule, size_t sizeof_rule)     // 数据正确率
+//{
+//	float perc = 0;
+//
+//	int record_num[11] = { 0 };
+//	size_t
+//		record_part_num = 0;
+//	int
+//		record_part[10] = { 0 },
+//		record_part_param[10][10] = { 0 };
+//
+//	int correct_num = 0;
+//
+//	for (size_t cnt = 0; cnt < sizeof_rule; cnt++)
+//	{
+//		for (size_t i = record_num[cnt]; i < sizeof_rule; i++)
+//		{
+//			if (input[cnt] == rule[i])
+//			{
+//				record_num[cnt + 1] = i + 1;
+//
+//				record_part_param[record_part_num][record_part[record_part_num]] = rule[i];
+//				record_part[record_part_num]++;
+//
+//				break;
+//			}
+//			else if (record_num[cnt] != 0 && cnt != 0)
+//			{
+//				record_num[cnt + 1] = cnt + 1;
+//
+//				record_part_num++;
+//
+//				break;
+//			}
+//		}
+//	}
+//
+//	for (size_t cnt = 0; cnt <= record_part_num; cnt++)
+//	{
+//		correct_num += record_part[cnt];
+//	}
+//
+//	perc = correct_num / (float)sizeof_rule;
+//
+//	return perc;
+//}
+//
+//void main()
+//{
+//#define CHAIN_STACK_STRING   1
+//
+//#if defined( STACK_TEST_CHAR)
+//	//  char atom = 0;
+//	//  char array[100] = { 0 };
+//	//  SEQUENCE_STACK_TYPEDEF stack;
+//
+//	//  stack_ctrl.init(&stack,100);
+//
+//	//  for (size_t i = 0; i < 10; i++)
+//	//  {
+//	//      stack.push(&stack, i + '0');
+//	//  }
+//	//  stack.multi_pop(&stack, array,10);
+//
+//	//stack_pop(&stack, &atom);
+//
+//	//printf("pop: %d ", atom);
+//
+//	//  for (size_t i = 0; i < 10; i++)
+//	//  {
+//	//      printf("pop: %c ", array[i]);
+//	//  }
+//
+//	//  stack_ctrl.free(&stack);
+//
+//	//  printf("\r\n");
+//#elif defined(CHAIN_STACK_CHAR)
+//	//char atom = 0;
+//	//char array[100] = { 0 };
+//	//CHAIN_SEQUENCE_STACK_TYPEDEF chain_stack;
+//
+//	//stack_ctrl.chain_stack.init(&chain_stack, 10);
+//
+//	//for (size_t i = 0; i < 10; i++)
+//	//{
+//	//    chain_stack.push(&chain_stack, i + '0');
+//	//}
+//
+//	//for (size_t i = 0; i < 10; i++)
+//	//{
+//	//    chain_stack.pop(&chain_stack, &array[i]);
+//
+//	//    printf("pop: %c ", array[i]);
+//	//}
+//
+//	//chain_stack.pop(&chain_stack, &array[11]);
+//
+//	//stack_ctrl.free(&chain_stack);
+//
+//	//printf("\r\n");
+//#elif defined(CHAIN_STACK_STRING)
+//
+//	char atom = 0;
+//	char array[10][100] = { 0 };
+//	CHAIN_STACK_TYPEDEF chain_stack;
+//
+//	CHAIN_STACK_DATA_TYPE* array_ptr = NULL;
+//	CHAIN_STACK_DATA_TYPE array_p[10] = { NULL };
+//
+//	for (size_t i = 0; i < 10; i++)
+//	{
+//		array_p[i] = (CHAIN_STACK_DATA_TYPE)calloc(10, sizeof(char));
+//	}
+//
+//	stack_ctrl.chain_stack.init(&chain_stack, 10);
+//
+//	stack_ctrl.chain_stack.config_expection(&chain_stack, true, true, true,
+//		chain_stack.expection.full_stack, chain_stack.expection.null_stack, chain_stack.expection.lack_heap);
+//
+//	for (char i = 0; i < 11; i++)
+//	{
+//		char temp[20] = { 0 };
+//
+//		temp[0] = i + '0';
+//
+//		chain_stack_ctrl.push(&chain_stack, temp, strlen(temp));
+//	}
+//
+//	chain_stack_ctrl.get(&chain_stack, array[0]);
+//
+//	printf("get: %s \r\n", array[0]);
+//
+//	//	chain_stack_ctrl.multi_pop(&chain_stack, array_p, 10);
+//
+//		//for (size_t i = 0; i < 10; i++)
+//		//{
+//		//	printf("pop: %s ", array_p[i]);
+//		//}
+//
+//	stack_ctrl.chain_stack.free(&chain_stack);
+//
+//	chain_stack_ctrl.delete(&chain_stack);
+//
+//	printf(" \r\n end\r\n");
+//
+//#elif  defined(DATA_VERIFY)
+//	//int
+//	//    array[10] = { 0,1,3,0,5,6,7,0,9,1 },
+//	//    rule[10] = { 1,2,3,4,5,6,7,8,9,1 };
+//
+//	//int size = 10;
+//
+//	//data_verify_percent(array,rule,size);
+//
+//	//printf("*:%f \r\n", data_verify_percent(array, rule, size));
+//	//printf("_:%f \r\n", _data_verify_percent(array, rule, size));
+//#endif
+//
+//	return;
+//}

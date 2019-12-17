@@ -7,8 +7,6 @@
 #include "string.h"
 #include "stdarg.h"
 
-#define STACK_MAXSIZE       100
-
 #define SEQUENCE_STACK_DATA_TYPE			char
 #define CHAIN_STACK_DATA_TYPE				char*
 
@@ -64,7 +62,7 @@ typedef struct Chain_Stack_Expection
 typedef struct Chain_Stack
 {
 	CHAIN_STACK_INFO_TYPEDEF info;
-	CHAIN_STACK_NODE_TYPEDEF_PTR top;                           // 已知头节点
+	CHAIN_STACK_NODE_TYPEDEF_PTR top;                           
 
 	//bool (*push)(struct Chain_Stack* stack, CHAIN_SEQUENCE_STACK_DATA_TYPE atom, size_t sizeof_atom);
 	//bool (*pop)(struct Chain_Stack* stack, CHAIN_SEQUENCE_STACK_DATA_TYPE atom);
