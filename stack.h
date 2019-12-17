@@ -5,11 +5,14 @@
 #include "stdbool.h"
 #include "malloc.h"
 #include "string.h"
+#include "stdarg.h"
 
 #define STACK_MAXSIZE       100
 
-#define SEQUENCE_STACK_DATA_TYPE         char
-#define CHAIN_STACK_DATA_TYPE			char*
+#define SEQUENCE_STACK_DATA_TYPE			char
+#define CHAIN_STACK_DATA_TYPE				char*
+
+#define CHAIN_STACK_EXCEPTION_TYPE_AMOUNT	3
 
 typedef struct Sequence_Stack_Info
 {
@@ -101,6 +104,8 @@ typedef struct Stack_Control
 	struct
 	{
 		bool (*init)(CHAIN_STACK_TYPEDEF_PTR stack, size_t depth);
+		bool (*config_expection)(CHAIN_STACK_TYPEDEF_PTR chain_stack,
+			bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
 		bool (*free)(CHAIN_STACK_TYPEDEF_PTR stack);
 
 		bool (*push)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom, size_t sizeof_atom);

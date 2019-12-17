@@ -12,6 +12,8 @@ void sequence_stack_default_null_stacl_expection(void);
 void sequence_stack_default_lack_heap_expection(void);
 
 bool stack_control_chain_stack_init(CHAIN_STACK_TYPEDEF_PTR stack, size_t depth);
+bool stack_control_chain_stack_exception_config(CHAIN_STACK_TYPEDEF_PTR chain_stack,
+	bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
 bool stack_control_chain_stack_free(CHAIN_STACK_TYPEDEF_PTR stack);
 
 bool chain_stack_push(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE atom, size_t sizeof_atom);
@@ -51,6 +53,7 @@ STACK_CONTROL_TYPEDEF stack_ctrl =
 	},
 	{
 		stack_control_chain_stack_init,
+		stack_control_chain_stack_exception_config,
 		stack_control_chain_stack_free,
 
 		chain_stack_push,
@@ -173,7 +176,6 @@ int sequence_stack_get_top(SEQUENCE_STACK_TYPEDEF_PTR stack)
 
 bool stack_control_chain_stack_init(CHAIN_STACK_TYPEDEF_PTR chain_stack, size_t max_depth)
 {																			// 初始化一个链栈
-
 	if (max_depth <= 0)
 	{
 		return false;
@@ -193,28 +195,51 @@ bool stack_control_chain_stack_init(CHAIN_STACK_TYPEDEF_PTR chain_stack, size_t 
 	return true;
 }
 
-bool stack_control_chain_stack_exception_config(CHAIN_STACK_TYPEDEF_PTR chain_stack, short cnt, void(*full_stack), ...)
+bool stack_control_chain_stack_exception_config(CHAIN_STACK_TYPEDEF_PTR chain_stack, 
+	bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg,...)
 {
+	va_list va_ptr;
+
+	short 
+		cfg_queue[CHAIN_STACK_EXCEPTION_TYPE_AMOUNT] = 
+			{ is_full_stack_cfg + 10 ,is_null_stack_cfg + 20 ,is_lack_heap_cfg + 30};
+
+	va_start(va_ptr, is_lack_heap_cfg);
+
+	for (size_t cnt = 0; cnt < CHAIN_STACK_EXCEPTION_TYPE_AMOUNT; cnt++)
+	{	
+		switch (cfg_queue[cnt])
+		{
+			case 11:
+				chain_stack->expection.full_stack = (void*)va_arg(va_ptr, int);
+				break;
+			case 21:
+				chain_stack->expection.null_stack = (void*)va_arg(va_ptr, int);
+				break;
+			case 31:
+				chain_stack->expection.lack_heap = (void*)va_arg(va_ptr, int);
+				break;
+			default:
+				break;
+		}
+	}
+
+	va_end(va_ptr);
+
 	return true;
 }
 
 bool stack_control_chain_stack_free(CHAIN_STACK_TYPEDEF_PTR chain_stack)
 {
-	if (chain_stack->info.stack_malloc == true || 
+	if (chain_stack->info.stack_malloc == true ||
 		chain_stack->info.stack_crt_depth > 0)								// 如果被 malloc 过,或者没空栈
 	{
 		CHAIN_STACK_NODE_TYPEDEF* stack_node_prev = NULL;
 
-		char atom[10] = {0};
+		char atom[10] = { 0 };
 
 		for (size_t cnt = chain_stack->info.stack_crt_depth; cnt > 0; cnt--)
-		{
-			/*chain_stack_get(chain_stack, atom);
-			printf("get via free: %s \r\n", atom);*/
-
 			chain_stack_delete(chain_stack);
-		}
-			
 
 		chain_stack->info.stack_malloc = false;
 		chain_stack->top = NULL;											// 变成空指针
@@ -236,7 +261,7 @@ bool chain_stack_push(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE
 
 		return false;
 	}
-	if (chain_stack->info.stack_max_depth <= 
+	if (chain_stack->info.stack_max_depth <=
 		chain_stack->info.stack_crt_depth)									// 空栈异常
 	{
 		chain_stack->expection.full_stack();
@@ -478,11 +503,14 @@ void main()
 
 	stack_ctrl.chain_stack.init(&chain_stack, 10);
 
-	for (char i = 0; i < 10; i++)
+	stack_ctrl.chain_stack.config_expection(&chain_stack, true, true, true,
+		chain_stack.expection.full_stack, chain_stack.expection.full_stack, chain_stack.expection.full_stack);
+
+	for (char i = 0; i < 11; i++)
 	{
 		char temp[20] = { 0 };
 
-		temp[0] = i + '2';
+		temp[0] = i + '0';
 
 		chain_stack_ctrl.push(&chain_stack, temp, strlen(temp));
 	}
@@ -491,12 +519,12 @@ void main()
 
 	printf("get: %s \r\n", array[0]);
 
-//	chain_stack_ctrl.multi_pop(&chain_stack, array_p, 10);
+	//	chain_stack_ctrl.multi_pop(&chain_stack, array_p, 10);
 
-	//for (size_t i = 0; i < 10; i++)
-	//{
-	//	printf("pop: %s ", array_p[i]);
-	//}
+		//for (size_t i = 0; i < 10; i++)
+		//{
+		//	printf("pop: %s ", array_p[i]);
+		//}
 
 	stack_ctrl.chain_stack.free(&chain_stack);
 
