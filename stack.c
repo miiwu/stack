@@ -28,12 +28,19 @@ void chain_stack_default_lack_heap_expection(void);
 
 SEQUENCE_STACK_CONTROL_TYPEDEF sequence_stack_ctrl =
 {
+	stack_control_sequence_stack_init,
+	stack_control_sequence_stack_free,
+
 	sequence_stack_push,
 	sequence_stack_pop,
 	sequence_stack_multi_pop
 };
 CHAIN_STACK_CONTROL_TYPEDEF chain_stack_ctrl =
 {
+	stack_control_chain_stack_init,
+	stack_control_chain_stack_exception_config,
+	stack_control_chain_stack_free,
+
 	chain_stack_push,
 	chain_stack_pop,
 	chain_stack_get,
@@ -43,25 +50,8 @@ CHAIN_STACK_CONTROL_TYPEDEF chain_stack_ctrl =
 
 STACK_CONTROL_TYPEDEF stack_ctrl =
 {
-	{
-		stack_control_sequence_stack_init,
-		stack_control_sequence_stack_free,
-
-		sequence_stack_push,
-		sequence_stack_pop,
-		sequence_stack_multi_pop
-	},
-	{
-		stack_control_chain_stack_init,
-		stack_control_chain_stack_exception_config,
-		stack_control_chain_stack_free,
-
-		chain_stack_push,
-		chain_stack_pop,
-		chain_stack_get,
-		chain_stack_delete,
-		chain_stack_multi_pop
-	}
+	&sequence_stack_ctrl,
+	&chain_stack_ctrl
 };
 
 bool stack_control_sequence_stack_init(SEQUENCE_STACK_TYPEDEF_PTR stack, size_t depth)
@@ -211,13 +201,13 @@ bool stack_control_chain_stack_exception_config(CHAIN_STACK_TYPEDEF_PTR chain_st
 		switch (cfg_queue[cnt])
 		{
 			case 11:
-				chain_stack->expection.full_stack = (void*)va_arg(va_ptr, int);
+				chain_stack->expection.full_stack = (void(*)(void))va_arg(va_ptr, int);
 				break;
 			case 21:
-				chain_stack->expection.null_stack = (void*)va_arg(va_ptr, int);
+				chain_stack->expection.null_stack = (void(*)(void))va_arg(va_ptr, int);
 				break;
 			case 31:
-				chain_stack->expection.lack_heap = (void*)va_arg(va_ptr, int);
+				chain_stack->expection.lack_heap = (void(*)(void))va_arg(va_ptr, int);
 				break;
 			default:
 				break;
@@ -234,10 +224,6 @@ bool stack_control_chain_stack_free(CHAIN_STACK_TYPEDEF_PTR chain_stack)
 	if (chain_stack->info.stack_malloc == true ||
 		chain_stack->info.stack_crt_depth > 0)								// 如果被 malloc 过,或者没空栈
 	{
-		CHAIN_STACK_NODE_TYPEDEF* stack_node_prev = NULL;
-
-		char atom[10] = { 0 };
-
 		for (size_t cnt = chain_stack->info.stack_crt_depth; cnt > 0; cnt--)
 			chain_stack_delete(chain_stack);
 
@@ -366,6 +352,7 @@ void chain_stack_default_lack_heap_expection(void)
 {
 	printf("heap_null_expectopn. \r\n");
 }
+
 //
 //float _data_verify_percent(int* input, int* rule, size_t sizeof_rule)     // 数据正确率
 //{

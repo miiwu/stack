@@ -420,7 +420,7 @@ void chain_queue_default_lack_heap_expection(void)
 void main()
 {
 
-#define SEQUEENCE_QUEUE_TEST_CHAR   1
+#define CHAIN_QUEUE_STRING   1
 
 #if defined( SEQUEENCE_QUEUE_TEST_CHAR)
 
@@ -446,7 +446,9 @@ void main()
 	queue_ctrl.seqence_queue.free(&queue);
 
 	printf("\r\n");
+
 #elif defined(CHAIN_QUEUE_CHAR)
+
 	//char atom = 0;
 	//char array[100] = { 0 };
 	//CHAIN_SEQUENCE_QUEUE_TYPEDEF chain_queue;
@@ -470,6 +472,7 @@ void main()
 	//queue_ctrl.free(&chain_queue);
 
 	//printf("\r\n");
+
 #elif defined(CHAIN_QUEUE_STRING)
 
 	char atom = 0;

@@ -73,6 +73,9 @@ typedef struct Chain_Stack
 
 typedef struct Sequence_Stack_Control
 {
+	bool (*init)(SEQUENCE_STACK_TYPEDEF_PTR stack, size_t depth);
+	bool (*free)(SEQUENCE_STACK_TYPEDEF_PTR stack);
+
 	bool (*push)(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE atom);
 	bool (*pop)(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* atom);
 	bool (*multi_pop)(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* array, size_t depth);
@@ -80,6 +83,11 @@ typedef struct Sequence_Stack_Control
 
 typedef struct Chain_Stack_Control
 {
+	bool (*init)(CHAIN_STACK_TYPEDEF_PTR stack, size_t depth);
+	bool (*config_expection)(CHAIN_STACK_TYPEDEF_PTR chain_stack,
+		bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
+	bool (*free)(CHAIN_STACK_TYPEDEF_PTR stack);
+
 	bool (*push)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom, size_t sizeof_atom);
 	bool (*pop)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom);
 	bool (*get)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom);
@@ -89,29 +97,9 @@ typedef struct Chain_Stack_Control
 
 typedef struct Stack_Control
 {
-	struct
-	{
-		bool (*init)(SEQUENCE_STACK_TYPEDEF_PTR stack, size_t depth);
-		bool (*free)(SEQUENCE_STACK_TYPEDEF_PTR stack);
+	SEQUENCE_STACK_CONTROL_TYPEDEF_PTR equence_stack;
 
-		bool (*push)(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE atom);
-		bool (*pop)(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* atom);
-		bool (*multi_pop)(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* array, size_t depth);
-	}sequence_stack;
-
-	struct
-	{
-		bool (*init)(CHAIN_STACK_TYPEDEF_PTR stack, size_t depth);
-		bool (*config_expection)(CHAIN_STACK_TYPEDEF_PTR chain_stack,
-			bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
-		bool (*free)(CHAIN_STACK_TYPEDEF_PTR stack);
-
-		bool (*push)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom, size_t sizeof_atom);
-		bool (*pop)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom);
-		bool (*get)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom);
-		bool (*delete)(CHAIN_STACK_TYPEDEF_PTR stack);
-		bool (*multi_pop)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE* array, size_t depth);
-	}chain_stack;
+	CHAIN_STACK_CONTROL_TYPEDEF_PTR chain_stack;
 }STACK_CONTROL_TYPEDEF;
 
 extern SEQUENCE_STACK_CONTROL_TYPEDEF sequence_stack_ctrl;
