@@ -74,7 +74,7 @@ typedef struct Sequence_Queue_Control
 	bool (*free)(SEQUENCE_QUEUE_TYPEDEF_PTR queue);
 
 	bool (*enqueue)(SEQUENCE_QUEUE_TYPEDEF_PTR queue, SEQUENCE_QUEUE_DATA_TYPE atom);
-	bool (*dequeue)(SEQUENCE_QUEUE_TYPEDEF_PTR queue, SEQUENCE_QUEUE_DATA_TYPE atom);
+	bool (*dequeue)(SEQUENCE_QUEUE_TYPEDEF_PTR queue, SEQUENCE_QUEUE_DATA_TYPE* atom);
 	bool (*get)(SEQUENCE_QUEUE_TYPEDEF_PTR queue, SEQUENCE_QUEUE_DATA_TYPE* atom);
 	bool (*delete)(SEQUENCE_QUEUE_TYPEDEF_PTR queue);
 	bool (*multi_dequeue)(SEQUENCE_QUEUE_TYPEDEF_PTR queue, SEQUENCE_QUEUE_DATA_TYPE* array, size_t depth);

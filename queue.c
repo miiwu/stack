@@ -7,7 +7,7 @@ bool queue_control_sequence_queue_free(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue
 
 bool sequence_queue_enqueue(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue, SEQUENCE_QUEUE_DATA_TYPE atom);
 bool sequence_queue_dequeue(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue, SEQUENCE_QUEUE_DATA_TYPE* atom);
-bool sequence_queue_get(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue, SEQUENCE_QUEUE_DATA_TYPE atom);
+bool sequence_queue_get(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue, SEQUENCE_QUEUE_DATA_TYPE* atom);
 bool sequence_queue_delete(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue);
 bool sequence_queue_multi_dequeue(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue, SEQUENCE_QUEUE_DATA_TYPE* array, size_t size);
 
