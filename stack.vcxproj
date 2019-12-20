@@ -142,6 +142,7 @@
     <ClInclude Include="stack.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="main.c" />
     <ClCompile Include="queue.c" />
     <ClCompile Include="stack.c" />
   </ItemGroup>

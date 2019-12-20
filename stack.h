@@ -10,128 +10,89 @@
 #define SEQUENCE_STACK_DATA_TYPE			char
 #define CHAIN_STACK_DATA_TYPE				char*
 
-#define CHAIN_STACK_EXCEPTION_TYPE_AMOUNT	3
+typedef struct Sequence_Stack_Info			SEQUENCE_STACK_INFO_TYPEDEF;
+typedef struct Sequence_Stack*				SEQUENCE_STACK_TYPEDEF_PTR;
+typedef struct Sequence_Stack**				SEQUENCE_STACK_TYPEDEF_PPTR;
 
-typedef struct Sequence_Stack_Info
-{
-	size_t stack_top;
-	size_t stack_depth;
-	bool stack_malloc;
-}SEQUENCE_STACK_INFO_TYPEDEF;
+typedef struct Chain_Stack_Info				CHAIN_STACK_INFO_TYPEDEF;
+typedef struct Chain_Stack*					CHAIN_STACK_TYPEDEF_PTR;
+typedef struct Chain_Stack**				CHAIN_STACK_TYPEDEF_PPTR;
 
-typedef struct Sequence_Stack_Expection
-{
-	void (*full_stack)(void);
-	void (*null_stack)(void);
-	void (*lack_heap)(void);
-}SEQUENCE_STACK_EXPECTION_TYPEDEF;
-
-typedef struct Sequence_Stack
-{
-	SEQUENCE_STACK_INFO_TYPEDEF info;
-	SEQUENCE_STACK_DATA_TYPE* data;
-
-	//bool (*push)(struct Stack* stack, char atom);
-	//bool (*pop)(struct Stack* stack, char* atom);
-	//bool (*multi_pop)(struct Stack* stack, char* array, size_t depth);
-
-	SEQUENCE_STACK_EXPECTION_TYPEDEF expection;
-}SEQUENCE_STACK_TYPEDEF, * SEQUENCE_STACK_TYPEDEF_PTR;
-
-typedef struct Chain_Stack_Info
-{
-	size_t stack_crt_depth;
-	size_t stack_max_depth;
-	bool stack_malloc;
-}CHAIN_STACK_INFO_TYPEDEF;
-
-typedef struct Chain_Stack_Node
-{
-	struct Chain_Stack_Node* next;
-	CHAIN_STACK_DATA_TYPE data;
-	size_t data_length;
-}CHAIN_STACK_NODE_TYPEDEF, * CHAIN_STACK_NODE_TYPEDEF_PTR;
-
-typedef struct Chain_Stack_Expection
-{
-	void (*full_stack)(void);
-	void (*null_stack)(void);
-	void (*lack_heap)(void);
-}CHAIN_STACK_EXPECTION_TYPEDEF;
-
-typedef struct Chain_Stack
-{
-	CHAIN_STACK_INFO_TYPEDEF info;
-	CHAIN_STACK_NODE_TYPEDEF_PTR top;                           
-
-	CHAIN_STACK_EXPECTION_TYPEDEF expection;
-}CHAIN_STACK_TYPEDEF, * CHAIN_STACK_TYPEDEF_PTR;
-
-typedef struct Chain_Generic_Stack_Info
-{
-	size_t stack_crt_depth;
-	size_t stack_max_depth;
-	size_t stack_data_type_size;
-	bool stack_malloc;
-
-	void (*stack_data_copy)(void* buffer, const void* data);
-	void (*stack_data_free)(void* buffer);
-}CHAIN_GENERIC_STACK_INFO_TYPEDEF;
-
-typedef struct Chain_Generic_Stack_Node
-{
-	void* data;
-	size_t data_length;
-	struct Chain_Generic_Stack_Node* next;
-}CHAIN_GENERIC_STACK_NODE_TYPEDEF, * CHAIN_GENERIC_STACK_NODE_TYPEDEF_PTR;
-
-typedef struct Chain_Generic_Stack
-{
-	CHAIN_GENERIC_STACK_INFO_TYPEDEF info;
-	CHAIN_GENERIC_STACK_NODE_TYPEDEF_PTR top;
-
-	CHAIN_STACK_EXPECTION_TYPEDEF expection;
-}CHAIN_GENERIC_STACK_TYPEDEF, * CHAIN_GENERIC_STACK_TYPEDEF_PTR;
+typedef struct Chain_Generic_Stack_Info		CHAIN_GENERIC_STACK_INFO_TYPEDEF;
+typedef struct Chain_Generic_Stack*			CHAIN_GENERIC_STACK_TYPEDEF_PTR;
+typedef struct Chain_Generic_Stack**		CHAIN_GENERIC_STACK_TYPEDEF_PPTR;
 
 typedef struct Sequence_Stack_Control
 {
-	bool (*init)(SEQUENCE_STACK_TYPEDEF_PTR stack, size_t depth);
-	bool (*free)(SEQUENCE_STACK_TYPEDEF_PTR stack);
+	bool (*init)(SEQUENCE_STACK_TYPEDEF_PPTR stack, size_t depth);
+	bool (*config_expection)(SEQUENCE_STACK_TYPEDEF_PTR stack,
+		bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
+	bool (*free)(SEQUENCE_STACK_TYPEDEF_PPTR stack);
 
 	bool (*push)(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE atom);
 	bool (*pop)(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* atom);
 	bool (*get)(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* atom);
 	bool (*delete)(SEQUENCE_STACK_TYPEDEF_PTR stack);
 	bool (*multi_pop)(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* array, size_t depth);
+
+	struct
+	{
+		size_t(*current_depth)(SEQUENCE_STACK_TYPEDEF_PTR stack);
+		size_t(*max_depth)(SEQUENCE_STACK_TYPEDEF_PTR stack);
+
+		bool(*is_empty)(SEQUENCE_STACK_TYPEDEF_PTR stack);
+		bool(*is_topful)(SEQUENCE_STACK_TYPEDEF_PTR stack);
+	}get_stack_info;
 }SEQUENCE_STACK_CONTROL_TYPEDEF, * SEQUENCE_STACK_CONTROL_TYPEDEF_PTR;
 
 typedef struct Chain_Stack_Control
 {
-	bool (*init)(CHAIN_STACK_TYPEDEF_PTR stack, size_t depth);
-	bool (*config_expection)(CHAIN_STACK_TYPEDEF_PTR chain_stack,
+	bool (*init)(CHAIN_STACK_TYPEDEF_PPTR stack, size_t depth);
+	bool (*config_expection)(CHAIN_STACK_TYPEDEF_PTR stack,
 		bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
-	bool (*free)(CHAIN_STACK_TYPEDEF_PTR stack);
+	bool (*free)(CHAIN_STACK_TYPEDEF_PPTR stack);
 
 	bool (*push)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom, size_t sizeof_atom);
 	bool (*pop)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom);
 	bool (*get)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom);
 	bool (*delete)(CHAIN_STACK_TYPEDEF_PTR stack);
 	bool (*multi_pop)(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE* array, size_t depth);
+
+	struct
+	{
+		size_t(*current_depth)(CHAIN_STACK_TYPEDEF_PTR stack);
+		size_t(*max_depth)(CHAIN_STACK_TYPEDEF_PTR stack);
+		size_t(*stack_data_type_size)(CHAIN_STACK_TYPEDEF_PTR stack);
+
+		bool(*is_empty)(CHAIN_STACK_TYPEDEF_PTR stack);
+		bool(*is_topful)(CHAIN_STACK_TYPEDEF_PTR stack);
+	}get_stack_info;
 }CHAIN_STACK_CONTROL_TYPEDEF, * CHAIN_STACK_CONTROL_TYPEDEF_PTR;
 
 typedef struct Chain_Generic_Stack_Control
 {
-	bool (*init)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, size_t data_type_size, size_t max_depth,
+	bool (*init)(CHAIN_GENERIC_STACK_TYPEDEF_PPTR stack, size_t data_type_size, size_t max_depth,
 		void (*stack_data_assign)(void*, const void*), void (*stack_data_delete)(void*));
 	bool (*config_expection)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack,
 		bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
-	bool (*free)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
+	bool (*free)(CHAIN_GENERIC_STACK_TYPEDEF_PPTR stack);
 
 	bool (*push)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom, size_t sizeof_atom);
 	bool (*pop)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom);
 	bool (*get)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom);
 	bool (*delete)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
 	bool (*multi_pop)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void** array, size_t depth);
+
+	struct
+	{
+		size_t(*current_depth)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
+		size_t(*max_depth)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
+		size_t(*stack_data_type_size)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
+		size_t(*stack_top_data_length)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
+
+		bool(*is_empty)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
+		bool(*is_topful)(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
+	}get_stack_info;
 }CHAIN_GENERIC_STACK_CONTROL_TYPEDEF, * CHAIN_GENERIC_STACK_CONTROL_TYPEDEF_PTR;
 
 typedef struct Stack_Control
