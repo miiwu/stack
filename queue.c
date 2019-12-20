@@ -1,6 +1,5 @@
 #include "queue.h"
 
-
 bool queue_control_sequence_queue_init(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue, size_t depth);
 bool queue_control_sequence_queue_exception_config(SEQUENCE_QUEUE_TYPEDEF_PTR chain_queue,
 	bool is_full_queue_cfg, bool is_null_queue_cfg, bool is_lack_heap_cfg, ...);
@@ -33,6 +32,10 @@ void chain_queue_default_lack_heap_expection(void);
 
 SEQUENCE_QUEUE_CONTROL_TYPEDEF sequence_queue_ctrl =
 {
+	queue_control_sequence_queue_init,
+	queue_control_sequence_queue_exception_config,
+	queue_control_sequence_queue_free,
+
 	sequence_queue_enqueue,
 	sequence_queue_dequeue,
 	sequence_queue_get,
@@ -41,6 +44,10 @@ SEQUENCE_QUEUE_CONTROL_TYPEDEF sequence_queue_ctrl =
 };
 CHAIN_QUEUE_CONTROL_TYPEDEF chain_queue_ctrl =
 {
+	queue_control_chain_queue_init,
+	queue_control_chain_queue_exception_config,
+	queue_control_chain_queue_free,
+
 	chain_queue_enqueue,
 	chain_queue_dequeue,
 	chain_queue_get,
@@ -50,28 +57,8 @@ CHAIN_QUEUE_CONTROL_TYPEDEF chain_queue_ctrl =
 
 QUEUE_CONTROL_TYPEDEF queue_ctrl =
 {
-	{
-		queue_control_sequence_queue_init,
-		queue_control_sequence_queue_exception_config,
-		queue_control_sequence_queue_free,
-
-		sequence_queue_enqueue,
-		sequence_queue_dequeue,
-		sequence_queue_get,
-		sequence_queue_delete,
-		sequence_queue_multi_dequeue
-	},
-	{
-		queue_control_chain_queue_init,
-		queue_control_chain_queue_exception_config,
-		queue_control_chain_queue_free,
-
-		chain_queue_enqueue,
-		chain_queue_dequeue,
-		chain_queue_get,
-		chain_queue_delete,
-		chain_queue_multi_dequeue
-	}
+	&sequence_queue_ctrl,
+	&chain_queue_ctrl
 };
 
 bool queue_control_sequence_queue_init(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue, size_t max_depth)
@@ -416,109 +403,109 @@ void chain_queue_default_lack_heap_expection(void)
 {
 	printf("heap_null_expectopn. \r\n");
 }
-
-void main()
-{
-
-#define CHAIN_QUEUE_STRING   1
-
-#if defined( SEQUEENCE_QUEUE_TEST_CHAR)
-
-	SEQUENCE_QUEUE_DATA_TYPE atom = 0;
-	SEQUENCE_QUEUE_DATA_TYPE array[100] = { 0 };
-	SEQUENCE_QUEUE_TYPEDEF queue;
-
-	queue_ctrl.seqence_queue.init(&queue,10);
-
-	for (size_t i = 0; i < 11; i++)
-	{
-		sequence_queue_ctrl.enqueue(&queue, i);
-	}
-
-	//	  sequence_queue_ctrl.multi_dequeue(&queue, array,10);
-
-	for (size_t i = 0; i < 11; i++)
-	{
-		sequence_queue_ctrl.dequeue(&queue, array);
-		printf("pop: %d ", array[0]);
-	}
-
-	queue_ctrl.seqence_queue.free(&queue);
-
-	printf("\r\n");
-
-#elif defined(CHAIN_QUEUE_CHAR)
-
-	//char atom = 0;
-	//char array[100] = { 0 };
-	//CHAIN_SEQUENCE_QUEUE_TYPEDEF chain_queue;
-
-	//queue_ctrl.chain_queue.init(&chain_queue, 10);
-
-	//for (size_t i = 0; i < 10; i++)
-	//{
-	//    chain_queue.push(&chain_queue, i + '0');
-	//}
-
-	//for (size_t i = 0; i < 10; i++)
-	//{
-	//    chain_queue.pop(&chain_queue, &array[i]);
-
-	//    printf("pop: %c ", array[i]);
-	//}
-
-	//chain_queue.pop(&chain_queue, &array[11]);
-
-	//queue_ctrl.free(&chain_queue);
-
-	//printf("\r\n");
-
-#elif defined(CHAIN_QUEUE_STRING)
-
-	char atom = 0;
-	char array[10][100] = { 0 };
-	CHAIN_QUEUE_TYPEDEF chain_queue;
-
-	CHAIN_QUEUE_DATA_TYPE* array_ptr = NULL;
-	CHAIN_QUEUE_DATA_TYPE array_p[10] = { NULL };
-
-	for (size_t i = 0; i < 10; i++)
-	{
-		array_p[i] = (CHAIN_QUEUE_DATA_TYPE)calloc(10, sizeof(char));
-	}
-
-	queue_ctrl.chain_queue.init(&chain_queue, 10);
-
-	queue_ctrl.chain_queue.config_expection(&chain_queue, true, true, true,
-		chain_queue.expection.full_queue, chain_queue.expection.null_queue, chain_queue.expection.lack_heap);
-
-	for (char i = 0; i < 10; i++)
-	{
-		char temp[20] = { 0 };
-
-		temp[0] = i + '0';
-
-		chain_queue_ctrl.enqueue(&chain_queue, temp, strlen(temp));
-	}
-
-	chain_queue_ctrl.get(&chain_queue, array[0]);
-
-	printf("get: %s \r\n", array[0]);
-
-	chain_queue_ctrl.multi_dequeue(&chain_queue, array_p, 10);
-
-	for (size_t i = 0; i < 10; i++)
-	{
-		printf("pop: %s ", array_p[i]);
-	}
-
-	queue_ctrl.chain_queue.free(&chain_queue);
-
-	chain_queue_ctrl.delete(&chain_queue);
-
-#endif
-
-	printf(" \r\n Test End\r\n");
-
-	return;
-}
+//
+//void main()
+//{
+//
+//#define CHAIN_QUEUE_STRING   1
+//
+//#if defined( SEQUEENCE_QUEUE_TEST_CHAR)
+//
+//	SEQUENCE_QUEUE_DATA_TYPE atom = 0;
+//	SEQUENCE_QUEUE_DATA_TYPE array[100] = { 0 };
+//	SEQUENCE_QUEUE_TYPEDEF queue;
+//
+//	queue_ctrl.seqence_queue.init(&queue,10);
+//
+//	for (size_t i = 0; i < 11; i++)
+//	{
+//		sequence_queue_ctrl.enqueue(&queue, i);
+//	}
+//
+//	//	  sequence_queue_ctrl.multi_dequeue(&queue, array,10);
+//
+//	for (size_t i = 0; i < 11; i++)
+//	{
+//		sequence_queue_ctrl.dequeue(&queue, array);
+//		printf("pop: %d ", array[0]);
+//	}
+//
+//	queue_ctrl.seqence_queue.free(&queue);
+//
+//	printf("\r\n");
+//
+//#elif defined(CHAIN_QUEUE_CHAR)
+//
+//	//char atom = 0;
+//	//char array[100] = { 0 };
+//	//CHAIN_SEQUENCE_QUEUE_TYPEDEF chain_queue;
+//
+//	//queue_ctrl.chain_queue.init(&chain_queue, 10);
+//
+//	//for (size_t i = 0; i < 10; i++)
+//	//{
+//	//    chain_queue.push(&chain_queue, i + '0');
+//	//}
+//
+//	//for (size_t i = 0; i < 10; i++)
+//	//{
+//	//    chain_queue.pop(&chain_queue, &array[i]);
+//
+//	//    printf("pop: %c ", array[i]);
+//	//}
+//
+//	//chain_queue.pop(&chain_queue, &array[11]);
+//
+//	//queue_ctrl.free(&chain_queue);
+//
+//	//printf("\r\n");
+//
+//#elif defined(CHAIN_QUEUE_STRING)
+//
+//	char atom = 0;
+//	char array[10][100] = { 0 };
+//	CHAIN_QUEUE_TYPEDEF chain_queue;
+//
+//	CHAIN_QUEUE_DATA_TYPE* array_ptr = NULL;
+//	CHAIN_QUEUE_DATA_TYPE array_p[10] = { NULL };
+//
+//	for (size_t i = 0; i < 10; i++)
+//	{
+//		array_p[i] = (CHAIN_QUEUE_DATA_TYPE)calloc(10, sizeof(char));
+//	}
+//
+//	chain_queue_ctrl.init(&chain_queue, 10);
+//
+//	chain_queue_ctrl.config_expection(&chain_queue, true, true, true,
+//		chain_queue.expection.full_queue, chain_queue.expection.null_queue, chain_queue.expection.lack_heap);
+//
+//	for (char i = 0; i < 10; i++)
+//	{
+//		char temp[20] = { 0 };
+//
+//		temp[0] = i + '0';
+//
+//		chain_queue_ctrl.enqueue(&chain_queue, temp, strlen(temp));
+//	}
+//
+//	chain_queue_ctrl.get(&chain_queue, array[0]);
+//
+//	printf("get: %s \r\n", array[0]);
+//
+//	chain_queue_ctrl.multi_dequeue(&chain_queue, array_p, 10);
+//
+//	for (size_t i = 0; i < 10; i++)
+//	{
+//		printf("pop: %s ", array_p[i]);
+//	}
+//
+//	chain_queue_ctrl.free(&chain_queue);
+//
+//	chain_queue_ctrl.delete(&chain_queue);
+//
+//#endif
+//
+//	printf(" \r\n Test End\r\n");
+//
+//	return;
+//}

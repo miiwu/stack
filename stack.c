@@ -5,6 +5,8 @@ bool stack_control_sequence_stack_free(SEQUENCE_STACK_TYPEDEF_PTR stack);
 
 bool sequence_stack_push(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE atom);
 bool sequence_stack_pop(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* atom);
+bool sequence_stack_get(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* atom);
+bool sequence_stack_delete(SEQUENCE_STACK_TYPEDEF_PTR stack);
 bool sequence_stack_multi_pop(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* array, size_t size);
 
 void sequence_stack_default_full_stacl_expection(void);
@@ -33,6 +35,8 @@ SEQUENCE_STACK_CONTROL_TYPEDEF sequence_stack_ctrl =
 
 	sequence_stack_push,
 	sequence_stack_pop,
+	sequence_stack_get,
+	sequence_stack_delete,
 	sequence_stack_multi_pop
 };
 CHAIN_STACK_CONTROL_TYPEDEF chain_stack_ctrl =
@@ -89,35 +93,52 @@ bool stack_control_sequence_stack_free(SEQUENCE_STACK_TYPEDEF_PTR stack)
 
 bool sequence_stack_push(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE atom)
 {
-	if (stack->info.stack_top < stack->info.stack_depth)    // 如果没有满栈
-	{
-		stack->data[++stack->info.stack_top] = atom;
-
-		return true;
-	}
-	else
+	if (stack->info.stack_top >= stack->info.stack_depth)
 	{
 		stack->expection.full_stack();                           // stack_exception
 
 		return false;
 	}
+
+	stack->data[++stack->info.stack_top] = atom;
+
+	return true;
+}
+
+bool sequence_stack_get(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* atom)
+{
+	if(stack->info.stack_top <= 0)
+	{
+		stack->expection.null_stack();
+
+		return false;
+	}
+
+	*atom = stack->data[stack->info.stack_top];
+
+	return true;
+}
+
+bool sequence_stack_delete(SEQUENCE_STACK_TYPEDEF_PTR stack)
+{
+	if (stack->info.stack_top <= 0)
+	{
+		stack->expection.null_stack();
+
+		return false;
+	}
+
+	stack->info.stack_top--;
+
+	return true;
 }
 
 bool sequence_stack_pop(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* atom)
 {
-	if (stack->info.stack_top > 0)                            // 如果没有空栈
-	{
-		*atom = stack->data[stack->info.stack_top];
-		stack->info.stack_top--;
-
-		return true;
-	}
-	else
-	{
-		stack->expection.null_stack();                           // stack_exception
-
+	if (sequence_stack_get(stack, atom) == false)			// 这里不用写异常，因为 sequence_stack_get 会先捕捉到
 		return false;
-	}
+
+	return sequence_stack_delete(stack);
 }
 
 void sequence_stack_default_full_stacl_expection(void)
@@ -420,117 +441,117 @@ void chain_stack_default_lack_heap_expection(void)
 //
 //	return perc;
 //}
-//
-//void main()
-//{
-//#define CHAIN_STACK_STRING   1
-//
-//#if defined( STACK_TEST_CHAR)
-//	//  char atom = 0;
-//	//  char array[100] = { 0 };
-//	//  SEQUENCE_STACK_TYPEDEF stack;
-//
-//	//  stack_ctrl.init(&stack,100);
-//
-//	//  for (size_t i = 0; i < 10; i++)
-//	//  {
-//	//      stack.push(&stack, i + '0');
-//	//  }
-//	//  stack.multi_pop(&stack, array,10);
-//
-//	//stack_pop(&stack, &atom);
-//
-//	//printf("pop: %d ", atom);
-//
-//	//  for (size_t i = 0; i < 10; i++)
-//	//  {
-//	//      printf("pop: %c ", array[i]);
-//	//  }
-//
-//	//  stack_ctrl.free(&stack);
-//
-//	//  printf("\r\n");
-//#elif defined(CHAIN_STACK_CHAR)
-//	//char atom = 0;
-//	//char array[100] = { 0 };
-//	//CHAIN_SEQUENCE_STACK_TYPEDEF chain_stack;
-//
-//	//stack_ctrl.chain_stack.init(&chain_stack, 10);
-//
-//	//for (size_t i = 0; i < 10; i++)
-//	//{
-//	//    chain_stack.push(&chain_stack, i + '0');
-//	//}
-//
-//	//for (size_t i = 0; i < 10; i++)
-//	//{
-//	//    chain_stack.pop(&chain_stack, &array[i]);
-//
-//	//    printf("pop: %c ", array[i]);
-//	//}
-//
-//	//chain_stack.pop(&chain_stack, &array[11]);
-//
-//	//stack_ctrl.free(&chain_stack);
-//
-//	//printf("\r\n");
-//#elif defined(CHAIN_STACK_STRING)
-//
-//	char atom = 0;
-//	char array[10][100] = { 0 };
-//	CHAIN_STACK_TYPEDEF chain_stack;
-//
-//	CHAIN_STACK_DATA_TYPE* array_ptr = NULL;
-//	CHAIN_STACK_DATA_TYPE array_p[10] = { NULL };
-//
-//	for (size_t i = 0; i < 10; i++)
-//	{
-//		array_p[i] = (CHAIN_STACK_DATA_TYPE)calloc(10, sizeof(char));
-//	}
-//
-//	stack_ctrl.chain_stack.init(&chain_stack, 10);
-//
-//	stack_ctrl.chain_stack.config_expection(&chain_stack, true, true, true,
-//		chain_stack.expection.full_stack, chain_stack.expection.null_stack, chain_stack.expection.lack_heap);
-//
-//	for (char i = 0; i < 11; i++)
-//	{
-//		char temp[20] = { 0 };
-//
-//		temp[0] = i + '0';
-//
-//		chain_stack_ctrl.push(&chain_stack, temp, strlen(temp));
-//	}
-//
-//	chain_stack_ctrl.get(&chain_stack, array[0]);
-//
-//	printf("get: %s \r\n", array[0]);
-//
-//	//	chain_stack_ctrl.multi_pop(&chain_stack, array_p, 10);
-//
-//		//for (size_t i = 0; i < 10; i++)
-//		//{
-//		//	printf("pop: %s ", array_p[i]);
-//		//}
-//
-//	stack_ctrl.chain_stack.free(&chain_stack);
-//
-//	chain_stack_ctrl.delete(&chain_stack);
-//
-//	printf(" \r\n end\r\n");
-//
-//#elif  defined(DATA_VERIFY)
-//	//int
-//	//    array[10] = { 0,1,3,0,5,6,7,0,9,1 },
-//	//    rule[10] = { 1,2,3,4,5,6,7,8,9,1 };
-//
-//	//int size = 10;
-//
-//	//data_verify_percent(array,rule,size);
-//
-//	//printf("*:%f \r\n", data_verify_percent(array, rule, size));
-//	//printf("_:%f \r\n", _data_verify_percent(array, rule, size));
-//#endif
-//
-//	return;
-//}
+
+void main()
+{
+#define STACK_TEST_CHAR   1
+
+#if defined( STACK_TEST_CHAR)
+	  char atom = 0;
+	  char array[100] = { 0 };
+	  SEQUENCE_STACK_TYPEDEF stack;
+
+	  stack_ctrl.init(&stack,100);
+
+	  for (size_t i = 0; i < 10; i++)
+	  {
+	      stack.push(&stack, i + '0');
+	  }
+	  stack.multi_pop(&stack, array,10);
+
+	stack_pop(&stack, &atom);
+
+	printf("pop: %d ", atom);
+
+	  for (size_t i = 0; i < 10; i++)
+	  {
+	      printf("pop: %c ", array[i]);
+	  }
+
+	  stack_ctrl.free(&stack);
+
+	  printf("\r\n");
+#elif defined(CHAIN_STACK_CHAR)
+	//char atom = 0;
+	//char array[100] = { 0 };
+	//CHAIN_SEQUENCE_STACK_TYPEDEF chain_stack;
+
+	//stack_ctrl.chain_stack.init(&chain_stack, 10);
+
+	//for (size_t i = 0; i < 10; i++)
+	//{
+	//    chain_stack.push(&chain_stack, i + '0');
+	//}
+
+	//for (size_t i = 0; i < 10; i++)
+	//{
+	//    chain_stack.pop(&chain_stack, &array[i]);
+
+	//    printf("pop: %c ", array[i]);
+	//}
+
+	//chain_stack.pop(&chain_stack, &array[11]);
+
+	//stack_ctrl.free(&chain_stack);
+
+	//printf("\r\n");
+#elif defined(CHAIN_STACK_STRING)
+
+	char atom = 0;
+	char array[10][100] = { 0 };
+	CHAIN_STACK_TYPEDEF chain_stack;
+
+	CHAIN_STACK_DATA_TYPE* array_ptr = NULL;
+	CHAIN_STACK_DATA_TYPE array_p[10] = { NULL };
+
+	for (size_t i = 0; i < 10; i++)
+	{
+		array_p[i] = (CHAIN_STACK_DATA_TYPE)calloc(10, sizeof(char));
+	}
+
+	stack_ctrl.chain_stack.init(&chain_stack, 10);
+
+	stack_ctrl.chain_stack.config_expection(&chain_stack, true, true, true,
+		chain_stack.expection.full_stack, chain_stack.expection.null_stack, chain_stack.expection.lack_heap);
+
+	for (char i = 0; i < 11; i++)
+	{
+		char temp[20] = { 0 };
+
+		temp[0] = i + '0';
+
+		chain_stack_ctrl.push(&chain_stack, temp, strlen(temp));
+	}
+
+	chain_stack_ctrl.get(&chain_stack, array[0]);
+
+	printf("get: %s \r\n", array[0]);
+
+	//	chain_stack_ctrl.multi_pop(&chain_stack, array_p, 10);
+
+		//for (size_t i = 0; i < 10; i++)
+		//{
+		//	printf("pop: %s ", array_p[i]);
+		//}
+
+	stack_ctrl.chain_stack.free(&chain_stack);
+
+	chain_stack_ctrl.delete(&chain_stack);
+
+	printf(" \r\n end\r\n");
+
+#elif  defined(DATA_VERIFY)
+	//int
+	//    array[10] = { 0,1,3,0,5,6,7,0,9,1 },
+	//    rule[10] = { 1,2,3,4,5,6,7,8,9,1 };
+
+	//int size = 10;
+
+	//data_verify_percent(array,rule,size);
+
+	//printf("*:%f \r\n", data_verify_percent(array, rule, size));
+	//printf("_:%f \r\n", _data_verify_percent(array, rule, size));
+#endif
+
+	return;
+}

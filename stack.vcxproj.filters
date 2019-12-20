@@ -29,5 +29,11 @@
     <ClCompile Include="queue.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="priority.h">
+      <Filter>头文件</Filter>
+    </ClCompile>
+    <ClCompile Include="priority.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
