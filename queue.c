@@ -82,8 +82,6 @@ bool queue_control_sequence_queue_init(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue
 bool queue_control_sequence_queue_exception_config(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue,
 	bool is_full_queue_cfg, bool is_null_queue_cfg, bool is_lack_heap_cfg, ...)
 {
-
-
 	return true;
 }
 
@@ -105,7 +103,6 @@ bool sequence_queue_enqueue(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue, SEQUENCE_
 	if (sequence_queue->info.queue_rear < sequence_queue->info.queue_max_depth)    // 如果没有满栈
 	{
 		sequence_queue->data[sequence_queue->info.queue_rear++] = atom;
-
 
 		return true;
 	}
@@ -147,11 +144,11 @@ bool sequence_queue_delete(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue)
 
 bool sequence_queue_dequeue(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue, SEQUENCE_QUEUE_DATA_TYPE* atom)
 {
-	if (sequence_queue_get(sequence_queue,atom) == false)
+	if (sequence_queue_get(sequence_queue, atom) == false)
 	{
 		return false;
 	}
-	
+
 	sequence_queue_delete(sequence_queue);
 
 	return true;
@@ -193,7 +190,7 @@ bool sequence_queue_multi_dequeue(SEQUENCE_QUEUE_TYPEDEF_PTR queue, SEQUENCE_QUE
 
 bool queue_control_chain_queue_init(CHAIN_QUEUE_TYPEDEF_PTR chain_queue, size_t max_depth)
 {																			// 初始化一个链队
-	CHAIN_QUEUE_NODE_TYPEDEF_PTR 
+	CHAIN_QUEUE_NODE_TYPEDEF_PTR
 		queue_node = (CHAIN_QUEUE_NODE_TYPEDEF_PTR)calloc(1, sizeof(CHAIN_QUEUE_NODE_TYPEDEF));
 
 	if (queue_node == NULL)
@@ -266,7 +263,7 @@ bool queue_control_chain_queue_free(CHAIN_QUEUE_TYPEDEF_PTR chain_queue)
 
 		for (size_t cnt = chain_queue->info.queue_crt_depth; cnt > 0; cnt--)
 			chain_queue_delete(chain_queue);
-		
+
 		free(chain_queue->top);
 
 		chain_queue->info.queue_malloc = false;
@@ -303,7 +300,7 @@ bool chain_queue_enqueue(CHAIN_QUEUE_TYPEDEF_PTR chain_queue, CHAIN_QUEUE_DATA_T
 
 	for (size_t i = 0; i < sizeof_atom; i++)
 		queue_node_now->data[i] = atom[i];									// 填充数据空间
-	
+
 	// rear	进队		最新的 now
 	// top 出队		最老的
 
@@ -349,11 +346,10 @@ bool chain_queue_delete(CHAIN_QUEUE_TYPEDEF_PTR chain_queue)
 	//chain_queue->top->data_length = 0;										// 清理数据
 	//chain_queue->top->data = NULL;											// 变成空指针
 
-
 	free(chain_queue->top->next->data);											// 释放 rear.data 存储空间
 	chain_queue->top->next->data_length = 0;										// 清理数据
 	chain_queue->top->next->data = NULL;											// 变成空指针
-	
+
 	queue_node_prev = chain_queue->top;										// 记录 rear 数据空间
 
 	chain_queue->top = chain_queue->top->next;								// 把当前的 rear.next 节点变成 rear 节点

@@ -49,8 +49,7 @@ void main()
 #define CHAIN_GENERIC_STACK				1
 #define STACK_TEST_CHAR					0
 #define CHAIN_STACK_TEST_CHAR			0
-#define CHAIN_STACK_TEST_STRING			1
-
+#define CHAIN_STACK_TEST_STRING			0
 #if CHAIN_GENERIC_STACK
 
 	short
@@ -72,40 +71,77 @@ void main()
 	};
 
 	char
-		buffer[100] = { 0 },
+		buffer[10][10] = { 0 },
+		* buffer_ptr[10] = {NULL},
 		data[] = "12345";
 
 	CHAIN_GENERIC_STACK_TYPEDEF_PTR
 		chain_generic_stack_normal = { 0 },
 		chain_generic_stack = { 0 };
 
-	chain_generic_stack_ctrl.init(&chain_generic_stack, sizeof(TEST_TYPEDEF), 10, assign, delete);
+	for (size_t i = 0; i < 10; i++)
+	{
+		buffer_ptr[i] = (char*)calloc(10, sizeof(char));
+	}
+
+#if 0				
+	// manual deep copy	Éî¸´ÖÆ
+
+	/*chain_generic_stack_ctrl.init(&chain_generic_stack, sizeof(TEST_TYPEDEF), 10, assign, delete);
 
 	chain_generic_stack_ctrl.push(chain_generic_stack, &data_typedef, 0);
 
-	printf("stack current depth:%d \r\n",chain_generic_stack_ctrl.get_stack_info.current_depth(chain_generic_stack));
+	printf("stack current depth:%d \r\n", chain_generic_stack_ctrl.get_stack_info.current_depth(chain_generic_stack));
 
 	chain_generic_stack_ctrl.pop(chain_generic_stack, &data_buffer_typedef);
 
 	printf("stack current depth:%d \r\n", chain_generic_stack_ctrl.get_stack_info.current_depth(chain_generic_stack));
 
-	chain_generic_stack_ctrl.free(&chain_generic_stack);
+	chain_generic_stack_ctrl.free(&chain_generic_stack);*/
 
-	/* 
-	|->Problem Part Start [ RESERVED SOLVE ]
+#else
+	// strcpy shallow copy Ç³¸´ÖÆ
 
-	//printf("%s \r\n", data);
+	/*chain_generic_stack_ctrl.init(&chain_generic_stack, sizeof(TEST_TYPEDEF), 10, NULL, NULL);
 
-	//chain_generic_stack_ct.init(&chain_generic_stack_normal, sizeof(char*), 10, assign_charp, NULL);
+	chain_generic_stack_ctrl.push(chain_generic_stack, &data_typedef, 0);
 
-	//chain_generic_stack_ct.push(&chain_generic_stack_normal, &data, 0);
+	printf("stack current depth:%d \r\n", chain_generic_stack_ctrl.get_stack_info.current_depth(chain_generic_stack));
 
-	//chain_generic_stack_ct.pop(&chain_generic_stack_normal, &buffer);
+	chain_generic_stack_ctrl.pop(chain_generic_stack, &data_buffer_typedef);
 
-	//printf("%s \r\n", buff);
+	printf("stack current depth:%d \r\n", chain_generic_stack_ctrl.get_stack_info.current_depth(chain_generic_stack));
 
-	Problem Part End <-| 
-	*/
+	chain_generic_stack_ctrl.free(&chain_generic_stack);*/
+
+#endif
+
+	printf("data:%s \r\n", data);
+
+	chain_generic_stack_ctrl.init(&chain_generic_stack_normal, sizeof(char*), 10, NULL, NULL);
+
+	for (size_t i = 0; i < 11; i++)
+	{
+		chain_generic_stack_ctrl.push(chain_generic_stack_normal, &data, strlen(data));
+
+		data[4] += 1;
+	}
+
+	for (size_t i = 0; i < 11; i++)
+	{
+		chain_generic_stack_ctrl.pop(chain_generic_stack_normal, &buffer[i]);
+
+		printf("buffer:%s \r\n", buffer[i]);
+	}
+
+	chain_generic_stack_ctrl.multi_pop(chain_generic_stack_normal, buffer_ptr, 10);
+
+	chain_generic_stack_ctrl.free(&chain_generic_stack_normal);
+
+	for (size_t i = 0; i < 10; i++)
+	{
+		printf("buffer_multi:%s \r\n", buffer_ptr[i]);
+	}
 
 #endif
 
@@ -147,14 +183,14 @@ void main()
 
 	for (size_t i = 0; i < 10; i++)
 	{
-	    chain_stack.push(&chain_stack, i + '0');
+		chain_stack.push(&chain_stack, i + '0');
 	}
 
 	for (size_t i = 0; i < 10; i++)
 	{
-	    chain_stack.pop(&chain_stack, &array[i]);
+		chain_stack.pop(&chain_stack, &array[i]);
 
-	    printf("pop: %c ", array[i]);
+		printf("pop: %c ", array[i]);
 	}
 
 	chain_stack.pop(&chain_stack, &array[11]);
@@ -168,7 +204,7 @@ void main()
 
 	char atom = 0;
 	char array[10][100] = { 0 };
-	CHAIN_STACK_TYPEDEF_PTR 
+	CHAIN_STACK_TYPEDEF_PTR
 		chain_stack = NULL;
 
 	CHAIN_STACK_DATA_TYPE* array_ptr = NULL;
@@ -218,6 +254,10 @@ void main()
 	//printf("*:%f \r\n", data_verify_percent(array, rule, size));
 	//printf("_:%f \r\n", _data_verify_percent(array, rule, size));
 #endif
+
+	short num = mem_check();
+
+	printf("mem_check:%d \r\n", num);
 
 	printf("\r\n Program End . \r\n");
 

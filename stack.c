@@ -1,8 +1,9 @@
 #include "stack.h"
 
+#include "mem_test.h"
+
 #define SEQUENCE_STACK_EXCEPTION_TYPE_AMOUNT	4
 #define CHAIN_STACK_EXCEPTION_TYPE_AMOUNT		4
-
 
 typedef struct Stack_Info
 {
@@ -26,8 +27,6 @@ typedef struct Sequence_Stack
 	SEQUENCE_STACK_EXPECTION_TYPEDEF expection;
 }SEQUENCE_STACK_TYPEDEF;
 
-
-
 typedef struct Chain_Stack_Node
 {
 	struct Chain_Stack_Node* next;
@@ -49,8 +48,6 @@ typedef struct Chain_Stack
 
 	CHAIN_STACK_EXPECTION_TYPEDEF expection;
 }CHAIN_STACK_TYPEDEF;
-
-
 
 struct Chain_Generic_Stack_Info
 {
@@ -83,8 +80,6 @@ typedef struct Chain_Generic_Stack
 	CHAIN_STACK_EXPECTION_TYPEDEF expection;
 }CHAIN_GENERIC_STACK_TYPEDEF;
 
-
-
 bool stack_control_sequence_stack_init(SEQUENCE_STACK_TYPEDEF_PPTR stack, size_t depth);
 bool stack_control_sequence_stack_exception_config(SEQUENCE_STACK_TYPEDEF_PTR stack,
 	bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
@@ -101,8 +96,6 @@ size_t stack_control_sequence_stack_get_info_get_max_depth(SEQUENCE_STACK_TYPEDE
 
 bool stack_control_sequence_stack_get_info_get_is_empty(SEQUENCE_STACK_TYPEDEF_PTR stack);
 bool stack_control_sequence_stack_get_info_get_is_full(SEQUENCE_STACK_TYPEDEF_PTR stack);
-
-
 
 bool stack_control_chain_stack_init(CHAIN_STACK_TYPEDEF_PPTR stack, size_t depth);
 bool stack_control_chain_stack_exception_config(CHAIN_STACK_TYPEDEF_PTR chain_stack,
@@ -121,8 +114,6 @@ size_t stack_control_chain_stack_get_info_get_stack_top_data_length(CHAIN_STACK_
 
 bool stack_control_chain_stack_get_info_get_is_empty(CHAIN_STACK_TYPEDEF_PTR stack);
 bool stack_control_chain_stack_get_info_get_is_full(CHAIN_STACK_TYPEDEF_PTR stack);
-
-
 
 bool stack_control_chain_generic_stack_init(CHAIN_GENERIC_STACK_TYPEDEF_PPTR stack, size_t data_type_size, size_t max_depth,
 	void (*stack_data_copy)(void*, const void*), void (*stack_data_free)(void*));
@@ -144,15 +135,11 @@ size_t stack_control_chain_generic_stack_get_info_get_stack_top_data_length(CHAI
 bool stack_control_chain_generic_stack_get_info_get_is_empty(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
 bool stack_control_chain_generic_stack_get_info_get_is_full(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
 
-
-
 void stack_init_error_expection(void);
 
 void stack_default_full_stack_expection(void);
 void stack_default_null_stack_expection(void);
 void stack_default_lack_heap_expection(void);
-
-
 
 SEQUENCE_STACK_CONTROL_TYPEDEF sequence_stack_ctrl =
 {
@@ -229,7 +216,7 @@ bool stack_control_sequence_stack_init(SEQUENCE_STACK_TYPEDEF_PTR* stack, size_t
 	}
 
 	SEQUENCE_STACK_TYPEDEF_PTR
-		stack_new = (SEQUENCE_STACK_TYPEDEF_PTR)calloc(1, sizeof(SEQUENCE_STACK_TYPEDEF));
+		stack_new = (SEQUENCE_STACK_TYPEDEF_PTR)mem_calloc(1, sizeof(SEQUENCE_STACK_TYPEDEF));
 
 	if (NULL == stack_new ||
 		NULL == (stack_new->data = (char*)malloc(sizeof(char) * max_depth)))
@@ -255,7 +242,6 @@ bool stack_control_sequence_stack_init(SEQUENCE_STACK_TYPEDEF_PTR* stack, size_t
 
 	return true;
 }
-
 
 bool stack_control_sequence_stack_exception_config(SEQUENCE_STACK_TYPEDEF_PTR stack,
 	bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...)
@@ -295,13 +281,13 @@ bool stack_control_sequence_stack_free(SEQUENCE_STACK_TYPEDEF_PPTR stack)
 {
 	if ((*stack)->info.stack_malloc == true)
 	{
-		free((*stack)->data);
+		mem_free((*stack)->data);
 
 		(*stack)->info.stack_malloc = false;
 		(*stack)->data = NULL;
 	}
 
-	free(*stack);
+	mem_free(*stack);
 
 	*stack = NULL;														// 变成空指针
 
@@ -377,7 +363,6 @@ bool sequence_stack_multi_pop(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_D
 	}
 }
 
-
 size_t stack_control_sequence_stack_get_info_get_current_depth(SEQUENCE_STACK_TYPEDEF_PTR stack)
 {
 	return stack->info.stack_crt_depth;
@@ -415,7 +400,7 @@ bool stack_control_chain_stack_init(CHAIN_STACK_TYPEDEF_PPTR stack, size_t max_d
 	}
 
 	CHAIN_STACK_TYPEDEF_PTR
-		stack_new = (CHAIN_STACK_TYPEDEF_PTR)calloc(1, sizeof(CHAIN_STACK_TYPEDEF));
+		stack_new = (CHAIN_STACK_TYPEDEF_PTR)mem_calloc(1, sizeof(CHAIN_STACK_TYPEDEF));
 
 	if (NULL == stack_new)
 	{
@@ -482,7 +467,7 @@ bool stack_control_chain_stack_free(CHAIN_STACK_TYPEDEF_PPTR stack)
 		(*stack)->top = NULL;											// 变成空指针
 	}
 
-	free(*stack);
+	mem_free(*stack);
 
 	*stack = NULL;														// 变成空指针
 
@@ -492,9 +477,9 @@ bool stack_control_chain_stack_free(CHAIN_STACK_TYPEDEF_PPTR stack)
 bool chain_stack_push(CHAIN_STACK_TYPEDEF_PTR stack, CHAIN_STACK_DATA_TYPE atom, size_t sizeof_atom)
 {																			// push top 节点，入栈一个数据，并创建一个节点用于存储
 	CHAIN_STACK_NODE_TYPEDEF_PTR
-		stack_node_now = (CHAIN_STACK_NODE_TYPEDEF_PTR)calloc(1, sizeof(CHAIN_STACK_NODE_TYPEDEF));
+		stack_node_now = (CHAIN_STACK_NODE_TYPEDEF_PTR)mem_calloc(1, sizeof(CHAIN_STACK_NODE_TYPEDEF));
 
-	CHAIN_STACK_DATA_TYPE stack_node_data_ptr = (CHAIN_STACK_DATA_TYPE)calloc(sizeof_atom + 1, sizeof(char));
+	CHAIN_STACK_DATA_TYPE stack_node_data_ptr = (CHAIN_STACK_DATA_TYPE)mem_calloc(sizeof_atom + 1, sizeof(char));
 
 	if (stack_node_now == NULL || stack_node_data_ptr == NULL)				// 堆空间不足异常
 	{
@@ -551,7 +536,7 @@ bool chain_stack_delete(CHAIN_STACK_TYPEDEF_PTR stack)
 		return false;
 	}
 
-	free(stack->top->data);											// 释放 top.data 存储空间
+	mem_free(stack->top->data);											// 释放 top.data 存储空间
 
 	stack->top->data_length = 0;										// 清理数据
 	stack->top->data = NULL;											// 变成空指针
@@ -560,7 +545,7 @@ bool chain_stack_delete(CHAIN_STACK_TYPEDEF_PTR stack)
 
 	stack->top = stack->top->next;								// 把当前的 top.next 节点变成 top 节点
 
-	free(stack_node_prev);													// 释放 prev top 存储空间
+	mem_free(stack_node_prev);													// 释放 prev top 存储空间
 
 	stack->info.stack_crt_depth--;									// 减少 chain_stack 当前深度
 
@@ -638,7 +623,7 @@ bool stack_control_chain_generic_stack_init(CHAIN_GENERIC_STACK_TYPEDEF_PPTR sta
 	}
 
 	CHAIN_GENERIC_STACK_TYPEDEF_PTR
-		stack_new = (CHAIN_GENERIC_STACK_TYPEDEF_PTR)calloc(1, sizeof(CHAIN_GENERIC_STACK_TYPEDEF));
+		stack_new = (CHAIN_GENERIC_STACK_TYPEDEF_PTR)mem_calloc(1, sizeof(CHAIN_GENERIC_STACK_TYPEDEF));
 
 	if (NULL == stack_new)
 	{
@@ -654,7 +639,7 @@ bool stack_control_chain_generic_stack_init(CHAIN_GENERIC_STACK_TYPEDEF_PPTR sta
 	stack_new->data_handle.stack_data_copy = stack_data_copy;							// 深复制操作函数
 	stack_new->data_handle.stack_data_free = stack_data_free;							// 释放深复制操作函数中复制的指针
 
-	stack_new->top = NULL;														// 
+	stack_new->top = NULL;														//
 
 	stack_new->expection.full_stack = stack_default_full_stack_expection;	// 赋值异常函数
 	stack_new->expection.null_stack = stack_default_null_stack_expection;
@@ -711,19 +696,26 @@ bool stack_control_chain_generic_stack_free(CHAIN_GENERIC_STACK_TYPEDEF_PPTR sta
 		(*stack)->top = NULL;											// 变成空指针
 	}
 
-	free(*stack);
+	mem_free(*stack);
 
 	*stack = NULL;														// 变成空指针
 
 	return true;
 }
 
-bool chain_generic_stack_push(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom, size_t sizeof_atom)
-{																			// push top 节点，入栈一个数据，并创建一个节点用于存储
+bool chain_generic_stack_push(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom, size_t sizeof_string_atom)
+{																			// push top 节点，入栈一个数据，并创建一个节点用于存储,sizeof_atom 仅在 string 类型时使用
 	CHAIN_GENERIC_STACK_NODE_TYPEDEF_PTR
-		stack_node_now = (CHAIN_GENERIC_STACK_NODE_TYPEDEF_PTR)calloc(1, sizeof(CHAIN_GENERIC_STACK_NODE_TYPEDEF));
+		stack_node_now = (CHAIN_GENERIC_STACK_NODE_TYPEDEF_PTR)mem_calloc(1, sizeof(CHAIN_GENERIC_STACK_NODE_TYPEDEF));
 
-	void* stack_node_data_ptr = (void*)calloc(stack->info.stack_data_type_size, sizeof(char));
+	size_t
+		stack_node_data_size = (sizeof_string_atom != 0) ?
+								(stack->info.stack_data_type_size + 1) :
+								(stack->info.stack_data_type_size);
+
+	void* 
+		stack_node_data_ptr =
+		(void*)mem_calloc(stack_node_data_size, sizeof(char));
 
 	if (stack_node_now == NULL || stack_node_data_ptr == NULL)				// 堆空间不足异常
 	{
@@ -739,8 +731,18 @@ bool chain_generic_stack_push(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom,
 		return false;
 	}
 
-	stack_node_now->data = stack_node_data_ptr;								// 分配数据空间
-	stack_node_now->data_length = sizeof_atom;								// 记录数据长度
+	stack_node_now->data = stack_node_data_ptr;									// 分配数据空间
+
+	if (sizeof_string_atom != 0)
+	{
+		stack_node_now->data_length = sizeof_string_atom;						// 记录 string 长度
+
+		*((char*)stack_node_data_ptr + sizeof_string_atom) = '\0';				// 添加尾字符
+	}
+	else
+	{
+		stack_node_now->data_length = stack->info.stack_data_type_size;			// 记录非 string 数据长度
+	}
 
 	if (stack->data_handle.stack_data_copy != NULL)								// 如果指定了深复制函数
 	{	// 深复制(data 涉及指针)
@@ -748,7 +750,7 @@ bool chain_generic_stack_push(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom,
 	}
 	else
 	{	// 浅复制(data 不涉及指针)
-		memcpy(stack_node_now->data, atom, stack->info.stack_data_type_size);
+		memcpy(stack_node_now->data, atom, stack_node_now->data_length);
 	}
 
 	stack_node_now->next = stack->top;									// 把 top 节点压入栈底，即赋值给 now.next
@@ -774,7 +776,7 @@ bool chain_generic_stack_get(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom)
 	}
 	else
 	{
-		memcpy(atom, stack->top->data, stack->info.stack_data_type_size);
+		memcpy(atom, stack->top->data, stack->top->data_length/*stack->info.stack_data_type_size*/);
 	}
 
 	return true;
@@ -792,10 +794,10 @@ bool chain_generic_stack_delete(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack)
 		return false;
 	}
 
-	if (stack->data_handle.stack_data_free != NULL)
-		stack->data_handle.stack_data_free(stack->top->data);					// 释放 top.data 中的指针存储空间
-
-	free(stack->top->data);												// 释放 top.data 存储空间
+	if (stack->data_handle.stack_data_free != NULL)						// 释放 top.data 中深复制时产生的的指针存储空间
+		stack->data_handle.stack_data_free(stack->top->data);			
+	
+	mem_free(stack->top->data);												// 释放 top.data 存储空间
 
 	stack->top->data_length = 0;										// 清理数据
 	stack->top->data = NULL;											// 变成空指针
@@ -804,7 +806,7 @@ bool chain_generic_stack_delete(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack)
 
 	stack->top = stack->top->next;										// 把当前的 top.next 节点变成 top 节点
 
-	free(stack_node_prev);												// 释放 prev top 存储空间
+	mem_free(stack_node_prev);												// 释放 prev top 存储空间
 
 	stack->info.stack_crt_depth--;										// 减少 stack 当前深度
 
