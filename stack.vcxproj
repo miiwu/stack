@@ -138,15 +138,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="main_cfg.h" />
     <ClInclude Include="mem_test.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="stack.h" />
+    <ClInclude Include="vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
+    <ClCompile Include="main_list.c" />
+    <ClCompile Include="main_queue.c" />
+    <ClCompile Include="main_stack.c" />
+    <ClCompile Include="main_vector.c" />
     <ClCompile Include="mem_test.c" />
     <ClCompile Include="queue.c" />
     <ClCompile Include="stack.c" />
+    <ClCompile Include="vector.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

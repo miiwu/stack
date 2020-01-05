@@ -24,6 +24,12 @@
     <ClInclude Include="mem_test.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="vector.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="main_cfg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stack.c">
@@ -36,6 +42,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="mem_test.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="vector.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main_vector.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main_list.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main_queue.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main_stack.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
