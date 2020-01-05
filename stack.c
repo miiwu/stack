@@ -1,9 +1,38 @@
+/*
+*********************************************************************************************************
+*                                            INCLUDE FILES
+*********************************************************************************************************
+*/
+
+
 #include "stack.h"
 
 #include "mem_test.h"
 
+
+/*
+*********************************************************************************************************
+*                                            LOCAL DEFINES
+*********************************************************************************************************
+*/
+
 #define SEQUENCE_STACK_EXCEPTION_TYPE_AMOUNT	4
 #define CHAIN_STACK_EXCEPTION_TYPE_AMOUNT		4
+
+
+/*
+*********************************************************************************************************
+*                                           LOCAL CONSTANTS
+*********************************************************************************************************
+*/
+
+
+/*
+*********************************************************************************************************
+*                                          LOCAL DATA TYPES
+*********************************************************************************************************
+*/
+
 
 typedef struct Stack_Info
 {
@@ -80,66 +109,19 @@ typedef struct Chain_Generic_Stack
 	CHAIN_STACK_EXPECTION_TYPEDEF expection;
 }CHAIN_GENERIC_STACK_TYPEDEF;
 
-bool stack_control_sequence_stack_init(SEQUENCE_STACK_TYPEDEF_PPTR stack, size_t depth);
-bool stack_control_sequence_stack_exception_config(SEQUENCE_STACK_TYPEDEF_PTR stack,
-	bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
-bool stack_control_sequence_stack_free(SEQUENCE_STACK_TYPEDEF_PPTR stack);
 
-bool sequence_stack_push(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE atom);
-bool sequence_stack_pop(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* atom);
-bool sequence_stack_get(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* atom);
-bool sequence_stack_delete(SEQUENCE_STACK_TYPEDEF_PTR stack);
-bool sequence_stack_multi_pop(SEQUENCE_STACK_TYPEDEF_PTR stack, SEQUENCE_STACK_DATA_TYPE* array, size_t size);
+/*
+*********************************************************************************************************
+*                                            LOCAL TABLES
+*********************************************************************************************************
+*/
 
-size_t stack_control_sequence_stack_get_info_get_current_depth(SEQUENCE_STACK_TYPEDEF_PTR stack);
-size_t stack_control_sequence_stack_get_info_get_max_depth(SEQUENCE_STACK_TYPEDEF_PTR stack);
 
-bool stack_control_sequence_stack_get_info_get_is_empty(SEQUENCE_STACK_TYPEDEF_PTR stack);
-bool stack_control_sequence_stack_get_info_get_is_full(SEQUENCE_STACK_TYPEDEF_PTR stack);
-
-bool stack_control_chain_stack_init(CHAIN_STACK_TYPEDEF_PPTR stack, size_t depth);
-bool stack_control_chain_stack_exception_config(CHAIN_STACK_TYPEDEF_PTR chain_stack,
-	bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
-bool stack_control_chain_stack_free(CHAIN_STACK_TYPEDEF_PPTR stack);
-
-bool chain_stack_push(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE atom, size_t sizeof_atom);
-bool chain_stack_pop(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE atom);
-bool chain_stack_get(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE atom);
-bool chain_stack_delete(CHAIN_STACK_TYPEDEF_PTR chain_stack);
-bool chain_stack_multi_pop(CHAIN_STACK_TYPEDEF_PTR chain_stack, CHAIN_STACK_DATA_TYPE* array, size_t depth);
-
-size_t stack_control_chain_stack_get_info_get_current_depth(CHAIN_STACK_TYPEDEF_PTR stack);
-size_t stack_control_chain_stack_get_info_get_max_depth(CHAIN_STACK_TYPEDEF_PTR stack);
-size_t stack_control_chain_stack_get_info_get_stack_top_data_length(CHAIN_STACK_TYPEDEF_PTR stack);
-
-bool stack_control_chain_stack_get_info_get_is_empty(CHAIN_STACK_TYPEDEF_PTR stack);
-bool stack_control_chain_stack_get_info_get_is_full(CHAIN_STACK_TYPEDEF_PTR stack);
-
-bool stack_control_chain_generic_stack_init(CHAIN_GENERIC_STACK_TYPEDEF_PPTR stack, size_t data_type_size, size_t max_depth,
-	void (*stack_data_copy)(void*, const void*), void (*stack_data_free)(void*));
-bool stack_control_chain_generic_stack_exception_config(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack,
-	bool is_full_stack_cfg, bool is_null_stack_cfg, bool is_lack_heap_cfg, ...);
-bool stack_control_chain_generic_stack_free(CHAIN_GENERIC_STACK_TYPEDEF_PPTR stack);
-
-bool chain_generic_stack_push(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom, size_t sizeof_atom);
-bool chain_generic_stack_pop(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom);
-bool chain_generic_stack_get(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void* atom);
-bool chain_generic_stack_delete(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
-bool chain_generic_stack_multi_pop(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack, void** array, size_t depth);
-
-size_t stack_control_chain_generic_stack_get_info_get_current_depth(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
-size_t stack_control_chain_generic_stack_get_info_get_max_depth(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
-size_t stack_control_chain_generic_stack_get_info_get_stack_data_type_size(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
-size_t stack_control_chain_generic_stack_get_info_get_stack_top_data_length(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
-
-bool stack_control_chain_generic_stack_get_info_get_is_empty(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
-bool stack_control_chain_generic_stack_get_info_get_is_full(CHAIN_GENERIC_STACK_TYPEDEF_PTR stack);
-
-void stack_init_error_expection(void);
-
-void stack_default_full_stack_expection(void);
-void stack_default_null_stack_expection(void);
-void stack_default_lack_heap_expection(void);
+/*
+*********************************************************************************************************
+*                                       LOCAL GLOBAL VARIABLES
+*********************************************************************************************************
+*/
 
 SEQUENCE_STACK_CONTROL_TYPEDEF sequence_stack_ctrl =
 {
@@ -198,12 +180,33 @@ CHAIN_GENERIC_STACK_CONTROL_TYPEDEF chain_generic_stack_ctrl =
 	}
 };
 
+
 STACK_CONTROL_TYPEDEF stack_ctrl =
 {
 	&sequence_stack_ctrl,
 	&chain_stack_ctrl,
 	&chain_generic_stack_ctrl
 };
+
+
+/*
+*********************************************************************************************************
+*                                      LOCAL FUNCTION PROTOTYPES
+*********************************************************************************************************
+*/
+
+void stack_init_error_expection(void);
+
+void stack_default_full_stack_expection(void);
+void stack_default_null_stack_expection(void);
+void stack_default_lack_heap_expection(void);
+
+
+/*
+*********************************************************************************************************
+*                                            FUNCTIONS
+*********************************************************************************************************
+*/
 
 bool stack_control_sequence_stack_init(SEQUENCE_STACK_TYPEDEF_PTR* stack, size_t max_depth)
 {

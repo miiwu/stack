@@ -18,16 +18,19 @@ void main_vector(void)
 
 
 	printf("vector.init start\r\n");
-	vector_ctrl.configuration.init(&vector, sizeof(char) * 10, true, NULL, NULL);		// 初始化存储 10 长度的 char 类型的 vector_t
+	vector_ctrl.configuration.init(&vector, sizeof(char) * 10, true, NULL, NULL);		/* Initialize vector,char[10] type */
 
 
 	printf("\r\nvector.max_size start\r\n");
 	printf("max_size : %d \r\n", vector_ctrl.capacity.max_size(vector));
 
 
-	printf("\r\nvector.insert start\r\n");
-	vector_ctrl.modifiers.insert(vector, 0, 1, &string_start);
+	printf("\r\nvector.push back start\r\n");
+	vector_ctrl.modifiers.push_back(vector, string_start);
+	printf("at no.%d : \"%s\" \r\n", 0, (char *)vector_ctrl.element_access.at(vector, 0));
 
+
+	printf("\r\nvector.insert start\r\n");
 	if (NULL != string)
 	{
 		string_moudle[0] = '0';
@@ -48,6 +51,11 @@ void main_vector(void)
 
 	printf("\r\nvector.copy start\r\n");
 	vector_ctrl.modifiers.copy(&vector_copy, vector);
+
+
+	printf("\r\nvector.pop back start\r\n");
+	vector_ctrl.modifiers.pop_back(vector, string_moudle);
+	printf("\r\nvector.pop back : %s \r\n", string_moudle);
 
 
 	printf("\r\nvector.at start\r\n");
@@ -76,7 +84,7 @@ void main_vector(void)
 	}
 
 
-	printf("\r\nvector.destroy start");
+	printf("\r\nvector.destroy start\r\n");
 	vector_ctrl.configuration.destroy(&vector);
 
 

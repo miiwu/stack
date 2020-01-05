@@ -6,20 +6,17 @@
 
 #include "vector.h"
 
-
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
 *********************************************************************************************************
 */
 
-
 /*
 *********************************************************************************************************
 *                                           LOCAL CONSTANTS
 *********************************************************************************************************
 */
-
 
 /*
 *********************************************************************************************************
@@ -28,44 +25,53 @@
 */
 
 /**
- * @brief This struct is the at structure module
+ * @brief This struct is the vector structure module
  */
 
 struct vector_t {
 	struct {
+		/* @brief This variables will record the maximum number of elements.						*/
 		VECTOR_SIZE_TYPEDEF max_size;
 
+		/* @brief This variables will record the number of elements that
+				  the container has currently allocated space for.                                  */
 		VECTOR_SIZE_TYPEDEF capacity;
 
+		/* @brief This variables will record the size that each element will take up.				*/
 		VECTOR_SIZE_TYPEDEF mem_size;
 
+		/* @brief This variables will record if the element type equal string type.					*/
 		bool string_type;
 	}info;
 
+	/* @brief This variables will point to the address of the vector data memory block.				*/
 	void *data;
 
 	struct {
+		/* @brief This variables will point to the address of the vector element assign handler.	*/
 		void (*assign)(void *dst, void *src);
 
+		/* @brief This variables will point to the address of the vector element free handler.		*/
 		void (*free)(void *dst);
 	}element_handler;
 
 	struct {
-		void (*empty_vector)(void);
+		/* @brief This variables will point to the address of the vector empty callback handler.	*/
+		void (*empty)(void);
 
-		void (*full_vector)(void);
+		/* @brief This variables will point to the address of the vector full callback handler.	*/
+		void (*full)(void);
 
+		/* @brief This variables will point to the address of the heap null callback handler.		*/
 		void (*null_heap)(void);
-	}exception;
+	}callback;
 };
-
 
 /*
 *********************************************************************************************************
 *                                            LOCAL TABLES
 *********************************************************************************************************
 */
-
 
 /*
 *********************************************************************************************************
@@ -84,6 +90,10 @@ struct vector_control_t vector_ctrl = {
 		vector_control_configuration_init,
 
 		vector_control_configuration_destroy,
+
+		vector_control_configuration_element_handler,
+
+		vector_control_configuration_callback,
 	},
 	{
 		vector_control_iterators_front,
@@ -129,6 +139,11 @@ struct vector_control_t vector_ctrl = {
 	}
 };
 
+/*
+*********************************************************************************************************
+*                                      LOCAL FUNCTION PROTOTYPES
+*********************************************************************************************************
+*/
 
 /*
 *********************************************************************************************************
@@ -138,14 +153,14 @@ struct vector_control_t vector_ctrl = {
 
 /**
  * @brief This function will initialize the vector struct.
- * 
+ *
  * @param vector container struct
  * @param element_size the size of element
  * @param string_type if the element is the string type
  * @param assign_func pointer to the assign function of element
  * @param free_func pointer to the free function of element
- * 
- * @return 
+ *
+ * @return
  *  - 0    : succeed,initialize the at struct completely
  *  - else : fail
  */
@@ -178,17 +193,18 @@ void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
 
 	vector_alloced->data = data_pack_alloced;
 
-	printf("init.vector data block : %p \r\n", data_pack_alloced);
-
 	if (NULL != assign_func &&
 		NULL != free_func) {
 		vector_alloced->element_handler.assign = assign_func;
 		vector_alloced->element_handler.free = free_func;
 	}
 
-	// TODO : vector exceptions
+	// TODO : vector callbacks
 
 	*vector = vector_alloced;
+
+	printf("init.vector block : %p \r\n", vector_alloced);
+	printf("init.vector data block : %p \r\n", data_pack_alloced);
 }
 
 /**
@@ -218,13 +234,49 @@ void vector_control_configuration_destroy(VECTOR_TYPEDEF_PPTR vector)
 	(*vector)->element_handler.assign = NULL;
 	(*vector)->element_handler.free = NULL;
 
-	(*vector)->exception.empty_vector = NULL;
-	(*vector)->exception.full_vector = NULL;
-	(*vector)->exception.null_heap = NULL;
+	(*vector)->callback.empty = NULL;
+	(*vector)->callback.full = NULL;
+	(*vector)->callback.null_heap = NULL;
 
 	free(*vector);
 
 	*vector = NULL;
+}
+
+/**
+ * @brief This function will configure the vector element handler.
+ *
+ * @param vector container struct
+ * @param assign pointer to the address of element assign handler
+ * @param free pointer to the address of element free handler
+ *
+ * @return NONE
+ */
+
+void vector_control_configuration_element_handler(VECTOR_TYPEDEF_PTR vector,
+												  void (*assign)(void *dst, void *src), void (*free)(void *dst))
+{
+	vector->element_handler.assign = assign;
+	vector->element_handler.free = free;
+}
+
+/**
+ * @brief This function will
+ *
+ * @param vector container struct
+ * @param empty pointer to the address of element callback that container has no elements when delete element
+ * @param full pointer to the address of element callback that container has no elements when add element
+ * @param null_heap pointer to the address of element callback that malloc is valid
+ *
+ * @return NONE
+ */
+
+void vector_control_configuration_callback(VECTOR_TYPEDEF_PTR vector,
+										   void (*empty)(void), void (*full)(void), void (*null_heap)(void))
+{
+	vector->callback.empty = empty;
+	vector->callback.full = full;
+	vector->callback.null_heap = null_heap;
 }
 
 /**
@@ -311,14 +363,15 @@ void *vector_control_element_access_back(VECTOR_TYPEDEF_PTR vector)
  *
  * @param vector container struct
  *
- * @return NONE
+ * @return
+ *  if the container has no elements
  */
 
 extern inline bool vector_control_capacity_empty(VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
-	if (vector->info.max_size >= vector->info.capacity) {
+	if (vector->info.max_size <= vector->info.capacity) {
 		return true;
 	} else {
 		return false;
@@ -330,7 +383,8 @@ extern inline bool vector_control_capacity_empty(VECTOR_TYPEDEF_PTR vector)
  *
  * @param vector container struct
  *
- * @return NONE
+ * @return
+ *  the number of elements in the container
  */
 
 VECTOR_SIZE_TYPEDEF vector_control_capacity_size(VECTOR_TYPEDEF_PTR vector)
@@ -341,12 +395,13 @@ VECTOR_SIZE_TYPEDEF vector_control_capacity_size(VECTOR_TYPEDEF_PTR vector)
 }
 
 /**
- * @brief This function will returns the maximum number of elements the container 
+ * @brief This function will returns the maximum number of elements the container.
  * is able to hold due to system or library implementation limitations.
  *
  * @param vector container struct
  *
- * @return NONE
+ * @return
+ *  the maximum number of elements the container
  */
 
 VECTOR_SIZE_TYPEDEF vector_control_capacity_max_size(VECTOR_TYPEDEF_PTR vector)
@@ -361,7 +416,8 @@ VECTOR_SIZE_TYPEDEF vector_control_capacity_max_size(VECTOR_TYPEDEF_PTR vector)
  *
  * @param vector container struct
  *
- * @return NONE
+ * @return
+ *  the number of elements that the container has currently allocated space for
  */
 
 VECTOR_SIZE_TYPEDEF vector_control_capacity_capacity(VECTOR_TYPEDEF_PTR vector)
@@ -386,6 +442,8 @@ void vector_control_capacity_reserve(VECTOR_TYPEDEF_PPTR vector,
 {
 	assert(vector);
 	assert(0 <= size);
+
+	// TODO...
 }
 
 /**
@@ -399,6 +457,8 @@ void vector_control_capacity_reserve(VECTOR_TYPEDEF_PPTR vector,
 void vector_control_capacity_shrink_to_fit(VECTOR_TYPEDEF_PPTR vector)
 {
 	assert(vector);
+
+	// TODO...
 }
 
 /**
@@ -423,8 +483,7 @@ void vector_control_modifiers_set(VECTOR_TYPEDEF_PTR vector,
 
 	//printf("vector.set -> data block : %p | element : %p \r\n", vector->data, destination);
 
-	if (NULL != vector->element_handler.assign)
-	{
+	if (NULL != vector->element_handler.assign) {
 		vector->element_handler.assign(destination, source);
 	} else {
 		if (vector->info.string_type) {
@@ -461,8 +520,7 @@ void vector_control_modifiers_get(VECTOR_TYPEDEF_PTR vector,
 
 	//printf("vector.get -> data block : %p | element : %p \r\n", vector->data, source);
 
-	if (NULL != vector->element_handler.assign)
-	{
+	if (NULL != vector->element_handler.assign) {
 		vector->element_handler.assign(destination, source);
 	} else {
 		if (vector->info.string_type) {
@@ -505,8 +563,10 @@ void vector_control_modifiers_clear(VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
-	if (0 <= vector->info.capacity) {
-		vector->exception.empty_vector();
+	if (0 >= vector->info.capacity) {
+		if (NULL != vector->callback.empty) {
+			vector->callback.empty();
+		}
 
 		return;
 	}
@@ -528,7 +588,8 @@ void vector_control_modifiers_clear(VECTOR_TYPEDEF_PTR vector)
  * @param amount the amount of elements
  * @param source pointer to the source
  *
- * @return NONE
+ * @return
+ *  the address of element the asserted
  */
 
 void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
@@ -540,10 +601,10 @@ void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
 	assert(source);
 	assert(*source);
 
-	assert(vector->info.max_size >= vector->info.capacity + amount);
-
-	if (vector->info.max_size >= vector->info.capacity) {
-		vector->exception.full_vector();
+	if (vector->info.max_size <= vector->info.capacity) {
+		if (NULL != vector->callback.full) {
+			vector->callback.full();
+		}
 
 		return NULL;
 	}
@@ -610,8 +671,10 @@ void vector_control_modifiers_erase(VECTOR_TYPEDEF_PTR vector,
 	assert(0 <= position);
 	assert(destination);
 
-	if (0 <= vector->info.capacity) {
-		vector->exception.empty_vector();
+	if (0 >= vector->info.capacity) {
+		if (NULL != vector->callback.empty) {
+			vector->callback.empty();
+		}
 
 		return;
 	}
@@ -636,13 +699,15 @@ void vector_control_modifiers_push_back(VECTOR_TYPEDEF_PTR vector,
 	assert(vector);
 	assert(source);
 
-	if (vector->info.max_size >= vector->info.capacity) {
-		vector->exception.full_vector();
+	if (vector->info.max_size <= vector->info.capacity) {
+		if (NULL != vector->callback.full) {
+			vector->callback.full();
+		}
 
 		return;
 	}
 
-	vector_control_modifiers_set(vector, vector->info.capacity - 1, source);
+	vector_control_modifiers_set(vector, (vector->info.capacity) ? vector->info.capacity - 1 : 0, source);
 
 	vector->info.capacity++;
 }
@@ -663,14 +728,16 @@ void vector_control_modifiers_pop_back(VECTOR_TYPEDEF_PTR vector,
 	assert(destination);
 
 	if (vector->info.capacity <= 0) {
-		vector->exception.empty_vector();
+		if (NULL != vector->callback.empty) {
+			vector->callback.empty();
+		}
 
 		return;
 	}
 
-	vector_control_modifiers_get(vector, vector->info.capacity - 1, destination);
+	vector_control_modifiers_get(vector, (vector->info.capacity) ? vector->info.capacity - 1 : 0, destination);
 
-	vector_control_modifiers_del(vector, vector->info.capacity - 1);
+	vector_control_modifiers_del(vector, (vector->info.capacity) ? vector->info.capacity - 1 : 0);
 
 	vector->info.capacity;
 }
@@ -729,7 +796,7 @@ void vector_control_modifiers_copy(VECTOR_TYPEDEF_PPTR destination,
 	} else {
 		(*destination)->info = source->info;
 		(*destination)->element_handler = source->element_handler;
-		(*destination)->exception = source->exception;
+		(*destination)->callback = source->callback;
 	}
 
 	for (VECTOR_SIZE_TYPEDEF element_amt = 0; element_amt < source->info.capacity; element_amt++) {
