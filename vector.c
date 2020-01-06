@@ -24,6 +24,10 @@
 *********************************************************************************************************
 */
 
+/* Configure    vector type.                                                                            */
+typedef VECTOR_CFG_ALLOCATOR_TYPE	VECTOR_ALLOCATOR_TYPEDEF;
+typedef VECTOR_CFG_ALLOCATOR_TYPE	*VECTOR_ALLOCATOR_TYPEDEF_PTR;
+
 /**
  * @brief This struct is the vector structure module
  */
@@ -43,6 +47,9 @@ struct vector_t {
 		/* @brief This variables will record if the element type equal string type.					*/
 		bool string_type;
 	}info;
+
+	/* @brief This variables will point to the allocator.											*/
+	void *allocator;
 
 	/* @brief This variables will point to the address of the vector data memory block.				*/
 	void *data;
@@ -106,6 +113,8 @@ struct vector_control_t vector_ctrl = {
 		vector_control_element_access_front,
 
 		vector_control_element_access_back,
+
+		vector_control_element_access_data,
 	},
 	{
 		vector_control_capacity_empty,
@@ -339,7 +348,7 @@ void *vector_control_element_access_at(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void *vector_control_element_access_front(VECTOR_TYPEDEF_PTR vector)
+extern inline void *vector_control_element_access_front(VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
@@ -354,11 +363,26 @@ void *vector_control_element_access_front(VECTOR_TYPEDEF_PTR vector)
  * @return NONE
  */
 
-void *vector_control_element_access_back(VECTOR_TYPEDEF_PTR vector)
+extern inline void *vector_control_element_access_back(VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
 	return vector_control_element_access_at(vector, vector->info.capacity - 1);
+}
+
+/**
+ * @brief This function will returns pointer to the underlying array serving as element storage.
+ *
+ * @param vector container struct
+ *
+ * @return pointer to the underlying array serving as element storage
+ */
+
+extern inline void *vector_control_element_access_data(VECTOR_TYPEDEF_PTR vector)
+{
+	assert(vector);
+
+	return vector->data;
 }
 
 /**
@@ -390,7 +414,7 @@ extern inline bool vector_control_capacity_empty(VECTOR_TYPEDEF_PTR vector)
  *  the number of elements in the container
  */
 
-VECTOR_SIZE_TYPEDEF vector_control_capacity_size(VECTOR_TYPEDEF_PTR vector)
+extern inline VECTOR_SIZE_TYPEDEF vector_control_capacity_size(VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
@@ -407,7 +431,7 @@ VECTOR_SIZE_TYPEDEF vector_control_capacity_size(VECTOR_TYPEDEF_PTR vector)
  *  the maximum number of elements the container
  */
 
-VECTOR_SIZE_TYPEDEF vector_control_capacity_max_size(VECTOR_TYPEDEF_PTR vector)
+extern inline VECTOR_SIZE_TYPEDEF vector_control_capacity_max_size(VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
@@ -423,7 +447,7 @@ VECTOR_SIZE_TYPEDEF vector_control_capacity_max_size(VECTOR_TYPEDEF_PTR vector)
  *  the number of elements that the container has currently allocated space for
  */
 
-VECTOR_SIZE_TYPEDEF vector_control_capacity_capacity(VECTOR_TYPEDEF_PTR vector)
+extern inline VECTOR_SIZE_TYPEDEF vector_control_capacity_capacity(VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
@@ -445,7 +469,7 @@ void vector_control_capacity_reserve(VECTOR_TYPEDEF_PPTR vector,
 {
 	assert(vector);
 	assert(0 <= size);
-
+	
 	// TODO...
 }
 

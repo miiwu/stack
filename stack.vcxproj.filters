@@ -30,6 +30,9 @@
     <ClInclude Include="main_cfg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="allocator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stack.c">
@@ -57,6 +60,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="main_stack.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="allocator.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

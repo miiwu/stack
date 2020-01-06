@@ -2,7 +2,7 @@
 *********************************************************************************************************
 *                                               MODULE
 *
-* Note(s) : (1) This VECTOR definition header file is protected from multiple pre-processor inclusion
+* Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
 *               through use of the AT definition module present pre-processor macro definition.
 *********************************************************************************************************
 */
@@ -23,25 +23,30 @@
 #include "assert.h"
 #include "malloc.h"
 
+#include "allocator.h"
+
 /*
 *********************************************************************************************************
 *									    VECTOR CONROL CONFIG DEFINES
 *********************************************************************************************************
 */
 
-/* Configure    if enable integrated structure.                                                         */
-#define VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN			    1u
-
 /* Configure    the default max size of vector.                                                         */
 #define VECTOR_CFG_DEFAULT_MAX_SIZE								100u
 
 /* Configure    if enable integrated structure.                                                         */
-#define VECTOR_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE		102400u
+#define VECTOR_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE		1024u
 
 /* Configure    the type of size.                                                                       */
 #define VECTOR_CFG_SIZE_TYPE                                    size_t
 
+/* Configure    the type of allocator.                                                                  */
+#define VECTOR_CFG_ALLOCATOR_TYPE                               ALLOCATOR_TYPEDEF
+
 #pragma warning( disable : 4996)
+
+/* Configure    if enable integrated structure.                                                         */
+#define VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN			    1u
 
 /*
 *********************************************************************************************************
@@ -109,6 +114,10 @@ struct vector_control_t {
 
 		/* @brief This function will returns reference to the last element in the container.            */
 		void *(*back)(VECTOR_TYPEDEF_PTR vector);
+
+        /* @brief This function will returns pointer to the underlying array 
+                  serving as element storage.                                                           */
+        void *(*data)(VECTOR_TYPEDEF_PTR vector);
 	}element_access;
 
 	struct {
@@ -281,6 +290,16 @@ void *vector_control_element_access_front(VECTOR_TYPEDEF_PTR vector);
  */
 
 void *vector_control_element_access_back(VECTOR_TYPEDEF_PTR vector);
+
+/**
+ * @brief This function will returns pointer to the underlying array serving as element storage.
+ *
+ * @param vector container struct
+ *
+ * @return pointer to the underlying array serving as element storage
+ */
+
+void *vector_control_element_access_data(VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will checks if the container has no elements.

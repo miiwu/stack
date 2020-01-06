@@ -21,6 +21,10 @@ void main_vector(void)
 	vector_ctrl.configuration.init(&vector, sizeof(char) * 10, true, NULL, NULL);		/* Initialize vector,char[10] type */
 
 
+	printf("\r\nvector.data start\r\n");
+	printf("data : %p \r\n", vector_ctrl.element_access.data(vector));
+
+
 	printf("\r\nvector.max_size start\r\n");
 	printf("max_size : %d \r\n", vector_ctrl.capacity.max_size(vector));
 
@@ -89,5 +93,7 @@ void main_vector(void)
 
 
 	printf("\r\n------------------------+ vector demo end +------------------------\n");
+
+
 	return;
 }
