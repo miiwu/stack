@@ -25,13 +25,10 @@
 */
 
 /* Configure    if enable integrated structure.                                                         */
-#define STACK_CFG_DEFAULT_CONTAINER_TYPE			            VECTOR
-
-/* Configure    the type of size.                                                                       */
-#define STACK_CFG_SIZE_TYPE                                    CONTAINER_GLOBAL_CFG_SIZE_TYPE
+#define STACK_CFG_DEFAULT_ADAPT_CONTAINER_TYPE			        VECTOR
 
 /* Configure    the type of allocator.                                                                  */
-#define STACK_CFG_ALLOCATOR_TYPE                               ALLOCATOR_TYPEDEF
+#define STACK_CFG_ALLOCATOR_TYPE                                ALLOCATOR_TYPEDEF
 
 /* Configure    if enable integrated structure.                                                         */
 #define STACK_CFG_INTERGRATED_STRUCTURE_MODE_EN			        1u
@@ -51,38 +48,38 @@ typedef struct stack_t **STACK_TYPEDEF_PPTR;
 
 struct stack_control_t {
 	struct {
-        /* @brief This function will initialize the stack struct and the specified container. */
+		/* @brief This function will initialize the stack struct and the specified container. */
 		void (*init)(STACK_TYPEDEF_PPTR stack,
 					 enum container_type type,
 					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
-        /* @brief This function will initialize the stack struct and attach to the specified container. */
+		/* @brief This function will initialize the stack struct and attach to the specified container. */
 		void (*attach)(STACK_TYPEDEF_PPTR stack,
 					   void **container, void *func_addr_table);
 
-        /* @brief This function will destroy the stack struct. */
+		/* @brief This function will destroy the stack struct. */
 		void (*destroy)(STACK_TYPEDEF_PPTR stack);
 	}configuration;
 
 	struct {
-        /* @brief This function will return reference to the top element in the stack. */
+		/* @brief This function will return reference to the top element in the stack. */
 		void *(*top)(STACK_TYPEDEF_PTR stack);
 	}element_access;
 
 	struct {
-        /* @brief This function will check if the underlying container has no elements. */
+		/* @brief This function will check if the underlying container has no elements. */
 		bool(*empty)(STACK_TYPEDEF_PTR stack);
 
-        /* @brief This function will return the number of elements in the underlying container. */
-		size_t(*capacity)(STACK_TYPEDEF_PTR stack);
-
-        /* @brief This function will returns the number of elements in the container. */
+		/* @brief This function will returns the number of elements in the container. */
 		size_t(*size)(STACK_TYPEDEF_PTR stack);
+
+		/* @brief This function will return the number of elements in the underlying container. */
+		size_t(*capacity)(STACK_TYPEDEF_PTR stack);
 	}capacity;
 
 	struct {
-        /* @brief This function will push the given element source to the top of the stack. */
+		/* @brief This function will push the given element source to the top of the stack. */
 		void (*push)(STACK_TYPEDEF_PTR stack,
 					 void *source);
 
@@ -90,14 +87,14 @@ struct stack_control_t {
 		void (*emplace)(STACK_TYPEDEF_PTR stack,
 						void *destination);
 
-        /* @brief This function will remove the top element from the stack. */
+		/* @brief This function will remove the top element from the stack. */
 		void *(*pop)(STACK_TYPEDEF_PTR stack);
 
-        /* @brief This function will exchange the contents of the container adaptor with those of other. */
+		/* @brief This function will exchange the contents of the container adaptor with those of other. */
 		void (*swap)(STACK_TYPEDEF_PPTR stack,
 					 STACK_TYPEDEF_PPTR other);
 
-        /* @brief This function will erase the specified elements from the container. */
+		/* @brief This function will erase the specified elements from the container. */
 		void (*copy)(STACK_TYPEDEF_PPTR destination,
 					 STACK_TYPEDEF_PTR source);
 	}modifiers;

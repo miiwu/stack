@@ -86,15 +86,15 @@ struct vector_control_t {
 		void *(*at)(VECTOR_TYPEDEF_PTR vector,
 					CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
+		/* @brief This function will returns pointer to the underlying array
+				  serving as element storage.                                                           */
+		void *(*data)(VECTOR_TYPEDEF_PTR vector);
+
 		/* @brief This function will returns a reference to the first element in the container.         */
 		void *(*front)(VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns reference to the last element in the container.            */
 		void *(*back)(VECTOR_TYPEDEF_PTR vector);
-
-        /* @brief This function will returns pointer to the underlying array 
-                  serving as element storage.                                                           */
-        void *(*data)(VECTOR_TYPEDEF_PTR vector);
 	}element_access;
 
 	struct {
@@ -449,7 +449,6 @@ void vector_control_modifiers_swap(VECTOR_TYPEDEF_PPTR vector,
 *                                   VECTOR EXTERN GLOBAL VARIABLES
 *********************************************************************************************************
 */
-
 
 #if (VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 

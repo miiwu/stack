@@ -5,8 +5,6 @@
 */
 
 #include "vector.h"
-#include "allocator.h"
-
 
 /*
 *********************************************************************************************************
@@ -141,11 +139,11 @@ struct vector_control_t vector_ctrl = {
 	{
 		vector_control_element_access_at,
 
+		vector_control_element_access_data,
+
 		vector_control_element_access_front,
 
 		vector_control_element_access_back,
-
-		vector_control_element_access_data,
 	},
 	{
 		vector_control_capacity_empty,
@@ -186,7 +184,6 @@ struct vector_control_t vector_ctrl = {
 *                                      LOCAL FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
-
 
 /**
  * @brief This function will set elements at the specified location in the container.

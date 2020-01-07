@@ -6,8 +6,6 @@
 
 #include "stack.h"
 
-#include "vector.h"
-
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
@@ -73,9 +71,9 @@ struct stack_control_t stack_ctrl =
 
 	stack_control_capacity_empty,
 
-	stack_control_capacity_capacity,
-
 	stack_control_capacity_size,
+
+	stack_control_capacity_capacity,
 
 	stack_control_modifiers_push,
 
@@ -115,8 +113,14 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(stack);
-	assert(type);
 	assert(element_size);
+
+	enum container_type
+		adapt_container_type = STACK_CFG_DEFAULT_ADAPT_CONTAINER_TYPE;
+
+	if (type) {
+		adapt_container_type = type;
+	}
 
 	STACK_ALLOCATOR_TYPEDEF_PTR
 		allocator = NULL;																	/* Variables pointer to	the allocator struct */
@@ -138,8 +142,9 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 																								specified container 		*/
 
 	int
-		*func_addr_table = container_control_convert_type_to_func_addr_table(type);			/* Variables pointer to	the function address table of
-																								specified container 		*/
+		*func_addr_table = container_control_convert_type_to_func_addr_table(adapt_container_type);
+																							/* Variables pointer to	the function address table of
+																								specified container type		*/
 
 	container_control_configration_init = (void (*)(void **, CONTAINER_GLOBAL_CFG_SIZE_TYPE, bool,
 													void (*)(void *, void *),
@@ -292,7 +297,7 @@ void *stack_control_element_access_top(STACK_TYPEDEF_PTR stack)
 																								specified container function address table to the pointer */
 
 	return container_control_element_access_at(stack->container,
-											   container_control_capacity_capacity(stack->container) - 1);											
+											   container_control_capacity_capacity(stack->container) - 1);
 																							/* Get the top element of the container */
 }
 

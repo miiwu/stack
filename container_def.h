@@ -40,7 +40,7 @@
 *********************************************************************************************************
 */
 
-/* Configure the enum type of container.																*/
+/* Configure the enum category of container.															*/
 enum container_category {
 	SEQUENCE_CONTAINERS = 0x10,
 
@@ -68,7 +68,7 @@ enum container_type {
 	QUEUE,
 };
 
-/* Configure the enum function type of container.																*/
+/* Configure the enum function type of container.														*/
 enum container_function_type {
 	INITIALIZE,
 	DESTROY,
