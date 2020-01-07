@@ -31,8 +31,8 @@
 typedef STACK_CFG_ALLOCATOR_TYPE *STACK_ALLOCATOR_TYPEDEF_PTR;
 
 struct stack_t {
-	/* @brief RESERVED This variables will record the identity code of container.						*/
-	int	id_code;
+	/* @brief RESERVED This variables will record the identity code of container type.					*/
+	enum container_type	container_type_id;
 
 	/* @brief This variables will record if the stack attach to other container instead of initialize.	*/
 	bool attach;
@@ -101,8 +101,12 @@ struct stack_control_t stack_ctrl =
 /**
  * @brief This function will initialize the stack struct and the specified container.
  *
- * @param stack the pointer to container adapter struct
- * @param container the pointer to container
+ * @param stack the pointer to container adapter struct pointer
+ * @param type the type of the container
+ * @param element_size the pointer to container
+ * @param string_type the pointer to container
+ * @param assign the pointer to the assign element handler of the specified data type
+ * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
@@ -159,7 +163,7 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 
 	container_control_configration_init(&container, element_size, string_type, assign, free);/* Initialize the specified container struct */
 
-	stack_alloced->id_code = STACK;															/* Assign stack structure					*/
+	stack_alloced->container_type_id = STACK;												/* Assign stack structure					*/
 	stack_alloced->attach = false;
 	stack_alloced->container = container;
 	stack_alloced->container_func_addr_table = func_addr_table;
@@ -173,8 +177,9 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 /**
  * @brief This function will initialize the stack struct and attach to the specified container.
  *
- * @param stack the pointer to container adapter struct
- * @param container the pointer to container
+ * @param stack the pointer to container adapter struct pointer
+ * @param container the pointer to container pointer
+ * @param func_addr_table the pointer to the function address table of the specified container
  *
  * @return NONE
  */
@@ -204,7 +209,7 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void **containe
 		return;
 	}
 
-	stack_alloced->id_code = STACK;															/* Assign stack structure					*/
+	stack_alloced->container_type_id = STACK;												/* Assign stack structure					*/
 	stack_alloced->attach = true;
 	stack_alloced->container = container;
 	stack_alloced->container_func_addr_table = func_addr_table;
@@ -218,7 +223,7 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void **containe
 /**
  * @brief This function will destroy the stack struct.
  *
- * @param stack the pointer to container adapter struct
+ * @param stack the pointer to container adapter struct pointer
  *
  * @return NONE
  */
@@ -250,7 +255,7 @@ void stack_control_configration_destroy(STACK_TYPEDEF_PPTR stack)
 
 	allocator_ctrl.deallocate(allocator, (*stack), 1);										/* Deallocate #2 */
 
-	(*stack)->id_code = 0u;
+	(*stack)->container_type_id = 0u;
 	(*stack)->attach = false;
 	(*stack)->container = NULL;
 	(*stack)->container_func_addr_table = NULL;

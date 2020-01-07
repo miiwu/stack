@@ -18,6 +18,26 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Container\allocator.c" />
+    <ClCompile Include="Container\queue.c" />
+    <ClCompile Include="Container\stack.c" />
+    <ClCompile Include="Container\vector.c" />
+    <ClCompile Include="Main\main.c" />
+    <ClCompile Include="Main\main_list.c" />
+    <ClCompile Include="Main\main_queue.c" />
+    <ClCompile Include="Main\main_stack.c" />
+    <ClCompile Include="Main\main_vector.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Container\allocator.h" />
+    <ClInclude Include="Container\container.h" />
+    <ClInclude Include="Container\container_def.h" />
+    <ClInclude Include="Container\queue.h" />
+    <ClInclude Include="Container\stack.h" />
+    <ClInclude Include="Container\vector.h" />
+    <ClInclude Include="Main\main_cfg.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{BC54EBA3-8D5B-4237-8EE2-D6718D71D976}</ProjectGuid>
@@ -71,6 +91,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Container;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -137,28 +158,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="allocator.h" />
-    <ClInclude Include="container.h" />
-    <ClInclude Include="container_def.h" />
-    <ClInclude Include="main_cfg.h" />
-    <ClInclude Include="mem_test.h" />
-    <ClInclude Include="queue.h" />
-    <ClInclude Include="stack.h" />
-    <ClInclude Include="vector.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="allocator.c" />
-    <ClCompile Include="main.c" />
-    <ClCompile Include="main_list.c" />
-    <ClCompile Include="main_queue.c" />
-    <ClCompile Include="main_stack.c" />
-    <ClCompile Include="main_vector.c" />
-    <ClCompile Include="mem_test.c" />
-    <ClCompile Include="queue.c" />
-    <ClCompile Include="stack.c" />
-    <ClCompile Include="vector.c" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -68,8 +68,8 @@ struct vector_control_t {
 								void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will configure the vector exception callback.                           */
-		void (*callback)(VECTOR_TYPEDEF_PTR vector,
-						 void (*empty)(void), void (*full)(void), void (*null_heap)(void));
+		void (*exception)(VECTOR_TYPEDEF_PTR vector,
+						 void (*empty)(void), void (*full)(void));
 	}configuration;
 
 	struct {
@@ -166,11 +166,11 @@ struct vector_control_t {
 /**
  * @brief This function will initialize the vector struct.
  *
- * @param vector container struct
- * @param element_size the size of element
- * @param string_type if the element is the string type
- * @param assign_func pointer to the assign function of element
- * @param free_func pointer to the free function of element
+ * @param vector the pointer to the container struct pointer
+ * @param element_size the pointer to container
+ * @param string_type the pointer to container
+ * @param assign the pointer to the assign element handler of the specified data type
+ * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
@@ -182,7 +182,7 @@ void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
 /**
  * @brief This function will destroy the vector struct and free the space.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return NONE
  */
@@ -192,9 +192,9 @@ void vector_control_configuration_destroy(VECTOR_TYPEDEF_PPTR vector);
 /**
  * @brief This function will configure the vector element handler.
  *
- * @param vector container struct
- * @param assign pointer to the address of element assign handler
- * @param free pointer to the address of element free handler
+ * @param vector the pointer to the container struct
+ * @param assign the pointer to the assign element handler of the specified data type
+ * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
@@ -205,21 +205,23 @@ void vector_control_configuration_element_handler(VECTOR_TYPEDEF_PTR vector,
 /**
  * @brief This function will configure the vector exception callback.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
+ * @param empty the pointer to the handler that container has no elements when the container temp to insert
+ * @param full the pointer to the handler that container has no elements when the container temp to erase
  *
  * @return NONE
  */
 
-void vector_control_configuration_callback(VECTOR_TYPEDEF_PTR vector,
-										   void (*empty)(void), void (*full)(void), void (*null_heap)(void));
+void vector_control_configuration_exception(VECTOR_TYPEDEF_PTR vector,
+										   void (*empty)(void), void (*full)(void));
 
 /**
  * @brief This function will
  *
- * @param vector container struct
- * @param empty pointer to the address of element callback that container has no elements when delete element
- * @param full pointer to the address of element callback that container has no elements when add element
- * @param null_heap pointer to the address of element callback that malloc is valid
+ * @param vector the pointer to the container struct
+ * @param empty pointer to the address of element exception that container has no elements when delete element
+ * @param full pointer to the address of element exception that container has no elements when add element
+ * @param null_heap pointer to the address of element exception that malloc is valid
  *
  * @return NONE
  */
@@ -229,7 +231,7 @@ void vector_control_iterators_front(VECTOR_TYPEDEF_PTR vector);
 /**
  * @brief This function will
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return NONE
  */
@@ -239,7 +241,7 @@ void vector_control_iterators_back(VECTOR_TYPEDEF_PTR vector);
 /**
  * @brief This function will returns a reference to the element at specified location position, with bounds checking.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  * @param position the position of element,it would be equal or greater than zero
  *
  * @return NONE
@@ -251,7 +253,7 @@ void *vector_control_element_access_at(VECTOR_TYPEDEF_PTR vector,
 /**
  * @brief This function will returns a reference to the first element in the container.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return NONE
  */
@@ -261,7 +263,7 @@ void *vector_control_element_access_front(VECTOR_TYPEDEF_PTR vector);
 /**
  * @brief This function will returns reference to the last element in the container.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return NONE
  */
@@ -271,7 +273,7 @@ void *vector_control_element_access_back(VECTOR_TYPEDEF_PTR vector);
 /**
  * @brief This function will returns pointer to the underlying array serving as element storage.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return pointer to the underlying array serving as element storage
  */
@@ -281,7 +283,7 @@ void *vector_control_element_access_data(VECTOR_TYPEDEF_PTR vector);
 /**
  * @brief This function will checks if the container has no elements.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return
  *  if the container has no elements
@@ -292,7 +294,7 @@ bool vector_control_capacity_empty(VECTOR_TYPEDEF_PTR vector);
 /**
  * @brief This function will returns the number of elements in the container.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return
  *  the number of elements in the container
@@ -304,7 +306,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_size(VECTOR_TYPEDEF_PTR v
  * @brief This function will returns the maximum number of elements the container.
  * is able to hold due to system or library implementation limitations.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return
  *  the maximum number of elements the container
@@ -315,7 +317,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_max_size(VECTOR_TYPEDEF_P
 /**
  * @brief This function will returns the number of elements that the container has currently allocated space for.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return
  *  the number of elements that the container has currently allocated space for
@@ -326,7 +328,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_capacity(VECTOR_TYPEDEF_P
 /**
  * @brief This function will increase the capacity of the vector to a size that's greater or equal to new_cap.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  * @param position the position of element,it would be equal or greater than zero
  * @param size the size of elements
  *
@@ -339,7 +341,7 @@ void vector_control_capacity_reserve(VECTOR_TYPEDEF_PPTR vector,
 /**
  * @brief This function will requests the removal of unused capacity.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return NONE
  */
@@ -349,7 +351,7 @@ void vector_control_capacity_shrink_to_fit(VECTOR_TYPEDEF_PPTR vector);
 /**
  * @brief This function will erases all elements from the container.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  *
  * @return NONE
  */
@@ -359,7 +361,7 @@ void vector_control_modifiers_clear(VECTOR_TYPEDEF_PTR vector);
 /**
  * @brief This function will inserts elements at the specified location in the container.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  * @param position the position of element,it would be equal or greater than zero
  * @param amount the amount of elements
  * @param source pointer to the source
@@ -374,7 +376,7 @@ void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
 /**
  * @brief This function will erases the specified elements from the container.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  * @param position the position of element,it would be equal or greater than zero
  * @param destination pointer to the destination
  *
@@ -387,7 +389,7 @@ void vector_control_modifiers_erase(VECTOR_TYPEDEF_PTR vector,
 /**
  * @brief This function will appends the given element source to the end of the container.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  * @param source pointer to source
  *
  * @return NONE
@@ -399,7 +401,7 @@ void vector_control_modifiers_push_back(VECTOR_TYPEDEF_PTR vector,
 /**
  * @brief This function will removes the last element of the container.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  * @param destination pointer to destination
  *
  * @return NONE
@@ -411,7 +413,7 @@ void vector_control_modifiers_pop_back(VECTOR_TYPEDEF_PTR vector,
 /**
  * @brief This function will resizes the container to contain count elements.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  * @param count the count of elements
  *
  * @return NONE
@@ -435,7 +437,7 @@ void vector_control_modifiers_copy(VECTOR_TYPEDEF_PPTR destination,
 /**
  * @brief This function will exchanges the contents of the container with those of other.
  *
- * @param vector container struct
+ * @param vector the pointer to the container struct
  * @param other container struct
  *
  * @return NONE

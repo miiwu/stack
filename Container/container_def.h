@@ -72,7 +72,7 @@ enum container_type {
 enum container_function_type {
 	INITIALIZE,
 	DESTROY,
-	
+
 	AT,
 
 	EMPTY,
@@ -85,6 +85,56 @@ enum container_function_type {
 	SWAP
 };
 
+/* Configure the enum universal function type of container.												*/
+struct container_control_t {
+	struct {
+		/* @brief This function will initialize the container struct and the specified container.		*/
+		void (*init)(void **container,
+					 enum container_type type,
+					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
+					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
+
+		/* @brief This function will destroy the container struct. */
+		void (*destroy)(void **container);
+	}configuration;
+
+	struct {
+		/* @brief This function will returns a reference to the element 
+					at specified location position, with bounds checking.								*/
+		void *(*at)(void *container, CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+	}element_access;
+
+	struct {
+		/* @brief This function will check if the underlying container has no elements.					*/
+		bool(*empty)(void *container);
+
+		/* @brief This function will returns the number of elements in the container.					*/
+		size_t(*size)(void *container);
+
+		/* @brief This function will returns the maximum number of elements 
+					the container is able to hold due to system or library implementation limitations.	*/
+		size_t(*max_size)(void *container);
+	}capacity;
+
+	struct {
+		/* @brief This function will inserts elements at the specified location in the container.		*/
+		void (*insert)(void *container,
+					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source);
+
+		/* @brief This function will erases the specified elements from the container.                  */
+		void *(*earse)(void *container,
+					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source);
+
+		/* @brief This function will exchange the contents of the container adaptor with those of other. */
+		void (*swap)(void **container,
+					 void **other);
+
+		/* @brief This function will erase the specified elements from the container. */
+		void (*copy)(void **destination,
+					 void *source);
+	}modifiers;
+};
+
 /*
 *********************************************************************************************************
 *								        FUNCTION PROTOTYPES
@@ -92,9 +142,9 @@ enum container_function_type {
 */
 
 /**
- * @brief This function will initialize the stack struct and attach to the specified container.
+ * @brief This function will initialize the container struct and attach to the specified container.
  *
- * @param stack container adapter struct
+ * @param container container adapter struct
  * @param container the pointer to container
  *
  * @return NONE
@@ -109,7 +159,7 @@ inline int *container_control_convert_type_to_func_addr_table(enum container_typ
 */
 
 /**
- * @brief This array will contain all the vector functions address.
+ * @brief This array will contain all the universal vector functions address.
  */
 
 extern int vector_function_address_tables[];
@@ -121,9 +171,9 @@ extern int vector_function_address_tables[];
 */
 
 /**
- * @brief This function will initialize the stack struct and attach to the specified container.
+ * @brief This function will initialize the container struct and attach to the specified container.
  *
- * @param stack container adapter struct
+ * @param container container adapter struct
  * @param container the pointer to container
  *
  * @return NONE

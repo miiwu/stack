@@ -1,9 +1,7 @@
 #ifndef __MAIN_CFG_H
 #define __MAIN_CFG_H
 
-#include "stack.h"
-#include "queue.h"
-#include "vector.h"
+#include "container.h"
 
 #define MAIN_STACK_EN		1u
 

@@ -109,8 +109,12 @@ struct stack_control_t {
 /**
  * @brief This function will initialize the stack struct and the specified container.
  *
- * @param stack the pointer to container adapter struct
- * @param container the pointer to container
+ * @param stack the pointer to container adapter struct pointer
+ * @param type the type of the container
+ * @param element_size the pointer to container
+ * @param string_type the pointer to container
+ * @param assign the pointer to the assign element handler of the specified data type
+ * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
@@ -123,8 +127,9 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 /**
  * @brief This function will initialize the stack struct and attach to the specified container.
  *
- * @param stack the pointer to container adapter struct
- * @param container the pointer to container
+ * @param stack the pointer to container adapter struct pointer
+ * @param container the pointer to container pointer
+ * @param func_addr_table the pointer to the function address table of the specified container
  *
  * @return NONE
  */
@@ -132,9 +137,9 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void **container, void *func_addr_table);
 
 /**
- * @brief This function will destroy the stack struct.
+ * @brief This function will destroy the stack struct
  *
- * @param stack the pointer to container adapter struct
+ * @param stack the pointer to container adapter struct pointer
  *
  * @return NONE
  */
