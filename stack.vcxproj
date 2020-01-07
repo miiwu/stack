@@ -139,6 +139,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="allocator.h" />
+    <ClInclude Include="container.h" />
+    <ClInclude Include="container_def.h" />
     <ClInclude Include="main_cfg.h" />
     <ClInclude Include="mem_test.h" />
     <ClInclude Include="queue.h" />

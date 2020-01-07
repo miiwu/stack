@@ -2,7 +2,7 @@
 *********************************************************************************************************
 *                                               MODULE
 *
-* Note(s) : (1) This File definition header file is protected from multiple pre-processor inclusion
+* Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
 *               through use of the AT definition module present pre-processor macro definition.
 *********************************************************************************************************
 */

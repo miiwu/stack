@@ -12,7 +12,7 @@ void main_vector(void)
 		**string = calloc(1,sizeof(char**)),
 		buffer[100] = { 0 },
 		*string_start = "####",
-		string_moudle[] = "0####";
+		string_moudle[] = "vector";
 
 	printf("\r\n------------------------+ vector demo start +------------------------\n");
 
@@ -37,8 +37,6 @@ void main_vector(void)
 	printf("\r\nvector.insert start\r\n");
 	if (NULL != string)
 	{
-		string_moudle[0] = '0';
-
 		for (size_t i = 0; i < 10; i++) {
 			*(string + i) = calloc(100, sizeof(char));
 
@@ -59,7 +57,7 @@ void main_vector(void)
 
 	printf("\r\nvector.pop back start\r\n");
 	vector_ctrl.modifiers.pop_back(vector, string_moudle);
-	printf("\r\nvector.pop back : %s \r\n", string_moudle);
+	printf("vector.pop back : %s \r\n", string_moudle);
 
 
 	printf("\r\nvector.at start\r\n");
@@ -82,6 +80,8 @@ void main_vector(void)
 
 	printf("\r\nvector.erase start\r\n");
 	for (size_t cnt = 0; cnt < 15; cnt++) {
+		memset(buffer, '\0', sizeof(buffer));
+
 		vector_ctrl.modifiers.erase(vector_copy, cnt, buffer);
 
 		printf("erase no.%d : \"%s\" \r\n", cnt, buffer);
@@ -90,10 +90,10 @@ void main_vector(void)
 
 	printf("\r\nvector.destroy start\r\n");
 	vector_ctrl.configuration.destroy(&vector);
+	vector_ctrl.configuration.destroy(&vector_copy);
 
 
 	printf("\r\n------------------------+ vector demo end +------------------------\n");
-
 
 	return;
 }

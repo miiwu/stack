@@ -33,6 +33,12 @@
     <ClInclude Include="allocator.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="container.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="container_def.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stack.c">

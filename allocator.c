@@ -112,10 +112,14 @@ void allocator_control_configration_init(ALLOCATOR_TYPEDEF_PPTR allocator,
 	assert(allocator);
 
 	struct allocator_t
-		*allocator_alloced = (struct allocator_t *)calloc(1, sizeof(struct allocator_t));			/* Malloc	vector malloc #1 */
+		*allocator_alloced = (struct allocator_t *)calloc(1, sizeof(struct allocator_t));			/* Malloc #1 */
 
-    (*allocator)->info.capacity = 0u;			                                                    /* Assign the allocator struct */
-    (*allocator)->exception.lack_of_memory = lack_of_memory;
+    if (NULL == allocator_alloced) {
+        return;
+    }
+
+    allocator_alloced->info.capacity = 0u;			                                                    /* Assign the allocator struct */
+    allocator_alloced->exception.lack_of_memory = lack_of_memory;
 
     (*allocator) = allocator_alloced;
 }
@@ -136,7 +140,7 @@ void allocator_control_configration_destroy(ALLOCATOR_TYPEDEF_PPTR allocator)
         printf("destroy.allocator capacity : %d \r\n", (*allocator)->info.capacity);
     }
 
-    free((*allocator));																	            /* Free     vector malloc #1 */
+    free((*allocator));																	            /* Free #1 */
 }
 
 /**
@@ -173,7 +177,7 @@ void *allocator_control_allocate(ALLOCATOR_TYPEDEF_PTR allocator,
 	assert(allocator);
 
 	void
-		**block_alloced = calloc(count, size);			                        /* Malloc	#2 : allocates the storage to block_alloced */
+		**block_alloced = calloc(count, size);			                        /* Malloc #2 : allocates the storage to block_alloced */
 
     if (NULL == block_alloced) {
         allocator->exception.lack_of_memory();
@@ -204,7 +208,7 @@ void allocator_control_deallocate(ALLOCATOR_TYPEDEF_PTR allocator,
 
     allocator->info.capacity--;
 
-    free(block);																	            /* Free     vector malloc #1 */
+    free(block);																	            /* Free #1 */
 }
 
 /**
@@ -224,5 +228,5 @@ void allocator_control_memory_alloc(ALLOCATOR_TYPEDEF_PTR allocator,
 
     allocator->info.capacity--;
 
-    free(block);																	            /* Free     vector malloc #1 */
+    free(block);																	            /* Free #1 */
 }

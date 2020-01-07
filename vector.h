@@ -16,14 +16,7 @@
 *********************************************************************************************************
 */
 
-#include "stdio.h"
-#include "string.h"
-#include "stdarg.h"
-#include "stdbool.h"
-#include "assert.h"
-#include "malloc.h"
-
-#include "allocator.h"
+#include "container_def.h"
 
 /*
 *********************************************************************************************************
@@ -36,9 +29,6 @@
 
 /* Configure    if enable integrated structure.                                                         */
 #define VECTOR_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE		1024u
-
-/* Configure    the type of size.                                                                       */
-#define VECTOR_CFG_SIZE_TYPE                                    size_t
 
 /* Configure    the type of allocator.                                                                  */
 #define VECTOR_CFG_ALLOCATOR_TYPE                               ALLOCATOR_TYPEDEF
@@ -54,20 +44,7 @@
 *********************************************************************************************************
 */
 
-/* ----------------------------------------- VECTOR SIZE TYPE ----------------------------------------- */
-/* Configure    vector size type.                                                                       */
-typedef VECTOR_CFG_SIZE_TYPE VECTOR_SIZE_TYPEDEF;
-
-/* Configure    vector size ptr type.                                                                   */
-typedef VECTOR_CFG_SIZE_TYPE *VECTOR_SIZE_TYPEDEF_PTR;
-
-/* Configure    vector size pptr type.                                                                  */
-typedef VECTOR_CFG_SIZE_TYPE **VECTOR_SIZE_TYPEDEF_PPTR;
-
 /* ------------------------------------------- VECTOR TYPE -------------------------------------------- */
-/* Configure    vector type.                                                                            */
-typedef struct vector_t	VECTOR_TYPEDEF;
-
 /* Configure    vector ptr type.                                                                        */
 typedef struct vector_t *VECTOR_TYPEDEF_PTR;
 
@@ -80,8 +57,8 @@ struct vector_control_t {
 	struct {
 		/* @brief This function will initialize the vector struct.                                      */
 		void (*init)(VECTOR_TYPEDEF_PPTR vector,
-					 VECTOR_SIZE_TYPEDEF dst_size, bool string_type,
-					 void (*assign_func)(void *dst, void *src), void (*free_func)(void *dst));
+					 CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_size, bool string_type,
+					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will destroy the vector struct and free the space.                      */
 		void (*destroy)(VECTOR_TYPEDEF_PPTR vector);
@@ -107,7 +84,7 @@ struct vector_control_t {
 		/* @brief This function will returns a reference to the element
 				  at specified location position, with bounds checking.                                 */
 		void *(*at)(VECTOR_TYPEDEF_PTR vector,
-					VECTOR_SIZE_TYPEDEF position);
+					CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 		/* @brief This function will returns a reference to the first element in the container.         */
 		void *(*front)(VECTOR_TYPEDEF_PTR vector);
@@ -125,20 +102,20 @@ struct vector_control_t {
 		bool (*empty)(VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns the number of elements in the container.                   */
-		VECTOR_SIZE_TYPEDEF(*size)(VECTOR_TYPEDEF_PTR vector);
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*size)(VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		VECTOR_SIZE_TYPEDEF(*max_size)(VECTOR_TYPEDEF_PTR vector);
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*max_size)(VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns the number of elements
 				  that the container has currently allocated space for.                                 */
-		VECTOR_SIZE_TYPEDEF(*capacity)(VECTOR_TYPEDEF_PTR vector);
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*capacity)(VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will increase the capacity of the vector to a size
 				  that's greater or equal to new_cap. */
 		void (*reserve)(VECTOR_TYPEDEF_PPTR vector,
-						VECTOR_SIZE_TYPEDEF size);
+						CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
 
 		/* @brief This function will requests the removal of unused capacity.                           */
 		void (*shrink_to_fit)(VECTOR_TYPEDEF_PPTR vector);
@@ -150,11 +127,11 @@ struct vector_control_t {
 
 		/* @brief This function will inserts elements at the specified location in the container.       */
 		void *(*insert)(VECTOR_TYPEDEF_PTR vector,
-						VECTOR_SIZE_TYPEDEF position, VECTOR_SIZE_TYPEDEF amount, void **source);
+						CONTAINER_GLOBAL_CFG_SIZE_TYPE position, CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
 
 		/* @brief This function will erases the specified elements from the container.                  */
 		void (*erase)(VECTOR_TYPEDEF_PTR vector,
-					  VECTOR_SIZE_TYPEDEF position, void *data);
+					  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *data);
 
 		/* @brief This function will appends the given element source to the end of the container.      */
 		void (*push_back)(VECTOR_TYPEDEF_PTR vector,
@@ -166,7 +143,7 @@ struct vector_control_t {
 
 		/* @brief This function will resizes the container to contain count elements.                   */
 		void (*resize)(VECTOR_TYPEDEF_PPTR vector,
-					   VECTOR_SIZE_TYPEDEF size);
+					   CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
 
 		/* @brief This function will copy the contents of the container to those of other.              */
 		void (*copy)(VECTOR_TYPEDEF_PPTR destination,
@@ -199,7 +176,7 @@ struct vector_control_t {
  */
 
 void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
-									   VECTOR_SIZE_TYPEDEF element_size, bool string_type,
+									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
 									   void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -263,13 +240,13 @@ void vector_control_iterators_back(VECTOR_TYPEDEF_PTR vector);
  * @brief This function will returns a reference to the element at specified location position, with bounds checking.
  *
  * @param vector container struct
- * @param position the position of element
+ * @param position the position of element,it would be equal or greater than zero
  *
  * @return NONE
  */
 
 void *vector_control_element_access_at(VECTOR_TYPEDEF_PTR vector,
-									   VECTOR_SIZE_TYPEDEF position);
+									   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 /**
  * @brief This function will returns a reference to the first element in the container.
@@ -321,7 +298,7 @@ bool vector_control_capacity_empty(VECTOR_TYPEDEF_PTR vector);
  *  the number of elements in the container
  */
 
-VECTOR_SIZE_TYPEDEF vector_control_capacity_size(VECTOR_TYPEDEF_PTR vector);
+CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_size(VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will returns the maximum number of elements the container.
@@ -333,7 +310,7 @@ VECTOR_SIZE_TYPEDEF vector_control_capacity_size(VECTOR_TYPEDEF_PTR vector);
  *  the maximum number of elements the container
  */
 
-VECTOR_SIZE_TYPEDEF vector_control_capacity_max_size(VECTOR_TYPEDEF_PTR vector);
+CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_max_size(VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will returns the number of elements that the container has currently allocated space for.
@@ -344,20 +321,20 @@ VECTOR_SIZE_TYPEDEF vector_control_capacity_max_size(VECTOR_TYPEDEF_PTR vector);
  *  the number of elements that the container has currently allocated space for
  */
 
-VECTOR_SIZE_TYPEDEF vector_control_capacity_capacity(VECTOR_TYPEDEF_PTR vector);
+CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_capacity(VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will increase the capacity of the vector to a size that's greater or equal to new_cap.
  *
  * @param vector container struct
- * @param position the position of element
+ * @param position the position of element,it would be equal or greater than zero
  * @param size the size of elements
  *
  * @return NONE
  */
 
 void vector_control_capacity_reserve(VECTOR_TYPEDEF_PPTR vector,
-									 VECTOR_SIZE_TYPEDEF size);
+									 CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
 
 /**
  * @brief This function will requests the removal of unused capacity.
@@ -383,7 +360,7 @@ void vector_control_modifiers_clear(VECTOR_TYPEDEF_PTR vector);
  * @brief This function will inserts elements at the specified location in the container.
  *
  * @param vector container struct
- * @param position the position of element
+ * @param position the position of element,it would be equal or greater than zero
  * @param amount the amount of elements
  * @param source pointer to the source
  *
@@ -392,20 +369,20 @@ void vector_control_modifiers_clear(VECTOR_TYPEDEF_PTR vector);
  */
 
 void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
-									  VECTOR_SIZE_TYPEDEF position, VECTOR_SIZE_TYPEDEF amount, void **source);
+									  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
 
 /**
  * @brief This function will erases the specified elements from the container.
  *
  * @param vector container struct
- * @param position the position of element
+ * @param position the position of element,it would be equal or greater than zero
  * @param destination pointer to the destination
  *
  * @return NONE
  */
 
 void vector_control_modifiers_erase(VECTOR_TYPEDEF_PTR vector,
-									VECTOR_SIZE_TYPEDEF position, void *destination);
+									CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination);
 
 /**
  * @brief This function will appends the given element source to the end of the container.
@@ -441,7 +418,7 @@ void vector_control_modifiers_pop_back(VECTOR_TYPEDEF_PTR vector,
  */
 
 void vector_control_modifiers_resize(VECTOR_TYPEDEF_PPTR vector,
-									 VECTOR_SIZE_TYPEDEF count);
+									 CONTAINER_GLOBAL_CFG_SIZE_TYPE count);
 
 /**
  * @brief This function will copy the contents of the container to those of other.
@@ -473,7 +450,15 @@ void vector_control_modifiers_swap(VECTOR_TYPEDEF_PPTR vector,
 *********************************************************************************************************
 */
 
+
+#if (VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
+
+/**
+ * @brief This struct will control all the vector functions conveniently.
+ */
 extern struct vector_control_t vector_ctrl;
+
+#endif
 
 /*
 *********************************************************************************************************
