@@ -101,9 +101,9 @@ int vector_function_address_tables[] =
 
 	(int)&vector_control_capacity_size,							/* No.5 : size */
 
-	(int)&vector_control_capacity_capacity,						/* No.6 : capacity */
+	(int)&vector_control_capacity_max_size,						/* No.6 : max_size */
 
-	(int)&vector_control_modifiers_push_back,					/* No.7 : push_back */
+	(int)&vector_control_modifiers_insert,						/* No.7 : insert */
 
 	(int)&vector_control_modifiers_erase,						/* No.8 : erase */
 
@@ -644,8 +644,8 @@ void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
 		printf("vector.insert -> element no.%d : %s \r\n", element_pop, (char *)*(element + element_pop));
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pop = position; element_pop < back_element_pos; element_pop++) {			/* Insert the source to the vector */
-		vector_control_modifiers_set(vector, element_pop, *(source + element_pop));
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pop = 0; element_pop < back_element_pos - position; element_pop++) {			/* Insert the source to the vector */
+		vector_control_modifiers_set(vector, element_pop + position, *(source + element_pop));
 
 		printf("vector.insert -> source no.%d : %s \r\n", element_pop, (char *)*(source + element_pop));
 	}

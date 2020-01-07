@@ -68,29 +68,11 @@ enum container_type {
 	QUEUE,
 };
 
-/* Configure the enum function type of container.														*/
-enum container_function_type {
-	INITIALIZE,
-	DESTROY,
-
-	AT,
-
-	EMPTY,
-	SIZE,
-	CAPACITY,
-
-	PUSH_BACK,
-	ERASE,
-	COPY,
-	SWAP
-};
-
 /* Configure the enum universal function type of container.												*/
 struct container_control_t {
 	struct {
 		/* @brief This function will initialize the container struct and the specified container.		*/
 		void (*init)(void **container,
-					 enum container_type type,
 					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
@@ -119,7 +101,8 @@ struct container_control_t {
 	struct {
 		/* @brief This function will inserts elements at the specified location in the container.		*/
 		void (*insert)(void *container,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source);
+					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, 
+					   CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
 
 		/* @brief This function will erases the specified elements from the container.                  */
 		void *(*earse)(void *container,

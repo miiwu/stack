@@ -74,8 +74,9 @@ struct stack_control_t {
 		/* @brief This function will returns the number of elements in the container. */
 		size_t(*size)(STACK_TYPEDEF_PTR stack);
 
-		/* @brief This function will return the number of elements in the underlying container. */
-		size_t(*capacity)(STACK_TYPEDEF_PTR stack);
+		/* @brief This function will returns the maximum number of elements
+					the container is able to hold due to system or library implementation limitations. */
+		size_t(*max_size)(STACK_TYPEDEF_PTR stack);
 	}capacity;
 
 	struct {
@@ -164,18 +165,6 @@ void *stack_control_element_access_top(STACK_TYPEDEF_PTR stack);
  * @return NONE
  */
 
-bool stack_control_capacity_empty(STACK_TYPEDEF_PTR stack);
-
-/**
- * @brief This function will return the number of elements in the underlying container.
- *
- * @param stack the pointer to container adapter struct
- *
- * @return NONE
- */
-
-CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_capacity(STACK_TYPEDEF_PTR stack);
-
 /**
  * @brief This function will returns the number of elements in the container.
  *
@@ -194,6 +183,18 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_size(STACK_TYPEDEF_PTR sta
  *
  * @return NONE
  */
+
+bool stack_control_capacity_empty(STACK_TYPEDEF_PTR stack);
+
+/**
+ * @brief This function will return the number of elements in the underlying container.
+ *
+ * @param stack the pointer to container adapter struct
+ *
+ * @return NONE
+ */
+
+CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_max_size(STACK_TYPEDEF_PTR stack);
 
 void stack_control_modifiers_push(STACK_TYPEDEF_PTR stack, void *source);
 

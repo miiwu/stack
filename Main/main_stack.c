@@ -20,7 +20,7 @@ void main_stack(void)
 	stack_ctrl.configuration.init(&stack, VECTOR, sizeof(char) * 10, true, NULL, NULL);		/* Initialize stack,char[10] type */
 
 	printf("\r\nstack.max_size start\r\n");
-	printf("max size : %d \r\n", stack_ctrl.capacity.capacity(stack));
+	printf("max size : %d \r\n", stack_ctrl.capacity.max_size(stack));
 
 	printf("\r\nstack.push start\r\n");
 	for (size_t cnt = 0; cnt < 10; cnt++) {

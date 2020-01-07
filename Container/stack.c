@@ -41,7 +41,7 @@ struct stack_t {
 	void *container;
 
 	/* @brief This variables will point to the function address table of front container type.			*/
-	int *container_func_addr_table;
+	struct container_control_t *container_control;
 
 	/* @brief This variables will point to the allocator.												*/
 	STACK_ALLOCATOR_TYPEDEF_PTR allocator;
@@ -73,7 +73,7 @@ struct stack_control_t stack_ctrl =
 
 	stack_control_capacity_size,
 
-	stack_control_capacity_capacity,
+	stack_control_capacity_max_size,
 
 	stack_control_modifiers_push,
 
@@ -136,37 +136,31 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 																   1, sizeof(struct stack_t));
 																							/* Variables pointer to	the stack struct which
 																								will be allocate and assign to the stack 	*/
+
+	struct container_control_t
+		*container_ctrl = NULL;
+
 	void
 		*container = NULL;																	/* Variables pointer to	the specified container struct */
-
-	void (*container_control_configration_init)(void **container,
-												CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
-												void (*assign)(void *dst, void *src), void (*free)(void *dst)) = NULL;
-																							/* Variables pointer to	the initialize function of
-																								specified container 		*/
 
 	int
 		*func_addr_table = container_control_convert_type_to_func_addr_table(adapt_container_type);
 																							/* Variables pointer to	the function address table of
 																								specified container type		*/
 
-	container_control_configration_init = (void (*)(void **, CONTAINER_GLOBAL_CFG_SIZE_TYPE, bool,
-													void (*)(void *, void *),
-													void (*)(void *)))func_addr_table[INITIALIZE];
-																							/* Assign the initialize function of
-																								specified container function address table to the pointer */
+	container_ctrl = (struct container_control_t *)func_addr_table;
 
 	if (NULL == stack ||																	/* Check if stack point to NULL			*/
 		NULL == stack_alloced) {															/* Check if data_pack_alloced point to NULL	*/
 		return;
 	}
 
-	container_control_configration_init(&container, element_size, string_type, assign, free);/* Initialize the specified container struct */
+	container_ctrl->configuration.init(&container, element_size, string_type, assign, free);/* Initialize the specified container struct */
 
 	stack_alloced->container_type_id = STACK;												/* Assign stack structure					*/
 	stack_alloced->attach = false;
 	stack_alloced->container = container;
-	stack_alloced->container_func_addr_table = func_addr_table;
+	stack_alloced->container_control = container_ctrl;
 	stack_alloced->allocator = allocator;
 
 	*stack = stack_alloced;
@@ -212,7 +206,7 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void **containe
 	stack_alloced->container_type_id = STACK;												/* Assign stack structure					*/
 	stack_alloced->attach = true;
 	stack_alloced->container = container;
-	stack_alloced->container_func_addr_table = func_addr_table;
+	stack_alloced->container_control = (struct container_control_t *)func_addr_table;
 	stack_alloced->allocator = allocator;
 
 	*stack = stack_alloced;
@@ -235,21 +229,10 @@ void stack_control_configration_destroy(STACK_TYPEDEF_PPTR stack)
 	void
 		*container = NULL;																	/* Variables pointer to	the specified container struct */
 
-	void (*container_control_configration_destroy)(void **container) = NULL;				/* Variables pointer to	the destroy function of
-																								specified container 		*/
-
-	int
-		*func_addr_table = (*stack)->container_func_addr_table;								/* Variables pointer to	the function address table of
-																								specified container 		*/
-
 	STACK_ALLOCATOR_TYPEDEF_PTR
 		allocator = (*stack)->allocator;													/* Variables pointer to	the allocator struct */
 
-	container_control_configration_destroy = (void (*)(void **))(*stack)->container_func_addr_table[DESTROY];
-																							/* Assign the destroy function of
-																								specified container function address table to the pointer */
-
-	container_control_configration_destroy(&(*stack)->container);							/* Destroy the container */
+	(*stack)->container_control->configuration.destroy(&(*stack)->container);				/* Destroy the container */
 
 	printf("destroy.stack block : %p \r\n", (*stack));
 
@@ -258,7 +241,7 @@ void stack_control_configration_destroy(STACK_TYPEDEF_PPTR stack)
 	(*stack)->container_type_id = 0u;
 	(*stack)->attach = false;
 	(*stack)->container = NULL;
-	(*stack)->container_func_addr_table = NULL;
+	(*stack)->container_control = NULL;
 	(*stack)->allocator = NULL;
 
 	allocator_ctrl.configration.destroy(&allocator);
@@ -281,28 +264,8 @@ void *stack_control_element_access_top(STACK_TYPEDEF_PTR stack)
 	void
 		*container = NULL;																	/* Variables pointer to	the specified container struct */
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE(*container_control_capacity_capacity)(void *) = NULL;
-																							/* Variables pointer to	the capacity function of
-																								specified container 		*/
-
-	void *(*container_control_element_access_at)(void *, CONTAINER_GLOBAL_CFG_SIZE_TYPE) = NULL;
-																							/* Variables pointer to	the at function of
-																								specified container 		*/
-
-	int
-		*func_addr_table = stack->container_func_addr_table;								/* Variables pointer to	the function address table of
-																								specified container 		*/
-
-	container_control_capacity_capacity = (CONTAINER_GLOBAL_CFG_SIZE_TYPE(*)(void *))stack->container_func_addr_table[CAPACITY];
-																							/* Assign the capacity function of
-																								specified container function address table to the pointer */
-
-	container_control_element_access_at = (void *(*)(void *, CONTAINER_GLOBAL_CFG_SIZE_TYPE))stack->container_func_addr_table[AT];
-																							/* Assign the at function of
-																								specified container function address table to the pointer */
-
-	return container_control_element_access_at(stack->container,
-											   container_control_capacity_capacity(stack->container) - 1);
+	return stack->container_control->element_access.at(stack->container,
+													   stack->container_control->capacity.size(stack->container) - 1);
 																							/* Get the top element of the container */
 }
 
@@ -319,41 +282,11 @@ bool stack_control_capacity_empty(STACK_TYPEDEF_PTR stack)
 	assert(stack);
 
 	if (((CONTAINER_GLOBAL_CFG_SIZE_TYPE)stack_control_capacity_size(stack)) <=
-		((CONTAINER_GLOBAL_CFG_SIZE_TYPE)stack_control_capacity_capacity(stack))) {
+		((CONTAINER_GLOBAL_CFG_SIZE_TYPE)stack_control_capacity_max_size(stack))) {
 		return true;
 	} else {
 		return false;
 	}
-}
-
-/**
- * @brief This function will return the number of elements in the underlying container.
- *
- * @param stack the pointer to container adapter struct
- *
- * @return NONE
- */
-
-CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_capacity(STACK_TYPEDEF_PTR stack)
-{
-	assert(stack);
-
-	void
-		*container = NULL;																	/* Variables pointer to	the specified container struct */
-
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE(*container_control_capacity_capacity)(void *) = NULL;
-																							/* Variables pointer to	the capacity function of
-																								specified container 		*/
-
-	int
-		*func_addr_table = stack->container_func_addr_table;								/* Variables pointer to	the function address table of
-																								specified container 		*/
-
-	container_control_capacity_capacity = (CONTAINER_GLOBAL_CFG_SIZE_TYPE(*)(void *))stack->container_func_addr_table[CAPACITY];
-																							/* Assign the capacity function of
-																								specified container function address table to the pointer */
-
-	return container_control_capacity_capacity(stack->container);							/* Get the number of elements in the underlying container */
 }
 
 /**
@@ -371,19 +304,28 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_size(STACK_TYPEDEF_PTR sta
 	void
 		*container = NULL;																	/* Variables pointer to	the specified container struct */
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE(*container_control_capacity_size)(void *) = NULL;
-																							/* Variables pointer to	the max size function of
-																								specified container 		*/
+	printf("stack.size : %d \r\n", stack->container_control->capacity.size(stack->container));
 
-	int
-		*func_addr_table = stack->container_func_addr_table;								/* Variables pointer to	the function address table of
-																								specified container 		*/
+	return stack->container_control->capacity.size(stack->container);						/* Get the number of elements in the container */
+}
 
-	container_control_capacity_size = (CONTAINER_GLOBAL_CFG_SIZE_TYPE(*)(void *))stack->container_func_addr_table[SIZE];
-																							/* Assign the max size function of
-																								specified container function address table to the pointer */
+/**
+ * @brief This function will returns the maximum number of elements
+ *			the container is able to hold due to system or library implementation limitations.
+ *
+ * @param stack the pointer to container adapter struct
+ *
+ * @return NONE
+ */
 
-	return container_control_capacity_size(stack->container);								/* Get the maximum number of elements the container
+CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_max_size(STACK_TYPEDEF_PTR stack)
+{
+	assert(stack);
+
+	void
+		*container = NULL;																	/* Variables pointer to	the specified container struct */
+
+	return stack->container_control->capacity.max_size(stack->container);					/* Get the maximum number of elements the container
 																								is able to hold due to system or library implementation limitations */
 }
 
@@ -403,18 +345,9 @@ void stack_control_modifiers_push(STACK_TYPEDEF_PTR stack, void *source)
 	void
 		*container = NULL;																	/* Variables pointer to	the specified container struct */
 
-	void *(*container_control_modifiers_push_back)(void *, void *) = NULL;					/* Variables pointer to	the capacity function of
-																								specified container 		*/
-
-	int
-		*func_addr_table = stack->container_func_addr_table;								/* Variables pointer to	the function address table of
-																								specified container 		*/
-
-	container_control_modifiers_push_back = (void *(*)(void *, void *))stack->container_func_addr_table[PUSH_BACK];
-																							/* Assign the capacity function of
-																								specified container function address table to the pointer */
-
-	container_control_modifiers_push_back(stack->container, source);						/* push the given element source to the top of the stack */
+	stack->container_control->modifiers.insert(stack->container,
+											   stack_control_capacity_size(stack),1, &source);	
+																							/* push the given element source to the top of the stack */
 }
 
 /**
@@ -446,25 +379,9 @@ void *stack_control_modifiers_pop(STACK_TYPEDEF_PTR stack)
 	char
 		*string = calloc(10, sizeof(char));
 
-	void
-		*container = NULL;																	/* Variables pointer to	the specified container struct */
-
-	void (*container_control_modifiers_earse)(void *,
-											  CONTAINER_GLOBAL_CFG_SIZE_TYPE, void *) = NULL;	/* Variables pointer to	the capacity function of
-																								specified container 		*/
-
-	int
-		*func_addr_table = stack->container_func_addr_table;								/* Variables pointer to	the function address table of
-																								specified container 		*/
-
-	container_control_modifiers_earse = (void(*)(void *,
-												 CONTAINER_GLOBAL_CFG_SIZE_TYPE,
-												 void *))stack->container_func_addr_table[ERASE];
-																							/* Assign the capacity function of
-																								specified container function address table to the pointer */
-
-	container_control_modifiers_earse(stack->container,
-									  stack_control_capacity_capacity(stack) - 1, string);	/* push the given element source to the top of the stack */
+	stack->container_control->modifiers.earse(stack->container,
+													 stack_control_capacity_size(stack) - 1, string);	
+																							/* push the given element source to the top of the stack */
 
 	return string;
 }
@@ -482,21 +399,7 @@ void stack_control_modifiers_swap(STACK_TYPEDEF_PPTR stack, STACK_TYPEDEF_PPTR o
 {
 	assert(stack);
 
-	void
-		*container = NULL;																	/* Variables pointer to	the specified container struct */
-
-	void (*container_control_modifiers_swap)(void **, void **) = NULL;						/* Variables pointer to	the capacity function of
-																								specified container 		*/
-
-	int
-		*func_addr_table = (*stack)->container_func_addr_table;								/* Variables pointer to	the function address table of
-																								specified container 		*/
-
-	container_control_modifiers_swap = (void (*)(void **, void **))(*stack)->container_func_addr_table[SWAP];
-																							/* Assign the capacity function of
-																								specified container function address table to the pointer */
-
-	container_control_modifiers_swap(&(*stack)->container, &(*other)->container);			/* exchange the contents of the container adaptor with those of other */
+	(*stack)->container_control->modifiers.swap(&(*stack)->container, &(*other)->container);/* exchange the contents of the container adaptor with those of other */
 }
 
 /**
@@ -513,19 +416,5 @@ void stack_control_modifiers_copy(STACK_TYPEDEF_PPTR destination, STACK_TYPEDEF_
 	assert(destination);
 	assert(source);
 
-	void
-		*container = NULL;																	/* Variables pointer to	the specified container struct */
-
-	void (*container_control_modifiers_copy)(void **, void *) = NULL;						/* Variables pointer to	the capacity function of
-																								specified container 		*/
-
-	int
-		*func_addr_table = (*destination)->container_func_addr_table;						/* Variables pointer to	the function address table of
-																								specified container 		*/
-
-	container_control_modifiers_copy = (void (*)(void **, void *))(*destination)->container_func_addr_table[COPY];
-																							/* Assign the capacity function of
-																								specified container function address table to the pointer */
-
-	container_control_modifiers_copy(&(*destination)->container, source->container);		/* copy the contents of the container adaptor to those of other */
+	(*destination)->container_control->modifiers.copy(&(*destination)->container, source->container);		/* copy the contents of the container adaptor to those of other */
 }
