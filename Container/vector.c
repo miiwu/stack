@@ -41,13 +41,10 @@ struct vector_t {
 
 		/* @brief This variables will record the number of elements that
 				  the container has currently allocated space for.										*/
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE capacity;
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE size;
 
 		/* @brief This variables will record the size that each element will take up.					*/
 		CONTAINER_GLOBAL_CFG_SIZE_TYPE mem_size;
-
-		/* @brief This variables will record if the element type equal string type.						*/
-		bool string_type;
 	}info;
 
 	/* @brief This variables will point to the allocator.												*/
@@ -89,27 +86,27 @@ struct vector_t {
  * @brief This array will contain all the universal vector functions address.
  */
 
-int vector_function_address_tables[] =
+void *vector_function_address_tables[] =
 {
-	(int)&vector_control_configuration_init,					/* No.0 : initialize */
+	(void *)&vector_control_configuration_init,					/* No.0 : initialize */
 
-	(int)&vector_control_configuration_destroy,					/* No.1 : destroy */
+	(void *)&vector_control_configuration_destroy,					/* No.1 : destroy */
 
-	(int)&vector_control_element_access_at,						/* No.3 : at */
+	(void *)&vector_control_element_access_at,						/* No.3 : at */
 
-	(int)&vector_control_capacity_empty,						/* No.4 : empty */
+	(void *)&vector_control_capacity_empty,						/* No.4 : empty */
 
-	(int)&vector_control_capacity_size,							/* No.5 : size */
+	(void *)&vector_control_capacity_size,							/* No.5 : size */
 
-	(int)&vector_control_capacity_max_size,						/* No.6 : max_size */
+	(void *)&vector_control_capacity_max_size,						/* No.6 : max_size */
 
-	(int)&vector_control_modifiers_insert,						/* No.7 : insert */
+	(void *)&vector_control_modifiers_insert,						/* No.7 : insert */
 
-	(int)&vector_control_modifiers_erase,						/* No.8 : erase */
+	(void *)&vector_control_modifiers_erase,						/* No.8 : erase */
 
-	(int)&vector_control_modifiers_copy,						/* No.9 : copy */
+	(void *)&vector_control_modifiers_swap,						/* No.9 : swap */
 
-	(int)&vector_control_modifiers_swap,						/* No.10 : swap */
+	(void *)&vector_control_modifiers_copy,						/* No.10 : copy */
 };
 
 #if (VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
@@ -192,7 +189,7 @@ struct vector_control_t vector_ctrl = {
  * @return NONE
  */
 
-void vector_control_modifiers_set(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_set(const VECTOR_TYPEDEF_PTR vector,
 								  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source);
 
 /**
@@ -205,7 +202,7 @@ void vector_control_modifiers_set(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_get(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_get(const VECTOR_TYPEDEF_PTR vector,
 								  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination);
 
 /**
@@ -217,8 +214,30 @@ void vector_control_modifiers_get(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_del(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_del(const VECTOR_TYPEDEF_PTR vector,
 								  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+
+/**
+ * @brief This function will callback the handler that container has no elements when the container temp to insert.
+ *
+ * @param vector the pointer to the container struct
+ * @param position the position of element,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void vector_control_configration_exception_default_empty_callback(void);
+
+/**
+ * @brief This function will callback the handler that container has no elements when the container temp to erase.
+ *
+ * @param vector the pointer to the container struct
+ * @param position the position of element,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void vector_control_configration_exception_default_full_callback(void);
 
 /*
 *********************************************************************************************************
@@ -239,7 +258,7 @@ void vector_control_modifiers_del(VECTOR_TYPEDEF_PTR vector,
  */
 
 void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
+									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 									   void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(vector);
@@ -255,10 +274,8 @@ void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
 																	 1, sizeof(struct vector_t));	/* Allocate #1 */
 
 	void
-		*data_pack_alloced = allocator_ctrl.allocate(allocator, VECTOR_CFG_DEFAULT_MAX_SIZE,
-		(string_type) ?
-													 (element_size + VECTOR_CFG_DEFAULT_MAX_SIZE) :
-													 (element_size));						/* Allocate #2 */
+		*data_pack_alloced = allocator_ctrl.allocate(allocator, 
+													 VECTOR_CFG_DEFAULT_MAX_SIZE, element_size);	/* Allocate #2 */
 
 	if (NULL == vector ||																	/* Check if vector point to NULL			*/
 		NULL == vector_alloced ||															/* Check if vector_alloced point to NULL	*/
@@ -267,12 +284,20 @@ void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
 	}
 
 	vector_alloced->container_type_id = VECTOR;												/* Assign vector structure					*/
+
 	vector_alloced->info.max_size = VECTOR_CFG_DEFAULT_MAX_SIZE;
-	vector_alloced->info.capacity = 0u;
+	vector_alloced->info.size = 0u;
 	vector_alloced->info.mem_size = element_size;
-	vector_alloced->info.string_type = string_type;
+
 	vector_alloced->allocator = allocator;
+
 	vector_alloced->data = data_pack_alloced;
+
+	vector_alloced->element_handler.assign = NULL;
+	vector_alloced->element_handler.free = NULL;
+
+	vector_alloced->exception.empty = vector_control_configration_exception_default_empty_callback;
+	vector_alloced->exception.full = vector_control_configration_exception_default_full_callback;
 
 	if (NULL != assign &&																	/* Check if assign point to NULL			*/
 		NULL != free) {																		/* Check if free point to NULL				*/
@@ -284,8 +309,9 @@ void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
 
 	*vector = vector_alloced;
 
-	printf("init.vector block : %p \r\n", vector_alloced);									/* Debug only								*/
-	printf("init.vector data block : %p \r\n", data_pack_alloced);
+	printf("init.vector allocator : %p \r\n    ", allocator);									/* Debug only								*/
+	printf("init.vector block : %p \r\n    ", vector_alloced);
+	printf("init.vector data block : %p \r\n    ", data_pack_alloced);
 }
 
 /**
@@ -305,21 +331,28 @@ void vector_control_configuration_destroy(VECTOR_TYPEDEF_PPTR vector)
 	VECTOR_ALLOCATOR_TYPEDEF_PTR
 		allocator = (*vector)->allocator;
 
-	printf("destroy.vector data block : %p \r\n", (*vector)->data);
-	printf("destroy.vector block : %p \r\n", (*vector));
+	printf("destroy.vector data block : %p \r\n    ", (*vector)->data);
 
 	allocator_ctrl.deallocate(allocator, (*vector)->data, 1);																	/* Deallocate #2 */
 
+	(*vector)->container_type_id = 0u;												/* Assign vector structure					*/
+
 	(*vector)->info.max_size = 0u;
-	(*vector)->info.capacity = 0u;
+	(*vector)->info.size = 0u;
+	(*vector)->info.mem_size = 0u;
+
 	(*vector)->allocator = NULL;
+
 	(*vector)->data = NULL;
-	(*vector)->element_handler.assign = NULL;
-	(*vector)->element_handler.free = NULL;
+
 	(*vector)->exception.empty = NULL;
 	(*vector)->exception.full = NULL;
 
+	printf("destroy.vector block : %p \r\n    ", (*vector));
+
 	allocator_ctrl.deallocate(allocator, *vector, 1);																			/* deallocate #1 */
+
+	printf("destroy.vector allocator : %p \r\n    ", allocator);
 
 	allocator_ctrl.configration.destroy(&allocator);
 
@@ -336,10 +369,12 @@ void vector_control_configuration_destroy(VECTOR_TYPEDEF_PPTR vector)
  * @return NONE
  */
 
-void vector_control_configuration_element_handler(VECTOR_TYPEDEF_PTR vector,
+void vector_control_configuration_element_handler(const VECTOR_TYPEDEF_PTR vector,
 												  void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(vector);
+	assert(assign);
+	assert(free);
 
 	vector->element_handler.assign = assign;
 	vector->element_handler.free = free;
@@ -355,13 +390,18 @@ void vector_control_configuration_element_handler(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_configuration_exception(VECTOR_TYPEDEF_PTR vector,
+void vector_control_configuration_exception(const VECTOR_TYPEDEF_PTR vector,
 											void (*empty)(void), void (*full)(void))
 {
 	assert(vector);
 
-	vector->exception.empty = empty;
-	vector->exception.full = full;
+	if (NULL == empty) {
+		vector->exception.empty = empty;
+	}
+
+	if (NULL == full) {
+		vector->exception.full = full;
+	}
 }
 
 /**
@@ -372,7 +412,7 @@ void vector_control_configuration_exception(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_iterators_front(VECTOR_TYPEDEF_PTR vector)
+void vector_control_iterators_front(const VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
@@ -387,7 +427,7 @@ void vector_control_iterators_front(VECTOR_TYPEDEF_PTR vector)
  * @return NONE
  */
 
-void vector_control_iterators_back(VECTOR_TYPEDEF_PTR vector)
+void vector_control_iterators_back(const VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
@@ -403,16 +443,16 @@ void vector_control_iterators_back(VECTOR_TYPEDEF_PTR vector)
  * @return NONE
  */
 
-void *vector_control_element_access_at(VECTOR_TYPEDEF_PTR vector,
+void *vector_control_element_access_at(const VECTOR_TYPEDEF_PTR vector,
 									   CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
 {
 	assert(vector);
 	assert(0 <= position);
 
 	void
-		*element = (void *)((int)vector->data + position * vector->info.mem_size);									/* Point destination to the address of the element which at the position location */
+		*element = (void *)((size_t)(vector->data) + position * vector->info.mem_size);									/* Point destination to the address of the element which at the position location */
 
-	printf("vector.at -> data block : %p | element : %p \r\n", vector->data, element);
+	printf("vector.at -> data block : %p | element : %p \r\n    ", vector->data, element);
 
 	return element;
 }
@@ -425,7 +465,7 @@ void *vector_control_element_access_at(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-extern inline void *vector_control_element_access_front(VECTOR_TYPEDEF_PTR vector)
+extern inline void *vector_control_element_access_front(const VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
@@ -440,11 +480,11 @@ extern inline void *vector_control_element_access_front(VECTOR_TYPEDEF_PTR vecto
  * @return NONE
  */
 
-extern inline void *vector_control_element_access_back(VECTOR_TYPEDEF_PTR vector)
+extern inline void *vector_control_element_access_back(const VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
-	return vector_control_element_access_at(vector, vector->info.capacity);
+	return vector_control_element_access_at(vector, vector->info.size);
 }
 
 /**
@@ -455,7 +495,7 @@ extern inline void *vector_control_element_access_back(VECTOR_TYPEDEF_PTR vector
  * @return pointer to the underlying array serving as element storage
  */
 
-extern inline void *vector_control_element_access_data(VECTOR_TYPEDEF_PTR vector)
+extern inline void *vector_control_element_access_data(const VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
@@ -471,11 +511,11 @@ extern inline void *vector_control_element_access_data(VECTOR_TYPEDEF_PTR vector
  *  if the container has no elements
  */
 
-extern inline bool vector_control_capacity_empty(VECTOR_TYPEDEF_PTR vector)
+extern inline bool vector_control_capacity_empty(const VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
-	if (vector->info.max_size <= vector->info.capacity) {
+	if (vector->info.max_size <= vector->info.size) {
 		return true;
 	} else {
 		return false;
@@ -491,11 +531,11 @@ extern inline bool vector_control_capacity_empty(VECTOR_TYPEDEF_PTR vector)
  *  the number of elements in the container
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_size(VECTOR_TYPEDEF_PTR vector)
+extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_size(const VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
-	return vector->info.capacity;
+	return vector->info.size;
 }
 
 /**
@@ -508,7 +548,7 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_size(VECTOR
  *  the maximum number of elements the container
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_max_size(VECTOR_TYPEDEF_PTR vector)
+extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_max_size(const VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
@@ -524,11 +564,11 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_max_size(VE
  *  the number of elements that the container has currently allocated space for
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_capacity(VECTOR_TYPEDEF_PTR vector)
+extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_capacity(const VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
-	return vector->info.capacity;
+	return vector->info.size * vector->info.mem_size;
 }
 
 /**
@@ -573,11 +613,11 @@ void vector_control_capacity_shrink_to_fit(VECTOR_TYPEDEF_PPTR vector)
  * @return NONE
  */
 
-void vector_control_modifiers_clear(VECTOR_TYPEDEF_PTR vector)
+void vector_control_modifiers_clear(const VECTOR_TYPEDEF_PTR vector)
 {
 	assert(vector);
 
-	if (0 >= vector->info.capacity) {
+	if (0 >= vector->info.size) {
 		if (NULL != vector->exception.empty) {
 			vector->exception.empty();
 		}
@@ -585,11 +625,11 @@ void vector_control_modifiers_clear(VECTOR_TYPEDEF_PTR vector)
 		return;
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = 0; element_pos < vector->info.capacity; element_pos++) {
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = 0; element_pos < vector->info.size; element_pos++) {
 		vector_control_modifiers_set(vector, element_pos, "");
 	}
 
-	vector->info.capacity = 0;
+	vector->info.size = 0;
 }
 
 /**
@@ -604,7 +644,7 @@ void vector_control_modifiers_clear(VECTOR_TYPEDEF_PTR vector)
  *  the address of element the asserted
  */
 
-void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
+void *vector_control_modifiers_insert(const VECTOR_TYPEDEF_PTR vector,
 									  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source)
 {
 	assert(vector);
@@ -613,7 +653,7 @@ void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
 	assert(source);
 	assert(*source);
 
-	if (vector->info.max_size <= vector->info.capacity) {
+	if (vector->info.max_size <= vector->info.size) {
 		if (NULL != vector->exception.full) {
 			vector->exception.full();
 		}
@@ -621,48 +661,55 @@ void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
 		return NULL;
 	}
 
-	void
-		**element = allocator_ctrl.allocate(vector->allocator,
-											1, sizeof(void **));												/* Allocate vector malloc #3 */
-
 	CONTAINER_GLOBAL_CFG_SIZE_TYPE
-		element_amount = vector->info.capacity - position,
+		element_amount = vector->info.size - position,
 		back_element_pos = position + amount;
+
+	void
+		*element_block = allocator_ctrl.allocate(vector->allocator,
+												 element_amount, vector->info.mem_size),								/* Allocate	vector malloc #3 */
+		**element = allocator_ctrl.allocate(vector->allocator,
+											1, sizeof(void **));												/* Allocate vector malloc #4 */
 
 	if (NULL == element) {																						/* Check if the element point to NULL */
 		return NULL;
 	}
 
-	printf("vector.insert -> element amount : %d \r\n", element_amount);
+	*element = element_block;
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pop = position; element_pop < vector->info.capacity; element_pop++) {		/* Copy the vector to element */
-		*(element + element_pop) = allocator_ctrl.allocate(vector->allocator,
-														   1, vector->info.mem_size);							/* Allocate	vector malloc #4 */
+	printf("vector.insert -> element amount : %d \r\n    ", element_amount);
 
-		vector_control_modifiers_get(vector, element_pop, *(element + element_pop));							/* Copy the element which at the element_pop location to the element */
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = position; element_pos < vector->info.size; element_pos++) {		/* Copy the vector to element */
+		size_t
+			element_addr = (size_t)element_block + element_pos * vector->info.mem_size;
 
-		printf("vector.insert -> element no.%d : %s \r\n", element_pop, (char *)*(element + element_pop));
+		vector_control_modifiers_get(vector, element_pos, (void *)element_addr);								/* Copy the element which at the element_pos location to the element */
+
+		printf("vector.insert -> element no.%d : %s \r\n    ", element_pos, (char *)element_addr);
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pop = 0; element_pop < back_element_pos - position; element_pop++) {			/* Insert the source to the vector */
-		vector_control_modifiers_set(vector, element_pop + position, *(source + element_pop));
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = 0; element_pos < back_element_pos - position; element_pos++) {			/* Insert the source to the vector */
+		size_t
+			source_addr = (size_t)*source + element_pos * vector->info.mem_size;
 
-		printf("vector.insert -> source no.%d : %s \r\n", element_pop, (char *)*(source + element_pop));
+		vector_control_modifiers_set(vector, element_pos + position, (void*)source_addr);
+
+		printf("vector.insert -> source no.%d : %s \r\n    ", element_pos, (char *)source_addr);
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pop = back_element_pos; element_pop < back_element_pos + element_amount; element_pop++) {	/* Insert the elements to the vector */
-		vector_control_modifiers_set(vector, element_pop, *(element + element_pop - back_element_pos));
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = back_element_pos; element_pos < back_element_pos + element_amount; element_pos++) {	/* Insert the elements to the vector */
+		size_t
+			element_plus_insert_addr = (size_t)element_block + (element_pos - back_element_pos) * vector->info.mem_size;
+
+		vector_control_modifiers_set(vector, element_pos, (void *)element_plus_insert_addr);
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_cnt = 0; element_cnt < element_amount; element_cnt++) {					/* Free the element */
-		allocator_ctrl.deallocate(vector->allocator, *(element + element_cnt), 1);								/* Deallocate #4 */
-		*(element + element_cnt) = NULL;																		/* Assign the pointer point to the part copy of vector to NULL */
-	}
+	allocator_ctrl.deallocate(vector->allocator, element_block,1);;												/* Deallocate #3 */
+	allocator_ctrl.deallocate(vector->allocator, element, 1);													/* Deallocate #4 */
+	element_block = NULL;	
+	element = NULL;																								/* Assign the element to NULL */
 
-	allocator_ctrl.deallocate(vector->allocator, *element, 1);													/* Deallocate #3 */
-	*element = NULL;																							/* Assign the element to NULL */
-
-	vector->info.capacity += amount;																			/* Change the capacity of vector */
+	vector->info.size += amount;																				/* Change the capacity of vector */
 
 	return vector_control_element_access_at(vector, position);
 }
@@ -677,13 +724,13 @@ void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_erase(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_erase(const VECTOR_TYPEDEF_PTR vector,
 									CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination)
 {
 	assert(vector);
 	assert(0 <= position);
 
-	if (0 >= vector->info.capacity) {
+	if (0 >= vector->info.size) {
 		if (NULL != vector->exception.empty) {
 			vector->exception.empty();
 		}
@@ -707,13 +754,13 @@ void vector_control_modifiers_erase(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_push_back(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_push_back(const VECTOR_TYPEDEF_PTR vector,
 										void *source)
 {
 	assert(vector);
 	assert(source);
 
-	if (vector->info.max_size <= vector->info.capacity) {														/* Check if will trigger full vector exception callback */
+	if (vector->info.max_size <= vector->info.size) {														/* Check if will trigger full vector exception callback */
 		if (NULL != vector->exception.full) {
 			vector->exception.full();
 		}
@@ -721,9 +768,9 @@ void vector_control_modifiers_push_back(VECTOR_TYPEDEF_PTR vector,
 		return;
 	}
 
-	vector_control_modifiers_set(vector, (vector->info.capacity), source);
+	vector_control_modifiers_set(vector, (vector->info.size), source);
 
-	vector->info.capacity++;
+	vector->info.size++;
 }
 
 /**
@@ -735,13 +782,13 @@ void vector_control_modifiers_push_back(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_pop_back(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_pop_back(const VECTOR_TYPEDEF_PTR vector,
 									   void *destination)
 {
 	assert(vector);
 	assert(destination);
 
-	if (vector->info.capacity <= 0) {																			/* Check if will trigger empty vector exception callback */
+	if (vector->info.size <= 0) {																			/* Check if will trigger empty vector exception callback */
 		if (NULL != vector->exception.empty) {
 			vector->exception.empty();
 		}
@@ -749,11 +796,11 @@ void vector_control_modifiers_pop_back(VECTOR_TYPEDEF_PTR vector,
 		return;
 	}
 
-	vector_control_modifiers_get(vector, (vector->info.capacity) ? vector->info.capacity - 1 : 0, destination);
+	vector_control_modifiers_get(vector, (vector->info.size) ? vector->info.size - 1 : 0, destination);
 
-	vector_control_modifiers_del(vector, (vector->info.capacity) ? vector->info.capacity - 1 : 0);
+	vector_control_modifiers_del(vector, (vector->info.size) ? vector->info.size - 1 : 0);
 
-	vector->info.capacity--;
+	vector->info.size--;
 }
 
 /**
@@ -780,9 +827,7 @@ void vector_control_modifiers_resize(VECTOR_TYPEDEF_PPTR vector,
 	void
 		*data_pack_alloced = allocator_ctrl.allocate((*vector)->allocator,
 													 count,
-													 ((*vector)->info.string_type) ?
-													 ((*vector)->info.mem_size + VECTOR_CFG_DEFAULT_MAX_SIZE) :
-													 ((*vector)->info.mem_size));		/* Malloc	vector malloc #2.1 */
+													 (*vector)->info.mem_size);								/* Malloc	vector malloc #2.1 */
 
 	if (NULL == data_pack_alloced) {
 		return;
@@ -807,20 +852,25 @@ void vector_control_modifiers_copy(VECTOR_TYPEDEF_PPTR destination,
 	assert(destination);
 	assert(source);
 
+	void
+		*source_data = (void *)(size_t)(source->data);
+
 	if (NULL == (*destination) ||
 		NULL == (*destination)->data) {																	/* Check if destination have been initialized */
 		vector_control_configuration_init(destination,													/* if not,then initialize it */
-										  source->info.mem_size, source->info.string_type, source->element_handler.assign, source->element_handler.free);
+										  source->info.mem_size, source->element_handler.assign, source->element_handler.free);
 	} else {
 		(*destination)->info = source->info;															/* if so,just assign */
 		(*destination)->element_handler = source->element_handler;
 		(*destination)->exception = source->exception;
 	}
 
-	(*destination)->info.capacity = source->info.capacity;
+	(*destination)->info.size = source->info.size;
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_amt = 0; element_amt < source->info.capacity; element_amt++) {		/* Copy the destination to source */
-		vector_control_modifiers_set(*destination, element_amt, (void *)((int)source->data + element_amt * source->info.mem_size));
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_amt = 0; element_amt < source->info.size; element_amt++) {		
+		vector_control_modifiers_set(*destination, 
+									 element_amt, 
+									 (void*)((size_t)source_data + element_amt * source->info.mem_size));/* Copy the destination to source */
 	}
 }
 
@@ -860,7 +910,7 @@ void vector_control_modifiers_swap(VECTOR_TYPEDEF_PPTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_set(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_set(const VECTOR_TYPEDEF_PTR vector,
 								  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source)
 {
 	assert(vector);
@@ -868,18 +918,18 @@ void vector_control_modifiers_set(VECTOR_TYPEDEF_PTR vector,
 	assert(source);
 
 	void
-		*destination = (void *)((int)vector->data + position * vector->info.mem_size);									/* Point destination to the address of the element which at the position location */
+		*destination = (void *)((size_t)(vector->data) + position * vector->info.mem_size);									/* Point destination to the address of the element which at the position location */
 
-	//printf("vector.set -> data block : %p | element : %p \r\n", vector->data, destination);
+	//printf("size of vector : %d \r\n    ", sizeof(struct vector_t));
+	//printf("address of assign : %p \r\n    ", &vector->element_handler.assign);
+	//printf("address of free : %p \r\n    ", &vector->element_handler.free);
+
+	//printf("vector.set -> data block : %p | element : %p \r\n    ", vector->data, destination);
 
 	if (NULL != vector->element_handler.assign) {																		/* Check if assign point to NULL */
 		vector->element_handler.assign(destination, source);
 	} else {
-		if (vector->info.string_type) {																					/* Check if the type of element equal string */
-			strcpy(destination, source);
-		} else {
-			memcpy(destination, source, vector->info.mem_size);															/* Memcpy source to destination */
-		}
+		memcpy(destination, source, vector->info.mem_size);															/* Memcpy source to destination */
 	}
 }
 
@@ -893,7 +943,7 @@ void vector_control_modifiers_set(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_get(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_get(const VECTOR_TYPEDEF_PTR vector,
 								  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination)
 {
 	assert(vector);
@@ -901,7 +951,7 @@ void vector_control_modifiers_get(VECTOR_TYPEDEF_PTR vector,
 	assert(destination);
 
 	void
-		*source = (void *)((int)vector->data + position * vector->info.mem_size);							/* Point source to the address of the element which at the position location */
+		*source = (void *)((size_t)(vector->data) + position * vector->info.mem_size);							/* Point source to the address of the element which at the position location */
 
 	if (NULL == source) {
 		return;
@@ -910,11 +960,7 @@ void vector_control_modifiers_get(VECTOR_TYPEDEF_PTR vector,
 	if (NULL != vector->element_handler.assign) {															/* Check if assign point to NULL */
 		vector->element_handler.assign(destination, source);
 	} else {
-		if (vector->info.string_type) {																		/* Check if the type of element equal string */
-			strcpy(destination, source);
-		} else {
-			memcpy(destination, source, vector->info.mem_size);												/* Memcpy source to destination */
-		}
+		memcpy(destination, source, vector->info.mem_size);													/* Memcpy source to destination */
 	}
 }
 
@@ -927,7 +973,7 @@ void vector_control_modifiers_get(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_del(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_del(const VECTOR_TYPEDEF_PTR vector,
 								  CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
 {
 	assert(vector);
@@ -935,5 +981,33 @@ void vector_control_modifiers_del(VECTOR_TYPEDEF_PTR vector,
 
 	vector_control_modifiers_set(vector, position, "");
 
-	vector->info.capacity--;
+	vector->info.size--;
+}
+
+/**
+ * @brief This function will callback the handler that container has no elements when the container temp to insert.
+ *
+ * @param vector the pointer to the container struct
+ * @param position the position of element,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void vector_control_configration_exception_default_empty_callback(void)
+{
+	printf("\r\nthe vector has no elements when you temp to insert \r\n    ");
+}
+
+/**
+ * @brief This function will callback the handler that container has no elements when the container temp to erase.
+ *
+ * @param vector the pointer to the container struct
+ * @param position the position of element,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void vector_control_configration_exception_default_full_callback(void)
+{
+	printf("\r\nthe vector has no elements when you temp to erase \r\n    ");
 }

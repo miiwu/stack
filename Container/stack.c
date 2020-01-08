@@ -113,7 +113,7 @@ struct stack_control_t stack_ctrl =
 
 void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 									 enum container_type type,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
+									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(stack);
@@ -155,7 +155,7 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 		return;
 	}
 
-	container_ctrl->configuration.init(&container, element_size, string_type, assign, free);/* Initialize the specified container struct */
+	container_ctrl->configuration.init(&container, element_size, assign, free);/* Initialize the specified container struct */
 
 	stack_alloced->container_type_id = STACK;												/* Assign stack structure					*/
 	stack_alloced->attach = false;
@@ -165,7 +165,8 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 
 	*stack = stack_alloced;
 
-	printf("init.stack block : %p \r\n", stack_alloced);									/* Debug only								*/
+	printf("init.stack allocator : %p \r\n    ", allocator);									/* Debug only								*/
+	printf("init.stack block : %p \r\n    ", stack_alloced);
 }
 
 /**
@@ -178,11 +179,10 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
  * @return NONE
  */
 
-void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void **container, void *func_addr_table)
+void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void *container, void *func_addr_table)
 {
 	assert(stack);
 	assert(container);
-	assert(*container);
 	assert(func_addr_table);
 
 	STACK_ALLOCATOR_TYPEDEF_PTR
@@ -197,7 +197,6 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void **containe
 																								will be allocate and assign to the stack 	*/
 
 	if (NULL == stack ||																	/* Check if stack point to NULL			*/
-		NULL == *container ||																/* Check if stack point to NULL			*/
 		NULL == func_addr_table ||															/* Check if stack point to NULL			*/
 		NULL == stack_alloced) {															/* Check if data_pack_alloced point to NULL	*/
 		return;
@@ -211,7 +210,7 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void **containe
 
 	*stack = stack_alloced;
 
-	printf("init.stack block : %p \r\n", stack_alloced);									/* Debug only								*/
+	printf("init.stack block : %p \r\n    ", stack_alloced);									/* Debug only								*/
 }
 
 /**
@@ -232,9 +231,12 @@ void stack_control_configration_destroy(STACK_TYPEDEF_PPTR stack)
 	STACK_ALLOCATOR_TYPEDEF_PTR
 		allocator = (*stack)->allocator;													/* Variables pointer to	the allocator struct */
 
+	printf("destroy.stack container : %p \r\n    ", (*stack)->container);
+
 	(*stack)->container_control->configuration.destroy(&(*stack)->container);				/* Destroy the container */
 
-	printf("destroy.stack block : %p \r\n", (*stack));
+	printf("destroy.stack allocator : %p \r\n    ", (*stack)->allocator);
+	printf("destroy.stack block : %p \r\n    ", (*stack));
 
 	allocator_ctrl.deallocate(allocator, (*stack), 1);										/* Deallocate #2 */
 
@@ -304,7 +306,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_size(STACK_TYPEDEF_PTR sta
 	void
 		*container = NULL;																	/* Variables pointer to	the specified container struct */
 
-	printf("stack.size : %d \r\n", stack->container_control->capacity.size(stack->container));
+	printf("stack.size : %d \r\n    ", stack->container_control->capacity.size(stack->container));
 
 	return stack->container_control->capacity.size(stack->container);						/* Get the number of elements in the container */
 }

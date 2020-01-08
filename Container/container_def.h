@@ -73,7 +73,7 @@ struct container_control_t {
 	struct {
 		/* @brief This function will initialize the container struct and the specified container.		*/
 		void (*init)(void **container,
-					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
+					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will destroy the container struct. */
@@ -145,7 +145,7 @@ inline int *container_control_convert_type_to_func_addr_table(enum container_typ
  * @brief This array will contain all the universal vector functions address.
  */
 
-extern int vector_function_address_tables[];
+extern void *vector_function_address_tables[];
 
 /*
 *********************************************************************************************************

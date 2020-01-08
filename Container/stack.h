@@ -51,12 +51,12 @@ struct stack_control_t {
 		/* @brief This function will initialize the stack struct and the specified container. */
 		void (*init)(STACK_TYPEDEF_PPTR stack,
 					 enum container_type type,
-					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
+					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will initialize the stack struct and attach to the specified container. */
 		void (*attach)(STACK_TYPEDEF_PPTR stack,
-					   void **container, void *func_addr_table);
+					   void *container, void *func_addr_table);
 
 		/* @brief This function will destroy the stack struct. */
 		void (*destroy)(STACK_TYPEDEF_PPTR stack);
@@ -122,7 +122,7 @@ struct stack_control_t {
 
 void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 									 enum container_type type,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
+									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -135,7 +135,8 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
  * @return NONE
  */
 
-void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void **container, void *func_addr_table);
+void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
+                                       void *container, void *func_addr_table);
 
 /**
  * @brief This function will destroy the stack struct

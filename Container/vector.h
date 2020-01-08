@@ -57,60 +57,60 @@ struct vector_control_t {
 	struct {
 		/* @brief This function will initialize the vector struct.                                      */
 		void (*init)(VECTOR_TYPEDEF_PPTR vector,
-					 CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_size, bool string_type,
+					 CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will destroy the vector struct and free the space.                      */
 		void (*destroy)(VECTOR_TYPEDEF_PPTR vector);
 
 		/* @brief This function will configure the vector element handler.                              */
-		void (*element_handler)(VECTOR_TYPEDEF_PTR vector,
+		void (*element_handler)(const VECTOR_TYPEDEF_PTR vector,
 								void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will configure the vector exception callback.                           */
-		void (*exception)(VECTOR_TYPEDEF_PTR vector,
+		void (*exception)(const VECTOR_TYPEDEF_PTR vector,
 						 void (*empty)(void), void (*full)(void));
 	}configuration;
 
 	struct {
 		/* @brief This function will initialize the vector struct.                                      */
-		void (*begin)(VECTOR_TYPEDEF_PTR vector);
+		void (*begin)(const VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will initialize the vector struct.                                      */
-		void (*end)(VECTOR_TYPEDEF_PTR vector);
+		void (*end)(const VECTOR_TYPEDEF_PTR vector);
 	}iterators;
 
 	struct {
 		/* @brief This function will returns a reference to the element
 				  at specified location position, with bounds checking.                                 */
-		void *(*at)(VECTOR_TYPEDEF_PTR vector,
+		void *(*at)(const VECTOR_TYPEDEF_PTR vector,
 					CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 		/* @brief This function will returns pointer to the underlying array
 				  serving as element storage.                                                           */
-		void *(*data)(VECTOR_TYPEDEF_PTR vector);
+		void *(*data)(const VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns a reference to the first element in the container.         */
-		void *(*front)(VECTOR_TYPEDEF_PTR vector);
+		void *(*front)(const VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns reference to the last element in the container.            */
-		void *(*back)(VECTOR_TYPEDEF_PTR vector);
+		void *(*back)(const VECTOR_TYPEDEF_PTR vector);
 	}element_access;
 
 	struct {
 		/* @brief This function will checks if the container has no elements.                           */
-		bool (*empty)(VECTOR_TYPEDEF_PTR vector);
+		bool (*empty)(const VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns the number of elements in the container.                   */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*size)(VECTOR_TYPEDEF_PTR vector);
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*size)(const VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*max_size)(VECTOR_TYPEDEF_PTR vector);
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*max_size)(const VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns the number of elements
 				  that the container has currently allocated space for.                                 */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*capacity)(VECTOR_TYPEDEF_PTR vector);
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*capacity)(const VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will increase the capacity of the vector to a size
 				  that's greater or equal to new_cap. */
@@ -123,22 +123,22 @@ struct vector_control_t {
 
 	struct {
 		/* @brief This function will erases all elements from the container.                            */
-		void (*clear)(VECTOR_TYPEDEF_PTR vector);
+		void (*clear)(const VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will inserts elements at the specified location in the container.       */
-		void *(*insert)(VECTOR_TYPEDEF_PTR vector,
+		void *(*insert)(const VECTOR_TYPEDEF_PTR vector,
 						CONTAINER_GLOBAL_CFG_SIZE_TYPE position, CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
 
 		/* @brief This function will erases the specified elements from the container.                  */
-		void (*erase)(VECTOR_TYPEDEF_PTR vector,
+		void (*erase)(const VECTOR_TYPEDEF_PTR vector,
 					  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *data);
 
 		/* @brief This function will appends the given element source to the end of the container.      */
-		void (*push_back)(VECTOR_TYPEDEF_PTR vector,
+		void (*push_back)(const VECTOR_TYPEDEF_PTR vector,
 						  void *source);
 
 		/* @brief This function will removes the last element of the container.                         */
-		void (*pop_back)(VECTOR_TYPEDEF_PTR vector,
+		void (*pop_back)(const VECTOR_TYPEDEF_PTR vector,
 						 void *destination);
 
 		/* @brief This function will resizes the container to contain count elements.                   */
@@ -176,7 +176,7 @@ struct vector_control_t {
  */
 
 void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size, bool string_type,
+									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 									   void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -199,7 +199,7 @@ void vector_control_configuration_destroy(VECTOR_TYPEDEF_PPTR vector);
  * @return NONE
  */
 
-void vector_control_configuration_element_handler(VECTOR_TYPEDEF_PTR vector,
+void vector_control_configuration_element_handler(const VECTOR_TYPEDEF_PTR vector,
 												  void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -212,7 +212,7 @@ void vector_control_configuration_element_handler(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_configuration_exception(VECTOR_TYPEDEF_PTR vector,
+void vector_control_configuration_exception(const VECTOR_TYPEDEF_PTR vector,
 										   void (*empty)(void), void (*full)(void));
 
 /**
@@ -226,7 +226,7 @@ void vector_control_configuration_exception(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_iterators_front(VECTOR_TYPEDEF_PTR vector);
+void vector_control_iterators_front(const VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will
@@ -236,7 +236,7 @@ void vector_control_iterators_front(VECTOR_TYPEDEF_PTR vector);
  * @return NONE
  */
 
-void vector_control_iterators_back(VECTOR_TYPEDEF_PTR vector);
+void vector_control_iterators_back(const VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will returns a reference to the element at specified location position, with bounds checking.
@@ -247,7 +247,7 @@ void vector_control_iterators_back(VECTOR_TYPEDEF_PTR vector);
  * @return NONE
  */
 
-void *vector_control_element_access_at(VECTOR_TYPEDEF_PTR vector,
+void *vector_control_element_access_at(const VECTOR_TYPEDEF_PTR vector,
 									   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 /**
@@ -258,7 +258,7 @@ void *vector_control_element_access_at(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void *vector_control_element_access_front(VECTOR_TYPEDEF_PTR vector);
+void *vector_control_element_access_front(const VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will returns reference to the last element in the container.
@@ -268,7 +268,7 @@ void *vector_control_element_access_front(VECTOR_TYPEDEF_PTR vector);
  * @return NONE
  */
 
-void *vector_control_element_access_back(VECTOR_TYPEDEF_PTR vector);
+void *vector_control_element_access_back(const VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will returns pointer to the underlying array serving as element storage.
@@ -278,7 +278,7 @@ void *vector_control_element_access_back(VECTOR_TYPEDEF_PTR vector);
  * @return pointer to the underlying array serving as element storage
  */
 
-void *vector_control_element_access_data(VECTOR_TYPEDEF_PTR vector);
+void *vector_control_element_access_data(const VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will checks if the container has no elements.
@@ -289,7 +289,7 @@ void *vector_control_element_access_data(VECTOR_TYPEDEF_PTR vector);
  *  if the container has no elements
  */
 
-bool vector_control_capacity_empty(VECTOR_TYPEDEF_PTR vector);
+bool vector_control_capacity_empty(const VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will returns the number of elements in the container.
@@ -300,7 +300,7 @@ bool vector_control_capacity_empty(VECTOR_TYPEDEF_PTR vector);
  *  the number of elements in the container
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_size(VECTOR_TYPEDEF_PTR vector);
+CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_size(const VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will returns the maximum number of elements the container.
@@ -312,7 +312,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_size(VECTOR_TYPEDEF_PTR v
  *  the maximum number of elements the container
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_max_size(VECTOR_TYPEDEF_PTR vector);
+CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_max_size(const VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will returns the number of elements that the container has currently allocated space for.
@@ -323,7 +323,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_max_size(VECTOR_TYPEDEF_P
  *  the number of elements that the container has currently allocated space for
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_capacity(VECTOR_TYPEDEF_PTR vector);
+CONTAINER_GLOBAL_CFG_SIZE_TYPE vector_control_capacity_capacity(const VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will increase the capacity of the vector to a size that's greater or equal to new_cap.
@@ -356,7 +356,7 @@ void vector_control_capacity_shrink_to_fit(VECTOR_TYPEDEF_PPTR vector);
  * @return NONE
  */
 
-void vector_control_modifiers_clear(VECTOR_TYPEDEF_PTR vector);
+void vector_control_modifiers_clear(const VECTOR_TYPEDEF_PTR vector);
 
 /**
  * @brief This function will inserts elements at the specified location in the container.
@@ -370,7 +370,7 @@ void vector_control_modifiers_clear(VECTOR_TYPEDEF_PTR vector);
  *  the address of element the asserted
  */
 
-void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
+void *vector_control_modifiers_insert(const VECTOR_TYPEDEF_PTR vector,
 									  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
 
 /**
@@ -383,7 +383,7 @@ void *vector_control_modifiers_insert(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_erase(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_erase(const VECTOR_TYPEDEF_PTR vector,
 									CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination);
 
 /**
@@ -395,7 +395,7 @@ void vector_control_modifiers_erase(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_push_back(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_push_back(const VECTOR_TYPEDEF_PTR vector,
 										void *source);
 
 /**
@@ -407,7 +407,7 @@ void vector_control_modifiers_push_back(VECTOR_TYPEDEF_PTR vector,
  * @return NONE
  */
 
-void vector_control_modifiers_pop_back(VECTOR_TYPEDEF_PTR vector,
+void vector_control_modifiers_pop_back(const VECTOR_TYPEDEF_PTR vector,
 									   void *destination);
 
 /**

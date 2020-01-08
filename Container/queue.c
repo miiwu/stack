@@ -1,4 +1,5 @@
 #include "queue.h"
+/*
 
 bool queue_control_sequence_queue_init(SEQUENCE_QUEUE_TYPEDEF_PTR sequence_queue, size_t depth);
 bool queue_control_sequence_queue_exception_config(SEQUENCE_QUEUE_TYPEDEF_PTR chain_queue,
@@ -234,13 +235,13 @@ bool queue_control_chain_queue_exception_config(CHAIN_QUEUE_TYPEDEF_PTR chain_qu
 		switch (cfg_queue[cnt])
 		{
 			case 11:
-				chain_queue->expection.full_queue = (void*)va_arg(va_ptr, int);
+				chain_queue->expection.full_queue = (void*)va_arg(va_ptr, void *);
 				break;
 			case 21:
-				chain_queue->expection.null_queue = (void*)va_arg(va_ptr, int);
+				chain_queue->expection.null_queue = (void*)va_arg(va_ptr, void *);
 				break;
 			case 31:
-				chain_queue->expection.lack_heap = (void*)va_arg(va_ptr, int);
+				chain_queue->expection.lack_heap = (void*)va_arg(va_ptr, void *);
 				break;
 			default:
 				break;
@@ -505,3 +506,4 @@ void chain_queue_default_lack_heap_expection(void)
 //
 //	return;
 //}
+*/

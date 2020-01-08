@@ -137,7 +137,7 @@ void allocator_control_configration_destroy(ALLOCATOR_TYPEDEF_PPTR allocator)
 	assert(allocator);
 
     if (0 < (*allocator)->info.capacity) {
-        printf("destroy.allocator capacity : %d \r\n", (*allocator)->info.capacity);
+        printf("destroy.allocator capacity : %ld \r\n", (size_t)(*allocator)->info.capacity);
     }
 
     free((*allocator));																	            /* Free #1 */
@@ -176,8 +176,8 @@ void *allocator_control_allocate(ALLOCATOR_TYPEDEF_PTR allocator,
 {
 	assert(allocator);
 
-	void
-		**block_alloced = calloc(count, size);			                        /* Malloc #2 : allocates the storage to block_alloced */
+    void
+        **block_alloced = (void **)calloc(count, size);			                        /* Malloc #2 : allocates the storage to block_alloced */
 
     if (NULL == block_alloced) {
         allocator->exception.lack_of_memory();
@@ -207,6 +207,8 @@ void allocator_control_deallocate(ALLOCATOR_TYPEDEF_PTR allocator,
 	assert(allocator);
 
     allocator->info.capacity--;
+
+    printf("allocator.deallocate : %p\r\n", block);
 
     free(block);																	            /* Free #1 */
 }
