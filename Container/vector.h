@@ -3,7 +3,7 @@
 *                                               MODULE
 *
 * Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
-*               through use of the AT definition module present pre-processor macro definition.
+*               through use of the definition module present pre-processor macro definition.
 *********************************************************************************************************
 */
 
@@ -32,8 +32,6 @@
 
 /* Configure    the type of allocator.                                                                  */
 #define VECTOR_CFG_ALLOCATOR_TYPE                               ALLOCATOR_TYPEDEF
-
-#pragma warning( disable : 4996)
 
 /* Configure    if enable integrated structure.                                                         */
 #define VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN			    1u

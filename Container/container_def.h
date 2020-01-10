@@ -3,7 +3,7 @@
 *                                               MODULE
 *
 * Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
-*               through use of the AT definition module present pre-processor macro definition.
+*               through use of the definition module present pre-processor macro definition.
 *********************************************************************************************************
 */
 
@@ -31,8 +31,15 @@
 *********************************************************************************************************
 */
 
-/* Configure    container global size type.                                                                       */
+/* Configure    container global size type.																*/
 #define CONTAINER_GLOBAL_CFG_SIZE_TYPE															size_t
+
+/* Configure    forward list debug.																		*/
+#define CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN												1u
+
+#pragma warning( disable : 4996)
+#pragma warning( disable : 26812)
+
 
 /*
 *********************************************************************************************************
@@ -57,6 +64,7 @@ enum container_category {
 enum container_type {
 	VECTOR = SEQUENCE_CONTAINERS,
 	DEQUE,
+	FORWARD_LIST,
 	LIST,
 
 	SET = ASSOCIATIVE_CONTAINERS,
@@ -66,6 +74,14 @@ enum container_type {
 
 	STACK = CONTAINERS_ADAPTORS,
 	QUEUE,
+};
+
+struct element_handler_t {
+		/* @brief This variables will point to the address of the vector element assign handler.		*/
+	void (*assign)(void *dst, void *src);
+
+	/* @brief This variables will point to the address of the vector element free handler.			*/
+	void (*free)(void *dst);
 };
 
 /* Configure the enum universal function type of container.												*/

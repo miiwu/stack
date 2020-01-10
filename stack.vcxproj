@@ -20,10 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Container\allocator.c" />
+    <ClCompile Include="Container\forward_list.c" />
     <ClCompile Include="Container\queue.c" />
     <ClCompile Include="Container\stack.c" />
     <ClCompile Include="Container\vector.c" />
+    <ClCompile Include="Debug Component\debug_capture_stack_back_trace.c" />
     <ClCompile Include="Main\main.c" />
+    <ClCompile Include="Main\main_forward_list.c" />
     <ClCompile Include="Main\main_list.c" />
     <ClCompile Include="Main\main_queue.c" />
     <ClCompile Include="Main\main_stack.c" />
@@ -33,9 +36,11 @@
     <ClInclude Include="Container\allocator.h" />
     <ClInclude Include="Container\container.h" />
     <ClInclude Include="Container\container_def.h" />
+    <ClInclude Include="Container\forward_list.h" />
     <ClInclude Include="Container\queue.h" />
     <ClInclude Include="Container\stack.h" />
     <ClInclude Include="Container\vector.h" />
+    <ClInclude Include="Debug Component\debug_capture_stack_back_trace.h" />
     <ClInclude Include="Main\main_cfg.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -91,7 +96,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Container;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Container;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>

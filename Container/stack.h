@@ -3,7 +3,7 @@
 *                                               MODULE
 *
 * Note(s) : (1) This STACK definition header file is protected from multiple pre-processor inclusion
-*               through use of the AT definition module present pre-processor macro definition.
+*               through use of the definition module present pre-processor macro definition.
 *********************************************************************************************************
 */
 

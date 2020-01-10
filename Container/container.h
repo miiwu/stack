@@ -5,6 +5,8 @@
 
 #include "vector.h"
 
+#include "forward_list.h"
+
 #include "stack.h"
 
 #endif // __CONTAINER_H

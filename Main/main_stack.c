@@ -1,5 +1,3 @@
-#include "stack.h"
-
 #include "main_cfg.h"
 
 void main_stack(void)

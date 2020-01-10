@@ -3,7 +3,7 @@
 *                                               MODULE
 *
 * Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
-*               through use of the AT definition module present pre-processor macro definition.
+*               through use of the definition module present pre-processor macro definition.
 *********************************************************************************************************
 */
 
@@ -37,6 +37,9 @@
 
 /* Configure if enable integrated structure.                                                            */
 #define ALLOCATOR_CFG_INTERGRATED_STRUCTURE_MODE_EN			                    1u
+
+/* Configure if enable allocator debug control structure.                                               */
+#define ALLOCATOR_CFG_DEBUG_MODE_EN			                                    1u
 
 /*
 *********************************************************************************************************
@@ -81,7 +84,16 @@ struct allocator_control_t {
 					   void *block, ALLOCATOR_SIZE_TYPEDEF size);
 };
 
-#endif
+#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+struct allocator_debug_control_t {
+	/* @brief This function will detect memory free status of the allocator struct.					    */
+	ALLOCATOR_SIZE_TYPEDEF(*detect_memory_free_status)(ALLOCATOR_TYPEDEF_PTR allocator);
+};
+
+#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+#endif // (ALLOCATOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 /*
 *********************************************************************************************************
@@ -149,7 +161,21 @@ void *allocator_control_allocate(ALLOCATOR_TYPEDEF_PTR allocator,
  */
 
 void allocator_control_deallocate(ALLOCATOR_TYPEDEF_PTR allocator,
-								  void *block, ALLOCATOR_SIZE_TYPEDEF size);
+								  void *block, ALLOCATOR_SIZE_TYPEDEF count);
+
+#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+/**
+ * @brief This function will detect memory free status of the allocator struct.
+ *
+ * @param allocator the allocator
+ *
+ * @return the memory free status of the allocator struct
+ */
+
+ALLOCATOR_SIZE_TYPEDEF allocator_control_memory_detect_memory_free_status(ALLOCATOR_TYPEDEF_PTR allocator);
+
+#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
 /*
 *********************************************************************************************************
@@ -157,7 +183,17 @@ void allocator_control_deallocate(ALLOCATOR_TYPEDEF_PTR allocator,
 *********************************************************************************************************
 */
 
+#if (ALLOCATOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
+
 extern struct allocator_control_t allocator_ctrl;
+
+#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+extern struct allocator_debug_control_t allocator_dbg_ctrl;
+
+#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+#endif // (ALLOCATOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 /*
 *********************************************************************************************************

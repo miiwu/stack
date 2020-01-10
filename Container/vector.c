@@ -274,7 +274,7 @@ void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
 																	 1, sizeof(struct vector_t));	/* Allocate #1 */
 
 	void
-		*data_pack_alloced = allocator_ctrl.allocate(allocator, 
+		*data_pack_alloced = allocator_ctrl.allocate(allocator,
 													 VECTOR_CFG_DEFAULT_MAX_SIZE, element_size);	/* Allocate #2 */
 
 	if (NULL == vector ||																	/* Check if vector point to NULL			*/
@@ -333,9 +333,9 @@ void vector_control_configuration_destroy(VECTOR_TYPEDEF_PPTR vector)
 
 	printf("destroy.vector data block : %p \r\n    ", (*vector)->data);
 
-	allocator_ctrl.deallocate(allocator, (*vector)->data, 1);																	/* Deallocate #2 */
+	allocator_ctrl.deallocate(allocator, (*vector)->data, (*vector)->info.max_size);	/* Deallocate #2 */
 
-	(*vector)->container_type_id = 0u;												/* Assign vector structure					*/
+	(*vector)->container_type_id = 0u;													/* Assign vector structure					*/
 
 	(*vector)->info.max_size = 0u;
 	(*vector)->info.size = 0u;
@@ -692,7 +692,7 @@ void *vector_control_modifiers_insert(const VECTOR_TYPEDEF_PTR vector,
 		size_t
 			source_addr = (size_t)*source + element_pos * vector->info.mem_size;
 
-		vector_control_modifiers_set(vector, element_pos + position, (void*)source_addr);
+		vector_control_modifiers_set(vector, element_pos + position, (void *)source_addr);
 
 		printf("vector.insert -> source no.%d : %s \r\n    ", element_pos, (char *)source_addr);
 	}
@@ -704,9 +704,9 @@ void *vector_control_modifiers_insert(const VECTOR_TYPEDEF_PTR vector,
 		vector_control_modifiers_set(vector, element_pos, (void *)element_plus_insert_addr);
 	}
 
-	allocator_ctrl.deallocate(vector->allocator, element_block,1);;												/* Deallocate #3 */
+	allocator_ctrl.deallocate(vector->allocator, element_block, 1);;												/* Deallocate #3 */
 	allocator_ctrl.deallocate(vector->allocator, element, 1);													/* Deallocate #4 */
-	element_block = NULL;	
+	element_block = NULL;
 	element = NULL;																								/* Assign the element to NULL */
 
 	vector->info.size += amount;																				/* Change the capacity of vector */
@@ -867,10 +867,10 @@ void vector_control_modifiers_copy(VECTOR_TYPEDEF_PPTR destination,
 
 	(*destination)->info.size = source->info.size;
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_amt = 0; element_amt < source->info.size; element_amt++) {		
-		vector_control_modifiers_set(*destination, 
-									 element_amt, 
-									 (void*)((size_t)source_data + element_amt * source->info.mem_size));/* Copy the destination to source */
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_amt = 0; element_amt < source->info.size; element_amt++) {
+		vector_control_modifiers_set(*destination,
+									 element_amt,
+									 (void *)((size_t)source_data + element_amt * source->info.mem_size));/* Copy the destination to source */
 	}
 }
 
@@ -978,7 +978,7 @@ void vector_control_modifiers_del(const VECTOR_TYPEDEF_PTR vector,
 {
 	assert(vector);
 	assert(0 <= position);
-
+	
 	vector_control_modifiers_set(vector, position, "");
 
 	vector->info.size--;
