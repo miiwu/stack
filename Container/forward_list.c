@@ -25,7 +25,7 @@
 */
 
 /* Configure    forward_list type.                                                                            */
-typedef FORWARD_LIST_CFG_ALLOCATOR_TYPE *FORWARD_LIST_ALLOCATOR_TYPEDEF_PTR;
+typedef FORWARD_LIST_CFG_ALLOCATOR_PTR_TYPE FORWARD_LIST_ALLOCATOR_TYPEDEF_PTR;
 
 /**
  * @brief This struct is the forward_list structure module

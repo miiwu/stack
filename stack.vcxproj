@@ -31,6 +31,8 @@
     <ClCompile Include="Main\main_queue.c" />
     <ClCompile Include="Main\main_stack.c" />
     <ClCompile Include="Main\main_vector.c" />
+    <ClCompile Include="main_allocator.c" />
+    <ClCompile Include="main_debug_component.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\allocator.h" />

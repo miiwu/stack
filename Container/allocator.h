@@ -51,7 +51,6 @@
 typedef ALLOCATOR_CFG_SIZE_TYPE ALLOCATOR_SIZE_TYPEDEF;
 
 /* TODO .                                                                                               */
-typedef struct allocator_t ALLOCATOR_TYPEDEF;
 typedef struct allocator_t *ALLOCATOR_TYPEDEF_PTR;
 
 /* TODO .                                                                                               */

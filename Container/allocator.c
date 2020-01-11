@@ -145,11 +145,11 @@ void allocator_control_configration_init(ALLOCATOR_TYPEDEF_PPTR allocator,
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	printf("allocator.init:allocator block : %p \r\n", allocator_alloced);
+	//printf("allocator.init:allocator block : %p \r\n", allocator_alloced);
 
 	debug_capture_stack_back_trace_init(&allocator_alloced->capture_stack_back_trace, 100);
 
-	printf("allocator.init:capture stack back trace block : %p \r\n", allocator_alloced->capture_stack_back_trace);
+	//printf("allocator.init:capture stack back trace block : %p \r\n", allocator_alloced->capture_stack_back_trace);
 
 	#endif
 
@@ -157,6 +157,11 @@ void allocator_control_configration_init(ALLOCATOR_TYPEDEF_PPTR allocator,
 	allocator_alloced->exception.lack_of_memory = lack_of_memory;
 
 	(*allocator) = allocator_alloced;
+
+	printf("hash:%p symbol:%p line:%p allocator.init \r\n",
+		(*allocator)->capture_stack_back_trace->back_trace_hash,
+		   *(*allocator)->capture_stack_back_trace->back_trace_symbol,
+		   *(*allocator)->capture_stack_back_trace->back_trace_line);
 }
 
 /**
@@ -176,7 +181,7 @@ void allocator_control_configration_destroy(ALLOCATOR_TYPEDEF_PPTR allocator)
 	printf("allocator.destroy:memory free status : %d \r\n", (*allocator)->info.size);
 
 	if (0 < (*allocator)->info.size) {
-		debug_capture_stack_back_trace_to_symbol((*allocator)->capture_stack_back_trace);
+		//debug_capture_stack_back_trace_to_symbol((*allocator)->capture_stack_back_trace);
 	}
 
 	debug_capture_stack_back_trace_destroy(&(*allocator)->capture_stack_back_trace);
@@ -232,11 +237,7 @@ void *allocator_control_allocate(ALLOCATOR_TYPEDEF_PTR allocator,
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	debug_capture_stack_back_trace(allocator->capture_stack_back_trace, 2, 64);
-
-	printf("allocator.allocate:top back trace block hash : %d \r\n", *allocator->capture_stack_back_trace->back_trace_hash);
-
-	debug_capture_stack_back_trace(allocator->capture_stack_back_trace, 2, 64);
+	debug_capture_stack_back_trace_to_symbol(allocator->capture_stack_back_trace, 2, 64);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 

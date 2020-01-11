@@ -69,6 +69,12 @@
     <ClCompile Include="Main\main_forward_list.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
+    <ClCompile Include="main_allocator.c">
+      <Filter>源文件\main</Filter>
+    </ClCompile>
+    <ClCompile Include="main_debug_component.c">
+      <Filter>源文件\main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\allocator.h">

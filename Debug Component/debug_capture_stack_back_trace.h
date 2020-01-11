@@ -48,8 +48,11 @@
 /* Configure the type of the capture stack back trace size.                                             */
 #define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE	        size_t
 
+/* Configure the max depth of the capture stack back trace.                                             */
+#define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH	    64u
+
 /* Configure if enable the capture stack back trace debug mode.                                         */
-#define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN	    1u
+#define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN	    0u
 
 /*
 *********************************************************************************************************
@@ -57,14 +60,26 @@
 *********************************************************************************************************
 */
 
-/* Configure    the stack back trace type.                                                              */
-typedef void *stack_back_trace_t[64];
+/* Configure    the back trace type.                                                              */
+typedef void *back_trace_t[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH];
+
+/* Configure    the back trace hash type.                                                              */
+typedef ULONG back_trace_hash_t;
+
+/* Configure    the back trace symbol type.                                                              */
+typedef SYMBOL_INFO *back_trace_symbol_t;
+
+/* Configure    the back trace line type.                                                              */
+typedef IMAGEHLP_LINE64 *back_trace_line_t;
 
 /**
  * @brief This struct is the capture stack back trace structure module
  */
 
 struct capture_stack_back_trace_t {
+	/* @brief This variables will record the max types.					                */
+	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE max_type_count;
+
 	/* @brief This variables will record how many types is recorded.					                */
 	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE type_count;
 
@@ -72,16 +87,16 @@ struct capture_stack_back_trace_t {
 	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE *back_trace_count;
 
 	/* @brief This variables will record the back trace.					                            */
-	stack_back_trace_t *back_trace;
+    back_trace_t *back_trace;
 
 	/* @brief This variables will record the hash value of back trace.					                */
-	ULONG *back_trace_hash;
+    back_trace_hash_t *back_trace_hash;
 
     /* @brief This variables will record the symbol description of the back trace.					    */
-    PSYMBOL_INFO *symbol;
+    back_trace_symbol_t *back_trace_symbol;
 
     /* @brief This variables will record the line description of the back trace.					    */
-    IMAGEHLP_LINE64 *line;
+    back_trace_line_t *back_trace_line;
 };
 
 /*
@@ -126,7 +141,9 @@ void debug_capture_stack_back_trace(struct capture_stack_back_trace_t *stack_bac
 									DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip,
 									DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_capture);
 
-void debug_capture_stack_back_trace_to_symbol(struct capture_stack_back_trace_t *stack_back_trace);
+void debug_capture_stack_back_trace_to_symbol(struct capture_stack_back_trace_t *stack_back_trace,
+											  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip,
+											  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_capture);
 
 /*
 *********************************************************************************************************

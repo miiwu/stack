@@ -31,7 +31,7 @@
 #define FORWARD_LIST_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE		1024u
 
 /* Configure    the type of allocator.                                                                  */
-#define FORWARD_LIST_CFG_ALLOCATOR_TYPE									ALLOCATOR_TYPEDEF
+#define FORWARD_LIST_CFG_ALLOCATOR_PTR_TYPE								ALLOCATOR_TYPEDEF_PTR
 
 /* Configure    if enable delete element equal destroy node.                                            */
 #define FORWARD_LIST_CFG_DELETE_ELEMENT_EQUAL_DESTROY_NODE_EN			1u

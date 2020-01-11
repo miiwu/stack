@@ -28,7 +28,7 @@
 */
 
 /* Configure    stack type.                                                                            */
-typedef STACK_CFG_ALLOCATOR_TYPE *STACK_ALLOCATOR_TYPEDEF_PTR;
+typedef STACK_CFG_ALLOCATOR_PTR_TYPE STACK_ALLOCATOR_TYPEDEF_PTR;
 
 struct stack_t {
 	/* @brief RESERVED This variables will record the identity code of container type.					*/

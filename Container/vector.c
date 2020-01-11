@@ -25,7 +25,7 @@
 */
 
 /* Configure    vector type.                                                                            */
-typedef VECTOR_CFG_ALLOCATOR_TYPE *VECTOR_ALLOCATOR_TYPEDEF_PTR;
+typedef VECTOR_CFG_ALLOCATOR_PTR_TYPE VECTOR_ALLOCATOR_TYPEDEF_PTR;
 
 /**
  * @brief This struct is the vector structure module

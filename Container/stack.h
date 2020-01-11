@@ -28,7 +28,7 @@
 #define STACK_CFG_DEFAULT_ADAPT_CONTAINER_TYPE			        VECTOR
 
 /* Configure    the type of allocator.                                                                  */
-#define STACK_CFG_ALLOCATOR_TYPE                                ALLOCATOR_TYPEDEF
+#define STACK_CFG_ALLOCATOR_PTR_TYPE                            ALLOCATOR_TYPEDEF_PTR
 
 /* Configure    if enable integrated structure.                                                         */
 #define STACK_CFG_INTERGRATED_STRUCTURE_MODE_EN			        1u
