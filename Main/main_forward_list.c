@@ -44,7 +44,7 @@ void main_forward_list(void)
 
 
 	printf("\r\nforward list.clear start\r\n");
-		forward_list_ctrl.modifiers.clear(forward_list);
+	forward_list_ctrl.modifiers.clear(forward_list);
 
 
 	printf("\r\nforward list.destroy start\r\n");

@@ -47,7 +47,10 @@ struct allocator_t {
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
 	/* @brief This variables will used to record the stack back trace.			                        */
-	struct capture_stack_back_trace_t *capture_stack_back_trace;
+	STACK_BACK_TRACE_TYPEDEF_PTR capture_stack_back_trace;
+
+	/* @brief This variables will used to record the link status.										*/
+	STACK_BACK_TRACE_LINK_TYPEDEF_PTR capture_stack_back_trace_link;
 
 	#endif
 };
@@ -106,6 +109,8 @@ struct allocator_debug_control_t allocator_dbg_ctrl = {
 	allocator_control_memory_detect_memory_free_status
 };
 
+DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE g_allocator_dbg_link_index = 0;
+
 #endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
 #endif // (ALLOCATOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
@@ -145,11 +150,8 @@ void allocator_control_configration_init(ALLOCATOR_TYPEDEF_PPTR allocator,
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	//printf("allocator.init:allocator block : %p \r\n", allocator_alloced);
-
 	debug_capture_stack_back_trace_init(&allocator_alloced->capture_stack_back_trace, 100);
-
-	//printf("allocator.init:capture stack back trace block : %p \r\n", allocator_alloced->capture_stack_back_trace);
+	debug_capture_stack_back_trace_link_init(&allocator_alloced->capture_stack_back_trace_link, 256);
 
 	#endif
 
@@ -157,11 +159,6 @@ void allocator_control_configration_init(ALLOCATOR_TYPEDEF_PPTR allocator,
 	allocator_alloced->exception.lack_of_memory = lack_of_memory;
 
 	(*allocator) = allocator_alloced;
-
-	printf("hash:%p symbol:%p line:%p allocator.init \r\n",
-		(*allocator)->capture_stack_back_trace->back_trace_hash,
-		   *(*allocator)->capture_stack_back_trace->back_trace_symbol,
-		   *(*allocator)->capture_stack_back_trace->back_trace_line);
 }
 
 /**
@@ -185,6 +182,7 @@ void allocator_control_configration_destroy(ALLOCATOR_TYPEDEF_PPTR allocator)
 	}
 
 	debug_capture_stack_back_trace_destroy(&(*allocator)->capture_stack_back_trace);
+	debug_capture_stack_back_trace_link_destroy(&(*allocator)->capture_stack_back_trace_link);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
@@ -237,7 +235,8 @@ void *allocator_control_allocate(ALLOCATOR_TYPEDEF_PTR allocator,
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	debug_capture_stack_back_trace_to_symbol(allocator->capture_stack_back_trace, 2, 64);
+	g_allocator_dbg_link_index = debug_capture_stack_back_trace_link_mark(allocator->capture_stack_back_trace_link,
+																		  allocator->capture_stack_back_trace, 1);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
@@ -266,7 +265,14 @@ void allocator_control_deallocate(ALLOCATOR_TYPEDEF_PTR allocator,
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	//printf("allocator.deallocate: : %p\r\n", block);
+	back_trace_hash_t hash = debug_capture_stack_back_trace_link_link(allocator->capture_stack_back_trace_link, g_allocator_dbg_link_index, 1);
+
+	if (0 != hash) {
+		debug_capture_stack_back_trace_reduce_count(allocator->capture_stack_back_trace, hash);
+	} else {
+		while (true) {
+		}
+	}
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
