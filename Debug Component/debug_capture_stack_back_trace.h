@@ -62,16 +62,21 @@
 */
 
 /* Configure    the back trace type.                                                                    */
-typedef void *single_back_trace_t, **back_trace_t;
+typedef void
+*single_back_trace_t,
+*back_trace_t[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH],
+*(*back_trace_pt)[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH];
 
 /* Configure    the back trace frame type.                                                              */
-typedef WORD back_trace_frame_t;
+typedef WORD back_trace_frame_t, *back_trace_frame_pt;
 
 /* Configure    the back trace hash type.                                                               */
-typedef ULONG back_trace_hash_t;
+typedef ULONG back_trace_hash_t, *back_trace_hash_pt;
 
 /* Configure    the back trace symbol type.                                                             */
-typedef SYMBOL_INFO *back_trace_symbol_t;
+typedef struct stack_back_trace_string_t
+STACK_BACK_TRACE_STRING_TYPEDEF[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH],
+(*STACK_BACK_TRACE_STRING_TYPEDEF_PTR)[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH];
 
 /* Configure    the back trace line type.                                                               */
 typedef IMAGEHLP_LINE64 *back_trace_line_t;
@@ -121,8 +126,7 @@ void debug_capture_stack_back_trace_destroy(STACK_BACK_TRACE_TYPEDEF_PTR *stack_
  */
 
 void debug_capture_stack_back_trace(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace,
-									DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip,
-									DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_capture);
+									DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip);
 
 /**
  * @brief This function will reduce the count of the capture stack back trace type.
@@ -146,7 +150,23 @@ void debug_capture_stack_back_trace_reduce_count(STACK_BACK_TRACE_TYPEDEF_PTR st
  * @return NONE
  */
 
-void debug_capture_stack_back_trace_convert_to_symbol(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace);
+void debug_capture_stack_back_trace_convert_to_string(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace);
+
+/**
+ * @brief This function will return the specified hash.
+ *
+ * @param stack_back_trace the pointer to the capture stack back trace struct
+ * @param hash the hash of the capture stack back trace
+ *
+ * @return NONE
+ */
+
+back_trace_hash_t debug_capture_stack_back_trace_get_hash(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
+														  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index);
+
+back_trace_t *debug_capture_stack_back_trace_get_trace(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
+													   DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index,
+													   DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE sub_index);
 
 /**
  * @brief This function will initialize a link struct.
