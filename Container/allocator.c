@@ -46,9 +46,6 @@ struct allocator_t {
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	/* @brief This variables will used to record the stack back trace.			                        */
-	STACK_BACK_TRACE_TYPEDEF_PTR capture_stack_back_trace;
-
 	/* @brief This variables will used to record the link status.										*/
 	STACK_BACK_TRACE_LINK_TYPEDEF_PTR capture_stack_back_trace_link;
 
@@ -150,8 +147,7 @@ void allocator_control_configration_init(ALLOCATOR_TYPEDEF_PPTR allocator,
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	//debug_capture_stack_back_trace_init(&allocator_alloced->capture_stack_back_trace, 100);
-	//debug_capture_stack_back_trace_link_init(&allocator_alloced->capture_stack_back_trace_link, 256);
+	debug_capture_stack_back_trace_link_init(&allocator_alloced->capture_stack_back_trace_link, 256);
 
 	#endif
 
@@ -178,11 +174,26 @@ void allocator_control_configration_destroy(ALLOCATOR_TYPEDEF_PPTR allocator)
 	printf("allocator.destroy:memory free status : %d \r\n", (*allocator)->info.size);
 
 	if (0 < (*allocator)->info.size) {
-		//debug_capture_stack_back_trace_to_symbol((*allocator)->capture_stack_back_trace);
+		//debug_capture_stack_back_trace_convert_to_string((*allocator)->capture_stack_back_trace);
+
+		printf("\r\n-----------------------------------stack trace string table begin-----------------------------------\r\n");
+		STACK_BACK_TRACE_TYPEDEF_PPTR stack_back_trace_tmp = malloc(sizeof(void *));
+		if (NULL == stack_back_trace_tmp) {
+			return;
+		}
+
+		debug_capture_stack_back_trace_link_get_trace_ptr((*allocator)->capture_stack_back_trace_link, stack_back_trace_tmp);
+
+		printf("\r\n-----------------------------------stack trace mark string table begin-----------------------------------\r\n");
+		debug_capture_stack_back_trace_convert_to_string(*(stack_back_trace_tmp + 0));
+
+		printf("\r\n-----------------------------------stack trace link string table begin-----------------------------------\r\n");
+		debug_capture_stack_back_trace_convert_to_string(*(stack_back_trace_tmp + 1));
+
+		printf("\r\n-----------------------------------stack trace string table end-----------------------------------\r\n");
 	}
 
-	//debug_capture_stack_back_trace_destroy(&(*allocator)->capture_stack_back_trace);
-	//debug_capture_stack_back_trace_link_destroy(&(*allocator)->capture_stack_back_trace_link);
+	debug_capture_stack_back_trace_link_destroy(&(*allocator)->capture_stack_back_trace_link);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
@@ -235,8 +246,7 @@ void *allocator_control_allocate(ALLOCATOR_TYPEDEF_PTR allocator,
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	//g_allocator_dbg_link_index = debug_capture_stack_back_trace_link_mark(allocator->capture_stack_back_trace_link,
-	//																	  allocator->capture_stack_back_trace, 1);
+	g_allocator_dbg_link_index = debug_capture_stack_back_trace_link_mark(allocator->capture_stack_back_trace_link, 1);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
@@ -265,14 +275,7 @@ void allocator_control_deallocate(ALLOCATOR_TYPEDEF_PTR allocator,
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	//back_trace_hash_t hash = debug_capture_stack_back_trace_link_link(allocator->capture_stack_back_trace_link, g_allocator_dbg_link_index, 1);
-
-	//if (0 != hash) {
-	//	debug_capture_stack_back_trace_reduce_count(allocator->capture_stack_back_trace, hash);
-	//} else {
-	//	while (true) {
-	//	}
-	//}
+	debug_capture_stack_back_trace_link_link(allocator->capture_stack_back_trace_link, g_allocator_dbg_link_index, 1);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 

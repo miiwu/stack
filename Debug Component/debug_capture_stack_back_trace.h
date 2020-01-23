@@ -82,7 +82,7 @@ STACK_BACK_TRACE_STRING_TYPEDEF[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEP
 typedef IMAGEHLP_LINE64 *back_trace_line_t;
 
 /* Configure    the stack back trace type.                                                              */
-typedef struct stack_back_trace_t *STACK_BACK_TRACE_TYPEDEF_PTR;
+typedef struct stack_back_trace_t *STACK_BACK_TRACE_TYPEDEF_PTR,**STACK_BACK_TRACE_TYPEDEF_PPTR;
 
 /* Configure    the stack back trace link type.                                                         */
 typedef struct stack_back_trace_link_t *STACK_BACK_TRACE_LINK_TYPEDEF_PTR;
@@ -164,9 +164,9 @@ void debug_capture_stack_back_trace_convert_to_string(STACK_BACK_TRACE_TYPEDEF_P
 back_trace_hash_t debug_capture_stack_back_trace_get_hash(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
 														  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index);
 
-back_trace_t *debug_capture_stack_back_trace_get_trace(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-													   DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index,
-													   DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE sub_index);
+single_back_trace_t *debug_capture_stack_back_trace_get_trace(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
+															  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index,
+															  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE sub_index);
 
 /**
  * @brief This function will initialize a link struct.
@@ -197,10 +197,8 @@ void debug_capture_stack_back_trace_link_destroy(STACK_BACK_TRACE_LINK_TYPEDEF_P
  * @return index
  */
 
-DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE
-debug_capture_stack_back_trace_link_mark(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-										 STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace,
-										 DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip);
+DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE debug_capture_stack_back_trace_link_mark(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
+																					  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip);
 
 /**
  * @brief This function will set a link via the sign.
@@ -210,9 +208,20 @@ debug_capture_stack_back_trace_link_mark(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
  * @return NONE
  */
 
-back_trace_hash_t debug_capture_stack_back_trace_link_link(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-														   DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index,
-														   DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip);
+back_trace_hash_t *debug_capture_stack_back_trace_link_link(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
+															DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index,
+															DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip);
+
+/**
+ * @brief This function will get the trace in the link.
+ *
+ * @param link the pointer to the stack back trace link struct
+ *
+ * @return NULL
+ */
+
+void debug_capture_stack_back_trace_link_get_trace_ptr(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
+                                                   STACK_BACK_TRACE_TYPEDEF_PPTR trace);
 
 /*
 *********************************************************************************************************

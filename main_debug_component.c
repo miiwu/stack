@@ -1,13 +1,11 @@
 #include "main_cfg.h"
 
-#define MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_EN			1u
-#define MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_LINK_EN		0u
+#define MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_EN			0u
+#define MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_LINK_EN		1u
 
 STACK_BACK_TRACE_TYPEDEF_PTR capture_stack_back_trace = { NULL };
 
 STACK_BACK_TRACE_LINK_TYPEDEF_PTR link = NULL;
-
-DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index[2] = { 0 };
 
 void stack_back_trace_function_shell(STACK_BACK_TRACE_TYPEDEF_PTR back_trace)
 {
@@ -16,9 +14,13 @@ void stack_back_trace_function_shell(STACK_BACK_TRACE_TYPEDEF_PTR back_trace)
 	}
 }
 
-void stack_back_trace_link_function_shell(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link)
+DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE stack_back_trace_link_function_shell(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link)
 {
-
+	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index = 0;
+	for (size_t cnt = 0; cnt < 2; cnt++) {
+		index = debug_capture_stack_back_trace_link_mark(link, 0);
+	}
+	return index;
 }
 
 void main_debug_component(void)
@@ -36,6 +38,9 @@ void main_debug_component(void)
 	debug_capture_stack_back_trace(capture_stack_back_trace, 0);
 	stack_back_trace_function_shell(capture_stack_back_trace);
 
+	printf("\r\ndebug component.stack back trace.get trace start\r\n");
+	printf("the first stack trace's top stack address is %p \r\n", debug_capture_stack_back_trace_get_trace(capture_stack_back_trace, 0, 0));
+
 	printf("\r\ndebug component.stack back trace.convert to string start \r\n");
 	debug_capture_stack_back_trace_convert_to_string(capture_stack_back_trace);
 
@@ -52,20 +57,32 @@ void main_debug_component(void)
 
 	#if (MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_LINK_EN)
 
+	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index[2] = { 0 };
+	back_trace_hash_pt hash = NULL;
+
 	printf("\r\ndebug component.stack back trace link.init start\r\n");
 	debug_capture_stack_back_trace_link_init(&link, 2);
 
 	printf("\r\ndebug component.stack back trace link.mark start\r\n");
-	index[0] = debug_capture_stack_back_trace_link_mark(link, capture_stack_back_trace, 0);
+	index[0] = debug_capture_stack_back_trace_link_mark(link, 0);
+	index[1] = stack_back_trace_link_function_shell(link);
 
-	printf("\r\ndebug component.allocate start\r\n");
-	for (size_t i = 0; i < 10; i++) {
-		stack_back_trace_function_shell(capture_stack_back_trace);
+	printf("\r\ndebug component.stack back trace link.link start \r\n");
+	
+	STACK_BACK_TRACE_TYPEDEF_PPTR stack_back_trace_tmp = malloc(sizeof(void*));
+	if (NULL == stack_back_trace_tmp) {
+		return;
 	}
 
-	printf("\r\ndebug component.link:link start \r\n");
-	debug_capture_stack_back_trace_reduce_count(capture_stack_back_trace, debug_capture_stack_back_trace_link_link(link, index[0], 0));
-	debug_capture_stack_back_trace_reduce_count(capture_stack_back_trace, debug_capture_stack_back_trace_link_link(link, index[1], 0));
+	debug_capture_stack_back_trace_link_get_trace_ptr(link, stack_back_trace_tmp);
+
+	hash = debug_capture_stack_back_trace_link_link(link, index[0], 0);
+
+	debug_capture_stack_back_trace_reduce_count(*stack_back_trace_tmp, *(hash + 0));
+
+	hash = debug_capture_stack_back_trace_link_link(link, index[1], 0);
+
+	debug_capture_stack_back_trace_reduce_count(*stack_back_trace_tmp, *(hash + 0));
 
 	printf("\r\ndebug component.stack back trace link.destroy start\r\n");
 	debug_capture_stack_back_trace_link_destroy(&link);
