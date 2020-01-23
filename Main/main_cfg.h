@@ -5,7 +5,7 @@
 
 #include "container.h"
 
-#define MAIN_DEBUG_COMPONENT_EN		1u
+#define MAIN_DEBUG_COMPONENT_EN		0u
 
 #define MAIN_ALLOCATOR_EN			0u
 
@@ -15,7 +15,7 @@
 
 #define MAIN_VECTOR_EN				0u
 
-#define MAIN_FORWARD_LIST_EN		0u
+#define MAIN_FORWARD_LIST_EN		1u
 
 #define MAIN_LIST_EN				0u
 

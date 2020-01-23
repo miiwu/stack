@@ -174,8 +174,6 @@ void allocator_control_configration_destroy(ALLOCATOR_TYPEDEF_PPTR allocator)
 	printf("allocator.destroy:memory free status : %d \r\n", (*allocator)->info.size);
 
 	if (0 < (*allocator)->info.size) {
-		//debug_capture_stack_back_trace_convert_to_string((*allocator)->capture_stack_back_trace);
-
 		printf("\r\n-----------------------------------stack trace string table begin-----------------------------------\r\n");
 		STACK_BACK_TRACE_TYPEDEF_PPTR stack_back_trace_tmp = malloc(sizeof(void *));
 		if (NULL == stack_back_trace_tmp) {
@@ -246,7 +244,7 @@ void *allocator_control_allocate(ALLOCATOR_TYPEDEF_PTR allocator,
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	g_allocator_dbg_link_index = debug_capture_stack_back_trace_link_mark(allocator->capture_stack_back_trace_link, 1);
+	debug_capture_stack_back_trace_link_mark(allocator->capture_stack_back_trace_link, 1);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
@@ -275,7 +273,7 @@ void allocator_control_deallocate(ALLOCATOR_TYPEDEF_PTR allocator,
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
-	debug_capture_stack_back_trace_link_link(allocator->capture_stack_back_trace_link, g_allocator_dbg_link_index, 1);
+	debug_capture_stack_back_trace_link_link(allocator->capture_stack_back_trace_link, 1);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
 

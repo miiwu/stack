@@ -628,6 +628,9 @@ void forward_list_control_modifiers_insert_after(const FORWARD_LIST_TYPEDEF_PTR 
 
 		forward_list_node_control_modifiers_set(forward_list, element_pos, (void *)element_plus_insert_addr);
 	}
+
+	allocator_ctrl.deallocate(forward_list->allocator, element_block, element_amount);
+	allocator_ctrl.deallocate(forward_list->allocator, element, 1);
 }
 
 /**
