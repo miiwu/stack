@@ -12,7 +12,7 @@
 
 /*
 *********************************************************************************************************
-*                                          INCLUDE FILES
+*                                            INCLUDE FILES
 *********************************************************************************************************
 */
 
@@ -20,7 +20,7 @@
 
 /*
 *********************************************************************************************************
-*									    VECTOR CONROL CONFIG DEFINES
+*									            DEFINES
 *********************************************************************************************************
 */
 
@@ -31,14 +31,14 @@
 #define VECTOR_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE		1024u
 
 /* Configure    the type of allocator.                                                                  */
-#define VECTOR_CFG_ALLOCATOR_PTR_TYPE                           ALLOCATOR_TYPEDEF_PTR
+#define VECTOR_CFG_ALLOCATOR_PTR_TYPE                           ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
 #define VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN			    1u
 
 /*
 *********************************************************************************************************
-*									        VECTOR DATA TYPES
+*									            DATA TYPES
 *********************************************************************************************************
 */
 
@@ -67,7 +67,7 @@ struct vector_control_t {
 
 		/* @brief This function will configure the vector exception callback.                           */
 		void (*exception)(const VECTOR_TYPEDEF_PTR vector,
-						 void (*empty)(void), void (*full)(void));
+						  void (*empty)(void), void (*full)(void));
 	}configuration;
 
 	struct {
@@ -129,7 +129,7 @@ struct vector_control_t {
 
 		/* @brief This function will erases the specified elements from the container.                  */
 		void (*erase)(const VECTOR_TYPEDEF_PTR vector,
-					  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *data);
+					  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 		/* @brief This function will appends the given element source to the end of the container.      */
 		void (*push_back)(const VECTOR_TYPEDEF_PTR vector,
@@ -157,7 +157,7 @@ struct vector_control_t {
 
 /*
 *********************************************************************************************************
-*								    VECTOR CONROL FUNCTION PROTOTYPES
+*								            FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
 
@@ -211,18 +211,15 @@ void vector_control_configuration_element_handler(const VECTOR_TYPEDEF_PTR vecto
  */
 
 void vector_control_configuration_exception(const VECTOR_TYPEDEF_PTR vector,
-										   void (*empty)(void), void (*full)(void));
+											void (*empty)(void), void (*full)(void));
 
-/**
- * @brief This function will
- *
- * @param vector the pointer to the container struct
- * @param empty pointer to the address of element exception that container has no elements when delete element
- * @param full pointer to the address of element exception that container has no elements when add element
- * @param null_heap pointer to the address of element exception that malloc is valid
- *
- * @return NONE
- */
+ /**
+  * @brief This function will
+  *
+  * @param vector the pointer to the container struct
+  *
+  * @return NONE
+  */
 
 void vector_control_iterators_front(const VECTOR_TYPEDEF_PTR vector);
 
@@ -382,7 +379,7 @@ void *vector_control_modifiers_insert(const VECTOR_TYPEDEF_PTR vector,
  */
 
 void vector_control_modifiers_erase(const VECTOR_TYPEDEF_PTR vector,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination);
+									CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 /**
  * @brief This function will appends the given element source to the end of the container.
@@ -446,7 +443,7 @@ void vector_control_modifiers_swap(VECTOR_TYPEDEF_PPTR vector,
 
 /*
 *********************************************************************************************************
-*                                   VECTOR EXTERN GLOBAL VARIABLES
+*                                       EXTERN GLOBAL VARIABLES
 *********************************************************************************************************
 */
 
@@ -465,4 +462,4 @@ extern struct vector_control_t vector_ctrl;
 *********************************************************************************************************
 */
 
-#endif // __VECTOR_H
+#endif // !__VECTOR_H

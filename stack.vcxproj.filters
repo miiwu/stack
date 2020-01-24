@@ -31,6 +31,12 @@
     <Filter Include="头文件\debug">
       <UniqueIdentifier>{5de867b5-a197-407f-b510-b03d777ab402}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\allocator">
+      <UniqueIdentifier>{c3a4dd55-7f03-49d1-bd22-08c24c842df1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\allocator">
+      <UniqueIdentifier>{615cf450-0b68-4f15-85e6-de9f73058835}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -48,9 +54,6 @@
     <ClCompile Include="Main\main_vector.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
-    <ClCompile Include="Container\allocator.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
     <ClCompile Include="Container\queue.c">
       <Filter>源文件\container</Filter>
     </ClCompile>
@@ -63,23 +66,23 @@
     <ClCompile Include="Container\forward_list.c">
       <Filter>源文件\container</Filter>
     </ClCompile>
-    <ClCompile Include="Debug Component\debug_capture_stack_back_trace.c">
-      <Filter>源文件\debug</Filter>
-    </ClCompile>
     <ClCompile Include="Main\main_forward_list.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
-    <ClCompile Include="main_allocator.c">
+    <ClCompile Include="Debug Component\debug_stack_back_trace.c">
+      <Filter>源文件\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\main_allocator.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
-    <ClCompile Include="main_debug_component.c">
+    <ClCompile Include="Main\main_debug_component.c">
       <Filter>源文件\main</Filter>
+    </ClCompile>
+    <ClCompile Include="Allocator\allocator_common.c">
+      <Filter>源文件\allocator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Container\allocator.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
     <ClInclude Include="Container\container.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
@@ -101,7 +104,22 @@
     <ClInclude Include="Container\forward_list.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
-    <ClInclude Include="Debug Component\debug_capture_stack_back_trace.h">
+    <ClInclude Include="Debug Component\debug_stack_back_trace.h">
+      <Filter>头文件\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Allocator\allocator.h">
+      <Filter>头文件\allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Allocator\allocator_common.h">
+      <Filter>头文件\allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Allocator\allocator_def.h">
+      <Filter>头文件\allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug Component\debug_component.h">
+      <Filter>头文件\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug Component\debug_component_def.h">
       <Filter>头文件\debug</Filter>
     </ClInclude>
   </ItemGroup>

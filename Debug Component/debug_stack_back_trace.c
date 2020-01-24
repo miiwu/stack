@@ -18,7 +18,7 @@
 *********************************************************************************************************
 */
 
-#include "debug_capture_stack_back_trace.h"
+#include "debug_stack_back_trace.h"
 
 /*
 *********************************************************************************************************
@@ -27,7 +27,7 @@
 */
 
 #define TRACE_MAX_DEPTH	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH
-#define TRACE_SIZE_TYPE	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE
+#define TRACE_SIZE_TYPE	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE
 
 #define GET_ADDRESS_VIA_PTR(pointer,mem_type,index)	(void*)((size_t)(pointer) + index * mem_type)
 
@@ -49,13 +49,13 @@
 
 struct stack_back_trace_t {
 	/* @brief This variables will record the max types.					                */
-	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE max_type_count;
+	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE max_type_count;
 
 	/* @brief This variables will record how many types is recorded.					                */
-	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE type_count;
+	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE type_count;
 
 	/* @brief This variables will record the amount of back trace.					                    */
-	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE *back_trace_count;
+	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE *back_trace_count;
 
 	/* @brief This variables will record the back trace.					                            */
 	back_trace_pt back_trace;
@@ -112,7 +112,7 @@ struct stack_back_trace_string_t {
 *********************************************************************************************************
 */
 
-DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE
+DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE
 g_pre_single_trace_len = sizeof(single_back_trace_t),
 g_pre_trace_len = sizeof(single_back_trace_t) * DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH,
 g_pre_frame_len = sizeof(back_trace_frame_t);
@@ -180,7 +180,7 @@ void capture_stack_back_trace_convert_to_line(STACK_BACK_TRACE_STRING_TYPEDEF_PT
  */
 
 void debug_capture_stack_back_trace_init(STACK_BACK_TRACE_TYPEDEF_PTR *stack_back_trace,
-										 DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE count)
+										 DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE count)
 {
 	struct stack_back_trace_t
 		*strcuture_allocated = calloc(1, sizeof(struct stack_back_trace_t));
@@ -262,7 +262,7 @@ void debug_capture_stack_back_trace_destroy(STACK_BACK_TRACE_TYPEDEF_PTR *strcut
  */
 
 void debug_capture_stack_back_trace(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace,
-									DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip)
+									DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip)
 {
 	void *back_trace_tmp[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH] = { 0 };
 	ULONG back_trace_hash_tmp = 0;
@@ -273,6 +273,12 @@ void debug_capture_stack_back_trace(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trac
 																	 , DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH
 																	 , back_trace_tmp
 																	 , &back_trace_hash_tmp) - 7;	/* the stack of main() is start from the level 7 */
+
+	if (stack_back_trace->max_type_count <= stack_back_trace->type_count &&
+		10 > (stack_back_trace->type_count / stack_back_trace->max_type_count) &&		/* Exclude it have been reduced to a negative number. */
+		false == debug_capture_stack_back_trace_empty_callback(stack_back_trace)) {	
+		return;
+	}
 
 	for (size_t cnt = 0; cnt < stack_back_trace->type_count; cnt++) {
 		back_trace_hash_t
@@ -285,12 +291,7 @@ void debug_capture_stack_back_trace(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trac
 		}
 	}
 
-	if (stack_back_trace->max_type_count <= stack_back_trace->type_count &&
-		false == debug_capture_stack_back_trace_empty_callback(stack_back_trace)) {
-		return;
-	}
-
-	for (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index = 0; index < DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH; index++) {
+	for (DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index = 0; index < DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH; index++) {
 		*(*(stack_back_trace->back_trace + stack_back_trace->type_count) + index) = back_trace_tmp[index];
 	}
 
@@ -423,7 +424,7 @@ void debug_capture_stack_back_trace_convert_to_string(STACK_BACK_TRACE_TYPEDEF_P
  */
 
 back_trace_hash_t debug_capture_stack_back_trace_get_hash(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-														  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index)
+														  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index)
 {
 	assert(strcuture);
 
@@ -446,8 +447,8 @@ back_trace_hash_t debug_capture_stack_back_trace_get_hash(STACK_BACK_TRACE_TYPED
  */
 
 single_back_trace_t *debug_capture_stack_back_trace_get_trace(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-															  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index,
-															  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE sub_index)
+															  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index,
+															  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE sub_index)
 {
 	assert(strcuture);
 
@@ -465,8 +466,8 @@ single_back_trace_t *debug_capture_stack_back_trace_get_trace(STACK_BACK_TRACE_T
 
 void debug_capture_stack_back_trace_copy(STACK_BACK_TRACE_TYPEDEF_PTR destination,
 										 STACK_BACK_TRACE_TYPEDEF_PTR source,
-										 DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE dst_index,
-										 DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE src_index)
+										 DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE dst_index,
+										 DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE src_index)
 {
 	assert(destination);
 	assert(source);
@@ -488,7 +489,7 @@ void debug_capture_stack_back_trace_copy(STACK_BACK_TRACE_TYPEDEF_PTR destinatio
  */
 
 void debug_capture_stack_back_trace_link_init(STACK_BACK_TRACE_LINK_TYPEDEF_PTR *link,
-											  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE count)
+											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE count)
 {
 	assert(link);
 
@@ -523,8 +524,6 @@ void debug_capture_stack_back_trace_link_destroy(STACK_BACK_TRACE_LINK_TYPEDEF_P
 		return;
 	}
 
-	debug_capture_stack_back_trace_destroy(&global_link_stack_back_trace_tmp);
-
 	debug_capture_stack_back_trace_destroy(&(*link)->mark_ptr);
 	debug_capture_stack_back_trace_destroy(&(*link)->link_ptr);
 
@@ -540,15 +539,15 @@ void debug_capture_stack_back_trace_link_destroy(STACK_BACK_TRACE_LINK_TYPEDEF_P
  */
 
 void debug_capture_stack_back_trace_link_mark(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-											  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip)
+											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip)
 {
 	assert(link);
 
 	debug_capture_stack_back_trace(global_link_stack_back_trace_tmp, frames_to_skip + 1);
 
-	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index = 0;
+	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index = 0;
 
-	for (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index_tmp = 0; index_tmp < link->mark_ptr->type_count; index_tmp++) {	/* Loop to see if it has been recored */
+	for (DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index_tmp = 0; index_tmp < link->mark_ptr->type_count; index_tmp++) {	/* Loop to see if it has been recored */
 		back_trace_hash_t hash = debug_capture_stack_back_trace_get_hash(link->mark_ptr, index_tmp);
 
 		//debug_capture_stack_back_trace_get_trace(link->mark_ptr, index_tmp, 0);								/* Get the top level stack address only */
@@ -592,15 +591,15 @@ COMMON_HANDLER:
  */
 
 void debug_capture_stack_back_trace_link_link(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-											  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip)
+											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip)
 {
 	assert(link);
 
 	debug_capture_stack_back_trace(global_link_stack_back_trace_tmp, frames_to_skip + 1);
 
-	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index = 0;
+	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index = 0;
 
-	for (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index_tmp = 0; index_tmp < link->link_ptr->type_count; index_tmp++) {	/* Loop to see if it has been recored */
+	for (DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index_tmp = 0; index_tmp < link->link_ptr->type_count; index_tmp++) {	/* Loop to see if it has been recored */
 		back_trace_hash_t hash = debug_capture_stack_back_trace_get_hash(link->link_ptr, index_tmp);
 
 		if (0u != hash) {

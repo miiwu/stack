@@ -40,7 +40,6 @@
 #pragma warning( disable : 4996)
 #pragma warning( disable : 26812)
 
-
 /*
 *********************************************************************************************************
 *									         DATA TYPES
@@ -77,10 +76,10 @@ enum container_type {
 };
 
 struct element_handler_t {
-		/* @brief This variables will point to the address of the vector element assign handler.		*/
+	/* @brief This variables will point to the address of the vector element assign handler.			*/
 	void (*assign)(void *dst, void *src);
 
-	/* @brief This variables will point to the address of the vector element free handler.			*/
+	/* @brief This variables will point to the address of the vector element free handler.				*/
 	void (*free)(void *dst);
 };
 
@@ -97,7 +96,7 @@ struct container_control_t {
 	}configuration;
 
 	struct {
-		/* @brief This function will returns a reference to the element 
+		/* @brief This function will returns a reference to the element
 					at specified location position, with bounds checking.								*/
 		void *(*at)(void *container, CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 	}element_access;
@@ -109,7 +108,7 @@ struct container_control_t {
 		/* @brief This function will returns the number of elements in the container.					*/
 		size_t(*size)(void *container);
 
-		/* @brief This function will returns the maximum number of elements 
+		/* @brief This function will returns the maximum number of elements
 					the container is able to hold due to system or library implementation limitations.	*/
 		size_t(*max_size)(void *container);
 	}capacity;
@@ -117,12 +116,12 @@ struct container_control_t {
 	struct {
 		/* @brief This function will inserts elements at the specified location in the container.		*/
 		void (*insert)(void *container,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, 
+					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
 					   CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
 
 		/* @brief This function will erases the specified elements from the container.                  */
-		void *(*earse)(void *container,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source);
+		void (*earse)(void *container,
+					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 		/* @brief This function will exchange the contents of the container adaptor with those of other. */
 		void (*swap)(void **container,
@@ -143,10 +142,9 @@ struct container_control_t {
 /**
  * @brief This function will initialize the container struct and attach to the specified container.
  *
- * @param container container adapter struct
- * @param container the pointer to container
+ * @param container the container adapter struct
  *
- * @return NONE
+ * @return the pointer to the specified container function address table.
  */
 
 inline int *container_control_convert_type_to_func_addr_table(enum container_type type);
@@ -172,10 +170,9 @@ extern void *vector_function_address_tables[];
 /**
  * @brief This function will initialize the container struct and attach to the specified container.
  *
- * @param container container adapter struct
- * @param container the pointer to container
+ * @param container the container adapter struct
  *
- * @return NONE
+ * @return the pointer to the specified container function address table.
  */
 
 inline int *container_control_convert_type_to_func_addr_table(enum container_type type)
@@ -214,4 +211,4 @@ inline int *container_control_convert_type_to_func_addr_table(enum container_typ
 *********************************************************************************************************
 */
 
-#endif // __CONTAINER_DEFINATION_H
+#endif // !__CONTAINER_DEFINATION_H

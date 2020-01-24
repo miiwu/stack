@@ -28,7 +28,7 @@
 #define STACK_CFG_DEFAULT_ADAPT_CONTAINER_TYPE			        VECTOR
 
 /* Configure    the type of allocator.                                                                  */
-#define STACK_CFG_ALLOCATOR_PTR_TYPE                            ALLOCATOR_TYPEDEF_PTR
+#define STACK_CFG_ALLOCATOR_TYPE                                ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
 #define STACK_CFG_INTERGRATED_STRUCTURE_MODE_EN			        1u
@@ -89,7 +89,7 @@ struct stack_control_t {
 						void *destination);
 
 		/* @brief This function will remove the top element from the stack. */
-		void *(*pop)(STACK_TYPEDEF_PTR stack);
+		void (*pop)(STACK_TYPEDEF_PTR stack);
 
 		/* @brief This function will exchange the contents of the container adaptor with those of other. */
 		void (*swap)(STACK_TYPEDEF_PPTR stack,
@@ -218,7 +218,7 @@ void stack_control_modifiers_emplace(STACK_TYPEDEF_PTR stack, void *destination)
  * @return NONE
  */
 
-void *stack_control_modifiers_pop(STACK_TYPEDEF_PTR stack);
+void stack_control_modifiers_pop(STACK_TYPEDEF_PTR stack);
 
 /**
  * @brief This function will exchange the contents of the container adaptor with those of other.
@@ -266,4 +266,4 @@ extern struct stack_control_t stack_ctrl;
 *********************************************************************************************************
 */
 
-#endif // __STACK_H
+#endif // !__STACK_H

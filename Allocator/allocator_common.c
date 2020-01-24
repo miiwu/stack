@@ -4,9 +4,9 @@
 *********************************************************************************************************
 */
 
-#include "allocator.h"
+#include "allocator_common.h"
 
-#include "debug_capture_stack_back_trace.h"
+#include "debug_component.h"
 
 /*
 *********************************************************************************************************
@@ -41,7 +41,7 @@ struct allocator_t {
 
 	struct {
 		/* @brief This variables will point to the exception handler of lack of memory.			        */
-		void (*lack_of_memory)(void);
+		void (*lack_of_memory)(void* allocator);
 	}exception;
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
@@ -54,7 +54,7 @@ struct allocator_t {
 
 struct memory_control_t {
 	/* @brief This variables will record which memory block is available by check bit.					*/
-	int available[ALLOCATOR_CFG_MEMORY_POOL_SIZE / sizeof(int) * 8];
+	int available[ALLOCATOR_GLOBAL_CFG_MEMORY_POOL_SIZE / sizeof(int) * 8];
 
 	/* @brief This variables will point to the address of memory pool.					                */
 	void *memory_pool_ptr;
@@ -78,39 +78,22 @@ struct memory_control_t {
 *********************************************************************************************************
 */
 
-#if (ALLOCATOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
-
 /**
- * @brief This struct will control all the allocator functions conveniently.
+ * @brief This array will contain all the universal vector functions address.
  */
 
-struct allocator_control_t allocator_ctrl = {
-	allocator_control_configration_init,
+void *allocator_common_function_address_tables[] =
+{
+	(void *)&allocator_control_configration_init,							/* No.0 : initialize */
 
-	allocator_control_configration_destroy,
+	(void *)&allocator_control_configration_destroy,						/* No.1 : destroy */
 
-	allocator_control_configration_expection,
+	(void *)&allocator_control_configration_exception,						/* No.3 : exception */
 
-	allocator_control_allocate,
+	(void *)&allocator_control_allocate,									/* No.4 : allocate */
 
-	allocator_control_deallocate,
+	(void *)&allocator_control_deallocate									/* No.5 : deallocate */
 };
-
-#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
-
-/**
- * @brief This struct will control all the allocator debug functions conveniently.
- */
-
-struct allocator_debug_control_t allocator_dbg_ctrl = {
-	allocator_control_memory_detect_memory_free_status
-};
-
-DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE g_allocator_dbg_link_index = 0;
-
-#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
-
-#endif // (ALLOCATOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 /*
 *********************************************************************************************************
@@ -133,8 +116,8 @@ DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE g_allocator_dbg_link_index = 0;
  * @return NONE
  */
 
-void allocator_control_configration_init(ALLOCATOR_TYPEDEF_PPTR allocator,
-										 void (*lack_of_memory)(void))
+void allocator_control_configration_init(ALLOCATOR_COMMON_TYPEDEF_PPTR allocator,
+										 void (*lack_of_memory)(void*))
 {
 	assert(allocator);
 
@@ -145,14 +128,14 @@ void allocator_control_configration_init(ALLOCATOR_TYPEDEF_PPTR allocator,
 		return;
 	}
 
+	allocator_alloced->info.size = 0u;			                                                    /* Assign the allocator struct */
+	allocator_control_configration_exception(allocator_alloced, lack_of_memory);
+
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
 	debug_capture_stack_back_trace_link_init(&allocator_alloced->capture_stack_back_trace_link, 256);
 
 	#endif
-
-	allocator_alloced->info.size = 0u;			                                                    /* Assign the allocator struct */
-	allocator_alloced->exception.lack_of_memory = lack_of_memory;
 
 	(*allocator) = allocator_alloced;
 }
@@ -165,13 +148,13 @@ void allocator_control_configration_init(ALLOCATOR_TYPEDEF_PPTR allocator,
  * @return NONE
  */
 
-void allocator_control_configration_destroy(ALLOCATOR_TYPEDEF_PPTR allocator)
+void allocator_control_configration_destroy(ALLOCATOR_COMMON_TYPEDEF_PPTR allocator)
 {
 	assert(allocator);
 
-	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
-
 	printf("allocator.destroy:memory free status : %d \r\n", (*allocator)->info.size);
+
+	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
 	if (0 < (*allocator)->info.size) {
 		printf("\r\n-----------------------------------stack trace string table begin-----------------------------------\r\n");
@@ -209,12 +192,16 @@ void allocator_control_configration_destroy(ALLOCATOR_TYPEDEF_PPTR allocator)
  * @return NONE
  */
 
-void allocator_control_configration_expection(ALLOCATOR_TYPEDEF_PTR allocator,
-											  void (*lack_of_memory)(void))
+void allocator_control_configration_exception(ALLOCATOR_COMMON_TYPEDEF_PTR allocator,
+											  void (*lack_of_memory)(void*))
 {
 	assert(allocator);
 
-	// TODO Statement ...																	/* TODO	*/
+	if (NULL == lack_of_memory) {
+		allocator->exception.lack_of_memory = allocator_control_exception_default_lack_of_memory;
+	} else {
+		allocator->exception.lack_of_memory = lack_of_memory;
+	}
 }
 
 /**
@@ -228,7 +215,7 @@ void allocator_control_configration_expection(ALLOCATOR_TYPEDEF_PTR allocator,
  * @return return the pointer point to the uninitialized storage which allocated
  */
 
-void *allocator_control_allocate(ALLOCATOR_TYPEDEF_PTR allocator,
+void *allocator_control_allocate(ALLOCATOR_COMMON_TYPEDEF_PTR allocator,
 								 ALLOCATOR_SIZE_TYPEDEF count, ALLOCATOR_SIZE_TYPEDEF size)
 {
 	assert(allocator);
@@ -237,18 +224,18 @@ void *allocator_control_allocate(ALLOCATOR_TYPEDEF_PTR allocator,
 		*block_alloced = calloc(count, size);                           /* Malloc #2 : allocates the storage to block_alloced */
 
 	if (NULL == block_alloced) {
-		allocator->exception.lack_of_memory();
+		allocator->exception.lack_of_memory(allocator);
 
 		return NULL;
 	}
+
+	allocator->info.size += count;
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
 	debug_capture_stack_back_trace_link_mark(allocator->capture_stack_back_trace_link, 1);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
-
-	allocator->info.size += count;
 
 	return (void *)block_alloced;
 }
@@ -264,20 +251,20 @@ void *allocator_control_allocate(ALLOCATOR_TYPEDEF_PTR allocator,
  * @return NONE
  */
 
-void allocator_control_deallocate(ALLOCATOR_TYPEDEF_PTR allocator,
+void allocator_control_deallocate(ALLOCATOR_COMMON_TYPEDEF_PTR allocator,
 								  void *block, ALLOCATOR_SIZE_TYPEDEF count)
 {
 	assert(allocator);
 
 	allocator->info.size -= count;
 
+	free(block);																	            /* Free #2 */
+
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
 	debug_capture_stack_back_trace_link_link(allocator->capture_stack_back_trace_link, 1);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
-
-	free(block);																	            /* Free #1 */
 }
 
 /**
@@ -290,7 +277,7 @@ void allocator_control_deallocate(ALLOCATOR_TYPEDEF_PTR allocator,
  * @return NONE
  */
 
-void allocator_control_memory_alloc(ALLOCATOR_TYPEDEF_PTR allocator,
+void allocator_control_memory_alloc(ALLOCATOR_COMMON_TYPEDEF_PTR allocator,
 									void *block, ALLOCATOR_SIZE_TYPEDEF size)
 {
 	assert(allocator);
@@ -298,19 +285,4 @@ void allocator_control_memory_alloc(ALLOCATOR_TYPEDEF_PTR allocator,
 	allocator->info.size++;
 
 	free(block);																	            /* Free #1 */
-}
-
-/**
- * @brief This function will detect memory free status of the allocator struct.
- *
- * @param allocator the allocator
- *
- * @return the memory free status of the allocator struct
- */
-
-ALLOCATOR_SIZE_TYPEDEF allocator_control_memory_detect_memory_free_status(ALLOCATOR_TYPEDEF_PTR allocator)
-{
-	assert(allocator);
-
-	return allocator->info.size;
 }

@@ -21,8 +21,8 @@
 *********************************************************************************************************
 */
 
-#ifndef __DEBUG_CAPTURE_STACK_BACK_TRACE_H
-#define __DEBUG_CAPTURE_STACK_BACK_TRACE_H
+#ifndef __DEBUG_STACK_BACK_TRACE_H
+#define __DEBUG_STACK_BACK_TRACE_H
 
 /*
 *********************************************************************************************************
@@ -30,24 +30,13 @@
 *********************************************************************************************************
 */
 
-#include <windows.h>
-#include <DbgHelp.h>
-
-#include <stdio.h>
-#include <malloc.h>
-#include <assert.h>
-#include <stdbool.h>
-
-#pragma comment(lib, "Dbghelp.lib")
+#include "debug_component_def.h"
 
 /*
 *********************************************************************************************************
-*									     CONROL CONFIG DEFINES
+*									      CONFIG DEFINES
 *********************************************************************************************************
 */
-
-/* Configure the type of the capture stack back trace size.                                             */
-#define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE	        size_t
 
 /* Configure the max depth of the capture stack back trace.                                             */
 #define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH	    64u
@@ -103,7 +92,7 @@ typedef struct stack_back_trace_link_t *STACK_BACK_TRACE_LINK_TYPEDEF_PTR;
  */
 
 void debug_capture_stack_back_trace_init(STACK_BACK_TRACE_TYPEDEF_PTR *stack_back_trace,
-										 DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE count);
+										 DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE count);
 
 /**
  * @brief This function will destroy the capture stack back trace struct.
@@ -126,7 +115,7 @@ void debug_capture_stack_back_trace_destroy(STACK_BACK_TRACE_TYPEDEF_PTR *stack_
  */
 
 void debug_capture_stack_back_trace(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace,
-									DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip);
+									DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip);
 
 /**
  * @brief This function will reduce the count of the capture stack back trace type.
@@ -162,11 +151,11 @@ void debug_capture_stack_back_trace_convert_to_string(STACK_BACK_TRACE_TYPEDEF_P
  */
 
 back_trace_hash_t debug_capture_stack_back_trace_get_hash(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-														  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index);
+														  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index);
 
 single_back_trace_t *debug_capture_stack_back_trace_get_trace(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-															  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE index,
-															  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE sub_index);
+															  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index,
+															  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE sub_index);
 
 /**
  * @brief This function will initialize a link struct.
@@ -177,7 +166,7 @@ single_back_trace_t *debug_capture_stack_back_trace_get_trace(STACK_BACK_TRACE_T
  */
 
 void debug_capture_stack_back_trace_link_init(STACK_BACK_TRACE_LINK_TYPEDEF_PTR *link,
-											  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE count);
+											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE count);
 
 /**
  * @brief This function will destroy a link struct.
@@ -198,7 +187,7 @@ void debug_capture_stack_back_trace_link_destroy(STACK_BACK_TRACE_LINK_TYPEDEF_P
  */
 
 void debug_capture_stack_back_trace_link_mark(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-											  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip);
+											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip);
 
 /**
  * @brief This function will set a link via the sign.
@@ -209,7 +198,7 @@ void debug_capture_stack_back_trace_link_mark(STACK_BACK_TRACE_LINK_TYPEDEF_PTR 
  */
 
 void debug_capture_stack_back_trace_link_link(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-											  DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_SIZE_TYPE frames_to_skip);
+											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip);
 
 /**
  * @brief This function will get the trace in the link.
@@ -228,4 +217,4 @@ void debug_capture_stack_back_trace_link_get_trace_ptr(STACK_BACK_TRACE_LINK_TYP
 *********************************************************************************************************
 */
 
-#endif // !__DEBUG_CAPTURE_STACK_BACK_TRACE_H
+#endif // !__DEBUG_STACK_BACK_TRACE_H

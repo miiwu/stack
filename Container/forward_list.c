@@ -24,9 +24,6 @@
 *********************************************************************************************************
 */
 
-/* Configure    forward_list type.                                                                            */
-typedef FORWARD_LIST_CFG_ALLOCATOR_PTR_TYPE FORWARD_LIST_ALLOCATOR_TYPEDEF_PTR;
-
 /**
  * @brief This struct is the forward_list structure module
  */
@@ -60,7 +57,7 @@ struct forward_list_t {
 	}info;
 
 	/* @brief This variables will point to the allocator.												*/
-	FORWARD_LIST_ALLOCATOR_TYPEDEF_PTR allocator;
+	void *allocator;
 
 	/* @brief This variables will pointer to the first list node.										*/
 	struct forward_list_node_t *node;
@@ -88,6 +85,13 @@ struct forward_list_t {
 *                                       LOCAL GLOBAL VARIABLES
 *********************************************************************************************************
 */
+
+/**
+ * @brief This array will control the allocator.
+ */
+
+struct allocator_control_t
+	*forward_list_allocator_ctrl = NULL;
 
 /**
  * @brief This array will contain all the universal forward_list functions address.
@@ -317,14 +321,17 @@ void forward_list_control_configuration_init(FORWARD_LIST_TYPEDEF_PPTR forward_l
 	assert(forward_list);
 	assert(0 <= element_size);
 
-	FORWARD_LIST_ALLOCATOR_TYPEDEF_PTR
-		allocator = NULL;
+	void
+		*allocator = NULL;
 
-	allocator_ctrl.configration.init(&allocator, NULL);
+	forward_list_allocator_ctrl = allocator_control_convert_type_to_func_addr_table(FORWARD_LIST_CFG_ALLOCATOR_TYPE);	/* Variables pointer to	the function address table of
+																															specified container type		*/
+
+	forward_list_allocator_ctrl->configration.init(&allocator, NULL);
 
 	struct forward_list_t
-		*forward_list_alloced = (struct forward_list_t *)allocator_ctrl.allocate(allocator,
-																				 1, sizeof(struct forward_list_t));	/* Allocate #1 */
+		*forward_list_alloced = (struct forward_list_t *)forward_list_allocator_ctrl->allocate(allocator,
+																							   1, sizeof(struct forward_list_t));	/* Allocate #1 */
 
 	if (NULL == forward_list ||																	/* Check if forward_list point to NULL			*/
 		NULL == forward_list_alloced) {															/* Check if forward_list_alloced point to NULL	*/
@@ -375,8 +382,8 @@ void forward_list_control_configuration_destroy(FORWARD_LIST_TYPEDEF_PPTR forwar
 {
 	assert(forward_list);
 
-	FORWARD_LIST_ALLOCATOR_TYPEDEF_PTR
-		allocator = (*forward_list)->allocator;
+	void
+		*allocator = (*forward_list)->allocator;
 
 	#if (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)												/* Debug only								*/
 
@@ -387,15 +394,14 @@ void forward_list_control_configuration_destroy(FORWARD_LIST_TYPEDEF_PPTR forwar
 	#endif // (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)
 
 	if (0 < (*forward_list)->info.size) {
-
 		for (size_t cnt = 0; cnt < (*forward_list)->info.size; cnt++) {
 			struct forward_list_node_t
-				**node = forward_list_control_modifiers_get_node_addr((*forward_list),cnt - 1);
+				**node = forward_list_control_modifiers_get_node_addr((*forward_list), cnt - 1);
 
 			forward_list_control_modifiers_destroy((*forward_list), node);
 		}
 	}
-	
+
 	(*forward_list)->container_type_id = 0u;														/* Assign forward_list structure					*/
 
 	(*forward_list)->info.max_size = 0u;
@@ -409,9 +415,9 @@ void forward_list_control_configuration_destroy(FORWARD_LIST_TYPEDEF_PPTR forwar
 	(*forward_list)->exception.empty = NULL;
 	(*forward_list)->exception.full = NULL;
 
-	allocator_ctrl.deallocate(allocator, *forward_list, 1);																			/* deallocate #1 */
+	forward_list_allocator_ctrl->deallocate(allocator, *forward_list, 1);																			/* deallocate #1 */
 
-	allocator_ctrl.configration.destroy(&allocator);
+	forward_list_allocator_ctrl->configration.destroy(&allocator);
 
 	*forward_list = NULL;
 }
@@ -426,7 +432,7 @@ void forward_list_control_configuration_destroy(FORWARD_LIST_TYPEDEF_PPTR forwar
  * @return NONE
  */
 
-void forward_list_control_configuration_element_handler(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_configuration_element_handler(FORWARD_LIST_TYPEDEF_PTR forward_list,
 														void (*assign)(void *dst, void *src), void(*free)(void *dst))
 {
 	assert(forward_list);
@@ -447,7 +453,7 @@ void forward_list_control_configuration_element_handler(const FORWARD_LIST_TYPED
  * @return NONE
  */
 
-void forward_list_control_configuration_exception(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_configuration_exception(FORWARD_LIST_TYPEDEF_PTR forward_list,
 												  void (*empty)(void), void (*full)(void))
 {
 	assert(forward_list);
@@ -469,7 +475,7 @@ void forward_list_control_configuration_exception(const FORWARD_LIST_TYPEDEF_PTR
  * @return the reference to the first element in the container
  */
 
-void *forward_list_control_element_access_front(const FORWARD_LIST_TYPEDEF_PTR forward_list)
+void *forward_list_control_element_access_front(FORWARD_LIST_TYPEDEF_PTR forward_list)
 {
 	assert(forward_list);
 
@@ -486,7 +492,7 @@ void *forward_list_control_element_access_front(const FORWARD_LIST_TYPEDEF_PTR f
 	- false,the container has elements
  */
 
-bool forward_list_control_capacity_empty(const FORWARD_LIST_TYPEDEF_PTR forward_list)
+bool forward_list_control_capacity_empty(FORWARD_LIST_TYPEDEF_PTR forward_list)
 {
 	assert(forward_list);
 
@@ -506,7 +512,7 @@ bool forward_list_control_capacity_empty(const FORWARD_LIST_TYPEDEF_PTR forward_
  * @return the maximum number of elements
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_max_size(const FORWARD_LIST_TYPEDEF_PTR forward_list)
+CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_max_size(FORWARD_LIST_TYPEDEF_PTR forward_list)
 {
 	assert(forward_list);
 
@@ -521,7 +527,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_max_size(const FORW
  * @return the number of elements in the container
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_size(const FORWARD_LIST_TYPEDEF_PTR forward_list)
+CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_size(FORWARD_LIST_TYPEDEF_PTR forward_list)
 {
 	assert(forward_list);
 
@@ -536,7 +542,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_size(const FORWARD_
  * @return NONE
  */
 
-void forward_list_control_modifiers_clear(const FORWARD_LIST_TYPEDEF_PTR forward_list)
+void forward_list_control_modifiers_clear(FORWARD_LIST_TYPEDEF_PTR forward_list)
 {
 	assert(forward_list);
 
@@ -567,7 +573,7 @@ void forward_list_control_modifiers_clear(const FORWARD_LIST_TYPEDEF_PTR forward
  * @return NONE
  */
 
-void forward_list_control_modifiers_insert_after(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_modifiers_insert_after(FORWARD_LIST_TYPEDEF_PTR forward_list,
 												 CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
 												 CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source)
 {
@@ -582,10 +588,10 @@ void forward_list_control_modifiers_insert_after(const FORWARD_LIST_TYPEDEF_PTR 
 		pos_source_expected = position + amount;
 
 	void
-		*element_block = allocator_ctrl.allocate(forward_list->allocator,
-												 element_amount, forward_list->info.mem_size),								/* Allocate	vector malloc #3 */
-		**element = allocator_ctrl.allocate(forward_list->allocator,
-											1, sizeof(void **));												/* Allocate vector malloc #4 */
+		*element_block = forward_list_allocator_ctrl->allocate(forward_list->allocator,
+															   element_amount, forward_list->info.mem_size),								/* Allocate	vector malloc #3 */
+		**element = forward_list_allocator_ctrl->allocate(forward_list->allocator,
+														  1, sizeof(void **));												/* Allocate vector malloc #4 */
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = position; element_pos < forward_list->info.size; element_pos++) {		/* Copy the vector to element */
 		void
@@ -629,8 +635,8 @@ void forward_list_control_modifiers_insert_after(const FORWARD_LIST_TYPEDEF_PTR 
 		forward_list_node_control_modifiers_set(forward_list, element_pos, (void *)element_plus_insert_addr);
 	}
 
-	allocator_ctrl.deallocate(forward_list->allocator, element_block, element_amount);
-	allocator_ctrl.deallocate(forward_list->allocator, element, 1);
+	forward_list_allocator_ctrl->deallocate(forward_list->allocator, element_block, element_amount);
+	forward_list_allocator_ctrl->deallocate(forward_list->allocator, element, 1);
 }
 
 /**
@@ -643,7 +649,7 @@ void forward_list_control_modifiers_insert_after(const FORWARD_LIST_TYPEDEF_PTR 
  * @return NONE
  */
 
-void forward_list_control_modifiers_emplace_after(const FORWARD_LIST_TYPEDEF_PTR stack,
+void forward_list_control_modifiers_emplace_after(FORWARD_LIST_TYPEDEF_PTR stack,
 												  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination)
 {
 }
@@ -657,7 +663,7 @@ void forward_list_control_modifiers_emplace_after(const FORWARD_LIST_TYPEDEF_PTR
  * @return NONE
  */
 
-void forward_list_control_modifiers_erase_after(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_modifiers_erase_after(FORWARD_LIST_TYPEDEF_PTR forward_list,
 												CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination)
 {
 	assert(forward_list);
@@ -704,7 +710,7 @@ void forward_list_control_modifiers_erase_after(const FORWARD_LIST_TYPEDEF_PTR f
  * @return NONE
  */
 
-void forward_list_control_modifiers_push_front(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_modifiers_push_front(FORWARD_LIST_TYPEDEF_PTR forward_list,
 											   void *source)
 {
 }
@@ -722,7 +728,7 @@ void forward_list_control_modifiers_push_front(const FORWARD_LIST_TYPEDEF_PTR fo
  * @return NONE
  */
 
-void forward_list_control_modifiers_emplace_front(const FORWARD_LIST_TYPEDEF_PTR stack,
+void forward_list_control_modifiers_emplace_front(FORWARD_LIST_TYPEDEF_PTR stack,
 												  void *destination)
 {
 }
@@ -735,7 +741,7 @@ void forward_list_control_modifiers_emplace_front(const FORWARD_LIST_TYPEDEF_PTR
  * @return NONE
  */
 
-void forward_list_control_modifiers_pop_front(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_modifiers_pop_front(FORWARD_LIST_TYPEDEF_PTR forward_list,
 											  void *destination)
 {
 }
@@ -807,7 +813,7 @@ void forward_list_control_list_operations_merge(FORWARD_LIST_TYPEDEF_PPTR destin
  * @return NONE
  */
 
-void forward_list_control_list_operations_splice_after(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_list_operations_splice_after(FORWARD_LIST_TYPEDEF_PTR forward_list,
 													   CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
 													   FORWARD_LIST_TYPEDEF_PTR other)
 {
@@ -822,7 +828,7 @@ void forward_list_control_list_operations_splice_after(const FORWARD_LIST_TYPEDE
  * @return NONE
  */
 
-void forward_list_control_list_operations_remove(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_list_operations_remove(FORWARD_LIST_TYPEDEF_PTR forward_list,
 												 void *data)
 {
 }
@@ -835,7 +841,9 @@ void forward_list_control_list_operations_remove(const FORWARD_LIST_TYPEDEF_PTR 
  * @return NONE
  */
 
-void forward_list_control_list_operations_remove_if(const FORWARD_LIST_TYPEDEF_PTR forward_list) {}
+void forward_list_control_list_operations_remove_if(FORWARD_LIST_TYPEDEF_PTR forward_list)
+{
+}
 
 /**
  * @brief This function will reverses the order of the elements in the container
@@ -845,7 +853,9 @@ void forward_list_control_list_operations_remove_if(const FORWARD_LIST_TYPEDEF_P
  * @return NONE
  */
 
-void forward_list_control_list_operations_reverse(const FORWARD_LIST_TYPEDEF_PTR forward_list) {}
+void forward_list_control_list_operations_reverse(FORWARD_LIST_TYPEDEF_PTR forward_list)
+{
+}
 
 /**
  * @brief This function will removes all consecutive duplicate elements from the container
@@ -855,7 +865,9 @@ void forward_list_control_list_operations_reverse(const FORWARD_LIST_TYPEDEF_PTR
  * @return NONE
  */
 
-void forward_list_control_list_operations_unique(const FORWARD_LIST_TYPEDEF_PTR forward_list) {}
+void forward_list_control_list_operations_unique(FORWARD_LIST_TYPEDEF_PTR forward_list)
+{
+}
 
 /**
  * @brief This function will sorts the elements in ascending order
@@ -865,7 +877,9 @@ void forward_list_control_list_operations_unique(const FORWARD_LIST_TYPEDEF_PTR 
  * @return NONE
  */
 
-void forward_list_control_list_operations_sort(const FORWARD_LIST_TYPEDEF_PTR forward_list) {}
+void forward_list_control_list_operations_sort(FORWARD_LIST_TYPEDEF_PTR forward_list)
+{
+}
 
 /**
  * @brief This function will initialize the forward list node struct.
@@ -885,12 +899,12 @@ struct forward_list_node_t *forward_list_control_modifiers_init(FORWARD_LIST_TYP
 	assert(forward_list);
 
 	struct forward_list_node_t
-		*node_alloced = allocator_ctrl.allocate(forward_list->allocator,
-												1, sizeof(struct forward_list_node_t));
+		*node_alloced = forward_list_allocator_ctrl->allocate(forward_list->allocator,
+															  1, sizeof(struct forward_list_node_t));
 
 	void
-		*data_pack_allocated = allocator_ctrl.allocate(forward_list->allocator,
-													   1, forward_list->info.mem_size);			/* Allocate #2 */
+		*data_pack_allocated = forward_list_allocator_ctrl->allocate(forward_list->allocator,
+																	 1, forward_list->info.mem_size);			/* Allocate #2 */
 
 	if (NULL == forward_list ||																	/* Check if forward_list point to NULL			*/
 		NULL == node_alloced ||																	/* Check if forward_list node point to NULL			*/
@@ -936,12 +950,12 @@ void forward_list_control_modifiers_destroy(FORWARD_LIST_TYPEDEF_PTR forward_lis
 
 	#endif // (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)
 
-	allocator_ctrl.deallocate(forward_list->allocator, (*node)->data, 1);																	/* Deallocate #2 */
+	forward_list_allocator_ctrl->deallocate(forward_list->allocator, (*node)->data, 1);																	/* Deallocate #2 */
 
 	(*node)->data = NULL;												/* Assign forward_list structure					*/
 	(*node)->next = NULL;
 
-	allocator_ctrl.deallocate(forward_list->allocator, (*node), 1);																		/* deallocate #1 */
+	forward_list_allocator_ctrl->deallocate(forward_list->allocator, (*node), 1);																		/* deallocate #1 */
 
 	*node = NULL;
 }
@@ -1070,8 +1084,8 @@ void forward_list_node_control_modifiers_set(FORWARD_LIST_TYPEDEF_PTR forward_li
 	}
 
 	if (NULL == (node)->data) {
-		(node)->data = allocator_ctrl.allocate(forward_list->allocator,
-											   1, forward_list->info.mem_size);/* Allocate #2 */
+		(node)->data = forward_list_allocator_ctrl->allocate(forward_list->allocator,
+															 1, forward_list->info.mem_size);/* Allocate #2 */
 
 		if (NULL == (node)->data) {
 			return;

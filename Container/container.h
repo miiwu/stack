@@ -9,4 +9,4 @@
 
 #include "stack.h"
 
-#endif // __CONTAINER_H
+#endif // !__CONTAINER_H

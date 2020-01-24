@@ -1,23 +1,25 @@
 #ifndef __MAIN_CFG_H
 #define __MAIN_CFG_H
 
-#include "debug_capture_stack_back_trace.h"
+#include "debug_component.h"
 
 #include "container.h"
+
+#include "allocator.h"
 
 #define MAIN_DEBUG_COMPONENT_EN		0u
 
 #define MAIN_ALLOCATOR_EN			0u
-
-#define MAIN_STACK_EN				0u
-
-#define MAIN_QUEUE_EN				0u
 
 #define MAIN_VECTOR_EN				0u
 
 #define MAIN_FORWARD_LIST_EN		1u
 
 #define MAIN_LIST_EN				0u
+
+#define MAIN_STACK_EN				0u
+
+#define MAIN_QUEUE_EN				0u
 
 #if	(MAIN_DEBUG_COMPONENT_EN)
 
@@ -28,12 +30,6 @@ void main_debug_component(void);
 #if	(MAIN_ALLOCATOR_EN)
 
 void main_allocator(void);
-
-#endif
-
-#if	(MAIN_QUEUE_EN)
-
-void main_queue(void);
 
 #endif
 
@@ -67,5 +63,4 @@ void main_queue(void);
 
 #endif
 
-
-#endif // __MAIN_CFG_H
+#endif // !__MAIN_CFG_H

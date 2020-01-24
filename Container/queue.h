@@ -105,4 +105,4 @@ extern SEQUENCE_QUEUE_CONTROL_TYPEDEF sequence_queue_ctrl;
 
 extern QUEUE_CONTROL_TYPEDEF queue_ctrl;
 
-#endif // __QUEUE_H
+#endif // !__QUEUE_H

@@ -31,7 +31,7 @@
 #define FORWARD_LIST_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE		1024u
 
 /* Configure    the type of allocator.                                                                  */
-#define FORWARD_LIST_CFG_ALLOCATOR_PTR_TYPE								ALLOCATOR_TYPEDEF_PTR
+#define FORWARD_LIST_CFG_ALLOCATOR_TYPE								    ALLOCATOR_COMMON
 
 /* Configure    if enable delete element equal destroy node.                                            */
 #define FORWARD_LIST_CFG_DELETE_ELEMENT_EQUAL_DESTROY_NODE_EN			1u
@@ -65,66 +65,66 @@ struct forward_list_control_t {
 		void (*destroy)(FORWARD_LIST_TYPEDEF_PPTR forward_list);
 
 		/* @brief This function will configure the forward_list element handler.                              */
-		void (*element_handler)(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+		void (*element_handler)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 								void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will configure the forward_list exception callback.                           */
-		void (*exception)(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+		void (*exception)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 						  void (*empty)(void), void (*full)(void));
 	}configuration;
 
 	struct {
 		/* @brief This function will initialize the forward_list struct.                                      */
-		void (*begin)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		void (*begin)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 		/* @brief This function will initialize the forward_list struct.                                      */
-		void (*end)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		void (*end)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 	}iterators;
 
 	struct {
 		/* @brief This function will returns a reference to the first element in the container.         */
-		void *(*front)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		void *(*front)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 	}element_access;
 
 	struct {
 		/* @brief This function will checks if the container has no elements.                           */
-		bool (*empty)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		bool (*empty)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*max_size)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*max_size)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 	   /* @brief This function will returns the number of elements in the container.                   */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*size)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*size)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 	}capacity;
 
 	struct {
 		/* @brief This function will erases all elements from the container.                            */
-		void (*clear)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		void (*clear)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 		/* @brief This function will inserts elements after the specified position in the container.       */
-		void (*insert_after)(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+		void (*insert_after)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 							 CONTAINER_GLOBAL_CFG_SIZE_TYPE position, CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
 
 			 /* @brief This function will inserts a new element into a position after the specified position in the container. */
-		void (*emplace_after)(const FORWARD_LIST_TYPEDEF_PTR stack,
+		void (*emplace_after)(FORWARD_LIST_TYPEDEF_PTR stack,
 							  CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
 							  void *destination);
 
 			  /* @brief This function will removes specified elements from the container.                  */
-		void (*erase_after)(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+		void (*erase_after)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 							CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination);
 
 			  /* @brief This function will prepends the given element value to the beginning of the container.      */
-		void (*push_front)(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+		void (*push_front)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 						   void *source);
 
 		 /* @brief This function will inserts a new element to the beginning of the container.  */
-		void (*emplace_front)(const FORWARD_LIST_TYPEDEF_PTR stack,
+		void (*emplace_front)(FORWARD_LIST_TYPEDEF_PTR stack,
 							  void *destination);
 
 		/* @brief This function will removes the first element of the container.                        */
-		void (*pop_front)(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+		void (*pop_front)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 						  void *destination);
 
 		/* @brief This function will resizes the container to contain count elements. */
@@ -146,24 +146,24 @@ struct forward_list_control_t {
 					  FORWARD_LIST_TYPEDEF_PTR other);
 
 		/* @brief This function will moves elements from another forward_list to forward_list.              */
-		void (*splice_after)(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+		void (*splice_after)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 							 CONTAINER_GLOBAL_CFG_SIZE_TYPE position, FORWARD_LIST_TYPEDEF_PTR other);
 
 		/* @brief This function will removes all elements satisfying specific criteria.               */
-		void (*remove)(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+		void (*remove)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 					   void *data);
 
 		/* @brief This function will              */
-		void (*remove_if)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		void (*remove_if)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 		/* @brief This function will reverses the order of the elements in the container.               */
-		void (*reverse)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		void (*reverse)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 		/* @brief This function will removes all consecutive duplicate elements from the container.                */
-		void (*unique)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		void (*unique)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 		/* @brief This function will sorts the elements in ascending order.              */
-		void (*sort)(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+		void (*sort)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 	}list_operations;
 };
 
@@ -216,7 +216,7 @@ void forward_list_control_configuration_destroy(FORWARD_LIST_TYPEDEF_PPTR forwar
  * @return NONE
  */
 
-void forward_list_control_configuration_element_handler(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_configuration_element_handler(FORWARD_LIST_TYPEDEF_PTR forward_list,
 														void (*assign)(void *dst, void *src), void(*free)(void *dst));
 
 /**
@@ -229,7 +229,7 @@ void forward_list_control_configuration_element_handler(const FORWARD_LIST_TYPED
  * @return NONE
  */
 
-void forward_list_control_configuration_exception(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_configuration_exception(FORWARD_LIST_TYPEDEF_PTR forward_list,
 												  void (*empty)(void), void (*full)(void));
 
 /**
@@ -240,7 +240,7 @@ void forward_list_control_configuration_exception(const FORWARD_LIST_TYPEDEF_PTR
  * @return the reference to the first element in the container
  */
 
-void *forward_list_control_element_access_front(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+void *forward_list_control_element_access_front(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will checks if the container has no elements
@@ -252,7 +252,7 @@ void *forward_list_control_element_access_front(const FORWARD_LIST_TYPEDEF_PTR f
 	- false,the container has elements
  */
 
-bool forward_list_control_capacity_empty(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+bool forward_list_control_capacity_empty(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will returns the maximum number of elements the container
@@ -263,7 +263,7 @@ bool forward_list_control_capacity_empty(const FORWARD_LIST_TYPEDEF_PTR forward_
  * @return the maximum number of elements
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_max_size(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_max_size(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will returns the number of elements in the container
@@ -273,7 +273,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_max_size(const FORW
  * @return the number of elements in the container
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_size(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_size(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will returns the number of elements in the container
@@ -283,7 +283,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_size(const FORWARD_
  * @return NONE
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_size(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_size(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will erases all elements from the container
@@ -293,7 +293,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE forward_list_control_capacity_size(const FORWARD_
  * @return NONE
  */
 
-void forward_list_control_modifiers_clear(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+void forward_list_control_modifiers_clear(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will inserts elements after the specified position in the container
@@ -306,7 +306,7 @@ void forward_list_control_modifiers_clear(const FORWARD_LIST_TYPEDEF_PTR forward
  * @return NONE
  */
 
-void forward_list_control_modifiers_insert_after(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_modifiers_insert_after(FORWARD_LIST_TYPEDEF_PTR forward_list,
 												 CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
 												 CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
 
@@ -320,7 +320,7 @@ void forward_list_control_modifiers_insert_after(const FORWARD_LIST_TYPEDEF_PTR 
  * @return NONE
  */
 
-void forward_list_control_modifiers_emplace_after(const FORWARD_LIST_TYPEDEF_PTR stack,
+void forward_list_control_modifiers_emplace_after(FORWARD_LIST_TYPEDEF_PTR stack,
 												  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination);
 
 /**
@@ -333,7 +333,7 @@ void forward_list_control_modifiers_emplace_after(const FORWARD_LIST_TYPEDEF_PTR
  * @return NONE
  */
 
-void forward_list_control_modifiers_erase_after(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_modifiers_erase_after(FORWARD_LIST_TYPEDEF_PTR forward_list,
 												CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *data);
 
 /**
@@ -345,7 +345,7 @@ void forward_list_control_modifiers_erase_after(const FORWARD_LIST_TYPEDEF_PTR f
  * @return NONE
  */
 
-void forward_list_control_modifiers_push_front(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_modifiers_push_front(FORWARD_LIST_TYPEDEF_PTR forward_list,
 											   void *source);
 
 /**
@@ -361,7 +361,7 @@ void forward_list_control_modifiers_push_front(const FORWARD_LIST_TYPEDEF_PTR fo
  * @return NONE
  */
 
-void forward_list_control_modifiers_emplace_front(const FORWARD_LIST_TYPEDEF_PTR stack,
+void forward_list_control_modifiers_emplace_front(FORWARD_LIST_TYPEDEF_PTR stack,
 												  void *destination);
 
 /**
@@ -373,7 +373,7 @@ void forward_list_control_modifiers_emplace_front(const FORWARD_LIST_TYPEDEF_PTR
  * @return NONE
  */
 
-void forward_list_control_modifiers_pop_front(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_modifiers_pop_front(FORWARD_LIST_TYPEDEF_PTR forward_list,
 											  void *destination);
 
 /**
@@ -435,7 +435,7 @@ void forward_list_control_list_operations_merge(FORWARD_LIST_TYPEDEF_PPTR destin
  * @return NONE
  */
 
-void forward_list_control_list_operations_splice_after(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_list_operations_splice_after(FORWARD_LIST_TYPEDEF_PTR forward_list,
 													   CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
 													   FORWARD_LIST_TYPEDEF_PTR other);
 
@@ -448,7 +448,7 @@ void forward_list_control_list_operations_splice_after(const FORWARD_LIST_TYPEDE
  * @return NONE
  */
 
-void forward_list_control_list_operations_remove(const FORWARD_LIST_TYPEDEF_PTR forward_list,
+void forward_list_control_list_operations_remove(FORWARD_LIST_TYPEDEF_PTR forward_list,
 												 void *data);
 
 /**
@@ -459,7 +459,7 @@ void forward_list_control_list_operations_remove(const FORWARD_LIST_TYPEDEF_PTR 
  * @return NONE
  */
 
-void forward_list_control_list_operations_remove_if(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+void forward_list_control_list_operations_remove_if(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will reverses the order of the elements in the container
@@ -469,7 +469,7 @@ void forward_list_control_list_operations_remove_if(const FORWARD_LIST_TYPEDEF_P
  * @return NONE
  */
 
-void forward_list_control_list_operations_reverse(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+void forward_list_control_list_operations_reverse(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will removes all consecutive duplicate elements from the container
@@ -479,7 +479,7 @@ void forward_list_control_list_operations_reverse(const FORWARD_LIST_TYPEDEF_PTR
  * @return NONE
  */
 
-void forward_list_control_list_operations_unique(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+void forward_list_control_list_operations_unique(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will sorts the elements in ascending order
@@ -489,7 +489,7 @@ void forward_list_control_list_operations_unique(const FORWARD_LIST_TYPEDEF_PTR 
  * @return NONE
  */
 
-void forward_list_control_list_operations_sort(const FORWARD_LIST_TYPEDEF_PTR forward_list);
+void forward_list_control_list_operations_sort(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /*
 *********************************************************************************************************
@@ -512,4 +512,4 @@ extern struct forward_list_control_t forward_list_ctrl;
 *********************************************************************************************************
 */
 
-#endif // __FORWARD_LIST_H
+#endif // !__FORWARD_LIST_H
