@@ -270,8 +270,8 @@ void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
 	struct allocator_control_t
 		*allocator_ctrl = NULL;
 
-	allocator_ctrl = allocator_control_convert_type_to_func_addr_table(VECTOR_CFG_ALLOCATOR_PTR_TYPE);	/* Variables pointer to	the function address table of
-																											specified allocator type		*/
+	allocator_ctrl = allocator_control_convert_type_to_func_addr_table(VECTOR_CFG_ALLOCATOR_TYPE);	/* Variables pointer to	the function address table of
+																										specified allocator type		*/
 
 	allocator_ctrl->configration.init(&allocator, NULL);
 
@@ -316,9 +316,13 @@ void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
 
 	*vector = vector_alloced;
 
+	#if (VECTOR_CFG_DEBUG_EN)
+
 	printf("init.vector allocator : %p \r\n", allocator);									/* Debug only								*/
 	printf("init.vector block : %p \r\n", vector_alloced);
 	printf("init.vector data block : %p \r\n", data_pack_alloced);
+
+	#endif // (VECTOR_CFG_DEBUG_EN)
 }
 
 /**
@@ -335,12 +339,20 @@ void vector_control_configuration_destroy(VECTOR_TYPEDEF_PPTR vector)
 {
 	assert(vector);
 
+	#if (VECTOR_CFG_DEBUG_EN)
+
+	printf("destroy.vector data block : %p \r\n", (*vector)->data);
+
+	printf("destroy.vector block : %p \r\n", (*vector));
+
+	printf("destroy.vector allocator : %p \r\n", (*vector)->allocator);
+
+	#endif // (VECTOR_CFG_DEBUG_EN)
+
 	ALLOCATOR_COMMON_TYPEDEF_PTR 
 		vector_allocator = (*vector)->allocator;
 	struct allocator_control_t
 		*vector_allocator_ctrl = (*vector)->allocator_ctrl;
-
-	printf("destroy.vector data block : %p \r\n", (*vector)->data);
 
 	vector_allocator_ctrl->deallocate(vector_allocator, (*vector)->data, (*vector)->info.max_size);	/* Deallocate #2 */
 
@@ -358,11 +370,7 @@ void vector_control_configuration_destroy(VECTOR_TYPEDEF_PPTR vector)
 	(*vector)->exception.empty = NULL;
 	(*vector)->exception.full = NULL;
 
-	printf("destroy.vector block : %p \r\n", (*vector));
-
 	vector_allocator_ctrl->deallocate(vector_allocator, *vector, 1);																			/* deallocate #1 */
-
-	printf("destroy.vector allocator : %p \r\n", vector_allocator);
 
 	vector_allocator_ctrl->configration.destroy(&vector_allocator);
 
@@ -462,7 +470,11 @@ void *vector_control_element_access_at(const VECTOR_TYPEDEF_PTR vector,
 	void
 		*element = (void *)((size_t)(vector->data) + position * vector->info.mem_size);									/* Point destination to the address of the element which at the position location */
 
+	#if (VECTOR_CFG_DEBUG_EN)
+
 	printf("vector.at -> data block : %p | element : %p \r\n", vector->data, element);
+
+	#endif // (VECTOR_CFG_DEBUG_EN)
 
 	return element;
 }
@@ -687,7 +699,11 @@ void *vector_control_modifiers_insert(const VECTOR_TYPEDEF_PTR vector,
 
 	*element = element_block;
 
+	#if (VECTOR_CFG_DEBUG_EN)
+
 	printf("vector.insert -> element amount : %d \r\n", element_amount);
+
+	#endif // (VECTOR_CFG_DEBUG_EN)
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = position; element_pos < vector->info.size; element_pos++) {		/* Copy the vector to element */
 		size_t
@@ -695,7 +711,11 @@ void *vector_control_modifiers_insert(const VECTOR_TYPEDEF_PTR vector,
 
 		vector_control_modifiers_get(vector, element_pos, (void *)element_addr);								/* Copy the element which at the element_pos location to the element */
 
+		#if (VECTOR_CFG_DEBUG_EN)
+
 		printf("vector.insert -> element no.%d : %s \r\n", element_pos, (char *)element_addr);
+
+		#endif // (VECTOR_CFG_DEBUG_EN)
 	}
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = 0; element_pos < back_element_pos - position; element_pos++) {			/* Insert the source to the vector */
@@ -704,7 +724,11 @@ void *vector_control_modifiers_insert(const VECTOR_TYPEDEF_PTR vector,
 
 		vector_control_modifiers_set(vector, element_pos + position, (void *)source_addr);
 
+		#if (VECTOR_CFG_DEBUG_EN)
+
 		printf("vector.insert -> source no.%d : %s \r\n", element_pos, (char *)source_addr);
+
+		#endif // (VECTOR_CFG_DEBUG_EN)
 	}
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = back_element_pos; element_pos < back_element_pos + element_amount; element_pos++) {	/* Insert the elements to the vector */
@@ -997,7 +1021,7 @@ void vector_control_modifiers_del(const VECTOR_TYPEDEF_PTR vector,
 
 void vector_control_configration_exception_default_empty_callback(void)
 {
-	printf("\r\nthe vector has no elements when you temp to insert \r\n");
+	printf("\r\n the vector has no elements when you temp to insert \r\n");
 }
 
 /**
@@ -1011,5 +1035,5 @@ void vector_control_configration_exception_default_empty_callback(void)
 
 void vector_control_configration_exception_default_full_callback(void)
 {
-	printf("\r\nthe vector has no elements when you temp to erase \r\n");
+	printf("\r\n the vector has no elements when you temp to erase \r\n");
 }

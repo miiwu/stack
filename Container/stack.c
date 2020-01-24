@@ -12,9 +12,6 @@
 *********************************************************************************************************
 */
 
-#define SEQUENCE_STACK_EXCEPTION_TYPE_AMOUNT	4
-#define CHAIN_STACK_EXCEPTION_TYPE_AMOUNT		4
-
 /*
 *********************************************************************************************************
 *                                           LOCAL CONSTANTS
@@ -26,6 +23,10 @@
 *                                          LOCAL DATA TYPES
 *********************************************************************************************************
 */
+
+/**
+ * @brief This struct is the stack structure module
+ */
 
 struct stack_t {
 	/* @brief RESERVED This variables will record the identity code of container type.					*/
@@ -127,7 +128,7 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 	}
 
 	void
-		*allocator = NULL;																	/* Variables pointer to	the allocator struct */
+		*allocator = NULL;																		/* Variables pointer to	the allocator struct */
 
 	struct allocator_control_t
 		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
@@ -136,32 +137,32 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 	allocator_ctrl->configration.init(&allocator, NULL);										/* Initialize the allocator struct */
 
 	struct stack_t
-		*stack_alloced = (struct stack_t *)allocator_ctrl->allocate(allocator,				/* Allocate #1 */
+		*stack_alloced = (struct stack_t *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
 																	1, sizeof(struct stack_t));
-																							 /* Variables pointer to	the stack struct which
-																								 will be allocate and assign to the stack 	*/
+																								/* Variables pointer to	the stack struct which
+																									will be allocate and assign to the stack 	*/
 
 	struct container_control_t
 		*container_ctrl = NULL;
 
 	void
-		*container = NULL;																	/* Variables pointer to	the specified container struct */
+		*container = NULL;																		/* Variables pointer to	the specified container struct */
 
 	int
 		*func_addr_table = container_control_convert_type_to_func_addr_table(adapt_container_type);
-																							/* Variables pointer to	the function address table of
-																								specified container type		*/
+																								/* Variables pointer to	the function address table of
+																									specified container type		*/
 
 	container_ctrl = (struct container_control_t *)func_addr_table;
 
-	if (NULL == stack ||																	/* Check if stack point to NULL			*/
-		NULL == stack_alloced) {															/* Check if data_pack_alloced point to NULL	*/
+	if (NULL == stack ||																		/* Check if stack point to NULL			*/
+		NULL == stack_alloced) {																/* Check if data_pack_alloced point to NULL	*/
 		return;
 	}
 
-	container_ctrl->configuration.init(&container, element_size, assign, free);/* Initialize the specified container struct */
+	container_ctrl->configuration.init(&container, element_size, assign, free);					/* Initialize the specified container struct */
 
-	stack_alloced->container_type_id = STACK;												/* Assign stack structure					*/
+	stack_alloced->container_type_id = STACK;													/* Assign stack structure					*/
 	stack_alloced->attach = false;
 	stack_alloced->container = container;
 	stack_alloced->container_control = container_ctrl;
@@ -170,8 +171,12 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 
 	*stack = stack_alloced;
 
-	printf("init.stack allocator : %p \r\n", allocator);									/* Debug only								*/
+	#if (STACK_CFG_DEBUG_EN)
+
+	printf("init.stack allocator : %p \r\n", allocator);										/* Debug only								*/
 	printf("init.stack block : %p \r\n", stack_alloced);
+
+	#endif // (STACK_CFG_DEBUG_EN)
 }
 
 /**
@@ -220,7 +225,11 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void *container
 
 	*stack = stack_alloced;
 
+	#if (STACK_CFG_DEBUG_EN)
+
 	printf("init.stack block : %p \r\n", stack_alloced);									/* Debug only								*/
+
+	#endif // (STACK_CFG_DEBUG_EN)
 }
 
 /**
@@ -235,6 +244,14 @@ void stack_control_configration_destroy(STACK_TYPEDEF_PPTR stack)
 {
 	assert(stack);
 
+	#if (STACK_CFG_DEBUG_EN)
+
+	printf("destroy.stack container : %p \r\n", (*stack)->container);
+	printf("destroy.stack allocator : %p \r\n", (*stack)->allocator);
+	printf("destroy.stack block : %p \r\n", (*stack));
+
+	#endif // (STACK_CFG_DEBUG_EN)
+
 	void
 		*container = NULL;																	/* Variables pointer to	the specified container struct */
 
@@ -244,12 +261,7 @@ void stack_control_configration_destroy(STACK_TYPEDEF_PPTR stack)
 	struct allocator_control_t
 		*allocator_ctrl = (*stack)->allocator_ctrl;
 
-	printf("destroy.stack container : %p \r\n", (*stack)->container);
-
 	(*stack)->container_control->configuration.destroy(&(*stack)->container);				/* Destroy the container */
-
-	printf("destroy.stack allocator : %p \r\n", (*stack)->allocator);
-	printf("destroy.stack block : %p \r\n", (*stack));
 
 	allocator_ctrl->deallocate(allocator, (*stack), 1);										/* Deallocate #2 */
 
@@ -319,7 +331,11 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_size(STACK_TYPEDEF_PTR sta
 	void
 		*container = NULL;																	/* Variables pointer to	the specified container struct */
 
+	#if (STACK_CFG_DEBUG_EN)
+
 	printf("stack.size : %d \r\n", stack->container_control->capacity.size(stack->container));
+
+	#endif // (STACK_CFG_DEBUG_EN)
 
 	return stack->container_control->capacity.size(stack->container);						/* Get the number of elements in the container */
 }

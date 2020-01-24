@@ -28,7 +28,7 @@
 #define ALLOCATOR_CFG_INTERGRATED_STRUCTURE_MODE_EN			                    1u
 
 /* Configure if enable allocator debug control structure.                                               */
-#define ALLOCATOR_CFG_DEBUG_MODE_EN			                                    1u
+#define ALLOCATOR_CFG_DEBUG_MODE_EN			                                    0u
 
 /*
 *********************************************************************************************************
@@ -40,7 +40,7 @@
 typedef ALLOCATOR_GLOBAL_CFG_SIZE_TYPE ALLOCATOR_SIZE_TYPEDEF;
 
 /* TODO .                                                                                               */
-typedef struct allocator_t *ALLOCATOR_COMMON_TYPEDEF_PTR,**ALLOCATOR_COMMON_TYPEDEF_PPTR;
+typedef struct allocator_t *ALLOCATOR_COMMON_TYPEDEF_PTR, **ALLOCATOR_COMMON_TYPEDEF_PPTR;
 
 /*
 *********************************************************************************************************
@@ -58,7 +58,7 @@ typedef struct allocator_t *ALLOCATOR_COMMON_TYPEDEF_PTR,**ALLOCATOR_COMMON_TYPE
  */
 
 void allocator_control_configration_init(ALLOCATOR_COMMON_TYPEDEF_PPTR allocator,
-										 void (*lack_of_memory)(void*));
+										 void (*lack_of_memory)(void *));
 
 /**
  * @brief This function will destroy and clean the allocator struct.

@@ -1,5 +1,15 @@
 #include "main_cfg.h"
 
+#define MAIN_STACK_CFG_ADAPT_VECTOR_EN		1u
+
+#if (MAIN_STACK_CFG_ADAPT_VECTOR_EN)
+
+#define MAIN_STACK_CONTAINER	VECTOR
+
+VECTOR_TYPEDEF_PTR container = NULL;
+
+#endif // (MAIN_STACK_CFG_ADAPT_VECTOR_EN)
+
 void main_stack(void)
 {
 	STACK_TYPEDEF_PTR
@@ -7,21 +17,17 @@ void main_stack(void)
 		stack_attach = 0,
 		stack_copy = NULL;
 
-	VECTOR_TYPEDEF_PTR
-		vector = NULL;
-
 	char
 		**string = calloc(1, sizeof(char **)),
-		buffer[100] = { 0 },
 		*string_start = "####",
 		string_moudle[] = "stack";
 
 	printf("\r\n ------------------------+ stack demo start +------------------------ \r\n");
 
 	printf("stack.init start\r\n");
-	stack_ctrl.configuration.init(&stack, VECTOR, sizeof(string_moudle), NULL, NULL);		/* Initialize stack,char[sizeof(string_moudle)] type */
-	vector_ctrl.configuration.init(&vector, sizeof(string_moudle), NULL, NULL);			/* Initialize vector,char[sizeof(string_moudle)] type */
-	stack_ctrl.configuration.attach(&stack_attach, vector, vector_function_address_tables);
+	stack_ctrl.configuration.init(&stack, MAIN_STACK_CONTAINER, sizeof(string_moudle), NULL, NULL);		/* Initialize stack,char[sizeof(string_moudle)] type */
+	vector_ctrl.configuration.init(&container, sizeof(string_moudle), NULL, NULL);						/* Initialize vector,char[sizeof(string_moudle)] type */
+	stack_ctrl.configuration.attach(&stack_attach, container, vector_function_address_tables);
 
 	printf("\r\nstack.max_size start\r\n");
 	printf("max size : %d \r\n    ", stack_ctrl.capacity.max_size(stack));
@@ -42,7 +48,10 @@ void main_stack(void)
 	stack_ctrl.modifiers.copy(&stack_attach, stack);
 
 	printf("\r\nstack attach.pop start\r\n");
-	stack_ctrl.modifiers.pop(stack_attach);
+	for (size_t cnt = 0; cnt < 10; cnt++) {
+		printf("top no.%d : \"%s\" \r\n", cnt, (char *)stack_ctrl.element_access.top(stack_attach));
+		stack_ctrl.modifiers.pop(stack_attach);
+	}
 
 	printf("\r\nstack.destroy start\r\n");
 	stack_ctrl.configuration.destroy(&stack);

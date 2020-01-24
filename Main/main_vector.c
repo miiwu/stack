@@ -14,6 +14,8 @@ void main_vector(void)
 		buffer[100] = { 0 },
 		*string_start = "####",
 		string_moudle[] = "vector";
+	
+	LONG start = 0,end = 0;
 
 	printf("\r\n ------------------------+ vector demo start +------------------------\r\n");
 

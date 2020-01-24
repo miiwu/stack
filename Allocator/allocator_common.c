@@ -36,9 +36,6 @@ struct allocator_t {
 		ALLOCATOR_SIZE_TYPEDEF size;
 	}info;
 
-	/* @brief This variables will point to the address of allocator memory pool.					    */
-	void *memory_pool;
-
 	struct {
 		/* @brief This variables will point to the exception handler of lack of memory.			        */
 		void (*lack_of_memory)(void* allocator);
@@ -152,9 +149,9 @@ void allocator_control_configration_destroy(ALLOCATOR_COMMON_TYPEDEF_PPTR alloca
 {
 	assert(allocator);
 
-	printf("allocator.destroy:memory free status : %d \r\n", (*allocator)->info.size);
-
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+	printf("allocator.destroy:memory free status : %d \r\n", (*allocator)->info.size);
 
 	if (0 < (*allocator)->info.size) {
 		printf("\r\n-----------------------------------stack trace string table begin-----------------------------------\r\n");

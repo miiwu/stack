@@ -99,18 +99,17 @@ struct allocator_control_t
 
 void *forward_list_function_address_tables[] =
 {
-	NULL,
-	//(void *)&forward_list_control_configuration_init,					/* No.0 : initialize */
+	(void *)&forward_list_control_configuration_init,					/* No.0 : initialize */
 
-	//(void *)&forward_list_control_configuration_destroy,					/* No.1 : destroy */
+	(void *)&forward_list_control_configuration_destroy,					/* No.1 : destroy */
 
-	//(void *)&forward_list_control_element_access_at,						/* No.3 : at */
+	(void *)&forward_list_control_element_access_front,						/* No.3 : at */
 
-	//(void *)&forward_list_control_capacity_empty,						/* No.4 : empty */
+	(void *)&forward_list_control_capacity_empty,						/* No.4 : empty */
 
-	//(void *)&forward_list_control_capacity_size,							/* No.5 : size */
+	(void *)&forward_list_control_capacity_size,							/* No.5 : size */
 
-	//(void *)&forward_list_control_capacity_max_size,						/* No.6 : max_size */
+	(void *)&forward_list_control_capacity_max_size,						/* No.6 : max_size */
 
 	//(void *)&forward_list_control_modifiers_insert,						/* No.7 : insert */
 
@@ -189,7 +188,7 @@ struct forward_list_control_t forward_list_ctrl = {
  * @return NONE
  */
 
-struct forward_list_node_t *forward_list_control_modifiers_init(FORWARD_LIST_TYPEDEF_PTR forward_list);
+struct forward_list_node_t *forward_list_control_modifiers_init_node(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will destroy forward list node struct and free the space.
@@ -224,7 +223,7 @@ struct forward_list_node_t **forward_list_control_modifiers_get_node_addr(FORWAR
  * @return the node at the specified location in the container
  */
 
-struct forward_list_node_t *forward_list_control_modifiers_get(FORWARD_LIST_TYPEDEF_PTR forward_list,
+struct forward_list_node_t *forward_list_control_modifiers_get_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
 	CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 /**
@@ -362,12 +361,12 @@ void forward_list_control_configuration_init(FORWARD_LIST_TYPEDEF_PPTR forward_l
 
 	*forward_list = forward_list_alloced;
 
-	#if (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)												/* Debug only								*/
+	#if (VECTOR_CFG_DEBUG_EN)												/* Debug only								*/
 
 	printf("forward list.configuration.init:allocator : %p \r\n", allocator);
 	printf("forward list.configuration.init:forward_list block : %p \r\n", forward_list_alloced);
 
-	#endif // (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)
+	#endif // (VECTOR_CFG_DEBUG_EN)
 }
 
 /**
@@ -385,13 +384,13 @@ void forward_list_control_configuration_destroy(FORWARD_LIST_TYPEDEF_PPTR forwar
 	void
 		*allocator = (*forward_list)->allocator;
 
-	#if (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)												/* Debug only								*/
+	#if (VECTOR_CFG_DEBUG_EN)
 
 	printf("forward list.configuration.destroy:allocator : %p \r\n", allocator);
 	printf("forward list.configuration.destroy:forward_list block : %p \r\n", (*forward_list));
 	printf("forward list.configuration.destroy:forward_list node block : %p \r\n", (*forward_list)->node);
 
-	#endif // (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)
+	#endif // (VECTOR_CFG_DEBUG_EN)
 
 	if (0 < (*forward_list)->info.size) {
 		for (size_t cnt = 0; cnt < (*forward_list)->info.size; cnt++) {
@@ -547,18 +546,14 @@ void forward_list_control_modifiers_clear(FORWARD_LIST_TYPEDEF_PTR forward_list)
 	assert(forward_list);
 
 	for (size_t cnt = forward_list->info.size; cnt > 0; cnt--) {
-		#if (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)
-		char
-			buffer[100] = { 0 };
+		forward_list_control_modifiers_erase_after(forward_list, 0);
 
-		forward_list_control_modifiers_erase_after(forward_list, 0, buffer);
+		#if (VECTOR_CFG_DEBUG_EN)
 
-		printf("forward list.modifiers.clear:erase after : \"%s\" and %d time \r\n", buffer, cnt);
-		#else
+		printf("forward list.modifiers.clear:erase after : \"%s\" and %d time \r\n",
+			(char *)forward_list_ctrl.element_access.front(forward_list), cnt);
 
-		forward_list_control_modifiers_erase_after(forward_list, 0, NULL);
-
-		#endif // (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)
+		#endif // (VECTOR_CFG_DEBUG_EN)
 	}
 }
 
@@ -583,60 +578,60 @@ void forward_list_control_modifiers_insert_after(FORWARD_LIST_TYPEDEF_PTR forwar
 	assert(source);
 	assert(*source);
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE
-		element_amount = forward_list->info.size - position,
-		pos_source_expected = position + amount;
-
 	void
-		*element_block = forward_list_allocator_ctrl->allocate(forward_list->allocator,
-															   element_amount, forward_list->info.mem_size),								/* Allocate	vector malloc #3 */
-		**element = forward_list_allocator_ctrl->allocate(forward_list->allocator,
-														  1, sizeof(void **));												/* Allocate vector malloc #4 */
+		*source_addr = NULL;
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = position; element_pos < forward_list->info.size; element_pos++) {		/* Copy the vector to element */
-		void
-			*element_addr = (void *)((size_t)element_block + element_pos * forward_list->info.mem_size);
+	if (0u == forward_list->info.size) {											/* If the forward list has not any node */
+		for (size_t cnt = 0; cnt < amount; cnt++) {
+			source_addr = (void *)((size_t)*source + cnt * forward_list->info.mem_size);
 
-		element_addr = forward_list_node_control_modifiers_get(forward_list, element_pos);								/* Copy the element which at the element_pos location to the element */
-
-		#if (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)												/* Debug only								*/
-
-		printf("forward list.modifiers.insert after:element backup no.%d : \"%s\" \r\n", element_pos, (char *)element_addr);
-
-		#endif // (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)
-	}
-
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = position; element_pos < pos_source_expected; element_pos++) {			/* Insert the source to the vector */
-		size_t
-			source_addr = (size_t)*source + element_pos * forward_list->info.mem_size;
-
-		forward_list_node_control_modifiers_set(forward_list, element_pos, (void *)source_addr);
-
-		#if (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)												/* Debug only								*/
-
-		printf("forward list.modifiers.insert after:source no.%d : \"%s\" \r\n", element_pos, (char *)source_addr);
-
-		#endif // (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)
-
-		forward_list->info.size++;
-
-		if (forward_list->info.max_size <= forward_list->info.size) {
-			forward_list->exception.full();
-
-			return;
+			forward_list_node_control_modifiers_set(forward_list, cnt, source_addr);
 		}
+
+		forward_list->info.size += amount;
+
+		return;
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = pos_source_expected; element_pos < pos_source_expected + element_amount; element_pos++) {	/* Insert the elements to the vector */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE
-			element_plus_insert_addr = (CONTAINER_GLOBAL_CFG_SIZE_TYPE)element_block +
-			(element_pos - pos_source_expected) * forward_list->info.mem_size;
+	struct forward_list_node_t
+		*node_head = forward_list_control_modifiers_init_node(forward_list),
+		*node_tail = node_head;
 
-		forward_list_node_control_modifiers_set(forward_list, element_pos, (void *)element_plus_insert_addr);
+	for (size_t cnt = 0; cnt < amount; cnt++) {
+		source_addr = (void *)((size_t)*source + cnt * forward_list->info.mem_size);
+
+		memcpy(node_tail->data, source_addr, forward_list->info.mem_size);
+
+		if (amount - 1 == cnt) {
+			break;
+		}
+
+		node_tail->next = forward_list_control_modifiers_init_node(forward_list);
+
+		node_tail = node_tail->next;
 	}
 
-	forward_list_allocator_ctrl->deallocate(forward_list->allocator, element_block, element_amount);
-	forward_list_allocator_ctrl->deallocate(forward_list->allocator, element, 1);
+	node_tail->next = forward_list_control_modifiers_get_node(forward_list, position);
+
+	if (0 < position) {
+		forward_list_control_modifiers_get_node(forward_list, position)->next = node_head;
+	} else {
+		forward_list->node = node_head;
+	}
+
+	#if (VECTOR_CFG_DEBUG_EN)
+
+	struct forward_list_node_t
+		*node_tmp = node_head;
+
+	for (size_t cnt = 0; cnt < amount; cnt++) {
+		printf("forward list.modifiers.insert after : \"%s\" and %d time \r\n",
+			(char *)node_tmp->data, cnt);
+
+		node_tmp = node_tmp->next;
+	}
+
+	#endif // (VECTOR_CFG_DEBUG_EN)
 }
 
 /**
@@ -650,7 +645,7 @@ void forward_list_control_modifiers_insert_after(FORWARD_LIST_TYPEDEF_PTR forwar
  */
 
 void forward_list_control_modifiers_emplace_after(FORWARD_LIST_TYPEDEF_PTR stack,
-												  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination)
+												  CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
 {
 }
 
@@ -664,38 +659,23 @@ void forward_list_control_modifiers_emplace_after(FORWARD_LIST_TYPEDEF_PTR stack
  */
 
 void forward_list_control_modifiers_erase_after(FORWARD_LIST_TYPEDEF_PTR forward_list,
-												CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination)
+												CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
 {
 	assert(forward_list);
 	assert(0 <= position);
 
 	struct forward_list_node_t
-		*node = forward_list_control_modifiers_get(forward_list, position);
+		*node = forward_list_control_modifiers_get_node(forward_list, position);
 
 	if (0 < position) {
 		struct forward_list_node_t
-			*node_prev = forward_list_control_modifiers_get(forward_list, position - 1);
+			*node_prev = forward_list_control_modifiers_get_node(forward_list, position - 1);
 
 		if (NULL == node_prev) {
 			return;
 		}
 
 		node_prev->next = node_prev->next->next;											/* Link the previous node's next to the specified node's next */
-	}
-
-	if (NULL != destination) {
-		void
-			*source = forward_list_node_control_modifiers_get(forward_list, position);
-
-		if (NULL == source) {
-			return;
-		}
-
-		if (NULL != forward_list->element_handler.assign) {																		/* Check if assign point to NULL */
-			forward_list->element_handler.assign(destination, source);
-		} else {
-			memcpy(destination, source, forward_list->info.mem_size);															/* Memcpy source to destination */
-		}
 	}
 
 	forward_list_node_control_modifiers_del(forward_list, position);
@@ -713,6 +693,16 @@ void forward_list_control_modifiers_erase_after(FORWARD_LIST_TYPEDEF_PTR forward
 void forward_list_control_modifiers_push_front(FORWARD_LIST_TYPEDEF_PTR forward_list,
 											   void *source)
 {
+	assert(forward_list);
+
+	struct forward_list_node_t
+		*node_tmp = forward_list_control_modifiers_init_node(forward_list);						/* Initialize a new node */
+
+	node_tmp->next = forward_list_control_modifiers_get_node(forward_list, 0);
+
+	forward_list->node = node_tmp;
+
+	forward_list_node_control_modifiers_set(forward_list, 0, source);
 }
 
 /**
@@ -741,9 +731,14 @@ void forward_list_control_modifiers_emplace_front(FORWARD_LIST_TYPEDEF_PTR stack
  * @return NONE
  */
 
-void forward_list_control_modifiers_pop_front(FORWARD_LIST_TYPEDEF_PTR forward_list,
-											  void *destination)
+void forward_list_control_modifiers_pop_front(FORWARD_LIST_TYPEDEF_PTR forward_list)
 {
+	assert(forward_list);
+
+	struct forward_list_node_t
+		*node_tmp = forward_list_control_modifiers_get_node(forward_list, 0);
+
+	forward_list_node_control_modifiers_del(forward_list, 0);
 }
 
 /**
@@ -894,7 +889,7 @@ void forward_list_control_list_operations_sort(FORWARD_LIST_TYPEDEF_PTR forward_
  * @return NONE
  */
 
-struct forward_list_node_t *forward_list_control_modifiers_init(FORWARD_LIST_TYPEDEF_PTR forward_list)
+struct forward_list_node_t *forward_list_control_modifiers_init_node(FORWARD_LIST_TYPEDEF_PTR forward_list)
 {
 	assert(forward_list);
 
@@ -915,12 +910,12 @@ struct forward_list_node_t *forward_list_control_modifiers_init(FORWARD_LIST_TYP
 	node_alloced->data = data_pack_allocated;													/* Assign forward_list_node structure					*/
 	node_alloced->next = NULL;
 
-	#if (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)												/* Debug only								*/
+	#if (VECTOR_CFG_DEBUG_EN)												/* Debug only								*/
 
 	printf("forward list.modifiers.init node:node block : %p \r\n", node_alloced);
 	printf("forward list.modifiers.init node:node date block : %p \r\n", data_pack_allocated);
 
-	#endif // (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)
+	#endif // (VECTOR_CFG_DEBUG_EN)
 
 	return node_alloced;
 }
@@ -943,12 +938,12 @@ void forward_list_control_modifiers_destroy(FORWARD_LIST_TYPEDEF_PTR forward_lis
 		return;
 	}
 
-	#if (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)												/* Debug only								*/
+	#if (VECTOR_CFG_DEBUG_EN)												/* Debug only								*/
 
 	printf("forward list.modifiers.destroy node:node block : %p \r\n", (*node));
 	printf("forward list.modifiers.destroy node:node date block : %p \r\n", (*node)->data);
 
-	#endif // (CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN)
+	#endif // (VECTOR_CFG_DEBUG_EN)
 
 	forward_list_allocator_ctrl->deallocate(forward_list->allocator, (*node)->data, 1);																	/* Deallocate #2 */
 
@@ -1009,7 +1004,7 @@ LOOP:
  * @return NONE
  */
 
-struct forward_list_node_t *forward_list_control_modifiers_get(FORWARD_LIST_TYPEDEF_PTR forward_list,
+struct forward_list_node_t *forward_list_control_modifiers_get_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
 	CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
 {
 	assert(forward_list);
@@ -1048,7 +1043,7 @@ struct forward_list_node_t *forward_list_control_modifiers_set_null_node(FORWARD
 		**node = forward_list_control_modifiers_get_node_addr(forward_list, position);
 
 	if (NULL == *node) {
-		*node = forward_list_control_modifiers_init(forward_list);
+		*node = forward_list_control_modifiers_init_node(forward_list);
 	}
 
 	return *node;
@@ -1073,7 +1068,7 @@ void forward_list_node_control_modifiers_set(FORWARD_LIST_TYPEDEF_PTR forward_li
 	assert(source);
 
 	struct forward_list_node_t
-		*node = forward_list_control_modifiers_get(forward_list, position);
+		*node = forward_list_control_modifiers_get_node(forward_list, position);
 
 	if (NULL == node) {
 		node = forward_list_control_modifiers_set_null_node(forward_list, position);
@@ -1117,7 +1112,7 @@ void *forward_list_node_control_modifiers_get(FORWARD_LIST_TYPEDEF_PTR forward_l
 	assert(0 <= position);
 
 	struct forward_list_node_t
-		*node = forward_list_control_modifiers_get(forward_list, position);
+		*node = forward_list_control_modifiers_get_node(forward_list, position);
 
 	if (NULL == node) {
 		return NULL;

@@ -39,6 +39,9 @@
 /* Configure    if enable integrated structure.                                                         */
 #define FORWARD_LIST_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
 
+/* Configure    if enable stack debug.																    */
+#define FORWARD_LIST_CFG_DEBUG_EN										0u
+
 /*
 *********************************************************************************************************
 *									        FORWARD_LIST DATA TYPES
@@ -108,12 +111,11 @@ struct forward_list_control_t {
 
 			 /* @brief This function will inserts a new element into a position after the specified position in the container. */
 		void (*emplace_after)(FORWARD_LIST_TYPEDEF_PTR stack,
-							  CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-							  void *destination);
+							  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 			  /* @brief This function will removes specified elements from the container.                  */
 		void (*erase_after)(FORWARD_LIST_TYPEDEF_PTR forward_list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination);
+							CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 			  /* @brief This function will prepends the given element value to the beginning of the container.      */
 		void (*push_front)(FORWARD_LIST_TYPEDEF_PTR forward_list,
@@ -124,8 +126,7 @@ struct forward_list_control_t {
 							  void *destination);
 
 		/* @brief This function will removes the first element of the container.                        */
-		void (*pop_front)(FORWARD_LIST_TYPEDEF_PTR forward_list,
-						  void *destination);
+		void (*pop_front)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 		/* @brief This function will resizes the container to contain count elements. */
 		void (*resize)(FORWARD_LIST_TYPEDEF_PPTR forward_list,
@@ -315,26 +316,24 @@ void forward_list_control_modifiers_insert_after(FORWARD_LIST_TYPEDEF_PTR forwar
  *
  * @param forward_list the pointer to the forward list struct pointer
  * @param position the position of element,it would be equal or greater than zero
- * @param destination pointer to the destination
  *
  * @return NONE
  */
 
 void forward_list_control_modifiers_emplace_after(FORWARD_LIST_TYPEDEF_PTR stack,
-												  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *destination);
+												  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 /**
  * @brief This function will erases the specified elements from the container
  *
  * @param forward_list the pointer to the forward list struct pointer
  * @param position the position of element,it would be equal or greater than zero
- * @param source pointer to the source
  *
  * @return NONE
  */
 
 void forward_list_control_modifiers_erase_after(FORWARD_LIST_TYPEDEF_PTR forward_list,
-												CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *data);
+												CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 /**
  * @brief This function will prepends the given element value to the beginning of the container
@@ -373,8 +372,7 @@ void forward_list_control_modifiers_emplace_front(FORWARD_LIST_TYPEDEF_PTR stack
  * @return NONE
  */
 
-void forward_list_control_modifiers_pop_front(FORWARD_LIST_TYPEDEF_PTR forward_list,
-											  void *destination);
+void forward_list_control_modifiers_pop_front(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
 /**
  * @brief This function will increase the capacity of the forward_list to a size

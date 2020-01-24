@@ -33,6 +33,9 @@
 /* Configure    if enable integrated structure.                                                         */
 #define STACK_CFG_INTERGRATED_STRUCTURE_MODE_EN			        1u
 
+/* Configure    if enable stack debug.																    */
+#define STACK_CFG_DEBUG_EN										0u
+
 /*
 *********************************************************************************************************
 *									       STACK DATA TYPES
@@ -136,7 +139,7 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
  */
 
 void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
-                                       void *container, void *func_addr_table);
+									   void *container, void *func_addr_table);
 
 /**
  * @brief This function will destroy the stack struct

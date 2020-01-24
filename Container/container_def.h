@@ -34,9 +34,6 @@
 /* Configure    container global size type.																*/
 #define CONTAINER_GLOBAL_CFG_SIZE_TYPE															size_t
 
-/* Configure    forward list debug.																		*/
-#define CONTAINER_GLOBAL_CFG_FORWARD_LIST_DBG_EN												1u
-
 #pragma warning( disable : 4996)
 #pragma warning( disable : 26812)
 
@@ -121,9 +118,9 @@ struct container_control_t {
 
 		/* @brief This function will erases the specified elements from the container.                  */
 		void (*earse)(void *container,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+					  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
-		/* @brief This function will exchange the contents of the container adaptor with those of other. */
+	   /* @brief This function will exchange the contents of the container adaptor with those of other. */
 		void (*swap)(void **container,
 					 void **other);
 
