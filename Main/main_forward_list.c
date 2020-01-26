@@ -1,5 +1,15 @@
 #include "main_cfg.h"
 
+bool main_forward_list_remove_if_func(void *data)
+{
+	if (*((char *)data) >= 'w') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 void main_forward_list(void)
 {
 	FORWARD_LIST_TYPEDEF_PTR
@@ -83,6 +93,9 @@ void main_forward_list(void)
 
 	printf("\r\nforward_list_list_operation.unique start\r\n");
 	forward_list_ctrl.list_operations.unique(forward_list_list_operations);
+
+	printf("\r\nforward_list_list_operation.remove if start\r\n");
+	forward_list_ctrl.list_operations.remove_if(forward_list_list_operations, main_forward_list_remove_if_func);
 
 	printf("\r\nforward_list.clear start\r\n");
 	forward_list_ctrl.modifiers.clear(forward_list);

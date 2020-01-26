@@ -165,6 +165,8 @@ struct forward_list_control_t forward_list_ctrl = {
 
 #endif
 
+void *forward_list_control_list_operations_remove_value = NULL;
+
 /*
 *********************************************************************************************************
 *                                      LOCAL FUNCTION PROTOTYPES
@@ -286,6 +288,18 @@ void *forward_list_node_control_get_data(FORWARD_LIST_TYPEDEF_PTR forward_list,
 
 void forward_list_node_control_del_data(FORWARD_LIST_TYPEDEF_PTR forward_list,
 										CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+
+/**
+* @brief This function will control the remove run under the rule of remove_if.
+*
+* @param data the pointer to the data forward list will give
+*
+* @return if the data match the rule
+*	- true	yes
+*	- false	no
+*/
+
+bool forward_list_control_remove_rule(void *data);
 
 /**
 * @brief This function will compare if the left-hand-side lesser than the right-hand-side.
@@ -920,17 +934,36 @@ void forward_list_control_list_operations_splice_after(FORWARD_LIST_TYPEDEF_PTR 
  */
 
 void forward_list_control_list_operations_remove(FORWARD_LIST_TYPEDEF_PTR forward_list,
-												 void *data)
+												 void *value)
 {
 	assert(forward_list);
-	assert(data);
+	assert(value);
+
+	forward_list_control_list_operations_remove_value = value;
+
+	forward_list_control_list_operations_remove_if(forward_list, forward_list_control_remove_rule);
+}
+
+/**
+ * @brief This function will
+ *
+ * @param destination the pointer to the destination forward list struct pointer
+ * @param rule the pointer to the rule-making function
+ *
+ * @return NONE
+ */
+
+void forward_list_control_list_operations_remove_if(FORWARD_LIST_TYPEDEF_PTR forward_list, bool (*rule)(void *data))
+{
+	assert(forward_list);
+	assert(rule);
 
 	CONTAINER_GLOBAL_CFG_SIZE_TYPE
 		cnt_reomve = 0,
 		*pos_remove = forward_list->allocator_ctrl->allocate(forward_list->allocator, forward_list->info.size, sizeof(CONTAINER_GLOBAL_CFG_SIZE_TYPE));
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 0; pos < forward_list->info.size; pos++) {
-		if (0 == strcmp(forward_list_node_control_get_data(forward_list, pos), data)) {
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 0; pos < forward_list->info.size; pos++) {	/* Get which node's data is match */
+		if (rule(forward_list_node_control_get_data(forward_list, pos))) {
 			*(pos_remove + cnt_reomve++) = pos;
 		}
 	}
@@ -938,34 +971,18 @@ void forward_list_control_list_operations_remove(FORWARD_LIST_TYPEDEF_PTR forwar
 	struct  forward_list_node_t
 		*node_del = NULL;
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_reomve; cnt++) {
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_reomve; cnt++) {					/* Delete nodes matched */
 		#if (FORWARD_LIST_CFG_DEBUG_EN)
 
-		printf("forward_list.list_operatons.remove.no.%d: \"%s\" \r\n",
+		printf("forward_list.list_operatons.remove_if.no.%d: \"%s\" \r\n",
 			   *(pos_remove + cnt), (char *)forward_list_node_control_get_data(forward_list, *(pos_remove + cnt) - cnt));
 
 		#endif // (FORWARD_LIST_CFG_DEBUG_EN)
 
-		node_del = forward_list_control_get_node(forward_list, *(pos_remove + cnt) - cnt);
-
-		forward_list_control_del_node(forward_list, *(pos_remove + cnt) - cnt);
-
-		forward_list_control_destroy_node(forward_list, node_del);
+		forward_list_node_control_del_data(forward_list, *(pos_remove + cnt) - cnt);
 	}
 
 	forward_list->allocator_ctrl->deallocate(forward_list->allocator, pos_remove, forward_list->info.size);
-}
-
-/**
- * @brief This function will
- *
- * @param destination the pointer to the destination forward list struct pointer
- *
- * @return NONE
- */
-
-void forward_list_control_list_operations_remove_if(FORWARD_LIST_TYPEDEF_PTR forward_list)
-{
 }
 
 /**
@@ -990,7 +1007,7 @@ void forward_list_control_list_operations_reverse(FORWARD_LIST_TYPEDEF_PTR forwa
 
 		forward_list_control_del_node(forward_list, pos_last_forward_list_node_valid);
 
-		forward_list_control_set_node(forward_list, pos,node_reverse);
+		forward_list_control_set_node(forward_list, pos, node_reverse);
 	}
 }
 
@@ -1473,6 +1490,25 @@ void forward_list_node_control_del_data(FORWARD_LIST_TYPEDEF_PTR forward_list,
 
 		return;
 	}
+}
+
+/**
+* @brief This function will control the remove run under the rule of remove_if.
+*
+* @param data the pointer to the data forward list will give
+*
+* @return if the data match the rule
+*	- true	yes
+*	- false	no
+*/
+
+bool forward_list_control_remove_rule(void *data)
+{
+	if (0 == strcmp(data, forward_list_control_list_operations_remove_value)) {
+		return true;
+	}
+
+	return false;
 }
 
 /**

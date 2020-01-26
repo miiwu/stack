@@ -157,7 +157,8 @@ struct forward_list_control_t {
 					   void *data);
 
 		/* @brief This function will              */
-		void (*remove_if)(FORWARD_LIST_TYPEDEF_PTR forward_list);
+		void (*remove_if)(FORWARD_LIST_TYPEDEF_PTR forward_list,
+						  bool (*rule)(void *data));
 
 		/* @brief This function will reverses the order of the elements in the container.               */
 		void (*reverse)(FORWARD_LIST_TYPEDEF_PTR forward_list);
@@ -456,11 +457,13 @@ void forward_list_control_list_operations_remove(FORWARD_LIST_TYPEDEF_PTR forwar
  * @brief This function will
  *
  * @param destination the pointer to the destination forward list struct pointer
+ * @param rule the pointer to the rule-making function
  *
  * @return NONE
  */
 
-void forward_list_control_list_operations_remove_if(FORWARD_LIST_TYPEDEF_PTR forward_list);
+void forward_list_control_list_operations_remove_if(FORWARD_LIST_TYPEDEF_PTR forward_list, 
+                                                    bool (*rule)(void *data));
 
 /**
  * @brief This function will reverses the order of the elements in the container
