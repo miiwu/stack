@@ -40,7 +40,7 @@
 #define FORWARD_LIST_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
 
 /* Configure    if enable stack debug.																    */
-#define FORWARD_LIST_CFG_DEBUG_EN										0u
+#define FORWARD_LIST_CFG_DEBUG_EN										1u
 
 /*
 *********************************************************************************************************
@@ -49,38 +49,38 @@
 */
 
 /* ---------------------------------------- FORWARD_LIST TYPE ----------------------------------------- */
-/* Configure    forward_list ptr type.                                                                        */
+/* Configure    forward_list ptr type.                                                                  */
 typedef struct forward_list_t *FORWARD_LIST_TYPEDEF_PTR;
 
-/* Configure    forward_list pptr type.                                                                       */
+/* Configure    forward_list pptr type.                                                                 */
 typedef struct forward_list_t **FORWARD_LIST_TYPEDEF_PPTR;
 
 #if (FORWARD_LIST_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 struct forward_list_control_t {
 	struct {
-		/* @brief This function will initialize the forward_list struct.                                      */
+		/* @brief This function will initialize the forward_list struct.                                */
 		void (*init)(FORWARD_LIST_TYPEDEF_PPTR forward_list,
 					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
-		/* @brief This function will destroy the forward_list struct and free the space.                      */
+		/* @brief This function will destroy the forward_list struct and free the space.                */
 		void (*destroy)(FORWARD_LIST_TYPEDEF_PPTR forward_list);
 
-		/* @brief This function will configure the forward_list element handler.                              */
+		/* @brief This function will configure the forward_list element handler.                        */
 		void (*element_handler)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 								void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
-		/* @brief This function will configure the forward_list exception callback.                           */
+		/* @brief This function will configure the forward_list exception callback.                     */
 		void (*exception)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 						  void (*empty)(void), void (*full)(void));
 	}configuration;
 
 	struct {
-		/* @brief This function will initialize the forward_list struct.                                      */
+		/* @brief This function will initialize the forward_list struct.                                */
 		void (*begin)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
-		/* @brief This function will initialize the forward_list struct.                                      */
+		/* @brief This function will initialize the forward_list struct.                                */
 		void (*end)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 	}iterators;
 
@@ -97,7 +97,7 @@ struct forward_list_control_t {
 				  is able to hold due to system or library implementation limitations.                  */
 		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*max_size)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
-	   /* @brief This function will returns the number of elements in the container.                   */
+	   /* @brief This function will returns the number of elements in the container.                    */
 		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*size)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 	}capacity;
 
@@ -105,23 +105,24 @@ struct forward_list_control_t {
 		/* @brief This function will erases all elements from the container.                            */
 		void (*clear)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
-		/* @brief This function will inserts elements after the specified position in the container.       */
+		/* @brief This function will inserts elements after the specified position in the container.    */
 		void (*insert_after)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 							 CONTAINER_GLOBAL_CFG_SIZE_TYPE position, CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
 
-			 /* @brief This function will inserts a new element into a position after the specified position in the container. */
+	    /* @brief This function will inserts a new element into a position 
+                    after the specified position in the container.                                      */
 		void (*emplace_after)(FORWARD_LIST_TYPEDEF_PTR stack,
 							  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
-			  /* @brief This function will removes specified elements from the container.                  */
+		/* @brief This function will removes specified elements from the container.                     */
 		void (*erase_after)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 							CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
-			  /* @brief This function will prepends the given element value to the beginning of the container.      */
+		/* @brief This function will prepends the given element value to the beginning of the container.*/
 		void (*push_front)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 						   void *source);
 
-		 /* @brief This function will inserts a new element to the beginning of the container.  */
+		/* @brief This function will inserts a new element to the beginning of the container.           */
 		void (*emplace_front)(FORWARD_LIST_TYPEDEF_PTR stack,
 							  void *destination);
 
@@ -132,9 +133,9 @@ struct forward_list_control_t {
 		void (*resize)(FORWARD_LIST_TYPEDEF_PPTR forward_list,
 					   CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
 
-		 /* @brief This function will exchanges the contents of the container with those of other.       */
+		/* @brief This function will exchanges the contents of the container with those of other.       */
 		void (*swap)(FORWARD_LIST_TYPEDEF_PPTR forward_list,
-					 FORWARD_LIST_TYPEDEF_PPTR other);
+                     FORWARD_LIST_TYPEDEF_PPTR other);
 
 		/* @brief This function will copy the contents of the container to those of other.              */
 		void (*copy)(FORWARD_LIST_TYPEDEF_PPTR destination,
@@ -142,15 +143,16 @@ struct forward_list_control_t {
 	}modifiers;
 
 	struct {
-		/* @brief This function will merges two sorted lists into one.              */
-		void (*merge)(FORWARD_LIST_TYPEDEF_PPTR destination,
+		/* @brief This function will merges two sorted lists into one.                                  */
+		void (*merge)(FORWARD_LIST_TYPEDEF_PTR destination,
 					  FORWARD_LIST_TYPEDEF_PTR other);
 
-		/* @brief This function will moves elements from another forward_list to forward_list.              */
+		/* @brief This function will moves elements from another forward_list to forward_list.          */
 		void (*splice_after)(FORWARD_LIST_TYPEDEF_PTR forward_list,
-							 CONTAINER_GLOBAL_CFG_SIZE_TYPE position, FORWARD_LIST_TYPEDEF_PTR other);
+							 CONTAINER_GLOBAL_CFG_SIZE_TYPE position, FORWARD_LIST_TYPEDEF_PTR other,
+                             CONTAINER_GLOBAL_CFG_SIZE_TYPE first, CONTAINER_GLOBAL_CFG_SIZE_TYPE last);
 
-		/* @brief This function will removes all elements satisfying specific criteria.               */
+		/* @brief This function will removes all elements satisfying specific criteria.                 */
 		void (*remove)(FORWARD_LIST_TYPEDEF_PTR forward_list,
 					   void *data);
 
@@ -160,11 +162,12 @@ struct forward_list_control_t {
 		/* @brief This function will reverses the order of the elements in the container.               */
 		void (*reverse)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
-		/* @brief This function will removes all consecutive duplicate elements from the container.                */
+		/* @brief This function will removes all consecutive duplicate elements from the container.     */
 		void (*unique)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 
-		/* @brief This function will sorts the elements in ascending order.              */
-		void (*sort)(FORWARD_LIST_TYPEDEF_PTR forward_list);
+		/* @brief This function will sorts the elements in ascending order.                             */
+		void (*sort)(FORWARD_LIST_TYPEDEF_PTR forward_list,
+					 bool comp(void *dst, void *src, size_t len));
 	}list_operations;
 };
 
@@ -397,7 +400,7 @@ void forward_list_control_modifiers_resize(FORWARD_LIST_TYPEDEF_PPTR forward_lis
  */
 
 void forward_list_control_modifiers_swap(FORWARD_LIST_TYPEDEF_PPTR forward_list,
-										 FORWARD_LIST_TYPEDEF_PPTR other);
+                                         FORWARD_LIST_TYPEDEF_PPTR other);
 
 /**
  * @brief This function will copy the contents of the container to those of other
@@ -420,7 +423,7 @@ void forward_list_control_modifiers_copy(FORWARD_LIST_TYPEDEF_PPTR destination,
  * @return NONE
  */
 
-void forward_list_control_list_operations_merge(FORWARD_LIST_TYPEDEF_PPTR destination,
+void forward_list_control_list_operations_merge(FORWARD_LIST_TYPEDEF_PTR destination,
 												FORWARD_LIST_TYPEDEF_PTR other);
 
 /**
@@ -434,8 +437,8 @@ void forward_list_control_list_operations_merge(FORWARD_LIST_TYPEDEF_PPTR destin
  */
 
 void forward_list_control_list_operations_splice_after(FORWARD_LIST_TYPEDEF_PTR forward_list,
-													   CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-													   FORWARD_LIST_TYPEDEF_PTR other);
+													   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, FORWARD_LIST_TYPEDEF_PTR other,
+                                                       CONTAINER_GLOBAL_CFG_SIZE_TYPE first, CONTAINER_GLOBAL_CFG_SIZE_TYPE last);
 
 /**
  * @brief This function will removes all elements satisfying specific criteria
@@ -483,11 +486,13 @@ void forward_list_control_list_operations_unique(FORWARD_LIST_TYPEDEF_PTR forwar
  * @brief This function will sorts the elements in ascending order
  *
  * @param destination the pointer to the destination forward list struct pointer
+ * @param comp the pointer to the compare function that you wish
  *
  * @return NONE
  */
 
-void forward_list_control_list_operations_sort(FORWARD_LIST_TYPEDEF_PTR forward_list);
+void forward_list_control_list_operations_sort(FORWARD_LIST_TYPEDEF_PTR forward_list,
+											   bool comp(void *dst, void *src,size_t len));
 
 /*
 *********************************************************************************************************
