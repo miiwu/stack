@@ -78,11 +78,11 @@ void main_forward_list(void)
 	printf("\r\nforward_list_list_operation.reverse start\r\n");
 	forward_list_ctrl.list_operations.reverse(forward_list_list_operations);
 
+	printf("\r\nforward_list_list_operation.sort start\r\n");
+	forward_list_ctrl.list_operations.sort(forward_list_list_operations, NULL);
+
 	printf("\r\nforward_list_list_operation.unique start\r\n");
 	forward_list_ctrl.list_operations.unique(forward_list_list_operations);
-
-	printf("\r\nforward_list_list_operation.sort start\r\n");
-	forward_list_ctrl.list_operations.sort(forward_list_list_operations,NULL);
 
 	printf("\r\nforward_list.clear start\r\n");
 	forward_list_ctrl.modifiers.clear(forward_list);

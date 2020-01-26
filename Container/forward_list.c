@@ -980,10 +980,18 @@ void forward_list_control_list_operations_reverse(FORWARD_LIST_TYPEDEF_PTR forwa
 {
 	assert(forward_list);
 
-	// TODO ...
-	// this below is not the correct way.
+	struct  forward_list_node_t
+		*node_reverse = NULL;
 
-	forward_list_control_list_operations_sort(forward_list, forward_list_control_default_sort_comp_lesser);
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE pos_last_forward_list_node_valid = forward_list->info.size - 1;
+
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 0; pos <= pos_last_forward_list_node_valid; pos++) {
+		node_reverse = forward_list_control_get_node(forward_list, pos_last_forward_list_node_valid);
+
+		forward_list_control_del_node(forward_list, pos_last_forward_list_node_valid);
+
+		forward_list_control_set_node(forward_list, pos,node_reverse);
+	}
 }
 
 /**
@@ -998,7 +1006,7 @@ void forward_list_control_list_operations_unique(FORWARD_LIST_TYPEDEF_PTR forwar
 {
 	assert(forward_list);
 
-	void
+	char
 		*data_prev = forward_list_node_control_get_data(forward_list, 0),
 		*data = NULL;
 
@@ -1077,8 +1085,8 @@ void forward_list_control_list_operations_sort(FORWARD_LIST_TYPEDEF_PTR forward_
 			if (comp(forward_list_node_control_get_data(forward_list, ct), forward_list_node_control_get_data(forward_list, ct + 1), forward_list->info.mem_size)) {
 				#if (FORWARD_LIST_CFG_DEBUG_EN)
 
-				printf("forward_list.list_operatons.sort.no.%d-%d: %d \"%s\" swap %d \"%s\" \r\n",
-					   cnt, ct, ct, (char *)forward_list_node_control_get_data(forward_list, ct), ct + 1, (char *)forward_list_node_control_get_data(forward_list, ct + 1));
+				//printf("forward_list.list_operatons.sort.no.%d-%d: %d \"%s\" swap %d \"%s\" \r\n",
+				//	   cnt, ct, ct, (char *)forward_list_node_control_get_data(forward_list, ct), ct + 1, (char *)forward_list_node_control_get_data(forward_list, ct + 1));
 
 				#endif // (FORWARD_LIST_CFG_DEBUG_EN)
 
