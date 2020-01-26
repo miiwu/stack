@@ -236,14 +236,28 @@ void forward_list_control_del_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
 								   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 /**
- * @brief This function will set elements at the specified location in the container.
+ * @brief This function will swap the node at the specified location in the container
+ *			by the stable bubble swap algorithm.
  *
  * @param forward_list the pointer to the forward list struct pointer
- * @param position the position of element,it would be equal or greater than zero
- * @param source pointer to the source
+ * @param position the position of node,it would be equal or greater than zero
  *
  * @return NONE
  */
+
+void forward_list_control_swap_node_stable_bubble_swap(FORWARD_LIST_TYPEDEF_PTR forward_list,
+													   CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
+													   CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos);
+
+/**
+* @brief This function will set elements at the specified location in the container.
+*
+* @param forward_list the pointer to the forward list struct pointer
+* @param position the position of element,it would be equal or greater than zero
+* @param source pointer to the source
+*
+* @return NONE
+*/
 
 void forward_list_node_control_set_data(FORWARD_LIST_TYPEDEF_PTR forward_list,
 										CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source);
@@ -272,6 +286,45 @@ void *forward_list_node_control_get_data(FORWARD_LIST_TYPEDEF_PTR forward_list,
 
 void forward_list_node_control_del_data(FORWARD_LIST_TYPEDEF_PTR forward_list,
 										CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+
+/**
+* @brief This function will compare if the left-hand-side lesser than the right-hand-side.
+*
+* @param lhs the pointer to the left-hand-side value.
+* @param rhs the pointer to the right-hand-side value.
+*
+* @return if left-hand-side lesser than the right-hand-side
+*	- true	yes
+*	- false	no
+*/
+
+bool forward_list_control_default_sort_comp_lesser(void *lhs, void *rhs, size_t len);
+
+/**
+* @brief This function will compare if the left-hand-side greater than the right-hand-side.
+*
+* @param lhs the pointer to the left-hand-side value.
+* @param rhs the pointer to the right-hand-side value.
+*
+* @return if left-hand-side greater than the right-hand-side
+*	- true	yes
+*	- false	no
+*/
+
+bool forward_list_control_default_sort_comp_greater(void *lhs, void *rhs, size_t len);
+
+/**
+* @brief This function will compare if the left-hand-side equal with the right-hand-side.
+*
+* @param lhs the pointer to the left-hand-side value.
+* @param rhs the pointer to the right-hand-side value.
+*
+* @return if left-hand-side equal with the right-hand-side
+*	- true	yes
+*	- false	no
+*/
+
+bool forward_list_control_default_sort_comp_equal(void *lhs, void *rhs, size_t len);
 
 /**
 * @brief This function will callback the handler that container has no elements when the container temp to insert.
@@ -803,6 +856,9 @@ void forward_list_control_list_operations_merge(FORWARD_LIST_TYPEDEF_PTR destina
 	assert(destination);
 	assert(other);
 
+	forward_list_control_list_operations_sort(destination, NULL);
+	forward_list_control_list_operations_sort(other, NULL);
+
 	forward_list_control_list_operations_splice_after(destination, 0, other, 0, other->info.size);
 }
 
@@ -879,8 +935,22 @@ void forward_list_control_list_operations_remove(FORWARD_LIST_TYPEDEF_PTR forwar
 		}
 	}
 
+	struct  forward_list_node_t
+		*node_del = NULL;
+
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_reomve; cnt++) {
+		#if (FORWARD_LIST_CFG_DEBUG_EN)
+
+		printf("forward_list.list_operatons.remove.no.%d: \"%s\" \r\n",
+			   *(pos_remove + cnt), (char *)forward_list_node_control_get_data(forward_list, *(pos_remove + cnt) - cnt));
+
+		#endif // (FORWARD_LIST_CFG_DEBUG_EN)
+
+		node_del = forward_list_control_get_node(forward_list, *(pos_remove + cnt) - cnt);
+
 		forward_list_control_del_node(forward_list, *(pos_remove + cnt) - cnt);
+
+		forward_list_control_destroy_node(forward_list, node_del);
 	}
 
 	forward_list->allocator_ctrl->deallocate(forward_list->allocator, pos_remove, forward_list->info.size);
@@ -908,6 +978,12 @@ void forward_list_control_list_operations_remove_if(FORWARD_LIST_TYPEDEF_PTR for
 
 void forward_list_control_list_operations_reverse(FORWARD_LIST_TYPEDEF_PTR forward_list)
 {
+	assert(forward_list);
+
+	// TODO ...
+	// this below is not the correct way.
+
+	forward_list_control_list_operations_sort(forward_list, forward_list_control_default_sort_comp_lesser);
 }
 
 /**
@@ -920,6 +996,58 @@ void forward_list_control_list_operations_reverse(FORWARD_LIST_TYPEDEF_PTR forwa
 
 void forward_list_control_list_operations_unique(FORWARD_LIST_TYPEDEF_PTR forward_list)
 {
+	assert(forward_list);
+
+	void
+		*data_prev = forward_list_node_control_get_data(forward_list, 0),
+		*data = NULL;
+
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE
+		size_forward_list = forward_list->info.size,
+		cnt_pos_repetitive = 0,
+		(*pos_repetitive_store)[2] = forward_list->allocator_ctrl->allocate(forward_list->allocator,
+																			size_forward_list, sizeof(CONTAINER_GLOBAL_CFG_SIZE_TYPE) * 2);
+
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 1; pos < size_forward_list; pos++) {
+		if (forward_list_control_default_sort_comp_equal(data_prev, (data = forward_list_node_control_get_data(forward_list, pos)), forward_list->info.mem_size)) {
+			*(*(pos_repetitive_store + cnt_pos_repetitive) + 0) = pos;
+		} else {
+			if (*(*(pos_repetitive_store + cnt_pos_repetitive) + 0) != *(*(pos_repetitive_store + cnt_pos_repetitive) + 1)) {
+				*(*(pos_repetitive_store + cnt_pos_repetitive) + 1) = pos;
+
+				cnt_pos_repetitive++;
+			}
+
+			data_prev = data;
+		}
+	}
+
+	#if (FORWARD_LIST_CFG_DEBUG_EN)
+
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_pos_repetitive; cnt++) {
+		printf("forward_list.list_operatons.unique:no.%d from %d to %d is \"%s\" \r\n",
+			   cnt, *(*(pos_repetitive_store + cnt) + 0),
+			   *(*(pos_repetitive_store + cnt) + 1),
+			   (char *)forward_list_node_control_get_data(forward_list, *(*(pos_repetitive_store + cnt) + 0)));
+	}
+
+	#endif // (FORWARD_LIST_CFG_DEBUG_EN)
+
+	struct  forward_list_node_t
+		*node_del = NULL;
+
+	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_pos_repetitive; cnt++) {
+		for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = *(*(pos_repetitive_store + cnt) + 0); pos <= *(*(pos_repetitive_store + cnt) + 1); pos++) {
+			node_del = forward_list_control_get_node(forward_list, *(*(pos_repetitive_store + cnt) + 0));
+
+			forward_list_control_del_node(forward_list, *(*(pos_repetitive_store + cnt) + 0));
+
+			forward_list_control_destroy_node(forward_list, node_del);
+		}
+	}
+
+	forward_list->allocator_ctrl->deallocate(forward_list->allocator,
+											 pos_repetitive_store, size_forward_list);
 }
 
 /**
@@ -932,12 +1060,31 @@ void forward_list_control_list_operations_unique(FORWARD_LIST_TYPEDEF_PTR forwar
  */
 
 void forward_list_control_list_operations_sort(FORWARD_LIST_TYPEDEF_PTR forward_list,
-											   bool comp(void* dst,void* src,size_t len))
+											   bool (*comp)(void *dst, void *src, size_t len))
 {
 	assert(forward_list);
 
 	if (NULL == comp) {
+		comp = forward_list_control_default_sort_comp_greater;
+	}
 
+	struct forward_list_node_t
+		*node_head = forward_list->node,
+		*node_prev = NULL;
+
+	for (size_t cnt = 0; cnt < forward_list->info.size - 1; cnt++) {
+		for (size_t ct = 0; ct < forward_list->info.size - cnt - 1; ct++) {
+			if (comp(forward_list_node_control_get_data(forward_list, ct), forward_list_node_control_get_data(forward_list, ct + 1), forward_list->info.mem_size)) {
+				#if (FORWARD_LIST_CFG_DEBUG_EN)
+
+				printf("forward_list.list_operatons.sort.no.%d-%d: %d \"%s\" swap %d \"%s\" \r\n",
+					   cnt, ct, ct, (char *)forward_list_node_control_get_data(forward_list, ct), ct + 1, (char *)forward_list_node_control_get_data(forward_list, ct + 1));
+
+				#endif // (FORWARD_LIST_CFG_DEBUG_EN)
+
+				forward_list_control_swap_node_stable_bubble_swap(forward_list, ct, ct + 1);
+			}
+		}
 	}
 }
 
@@ -1146,6 +1293,61 @@ void forward_list_control_del_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
 }
 
 /**
+ * @brief This function will swap the node at the specified location in the container
+ *			by the stable bubble swap algorithm.
+ *
+ * @param forward_list the pointer to the forward list struct pointer
+ * @param position the position of node,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void forward_list_control_swap_node_stable_bubble_swap(FORWARD_LIST_TYPEDEF_PTR forward_list,
+													   CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
+													   CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos)
+{
+	assert(forward_list);
+
+	if (forward_list->info.size <= dst_pos ||
+		forward_list->info.size <= src_pos) {
+		return;
+	}
+
+	if (dst_pos > src_pos) {
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE tmp = dst_pos;
+
+		dst_pos = src_pos;
+		src_pos = tmp;
+	}
+
+	struct forward_list_node_t
+		*node_dst = forward_list_control_get_node(forward_list, dst_pos),
+		*node_dst_prev = forward_list_control_get_node(forward_list, dst_pos - 1),
+		*node_dst_next = node_dst->next,
+		*node_src = forward_list_control_get_node(forward_list, src_pos),
+		*node_src_prev = forward_list_control_get_node(forward_list, src_pos - 1),
+		*node_src_next = node_src->next;
+
+	if ((size_t)node_src != (size_t)node_dst_next) {
+		node_src->next = node_dst_next;
+	}
+
+	if (NULL != node_dst_prev) {
+		node_dst_prev->next = node_src;
+	} else {
+		forward_list->node = node_src;
+	}
+
+	if ((size_t)node_dst != (size_t)node_src_prev) {
+		node_src_prev->next = node_dst;
+	} else {
+		node_src->next = node_dst;
+	}
+
+	node_dst->next = node_src_next;
+}
+
+/**
  * @brief This function will set elements at the specified location in the container.
  *
  * @param forward_list the pointer to the forward list struct pointer
@@ -1266,18 +1468,89 @@ void forward_list_node_control_del_data(FORWARD_LIST_TYPEDEF_PTR forward_list,
 }
 
 /**
-* @brief This function will callback the handler that container has no elements when the container temp to insert.
+* @brief This function will compare if the left-hand-side lesser than the right-hand-side.
 *
-* @param NODE
+* @param lhs the pointer to the left-hand-side value.
+* @param rhs the pointer to the right-hand-side value.
 *
-* @return NONE
+* @return if left-hand-side lesser than the right-hand-side
+*	- true	yes
+*	- false	no
 */
 
-bool forward_list_control_default_sort_comp(void* dst,void* src, CONTAINER_GLOBAL_CFG_SIZE_TYPE len)
+bool forward_list_control_default_sort_comp_lesser(void *lhs, void *rhs, size_t len)
 {
-	assert(dst);
-	assert(src);
+	assert(lhs);
+	assert(rhs);
 	assert(len);
+
+	for (size_t cnt = 0; cnt < len; cnt++) {
+		if (*((char *)lhs + cnt) < *((char *)rhs + cnt)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+* @brief This function will compare if the left-hand-side greater than the right-hand-side.
+*
+* @param lhs the pointer to the left-hand-side value.
+* @param rhs the pointer to the right-hand-side value.
+*
+* @return if left-hand-side greater than the right-hand-side
+*	- true	yes
+*	- false	no
+*/
+
+bool forward_list_control_default_sort_comp_greater(void *lhs, void *rhs, size_t len)
+{
+	assert(lhs);
+	assert(rhs);
+	assert(len);
+
+	for (size_t cnt = 0; cnt < len; cnt++) {
+		if (*((char *)lhs + cnt) > *((char *)rhs + cnt)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+* @brief This function will compare if the left-hand-side equal with the right-hand-side.
+*
+* @param lhs the pointer to the left-hand-side value.
+* @param rhs the pointer to the right-hand-side value.
+*
+* @return if left-hand-side equal with the right-hand-side
+*	- true	yes
+*	- false	no
+*/
+
+bool forward_list_control_default_sort_comp_equal(void *lhs, void *rhs, size_t len)
+{
+	assert(lhs);
+	assert(rhs);
+	assert(len);
+
+	size_t cnt_equal_hit = 0;
+
+	for (size_t cnt = 0; cnt < len; cnt++) {
+		if (*((char *)lhs + cnt) == *((char *)rhs + cnt)) {
+			cnt_equal_hit++;
+		} else {
+			return false;
+		}
+	}
+
+	if (len == cnt_equal_hit) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /**

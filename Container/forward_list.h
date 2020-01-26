@@ -167,7 +167,7 @@ struct forward_list_control_t {
 
 		/* @brief This function will sorts the elements in ascending order.                             */
 		void (*sort)(FORWARD_LIST_TYPEDEF_PTR forward_list,
-					 bool comp(void *dst, void *src, size_t len));
+					 bool (*comp)(void *dst, void *src, size_t len));
 	}list_operations;
 };
 
@@ -492,7 +492,7 @@ void forward_list_control_list_operations_unique(FORWARD_LIST_TYPEDEF_PTR forwar
  */
 
 void forward_list_control_list_operations_sort(FORWARD_LIST_TYPEDEF_PTR forward_list,
-											   bool comp(void *dst, void *src,size_t len));
+											   bool (*comp)(void *dst, void *src, size_t len));
 
 /*
 *********************************************************************************************************
