@@ -242,9 +242,9 @@ void forward_list_control_del_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
  * @return NONE
  */
 
-void forward_list_control_swap_node_stable_bubble_swap(FORWARD_LIST_TYPEDEF_PTR forward_list,
-													   CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
-													   CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos);
+void forward_list_control_swap_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
+									CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
+									CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos);
 
 /**
 * @brief This function will set elements at the specified location in the container.
@@ -1105,24 +1105,16 @@ void forward_list_control_list_operations_sort(FORWARD_LIST_TYPEDEF_PTR forward_
 		comp = forward_list_control_default_sort_comp_greater;
 	}
 
-	struct forward_list_node_t
-		*node_head = forward_list->node,
-		*node_prev = NULL;
+	struct sort_pack_t list_operation = {
+		.object = forward_list,
+		.len = forward_list->info.size,
+		.mem_len = forward_list->info.mem_size,
+		.get_value_method = forward_list_node_control_get_data,
+		.swap_method = forward_list_control_swap_node,
+	};
 
-	for (size_t cnt = 0; cnt < forward_list->info.size - 1; cnt++) {
-		for (size_t ct = 0; ct < forward_list->info.size - cnt - 1; ct++) {
-			if (comp(forward_list_node_control_get_data(forward_list, ct), forward_list_node_control_get_data(forward_list, ct + 1), forward_list->info.mem_size)) {
-				#if (FORWARD_LIST_CFG_DEBUG_EN)
-
-				//printf("forward_list.list_operatons.sort.no.%d-%d: %d \"%s\" swap %d \"%s\" \r\n",
-				//	   cnt, ct, ct, (char *)forward_list_node_control_get_data(forward_list, ct), ct + 1, (char *)forward_list_node_control_get_data(forward_list, ct + 1));
-
-				#endif // (FORWARD_LIST_CFG_DEBUG_EN)
-
-				forward_list_control_swap_node_stable_bubble_swap(forward_list, ct, ct + 1);
-			}
-		}
-	}
+	sort_algorithm_control(sort_algorithm_control_convert_type_to_func_addr(BUBBLE_SORT),
+						   list_operation, comp);
 }
 
 /**
@@ -1459,9 +1451,9 @@ void forward_list_node_control_del_data(FORWARD_LIST_TYPEDEF_PTR forward_list,
  * @return NONE
  */
 
-void forward_list_control_swap_node_stable_bubble_swap(FORWARD_LIST_TYPEDEF_PTR forward_list,
-													   CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
-													   CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos)
+void forward_list_control_swap_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
+									CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
+									CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos)
 {
 	assert(forward_list);
 

@@ -458,3 +458,20 @@ void priority_queue_control_modifiers_copy(PRIORITY_QUEUE_TYPEDEF_PPTR destinati
 
 	(*destination)->container_control->modifiers.copy(&(*destination)->container, source->container);		/* copy the contents of the container adaptor to those of other */
 }
+
+/**
+ * @brief This function will copy the contents of the container adaptor to those of other.
+ *
+ * @param destination the pointer to destination container adapter struct
+ * @param source the pointer to source container adapter struct
+ *
+ * @return NONE
+ */
+
+void priority_queue_control_sort(PRIORITY_QUEUE_TYPEDEF_PPTR destination, PRIORITY_QUEUE_TYPEDEF_PTR source)
+{
+	assert(destination);
+	assert(source);
+
+	(*destination)->container_control->modifiers.copy(&(*destination)->container, source->container);		/* copy the contents of the container adaptor to those of other */
+}

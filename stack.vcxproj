@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Algorithm\sort.c" />
     <ClCompile Include="Allocator\allocator_common.c" />
     <ClCompile Include="Container\deque.c" />
     <ClCompile Include="Container\forward_list.c" />
@@ -40,6 +41,9 @@
     <ClCompile Include="Main\main_vector.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithm\algorithm.h" />
+    <ClInclude Include="Algorithm\algorithm_def.h" />
+    <ClInclude Include="Algorithm\sort.h" />
     <ClInclude Include="Allocator\allocator.h" />
     <ClInclude Include="Allocator\allocator_common.h" />
     <ClInclude Include="Allocator\allocator_def.h" />
@@ -110,19 +114,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Algorithm;D:\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Algorithm;D:\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Allocator</IncludePath>
+    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Algorithm;D:\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Allocator</IncludePath>
+    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Algorithm;D:\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

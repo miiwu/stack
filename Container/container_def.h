@@ -16,14 +16,16 @@
 *********************************************************************************************************
 */
 
-#include "stdio.h"
-#include "string.h"
-#include "stdarg.h"
-#include "stdbool.h"
-#include "assert.h"
-#include "malloc.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <assert.h>
+#include <malloc.h>
 
 #include "allocator.h"
+
+#include "algorithm.h"
 
 /*
 *********************************************************************************************************

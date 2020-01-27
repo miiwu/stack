@@ -168,6 +168,10 @@ struct list_control_t list_ctrl = {
 
 #endif
 
+/**
+ * @brief This variables will record the list_operations_remove's value.
+ */
+
 void *list_control_list_operations_remove_value = NULL;
 
 /*
@@ -1104,34 +1108,16 @@ void list_control_list_operations_sort(LIST_TYPEDEF_PTR list,
 		comp = list_control_default_sort_comp_greater;
 	}
 
-	struct list_node_t
-		*node_lhs = NULL,
-		*node_rhs = NULL;
+	struct sort_pack_t list_operation = {
+		.object = list,
+		.len = list->info.size,
+		.mem_len = list->info.mem_size,
+		.get_value_method = list_node_control_get_data,
+		.swap_method = list_control_swap_node,
+	};
 
-	char
-		*data_lhs = NULL,
-		*data_rhs = NULL;
-	
-	for (size_t cnt = 0; cnt < list->info.size - 1; cnt++) {
-		for (size_t ct = 0; ct < list->info.size - cnt - 1; ct++) {
-			node_lhs = list_control_get_node(list, ct);
-			node_rhs = list_control_get_node(list, ct + 1);
-
-			data_lhs = list_node_control_get_data(list, ct);
-			data_rhs = list_node_control_get_data(list, ct + 1);
-
-			if (comp(data_lhs, data_rhs, list->info.mem_size)) {
-				#if (LIST_CFG_DEBUG_EN)
-
-				printf("list.list_operatons.sort.no.%d-%d: %d \"%s\" swap %d \"%s\" \r\n",
-					   cnt, ct, ct, data_lhs, ct + 1, data_rhs);
-
-				#endif // (LIST_CFG_DEBUG_EN)
-
-				list_control_swap_node(list, ct, ct + 1);
-			}
-		}
-	}
+	sort_algorithm_control(sort_algorithm_control_convert_type_to_func_addr(BUBBLE_SORT),
+						   list_operation, comp);
 }
 
 /**
@@ -1509,6 +1495,48 @@ bool list_control_remove_rule(void *data)
 	}
 
 	return false;
+}
+
+/**
+* @brief This function will sort the object by the comp.
+*
+* @param data the pointer to the data list will give
+*
+* @return if the data match the rule
+*	- true	yes
+*	- false	no
+*/
+
+void list_control_sort_algorithm_bubble_sort(struct sort_pack_t sort_package,
+											 bool (*comp)(void *, void *, size_t))
+{
+	char
+		*value_lhs = NULL,
+		*value_rhs = NULL;
+
+	for (size_t cnt = 0; cnt < sort_package.len - 1; cnt++) {
+		for (size_t ct = 0; ct < sort_package.len - cnt - 1; ct++) {
+			if (NULL == sort_package.get_value_method) {								/* Get the value */
+				value_lhs = (void *)((size_t)sort_package.object + ct * sort_package.mem_len);
+				value_rhs = (void *)((size_t)sort_package.object + (ct + 1) * sort_package.mem_len);
+			} else {
+				value_lhs = sort_package.get_value_method(sort_package.object, ct);
+				value_rhs = sort_package.get_value_method(sort_package.object, ct + 1);
+			}
+
+			if (NULL == value_lhs ||
+				NULL == value_rhs) {
+				return;
+			}
+
+			if (comp(value_lhs, value_rhs, sort_package.mem_len)) {						/* Compare the value */
+				printf("sort_algorithm.bubble_sort.no.%d-%d: %d \"%s\" swap %d \"%s\" \r\n",
+					   cnt, ct, ct, value_lhs, ct + 1, value_rhs);
+
+				sort_package.swap_method(sort_package.object, ct, ct + 1);
+			}
+		}
+	}
 }
 
 /**

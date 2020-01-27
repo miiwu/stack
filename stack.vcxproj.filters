@@ -37,6 +37,12 @@
     <Filter Include="源文件\allocator">
       <UniqueIdentifier>{615cf450-0b68-4f15-85e6-de9f73058835}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\algorithm">
+      <UniqueIdentifier>{111dc3e3-4e0a-4b3e-854b-52b52635a9ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\algorithm">
+      <UniqueIdentifier>{e29e2ad9-85f3-4839-9946-79bf08e96db5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -96,6 +102,9 @@
     <ClCompile Include="Main\main_priority_queue.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
+    <ClCompile Include="Algorithm\sort.c">
+      <Filter>源文件\algorithm</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\container.h">
@@ -145,6 +154,15 @@
     </ClInclude>
     <ClInclude Include="Container\deque.h">
       <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Algorithm\algorithm.h">
+      <Filter>头文件\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Algorithm\algorithm_def.h">
+      <Filter>头文件\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Algorithm\sort.h">
+      <Filter>头文件\algorithm</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
