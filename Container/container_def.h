@@ -165,6 +165,12 @@ extern void *vector_function_address_tables[];
 
 extern void *forward_list_function_address_tables[];
 
+/**
+ * @brief This array will contain all the universal list functions address.
+ */
+
+extern void *list_function_address_tables[];
+
 /*
 *********************************************************************************************************
 *                                            FUNCTIONS
@@ -194,6 +200,7 @@ inline void *container_control_convert_type_to_func_addr_table(enum container_ty
 			func_addr_table = &forward_list_function_address_tables;
 			break;
 		case LIST:
+			func_addr_table = &list_function_address_tables;
 			break;
 		case SET:
 			break;
