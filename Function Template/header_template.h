@@ -43,14 +43,14 @@ typedef struct struct_t STRUCT_TYPEDEF;
 /**
  * @brief This function will TODO.
  *
- * @param NONE
+ * @param input TODO.
  *
  * @return
  *  - 0    : succeed,TODO completely
  *  - else : fail
  */
 
-void function(void);
+void function(void *input);
 
 /*
 *********************************************************************************************************
@@ -64,4 +64,4 @@ void function(void);
 *********************************************************************************************************
 */
 
-#endif // __HEADER_TEMPLATE_H
+#endif // !__HEADER_TEMPLATE_H

@@ -13,13 +13,17 @@
 
 #define MAIN_VECTOR_EN				0u
 
+#define MAIN_DEQUE_EN				0u
+
 #define MAIN_FORWARD_LIST_EN		0u
 
-#define MAIN_LIST_EN				0u
+#define MAIN_LIST_EN				1u
 
 #define MAIN_STACK_EN				0u
 
-#define MAIN_QUEUE_EN				1u
+#define MAIN_QUEUE_EN				0u
+
+#define MAIN_PRIORITY_QUEUE_EN		0u
 
 #if	(MAIN_DEBUG_COMPONENT_EN)
 
@@ -36,6 +40,12 @@ void main_allocator(void);
 #if	(MAIN_VECTOR_EN)
 
 void main_vector(void);
+
+#endif
+
+#if	(MAIN_DEQUE_EN)
+
+void main_deque(void);
 
 #endif
 
@@ -60,6 +70,12 @@ void main_stack(void);
 #if	(MAIN_QUEUE_EN)
 
 void main_queue(void);
+
+#endif
+
+#if	(MAIN_PRIORITY_QUEUE_EN)
+
+void main_priority_queue(void);
 
 #endif
 

@@ -4,7 +4,7 @@
 *********************************************************************************************************
 */
 
-#include "header_template.h"
+#include "deque.h"
 
 /*
 *********************************************************************************************************
@@ -24,20 +24,6 @@
 *********************************************************************************************************
 */
 
-/**
- * @brief This struct is the struct structure module
- */
-
-struct struct_t {
-	struct {
-		/* @brief This variables will parameter.						*/
-		int parameter;
-	}part_name;
-
-	/* @brief This variables will parameter				*/
-	void *parameter;
-};
-
 /*
 *********************************************************************************************************
 *                                            LOCAL TABLES
@@ -50,14 +36,6 @@ struct struct_t {
 *********************************************************************************************************
 */
 
-/**
- * @brief This struct will control all the vector functions conveniently.
- */
-
-struct struct_t _struct = {
-	0
-};
-
 /*
 *********************************************************************************************************
 *                                      LOCAL FUNCTION PROTOTYPES
@@ -69,20 +47,3 @@ struct struct_t _struct = {
 *                                            FUNCTIONS
 *********************************************************************************************************
 */
-
-/**
- * @brief This function will TODO.
- *
- * @param input TODO.
- *
- * @return
- *  - 0    : succeed,TODO completely
- *  - else : fail
- */
-
-void function(void *input)
-{
-	assert(input);
-
-	// TODO Statement ...																	/* TODO	*/
-}

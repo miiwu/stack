@@ -70,6 +70,7 @@ enum container_type {
 
 	STACK = CONTAINERS_ADAPTORS,
 	QUEUE,
+	PRIORITY_QUEUE,
 };
 
 struct element_handler_t {

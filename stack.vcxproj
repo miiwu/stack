@@ -20,7 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Allocator\allocator_common.c" />
+    <ClCompile Include="Container\deque.c" />
     <ClCompile Include="Container\forward_list.c" />
+    <ClCompile Include="Container\list.c" />
+    <ClCompile Include="Container\priority_queue.c" />
     <ClCompile Include="Container\queue.c" />
     <ClCompile Include="Container\stack.c" />
     <ClCompile Include="Container\vector.c" />
@@ -28,8 +31,10 @@
     <ClCompile Include="Main\main.c" />
     <ClCompile Include="Main\main_allocator.c" />
     <ClCompile Include="Main\main_debug_component.c" />
+    <ClCompile Include="Main\main_deque.c" />
     <ClCompile Include="Main\main_forward_list.c" />
     <ClCompile Include="Main\main_list.c" />
+    <ClCompile Include="Main\main_priority_queue.c" />
     <ClCompile Include="Main\main_queue.c" />
     <ClCompile Include="Main\main_stack.c" />
     <ClCompile Include="Main\main_vector.c" />
@@ -40,7 +45,10 @@
     <ClInclude Include="Allocator\allocator_def.h" />
     <ClInclude Include="Container\container.h" />
     <ClInclude Include="Container\container_def.h" />
+    <ClInclude Include="Container\deque.h" />
     <ClInclude Include="Container\forward_list.h" />
+    <ClInclude Include="Container\list.h" />
+    <ClInclude Include="Container\priority_queue.h" />
     <ClInclude Include="Container\queue.h" />
     <ClInclude Include="Container\stack.h" />
     <ClInclude Include="Container\vector.h" />

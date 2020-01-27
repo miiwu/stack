@@ -16,19 +16,21 @@
 *********************************************************************************************************
 */
 
-#include "container_def.h"
-
 /* Sequence Containers */
 
 #include "vector.h"
 
 #include "forward_list.h"
 
+#include "list.h"
+
 /* Container Adaptors */
 
 #include "stack.h"
 
 #include "queue.h"
+
+#include "priority_queue.h"
 
 /*
 *********************************************************************************************************

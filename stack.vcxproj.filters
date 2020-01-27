@@ -81,6 +81,21 @@
     <ClCompile Include="Allocator\allocator_common.c">
       <Filter>源文件\allocator</Filter>
     </ClCompile>
+    <ClCompile Include="Container\priority_queue.c">
+      <Filter>源文件\container</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\list.c">
+      <Filter>源文件\container</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\deque.c">
+      <Filter>源文件\container</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\main_deque.c">
+      <Filter>源文件\main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\main_priority_queue.c">
+      <Filter>源文件\main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\container.h">
@@ -121,6 +136,15 @@
     </ClInclude>
     <ClInclude Include="Debug Component\debug_component_def.h">
       <Filter>头文件\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\priority_queue.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\list.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\deque.h">
+      <Filter>头文件\container</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
