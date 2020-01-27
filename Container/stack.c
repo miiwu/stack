@@ -148,12 +148,12 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 	void
 		*container = NULL;																		/* Variables pointer to	the specified container struct */
 
-	int
+	void
 		*func_addr_table = container_control_convert_type_to_func_addr_table(adapt_container_type);
 																								/* Variables pointer to	the function address table of
 																									specified container type		*/
 
-	container_ctrl = (struct container_control_t *)func_addr_table;
+	container_ctrl = func_addr_table;
 
 	if (NULL == stack ||																		/* Check if stack point to NULL			*/
 		NULL == stack_alloced) {																/* Check if data_pack_alloced point to NULL	*/
@@ -189,14 +189,22 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
  * @return NONE
  */
 
-void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void *container, void *func_addr_table)
+void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, 
+									   enum container_type type,void *container)
 {
 	assert(stack);
 	assert(container);
-	assert(func_addr_table);
+	assert(type);
+
+	enum container_type
+		adapt_container_type = STACK_CFG_DEFAULT_ADAPT_CONTAINER_TYPE;
+
+	if (type) {
+		adapt_container_type = type;
+	}
 
 	void
-		*allocator = NULL;																	/* Variables pointer to	the allocator struct */
+		*allocator = NULL;																		/* Variables pointer to	the allocator struct */
 
 	struct allocator_control_t
 		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
@@ -205,11 +213,15 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void *container
 	allocator_ctrl->configration.init(&allocator, NULL);										/* Initialize the allocator struct */
 
 	struct stack_t
-		*stack_alloced = (struct stack_t *)allocator_ctrl->allocate(allocator,				/* Allocate #1.1 */
+		*stack_alloced = (struct stack_t *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
 																	1, sizeof(struct stack_t));
-																							 /* Variables pointer to	the stack struct which
-																								 will be allocate and assign to the stack 	*/
+																								/* Variables pointer to	the stack struct which
+																									will be allocate and assign to the stack 	*/
 
+	void
+		*func_addr_table = container_control_convert_type_to_func_addr_table(adapt_container_type);
+																								/* Variables pointer to	the function address table of
+																									specified container type		*/
 	if (NULL == stack ||																	/* Check if stack point to NULL			*/
 		NULL == func_addr_table ||															/* Check if stack point to NULL			*/
 		NULL == stack_alloced) {															/* Check if data_pack_alloced point to NULL	*/
@@ -219,7 +231,7 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, void *container
 	stack_alloced->container_type_id = STACK;												/* Assign stack structure					*/
 	stack_alloced->attach = true;
 	stack_alloced->container = container;
-	stack_alloced->container_control = (struct container_control_t *)func_addr_table;
+	stack_alloced->container_control = func_addr_table;
 	stack_alloced->allocator = allocator;
 	stack_alloced->allocator_ctrl = allocator_ctrl;
 
@@ -377,7 +389,7 @@ void stack_control_modifiers_push(STACK_TYPEDEF_PTR stack, void *source)
 		*container = NULL;																	/* Variables pointer to	the specified container struct */
 
 	stack->container_control->modifiers.insert(stack->container,
-											   stack_control_capacity_size(stack), 1, &source);
+											   stack->container_control->capacity.size(stack->container), 1, &source);
 																							/* push the given element source to the top of the stack */
 }
 

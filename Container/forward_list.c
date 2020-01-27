@@ -95,25 +95,25 @@ struct forward_list_t {
 
 void *forward_list_function_address_tables[] =
 {
-	(void *)&forward_list_control_configuration_init,					/* No.0 : initialize */
+	(void *)&forward_list_control_configuration_init,							/* No.0 : initialize */
 
-	(void *)&forward_list_control_configuration_destroy,					/* No.1 : destroy */
+	(void *)&forward_list_control_configuration_destroy,						/* No.1 : destroy */
 
-	(void *)&forward_list_control_element_access_front,						/* No.3 : at */
+	(void *)&forward_list_control_element_access_at,							/* No.3 : at */
 
-	(void *)&forward_list_control_capacity_empty,						/* No.4 : empty */
+	(void *)&forward_list_control_capacity_empty,								/* No.4 : empty */
 
-	(void *)&forward_list_control_capacity_size,							/* No.5 : size */
+	(void *)&forward_list_control_capacity_size,								/* No.5 : size */
 
-	(void *)&forward_list_control_capacity_max_size,						/* No.6 : max_size */
+	(void *)&forward_list_control_capacity_max_size,							/* No.6 : max_size */
 
 	(void *)&forward_list_control_modifiers_insert_after,						/* No.7 : insert */
 
 	(void *)&forward_list_control_modifiers_erase_after,						/* No.8 : erase */
 
-	//(void *)&forward_list_control_modifiers_swap,						/* No.9 : swap */
+	(void *)&forward_list_control_modifiers_swap,								/* No.9 : swap */
 
-	//(void *)&forward_list_control_modifiers_copy,						/* No.10 : copy */
+	(void *)&forward_list_control_modifiers_copy,								/* No.10 : copy */
 };
 
 #if (FORWARD_LIST_CFG_INTERGRATED_STRUCTURE_MODE_EN)
@@ -177,11 +177,6 @@ void *forward_list_control_list_operations_remove_value = NULL;
  * @brief This function will initialize the forward list node struct.
  *
  * @param forward_list the pointer to the forward list struct pointer
- * @param node the pointer to the forward list node struct pointer
- * @param element_size the pointer to container
- * @param string_type the pointer to container
- * @param assign the pointer to the assign element handler of the specified data type
- * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
@@ -555,6 +550,23 @@ void *forward_list_control_element_access_front(FORWARD_LIST_TYPEDEF_PTR forward
 	assert(forward_list);
 
 	return forward_list_node_control_get_data(forward_list, 0);
+}
+
+/**
+ * @brief This function will returns a reference to the specified element in the container.
+ *
+ * @param forward_list the pointer to the forward list struct pointer
+ * @param position the position of node,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void *forward_list_control_element_access_at(FORWARD_LIST_TYPEDEF_PTR forward_list,
+											 CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+{
+	assert(forward_list);
+
+	return forward_list_node_control_get_data(forward_list, position);
 }
 
 /**
@@ -1318,61 +1330,6 @@ void forward_list_control_del_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
 }
 
 /**
- * @brief This function will swap the node at the specified location in the container
- *			by the stable bubble swap algorithm.
- *
- * @param forward_list the pointer to the forward list struct pointer
- * @param position the position of node,it would be equal or greater than zero
- *
- * @return NONE
- */
-
-void forward_list_control_swap_node_stable_bubble_swap(FORWARD_LIST_TYPEDEF_PTR forward_list,
-													   CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
-													   CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos)
-{
-	assert(forward_list);
-
-	if (forward_list->info.size <= dst_pos ||
-		forward_list->info.size <= src_pos) {
-		return;
-	}
-
-	if (dst_pos > src_pos) {
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE tmp = dst_pos;
-
-		dst_pos = src_pos;
-		src_pos = tmp;
-	}
-
-	struct forward_list_node_t
-		*node_dst = forward_list_control_get_node(forward_list, dst_pos),
-		*node_dst_prev = forward_list_control_get_node(forward_list, dst_pos - 1),
-		*node_dst_next = node_dst->next,
-		*node_src = forward_list_control_get_node(forward_list, src_pos),
-		*node_src_prev = forward_list_control_get_node(forward_list, src_pos - 1),
-		*node_src_next = node_src->next;
-
-	if ((size_t)node_src != (size_t)node_dst_next) {
-		node_src->next = node_dst_next;
-	}
-
-	if (NULL != node_dst_prev) {
-		node_dst_prev->next = node_src;
-	} else {
-		forward_list->node = node_src;
-	}
-
-	if ((size_t)node_dst != (size_t)node_src_prev) {
-		node_src_prev->next = node_dst;
-	} else {
-		node_src->next = node_dst;
-	}
-
-	node_dst->next = node_src_next;
-}
-
-/**
  * @brief This function will set elements at the specified location in the container.
  *
  * @param forward_list the pointer to the forward list struct pointer
@@ -1490,6 +1447,61 @@ void forward_list_node_control_del_data(FORWARD_LIST_TYPEDEF_PTR forward_list,
 
 		return;
 	}
+}
+
+/**
+ * @brief This function will swap the node at the specified location in the container
+ *			by the stable bubble swap algorithm.
+ *
+ * @param forward_list the pointer to the forward list struct pointer
+ * @param position the position of node,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void forward_list_control_swap_node_stable_bubble_swap(FORWARD_LIST_TYPEDEF_PTR forward_list,
+													   CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
+													   CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos)
+{
+	assert(forward_list);
+
+	if (forward_list->info.size <= dst_pos ||
+		forward_list->info.size <= src_pos) {
+		return;
+	}
+
+	if (dst_pos > src_pos) {
+		CONTAINER_GLOBAL_CFG_SIZE_TYPE tmp = dst_pos;
+
+		dst_pos = src_pos;
+		src_pos = tmp;
+	}
+
+	struct forward_list_node_t
+		*node_dst = forward_list_control_get_node(forward_list, dst_pos),
+		*node_dst_prev = forward_list_control_get_node(forward_list, dst_pos - 1),
+		*node_dst_next = node_dst->next,
+		*node_src = forward_list_control_get_node(forward_list, src_pos),
+		*node_src_prev = forward_list_control_get_node(forward_list, src_pos - 1),
+		*node_src_next = node_src->next;
+
+	if ((size_t)node_src != (size_t)node_dst_next) {
+		node_src->next = node_dst_next;
+	}
+
+	if (NULL != node_dst_prev) {
+		node_dst_prev->next = node_src;
+	} else {
+		forward_list->node = node_src;
+	}
+
+	if ((size_t)node_dst != (size_t)node_src_prev) {
+		node_src_prev->next = node_dst;
+	} else {
+		node_src->next = node_dst;
+	}
+
+	node_dst->next = node_src_next;
 }
 
 /**

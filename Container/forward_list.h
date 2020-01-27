@@ -87,6 +87,9 @@ struct forward_list_control_t {
 	struct {
 		/* @brief This function will returns a reference to the first element in the container.         */
 		void *(*front)(FORWARD_LIST_TYPEDEF_PTR forward_list);
+
+		/* @brief This function will returns a reference to the specified element in the container.     */
+		void *(*at)(FORWARD_LIST_TYPEDEF_PTR forward_list);
 	}element_access;
 
 	struct {
@@ -246,6 +249,18 @@ void forward_list_control_configuration_exception(FORWARD_LIST_TYPEDEF_PTR forwa
  */
 
 void *forward_list_control_element_access_front(FORWARD_LIST_TYPEDEF_PTR forward_list);
+
+/**
+ * @brief This function will returns a reference to the specified element in the container.
+ *
+ * @param forward_list the pointer to the forward list struct pointer
+ * @param position the position of node,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void *forward_list_control_element_access_at(FORWARD_LIST_TYPEDEF_PTR forward_list,
+                                             CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 /**
  * @brief This function will checks if the container has no elements

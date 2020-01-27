@@ -144,7 +144,7 @@ struct container_control_t {
  * @return the pointer to the specified container function address table.
  */
 
-inline int *container_control_convert_type_to_func_addr_table(enum container_type type);
+inline void *container_control_convert_type_to_func_addr_table(enum container_type type);
 
 /*
 *********************************************************************************************************
@@ -157,6 +157,12 @@ inline int *container_control_convert_type_to_func_addr_table(enum container_typ
  */
 
 extern void *vector_function_address_tables[];
+
+/**
+ * @brief This array will contain all the universal forward_list functions address.
+ */
+
+extern void *forward_list_function_address_tables[];
 
 /*
 *********************************************************************************************************
@@ -172,16 +178,19 @@ extern void *vector_function_address_tables[];
  * @return the pointer to the specified container function address table.
  */
 
-inline int *container_control_convert_type_to_func_addr_table(enum container_type type)
+inline void *container_control_convert_type_to_func_addr_table(enum container_type type)
 {
-	int
+	void
 		*func_addr_table = NULL;
 
 	switch (type) {
 		case VECTOR:
-			func_addr_table = (int *)&vector_function_address_tables;
+			func_addr_table = &vector_function_address_tables;
 			break;
 		case DEQUE:
+			break;
+		case FORWARD_LIST:
+			func_addr_table = &forward_list_function_address_tables;
 			break;
 		case LIST:
 			break;

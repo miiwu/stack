@@ -59,7 +59,7 @@ struct stack_control_t {
 
 		/* @brief This function will initialize the stack struct and attach to the specified container. */
 		void (*attach)(STACK_TYPEDEF_PPTR stack,
-					   void *container, void *func_addr_table);
+					   enum container_type type, void *container);
 
 		/* @brief This function will destroy the stack struct. */
 		void (*destroy)(STACK_TYPEDEF_PPTR stack);
@@ -139,7 +139,7 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
  */
 
 void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
-									   void *container, void *func_addr_table);
+									   enum container_type type, void *container);
 
 /**
  * @brief This function will destroy the stack struct
@@ -244,16 +244,6 @@ void stack_control_modifiers_swap(STACK_TYPEDEF_PPTR stack, STACK_TYPEDEF_PPTR o
  */
 
 void stack_control_modifiers_copy(STACK_TYPEDEF_PPTR destination, STACK_TYPEDEF_PTR source);
-
-/**
- * @brief This function will erase the specified elements from the container.
- *
- * @param stack the pointer to container adapter struct
- *
- * @return NONE
- */
-
-void stack_control_modifiers_earse(STACK_TYPEDEF_PTR stack);
 
 /*
 *********************************************************************************************************
