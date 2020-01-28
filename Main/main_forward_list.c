@@ -5,7 +5,7 @@ bool main_forward_list_remove_if_rule(void *data)
 	if (*((char *)data) >= 'w') {
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -30,7 +30,6 @@ void main_forward_list(void)
 	printf("\r\nforward_list.insert after start\r\n");
 	if (NULL != string &&
 		NULL != string_ptr) {
-
 		void
 			*string_addr = NULL;
 
@@ -62,7 +61,7 @@ void main_forward_list(void)
 	forward_list_ctrl.modifiers.push_front(forward_list, "############");
 
 	printf("\r\nforward_list.erase start\r\n");
-	for (size_t i = 20; i < 25; i++) {     
+	for (size_t i = 20; i < 25; i++) {
 		forward_list_ctrl.modifiers.erase_after(forward_list, 20);
 	}
 

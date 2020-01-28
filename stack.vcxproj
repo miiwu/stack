@@ -24,6 +24,7 @@
     <ClCompile Include="Container\deque.c" />
     <ClCompile Include="Container\forward_list.c" />
     <ClCompile Include="Container\list.c" />
+    <ClCompile Include="Container\list_like_shared.c" />
     <ClCompile Include="Container\priority_queue.c" />
     <ClCompile Include="Container\queue.c" />
     <ClCompile Include="Container\stack.c" />
@@ -52,6 +53,7 @@
     <ClInclude Include="Container\deque.h" />
     <ClInclude Include="Container\forward_list.h" />
     <ClInclude Include="Container\list.h" />
+    <ClInclude Include="Container\list_like_shared.h" />
     <ClInclude Include="Container\priority_queue.h" />
     <ClInclude Include="Container\queue.h" />
     <ClInclude Include="Container\stack.h" />

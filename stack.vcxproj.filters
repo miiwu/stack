@@ -105,6 +105,9 @@
     <ClCompile Include="Algorithm\sort.c">
       <Filter>源文件\algorithm</Filter>
     </ClCompile>
+    <ClCompile Include="Container\list_like_shared.c">
+      <Filter>源文件\container</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\container.h">
@@ -163,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="Algorithm\sort.h">
       <Filter>头文件\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\list_like_shared.h">
+      <Filter>头文件\container</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

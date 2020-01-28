@@ -2,7 +2,7 @@
 
 bool main_list_remove_if_rule(void *data)
 {
-	if (*((char *)data) >= 'w') {
+	if (*((char *)data) > 'z') {
 		return true;
 	}
 
@@ -30,7 +30,6 @@ void main_list(void)
 	printf("\r\nlist.insert after start\r\n");
 	if (NULL != string &&
 		NULL != string_ptr) {
-
 		void
 			*string_addr = NULL;
 
@@ -53,7 +52,7 @@ void main_list(void)
 	}
 
 	printf("\r\nlist & list_list_operation.copy start\r\n");
-	list_ctrl.modifiers.copy(&list_list_operations, list);				/* Copy vector,char[sizeof(string_moudle)] type */
+	list_ctrl.modifiers.copy(&list_list_operations, list);
 
 	printf("\r\nlist_list_operation.pop front start\r\n");
 	list_ctrl.modifiers.pop_front(list);
@@ -82,7 +81,7 @@ void main_list(void)
 	list_ctrl.modifiers.swap(&list, &list_list_operations);
 
 	printf("\r\nlist_list_operation.remove start\r\n");
-	list_ctrl.list_operations.remove(list_list_operations, "mist");
+	list_ctrl.list_operations.remove(list_list_operations, "|ist");
 
 	printf("\r\nlist_list_operation.reverse start\r\n");
 	list_ctrl.list_operations.reverse(list_list_operations);

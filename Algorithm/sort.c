@@ -84,7 +84,7 @@ void sort_algorithm_bubble_sort(struct sort_pack_t sort_package,
 */
 
 void sort_algorithm_control(void *sort_algorithm_addr,
-								   struct sort_pack_t sort_package, bool (*comp)(void *, void *, size_t))
+							struct sort_pack_t sort_package, bool (*comp)(void *, void *, size_t))
 {
 	void (*sort_algorithm)(struct sort_pack_t, bool (*comp)(void *, void *, size_t)) = sort_algorithm_addr;
 

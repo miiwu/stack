@@ -15,9 +15,9 @@
 
 #define MAIN_DEQUE_EN				0u
 
-#define MAIN_FORWARD_LIST_EN		1u
+#define MAIN_FORWARD_LIST_EN		0u
 
-#define MAIN_LIST_EN				0u
+#define MAIN_LIST_EN				1u
 
 #define MAIN_STACK_EN				0u
 

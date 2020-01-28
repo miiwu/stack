@@ -31,6 +31,9 @@
  */
 
 struct allocator_t {
+	/* @brief RESERVED This variables will record the identity code of allocator type.					*/
+	enum allocator_type	allocator_type_id;
+
 	struct {
 		/* @brief This variables will record the size of allocator allocated.						    */
 		ALLOCATOR_SIZE_TYPEDEF size;
@@ -125,7 +128,8 @@ void allocator_control_configration_init(ALLOCATOR_COMMON_TYPEDEF_PPTR allocator
 		return;
 	}
 
-	allocator_alloced->info.size = 0u;			                                                    /* Assign the allocator struct */
+	allocator_alloced->allocator_type_id = ALLOCATOR_COMMON;                                       /* Assign the allocator struct */
+	allocator_alloced->info.size = 0u;			             
 	allocator_control_configration_exception(allocator_alloced, lack_of_memory);
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
