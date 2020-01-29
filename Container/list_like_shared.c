@@ -1155,7 +1155,13 @@ void list_node_control_del_data(struct list_like_t *list,
 
 	list->link_like_shared_pack_analysis();
 
-	list_node_control_set_data(list, position, "");
+	void *data_ptr = list_node_control_get_data(list, position);
+
+	if (NULL != list->element_handler.free) {																	/* Check if assign point to NULL */
+		list->element_handler.free(data_ptr);
+	} else {
+		memset(data_ptr, '0', list->info.mem_size);															/* Memcpy source to destination */
+	}
 
 	#if (LIST_LIKE_CFG_DELETE_ELEMENT_EQUAL_DESTROY_NODE_EN)
 

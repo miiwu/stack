@@ -34,7 +34,7 @@
 #define LIST_LIKE_CFG_DELETE_ELEMENT_EQUAL_DESTROY_NODE_EN			1u
 
 /* Configure    if enable stack debug.																    */
-#define LIST_LIKE_CFG_DEBUG_EN										1u
+#define LIST_LIKE_CFG_DEBUG_EN										0u
 
 /*
 *********************************************************************************************************
