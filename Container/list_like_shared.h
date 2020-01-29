@@ -30,9 +30,6 @@
 /* Configure    if enable integrated structure.                                                         */
 #define LIST_LIKE_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE		1024u
 
-/* Configure    the type of allocator.                                                                  */
-#define LIST_LIKE_CFG_ALLOCATOR_TYPE								ALLOCATOR_COMMON
-
 /* Configure    if enable delete element equal destroy node.                                            */
 #define LIST_LIKE_CFG_DELETE_ELEMENT_EQUAL_DESTROY_NODE_EN			1u
 
@@ -99,7 +96,7 @@ struct list_like_t {
 	struct allocator_control_t *allocator_ctrl;
 
 	/* @brief This variables will pointer to the first list node.										*/
-	struct list_node_t *node;
+	void *node;
 
 	/* @brief This variables will record the element handler of the container.							*/
 	struct element_handler_t element_handler;

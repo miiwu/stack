@@ -314,7 +314,7 @@ void *list_control_get_node(LIST_TYPEDEF_PTR list,
 	}
 
 	struct list_node_t
-		**current_node = &list->node;
+		**current_node = (struct list_node_t **)&list->node;
 
 	CONTAINER_GLOBAL_CFG_SIZE_TYPE
 		currrent_position = 0;
