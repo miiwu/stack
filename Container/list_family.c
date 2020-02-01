@@ -4,7 +4,7 @@
 *********************************************************************************************************
 */
 
-#include "list_like_shared.h"
+#include "list_family.h"
 
 /*
 *********************************************************************************************************
@@ -37,49 +37,22 @@
 */
 
 /**
- * @brief This array will contain all the universal list functions address.
+ * @brief This variables will record the list_family_member_type_e.
  */
 
-void *list_like_function_address_tables[] =
-{
-	(void *)&list_like_control_configuration_init,							/* No.0 : initialize */
-
-	(void *)&list_like_control_configuration_destroy,						/* No.1 : destroy */
-
-	(void *)&list_like_control_element_access_at,							/* No.3 : at */
-
-	(void *)&list_like_control_capacity_empty,								/* No.4 : empty */
-
-	(void *)&list_like_control_capacity_size,								/* No.5 : size */
-
-	(void *)&list_like_control_capacity_max_size,							/* No.6 : max_size */
-
-	(void *)&list_like_control_modifiers_insert_after,						/* No.7 : insert */
-
-	(void *)&list_like_control_modifiers_erase_after,						/* No.8 : erase */
-
-	(void *)&list_like_control_modifiers_swap,								/* No.9 : swap */
-
-	(void *)&list_like_control_modifiers_copy,								/* No.10 : copy */
-};
-
-/**
- * @brief This variables will record the list_like_type.
- */
-
-enum list_like_type list_like_control_list_like_type = LIST;
+enum list_family_member_type_e list_family_control_type_in_control = LIST;
 
 /**
  * @brief This variables will record the list_node_operator.
  */
 
-struct node_operator_t list_like_control_node_operator = { NULL };
+struct node_operator_s list_family_control_node_operator = { NULL };
 
 /**
  * @brief This variables will record the list_operations_remove's value.
  */
 
-void *list_like_control_list_operations_remove_value = NULL;
+void *list_family_control_list_operations_remove_value = NULL;
 
 /*
 *********************************************************************************************************
@@ -95,7 +68,7 @@ void *list_like_control_list_operations_remove_value = NULL;
  * @return the memory size of the specified node
  */
 
-static size_t list_like_control_get_node_len(enum list_like_type type);
+static size_t list_family_control_get_node_len(enum list_family_member_type_e type);
 
 /**
 * @brief This function will set elements at the specified location in the container.
@@ -107,7 +80,7 @@ static size_t list_like_control_get_node_len(enum list_like_type type);
 * @return NONE
 */
 
-static void list_node_control_set_data(struct list_like_t *list,
+static void list_node_control_set_data(struct list_family_s *list,
 									   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source);
 
 /**
@@ -120,7 +93,7 @@ static void list_node_control_set_data(struct list_like_t *list,
 * @return NONE
 */
 
-static void *list_node_control_get_data(struct list_like_t *list,
+static void *list_node_control_get_data(struct list_family_s *list,
 										CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 /**
@@ -132,7 +105,7 @@ static void *list_node_control_get_data(struct list_like_t *list,
 * @return NONE
 */
 
-static void list_node_control_del_data(struct list_like_t *list,
+static void list_node_control_del_data(struct list_family_s *list,
 									   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
 
 /**
@@ -145,7 +118,7 @@ static void list_node_control_del_data(struct list_like_t *list,
 *	- false	no
 */
 
-bool list_like_control_remove_rule(void *data);
+bool list_family_control_remove_rule(void *data);
 
 /**
 * @brief This function will compare if the left-hand-side lesser than the right-hand-side.
@@ -158,7 +131,7 @@ bool list_like_control_remove_rule(void *data);
 *	- false	no
 */
 
-bool list_like_control_default_sort_comp_lesser(void *lhs, void *rhs, size_t len);
+bool list_family_control_default_sort_comp_lesser(void *lhs, void *rhs, size_t len);
 
 /**
 * @brief This function will compare if the left-hand-side greater than the right-hand-side.
@@ -171,7 +144,7 @@ bool list_like_control_default_sort_comp_lesser(void *lhs, void *rhs, size_t len
 *	- false	no
 */
 
-bool list_like_control_default_sort_comp_greater(void *lhs, void *rhs, size_t len);
+bool list_family_control_default_sort_comp_greater(void *lhs, void *rhs, size_t len);
 
 /**
 * @brief This function will compare if the left-hand-side equal with the right-hand-side.
@@ -184,7 +157,7 @@ bool list_like_control_default_sort_comp_greater(void *lhs, void *rhs, size_t le
 *	- false	no
 */
 
-bool list_like_control_default_sort_comp_equal(void *lhs, void *rhs, size_t len);
+bool list_family_control_default_sort_comp_equal(void *lhs, void *rhs, size_t len);
 
 /**
 * @brief This function will callback the handler that container has no elements when the container temp to insert.
@@ -194,7 +167,7 @@ bool list_like_control_default_sort_comp_equal(void *lhs, void *rhs, size_t len)
 * @return NONE
 */
 
-void list_like_control_configration_exception_default_empty_callback(void);
+void list_family_control_configration_exception_default_empty_callback(void);
 
 /**
  * @brief This function will callback the handler that container has no elements when the container temp to erase.
@@ -204,7 +177,7 @@ void list_like_control_configration_exception_default_empty_callback(void);
  * @return NONE
  */
 
-void list_like_control_configration_exception_default_full_callback(void);
+void list_family_control_configration_exception_default_full_callback(void);
 
 /*
 *********************************************************************************************************
@@ -213,17 +186,17 @@ void list_like_control_configration_exception_default_full_callback(void);
 */
 
 /**
- * @brief This function will initialize the list struct
+ * @brief This function will get control of the list-family controller.
  *
  * @param node_operator the node's operator
  *
  * @return NONE
  */
 
-inline void list_like_control_get_list_control(enum list_like_type list_like_type, struct node_operator_t node_operator)
+inline void list_family_control_get_control(enum list_family_member_type_e type, struct node_operator_s node_operator)
 {
-	list_like_control_list_like_type = list_like_type;
-	list_like_control_node_operator = node_operator;
+	list_family_control_type_in_control = type;
+	list_family_control_node_operator = node_operator;
 }
 
 /**
@@ -237,11 +210,11 @@ inline void list_like_control_get_list_control(enum list_like_type list_like_typ
  * @return NONE
  */
 
-void list_like_control_configuration_init(struct list_like_t **list,
-										  void (*pack_analysis)(void),
-										  enum allocator_type allocator_type,
-										  CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
-										  void (*assign)(void *dst, void *src), void (*free)(void *dst))
+void list_family_control_configuration_init(struct list_family_s **list,
+											void (*switch_control)(void),
+											enum allocator_type_e allocator_type,
+											CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+											void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(list);
 	assert(0 <= element_size);
@@ -249,7 +222,7 @@ void list_like_control_configuration_init(struct list_like_t **list,
 	void
 		*allocator = NULL;
 
-	struct allocator_control_t
+	struct allocator_control_s
 		*allocator_ctrl = NULL;
 
 	allocator_ctrl = allocator_control_convert_type_to_func_addr_table(allocator_type);	/* Variables pointer to	the function address table of
@@ -257,18 +230,18 @@ void list_like_control_configuration_init(struct list_like_t **list,
 
 	allocator_ctrl->configration.init(&allocator, NULL);
 
-	struct list_like_t
+	struct list_family_s
 		*list_alloced = allocator_ctrl->allocate(allocator,
-												 1, sizeof(struct list_like_t));	/* Allocate #1 */
+												 1, sizeof(struct list_family_s));	/* Allocate #1 */
 
 	if (NULL == list ||																	/* Check if list point to NULL			*/
 		NULL == list_alloced) {															/* Check if list_alloced point to NULL	*/
 		return;
 	}
 
-	list_alloced->container_type_id = list_like_control_list_like_type;						/* Assign list structure					*/
+	list_alloced->container_type_id = list_family_control_type_in_control;						/* Assign list structure					*/
 
-	list_alloced->info.max_size = LIST_LIKE_CFG_DEFAULT_MAX_SIZE;
+	list_alloced->info.max_size = LIST_FAMILY_CFG_DEFAULT_MAX_SIZE;
 	list_alloced->info.size = 0u;
 	list_alloced->info.mem_size = element_size;
 
@@ -277,10 +250,10 @@ void list_like_control_configuration_init(struct list_like_t **list,
 
 	list_alloced->node = NULL;
 
-	list_alloced->exception.empty = list_like_control_configration_exception_default_empty_callback;
-	list_alloced->exception.full = list_like_control_configration_exception_default_full_callback;
+	list_alloced->exception.empty = list_family_control_configration_exception_default_empty_callback;
+	list_alloced->exception.full = list_family_control_configration_exception_default_full_callback;
 
-	list_alloced->link_like_shared_pack_analysis = pack_analysis;
+	list_alloced->switch_control = switch_control;
 
 	if (NULL != assign &&																	/* Check if assign point to NULL			*/
 		NULL != free) {																		/* Check if free point to NULL				*/
@@ -306,15 +279,15 @@ void list_like_control_configuration_init(struct list_like_t **list,
  * @return NONE
  */
 
-void list_like_control_configuration_destroy(struct list_like_t **list)
+void list_family_control_configuration_destroy(struct list_family_s **list)
 {
 	assert(list);
 
-	(*list)->link_like_shared_pack_analysis();
+	(*list)->switch_control();
 
 	void *allocator = (*list)->allocator;
 
-	struct allocator_control_t *allocator_ctrl = (*list)->allocator_ctrl;
+	struct allocator_control_s *allocator_ctrl = (*list)->allocator_ctrl;
 
 	#if (VECTOR_CFG_DEBUG_EN)
 
@@ -325,13 +298,13 @@ void list_like_control_configuration_destroy(struct list_like_t **list)
 	#endif // (VECTOR_CFG_DEBUG_EN)
 
 	if (0 < (*list)->info.size) {
-		struct list_node_t
+		struct list_node_s
 			*node = NULL;
 
 		for (size_t cnt = 0; cnt < (*list)->info.size; cnt++) {
-			node = list_like_control_node_operator.del((*list), 0);
+			node = list_family_control_node_operator.del((*list), 0);
 
-			list_like_control_destroy_node((*list), node);
+			list_family_control_destroy_node((*list), node);
 		}
 	}
 
@@ -365,8 +338,8 @@ void list_like_control_configuration_destroy(struct list_like_t **list)
  * @return NONE
  */
 
-void list_like_control_configuration_element_handler(struct list_like_t *list,
-													 void (*assign)(void *dst, void *src), void(*free)(void *dst))
+void list_family_control_configuration_element_handler(struct list_family_s *list,
+													   void (*assign)(void *dst, void *src), void(*free)(void *dst))
 {
 	assert(list);
 	assert(assign);
@@ -386,8 +359,8 @@ void list_like_control_configuration_element_handler(struct list_like_t *list,
  * @return NONE
  */
 
-void list_like_control_configuration_exception(struct list_like_t *list,
-											   void (*empty)(void), void (*full)(void))
+void list_family_control_configuration_exception(struct list_family_s *list,
+												 void (*empty)(void), void (*full)(void))
 {
 	assert(list);
 
@@ -408,7 +381,7 @@ void list_like_control_configuration_exception(struct list_like_t *list,
  * @return the reference to the first element in the container
  */
 
-void *list_like_control_element_access_front(struct list_like_t *list)
+void *list_family_control_element_access_front(struct list_family_s *list)
 {
 	assert(list);
 
@@ -424,8 +397,8 @@ void *list_like_control_element_access_front(struct list_like_t *list)
  * @return NONE
  */
 
-void *list_like_control_element_access_at(struct list_like_t *list,
-										  CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+void *list_family_control_element_access_at(struct list_family_s *list,
+											CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
 {
 	assert(list);
 
@@ -442,7 +415,7 @@ void *list_like_control_element_access_at(struct list_like_t *list,
 	- false,the container has elements
  */
 
-inline bool list_like_control_capacity_empty(struct list_like_t *list)
+extern inline bool list_family_control_capacity_empty(struct list_family_s *list)
 {
 	assert(list);
 
@@ -462,7 +435,7 @@ inline bool list_like_control_capacity_empty(struct list_like_t *list)
  * @return the maximum number of elements
  */
 
-inline CONTAINER_GLOBAL_CFG_SIZE_TYPE list_like_control_capacity_max_size(struct list_like_t *list)
+extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE list_family_control_capacity_max_size(struct list_family_s *list)
 {
 	assert(list);
 
@@ -477,7 +450,7 @@ inline CONTAINER_GLOBAL_CFG_SIZE_TYPE list_like_control_capacity_max_size(struct
  * @return the number of elements in the container
  */
 
-inline CONTAINER_GLOBAL_CFG_SIZE_TYPE list_like_control_capacity_size(struct list_like_t *list)
+extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE list_family_control_capacity_size(struct list_family_s *list)
 {
 	assert(list);
 
@@ -492,12 +465,12 @@ inline CONTAINER_GLOBAL_CFG_SIZE_TYPE list_like_control_capacity_size(struct lis
  * @return NONE
  */
 
-void list_like_control_modifiers_clear(struct list_like_t *list)
+void list_family_control_modifiers_clear(struct list_family_s *list)
 {
 	assert(list);
 
 	for (size_t cnt = list->info.size; cnt > 0; cnt--) {
-		list_like_control_modifiers_erase_after(list, 0);
+		list_family_control_modifiers_erase_after(list, 0);
 	}
 }
 
@@ -512,9 +485,9 @@ void list_like_control_modifiers_clear(struct list_like_t *list)
  * @return NONE
  */
 
-void list_like_control_modifiers_insert_after(struct list_like_t *list,
-											  CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-											  CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source)
+void list_family_control_modifiers_insert_after(struct list_family_s *list,
+												CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
+												CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source)
 {
 	assert(list);
 	assert(0 <= position);
@@ -522,7 +495,7 @@ void list_like_control_modifiers_insert_after(struct list_like_t *list,
 	assert(source);
 	assert(*source);
 
-	list->link_like_shared_pack_analysis();
+	list->switch_control();
 
 	void
 		*source_addr = NULL;
@@ -535,7 +508,7 @@ ENSURE_THE_LIST_HAS_ENOUGH_NODE:
 
 	if (pos_insert_tail > pos_insert_head) {												/* Ensure the list has enough node */
 		for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = pos_insert_head; pos < pos_insert_tail; pos++) {
-			list_like_control_node_operator.set(list, pos_insert_head, NULL);
+			list_family_control_node_operator.set(list, pos_insert_head, NULL);
 		}
 	}
 
@@ -548,7 +521,7 @@ ENSURE_THE_LIST_HAS_ENOUGH_NODE:
 			goto ENSURE_THE_LIST_HAS_ENOUGH_NODE;
 		}
 
-		#if (LIST_LIKE_CFG_DEBUG_EN)
+		#if (LIST_FAMILY_CFG_DEBUG_EN)
 
 		printf("list.modifiers.insert_after:No.%d:\"%s\" \r\n", pos, (char *)source_addr);
 
@@ -568,8 +541,8 @@ ENSURE_THE_LIST_HAS_ENOUGH_NODE:
  * @return NONE
  */
 
-void list_like_control_modifiers_emplace_after(struct list_like_t *stack,
-											   CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+void list_family_control_modifiers_emplace_after(struct list_family_s *stack,
+												 CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
 {
 }
 
@@ -582,18 +555,18 @@ void list_like_control_modifiers_emplace_after(struct list_like_t *stack,
  * @return NONE
  */
 
-void list_like_control_modifiers_erase_after(struct list_like_t *list,
-											 CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+void list_family_control_modifiers_erase_after(struct list_family_s *list,
+											   CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
 {
 	assert(list);
 	assert(0 <= position);
 
-	#if (LIST_LIKE_CFG_DEBUG_EN)
+	#if (LIST_FAMILY_CFG_DEBUG_EN)
 
 	printf("list.modifiers.earse_after no.%d: \"%s\" \r\n",
 		   position, (char *)list_node_control_get_data(list, position));
 
-	#endif // (LIST_LIKE_CFG_DEBUG_EN)
+	#endif // (LIST_FAMILY_CFG_DEBUG_EN)
 
 	list_node_control_del_data(list, position);
 }
@@ -607,13 +580,13 @@ void list_like_control_modifiers_erase_after(struct list_like_t *list,
  * @return NONE
  */
 
-void list_like_control_modifiers_push_front(struct list_like_t *list,
-											void *source)
+void list_family_control_modifiers_push_front(struct list_family_s *list,
+											  void *source)
 {
 	assert(list);
 	assert(source);
 
-	list_like_control_modifiers_insert_after(list, 0, 1, &source);
+	list_family_control_modifiers_insert_after(list, 0, 1, &source);
 
 	list_node_control_set_data(list, 0, source);
 }
@@ -631,8 +604,8 @@ void list_like_control_modifiers_push_front(struct list_like_t *list,
  * @return NONE
  */
 
-void list_like_control_modifiers_emplace_front(struct list_like_t *stack,
-											   void *destination)
+void list_family_control_modifiers_emplace_front(struct list_family_s *stack,
+												 void *destination)
 {
 }
 
@@ -644,7 +617,7 @@ void list_like_control_modifiers_emplace_front(struct list_like_t *stack,
  * @return NONE
  */
 
-void list_like_control_modifiers_pop_front(struct list_like_t *list)
+void list_family_control_modifiers_pop_front(struct list_family_s *list)
 {
 	assert(list);
 
@@ -661,8 +634,8 @@ void list_like_control_modifiers_pop_front(struct list_like_t *list)
  * @return NONE
  */
 
-void list_like_control_modifiers_resize(struct list_like_t **list,
-										CONTAINER_GLOBAL_CFG_SIZE_TYPE size)
+void list_family_control_modifiers_resize(struct list_family_s **list,
+										  CONTAINER_GLOBAL_CFG_SIZE_TYPE size)
 {
 }
 
@@ -675,13 +648,13 @@ void list_like_control_modifiers_resize(struct list_like_t **list,
  * @return NONE
  */
 
-void list_like_control_modifiers_swap(struct list_like_t **list,
-									  struct list_like_t **other)
+void list_family_control_modifiers_swap(struct list_family_s **list,
+										struct list_family_s **other)
 {
 	assert(list);
 	assert(other);
 
-	struct list_like_t **
+	struct list_family_s **
 		list_swap = (*list)->allocator_ctrl->allocate((*list)->allocator, 1, sizeof(void *));
 
 	*(list_swap) = *list;
@@ -700,25 +673,25 @@ void list_like_control_modifiers_swap(struct list_like_t **list,
  * @return NONE
  */
 
-void list_like_control_modifiers_copy(struct list_like_t **destination,
-									  struct list_like_t *source)
+void list_family_control_modifiers_copy(struct list_family_s **destination,
+										struct list_family_s *source)
 {
 	assert(destination);
 	assert(source);
 
-	struct list_node_t
+	struct list_node_s
 		*node_source = (void *)(size_t)(source->node);
 
 	if (NULL == (*destination) ||										/* Check if destination have been initialized */
 		NULL == (*destination)->allocator ||							/* if not,then initialize it */
 		NULL == (*destination)->allocator_ctrl ||
 		NULL == (*destination)->node) {
-		enum allocator_type *allocator_type = source->allocator;
+		enum allocator_type_e *allocator_type = source->allocator;
 
-		list_like_control_configuration_init(destination,
-											 source->link_like_shared_pack_analysis,
-											 *allocator_type,
-											 source->info.mem_size, source->element_handler.assign, source->element_handler.free);
+		list_family_control_configuration_init(destination,
+											   source->switch_control,
+											   *allocator_type,
+											   source->info.mem_size, source->element_handler.assign, source->element_handler.free);
 	} else {															/* if so,just assign */
 		(*destination)->info = source->info;
 		(*destination)->element_handler = source->element_handler;
@@ -739,16 +712,16 @@ void list_like_control_modifiers_copy(struct list_like_t **destination,
  * @return NONE
  */
 
-void list_like_control_list_operations_merge(struct list_like_t *destination,
-											 struct list_like_t *other)
+void list_family_control_list_operations_merge(struct list_family_s *destination,
+											   struct list_family_s *other)
 {
 	assert(destination);
 	assert(other);
 
-	//list_like_control_list_operations_sort(destination, NULL);
-	//list_like_control_list_operations_sort(other, NULL);
+	//list_family_control_list_operations_sort(destination, NULL);
+	//list_family_control_list_operations_sort(other, NULL);
 
-	list_like_control_list_operations_splice_after(destination, 0, other, 0, other->info.size);
+	list_family_control_list_operations_splice_after(destination, 0, other, 0, other->info.size);
 }
 
 /**
@@ -761,38 +734,38 @@ void list_like_control_list_operations_merge(struct list_like_t *destination,
  * @return NONE
  */
 
-void list_like_control_list_operations_splice_after(struct list_like_t *list,
-													CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-													struct list_like_t *other,
-													CONTAINER_GLOBAL_CFG_SIZE_TYPE first,
-													CONTAINER_GLOBAL_CFG_SIZE_TYPE last)
+void list_family_control_list_operations_splice_after(struct list_family_s *list,
+													  CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
+													  struct list_family_s *other,
+													  CONTAINER_GLOBAL_CFG_SIZE_TYPE first,
+													  CONTAINER_GLOBAL_CFG_SIZE_TYPE last)
 {
 	assert(list);
 	assert(other);
 
-	list->link_like_shared_pack_analysis();
+	list->switch_control();
 
-	struct list_node_t
+	struct list_node_s
 		*node_other = NULL;
 
 	CONTAINER_GLOBAL_CFG_SIZE_TYPE
 		pos_tail_splice = position + last - first;
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = position; pos < pos_tail_splice; pos++) {
-		#if (LIST_LIKE_CFG_DEBUG_EN)
+		#if (LIST_FAMILY_CFG_DEBUG_EN)
 
 		printf("list.list_operatons.splice_after.source data no.%d:\"%s\" \r\n",
 			   pos, (char *)list_node_control_get_data(other, first));
 
-		#endif // (LIST_LIKE_CFG_DEBUG_EN)
+		#endif // (LIST_FAMILY_CFG_DEBUG_EN)
 
-		node_other = list_like_control_node_operator.del(other, first);
+		node_other = list_family_control_node_operator.del(other, first);
 
 		if (NULL == node_other) {
 			return;
 		}
 
-		list_like_control_node_operator.set(list, pos, node_other);
+		list_family_control_node_operator.set(list, pos, node_other);
 	}
 }
 
@@ -805,15 +778,15 @@ void list_like_control_list_operations_splice_after(struct list_like_t *list,
  * @return NONE
  */
 
-void list_like_control_list_operations_remove(struct list_like_t *list,
-											  void *value)
+void list_family_control_list_operations_remove(struct list_family_s *list,
+												void *value)
 {
 	assert(list);
 	assert(value);
 
-	list_like_control_list_operations_remove_value = value;
+	list_family_control_list_operations_remove_value = value;
 
-	list_like_control_list_operations_remove_if(list, list_like_control_remove_rule);
+	list_family_control_list_operations_remove_if(list, list_family_control_remove_rule);
 }
 
 /**
@@ -825,7 +798,7 @@ void list_like_control_list_operations_remove(struct list_like_t *list,
  * @return NONE
  */
 
-void list_like_control_list_operations_remove_if(struct list_like_t *list, bool (*rule)(void *data))
+void list_family_control_list_operations_remove_if(struct list_family_s *list, bool (*rule)(void *data))
 {
 	assert(list);
 	assert(rule);
@@ -844,12 +817,12 @@ void list_like_control_list_operations_remove_if(struct list_like_t *list, bool 
 		*node_del = NULL;
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_reomve; cnt++) {					/* Delete nodes matched */
-		#if (LIST_LIKE_CFG_DEBUG_EN)
+		#if (LIST_FAMILY_CFG_DEBUG_EN)
 
 		printf("list.list_operatons.remove_if.no.%d: \"%s\" \r\n",
 			   *(pos_remove + cnt), (char *)list_node_control_get_data(list, *(pos_remove + cnt) - cnt));
 
-		#endif // (LIST_LIKE_CFG_DEBUG_EN)
+		#endif // (LIST_FAMILY_CFG_DEBUG_EN)
 
 		list_node_control_del_data(list, *(pos_remove + cnt) - cnt);
 	}
@@ -865,11 +838,11 @@ void list_like_control_list_operations_remove_if(struct list_like_t *list, bool 
  * @return NONE
  */
 
-void list_like_control_list_operations_reverse(struct list_like_t *list)
+void list_family_control_list_operations_reverse(struct list_family_s *list)
 {
 	assert(list);
 
-	list->link_like_shared_pack_analysis();
+	list->switch_control();
 
 	struct  list_node_t
 		*node_reverse = NULL;
@@ -877,9 +850,9 @@ void list_like_control_list_operations_reverse(struct list_like_t *list)
 	CONTAINER_GLOBAL_CFG_SIZE_TYPE pos_last_list_node_valid = list->info.size - 1;
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 0; pos <= pos_last_list_node_valid; pos++) {
-		node_reverse = list_like_control_node_operator.del(list, pos_last_list_node_valid);
+		node_reverse = list_family_control_node_operator.del(list, pos_last_list_node_valid);
 
-		list_like_control_node_operator.set(list, pos, node_reverse);
+		list_family_control_node_operator.set(list, pos, node_reverse);
 	}
 }
 
@@ -891,11 +864,11 @@ void list_like_control_list_operations_reverse(struct list_like_t *list)
  * @return NONE
  */
 
-void list_like_control_list_operations_unique(struct list_like_t *list)
+void list_family_control_list_operations_unique(struct list_family_s *list)
 {
 	assert(list);
 
-	list->link_like_shared_pack_analysis();
+	list->switch_control();
 
 	char
 		*data_prev = list_node_control_get_data(list, 0),
@@ -908,7 +881,7 @@ void list_like_control_list_operations_unique(struct list_like_t *list)
 																	size_list, sizeof(CONTAINER_GLOBAL_CFG_SIZE_TYPE) * 2);
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 1; pos < size_list; pos++) {
-		if (list_like_control_default_sort_comp_equal(data_prev, (data = list_node_control_get_data(list, pos)), list->info.mem_size)) {
+		if (list_family_control_default_sort_comp_equal(data_prev, (data = list_node_control_get_data(list, pos)), list->info.mem_size)) {
 			*(*(pos_repetitive_store + cnt_pos_repetitive) + 0) = pos;
 		} else {
 			if (*(*(pos_repetitive_store + cnt_pos_repetitive) + 0) != *(*(pos_repetitive_store + cnt_pos_repetitive) + 1)) {
@@ -921,7 +894,7 @@ void list_like_control_list_operations_unique(struct list_like_t *list)
 		}
 	}
 
-	#if (LIST_LIKE_CFG_DEBUG_EN)
+	#if (LIST_FAMILY_CFG_DEBUG_EN)
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_pos_repetitive; cnt++) {
 		printf("list.list_operatons.unique:no.%d from %d to %d is \"%s\" \r\n",
@@ -930,14 +903,14 @@ void list_like_control_list_operations_unique(struct list_like_t *list)
 			   (char *)list_node_control_get_data(list, *(*(pos_repetitive_store + cnt) + 0)));
 	}
 
-	#endif // (LIST_LIKE_CFG_DEBUG_EN)
+	#endif // (LIST_FAMILY_CFG_DEBUG_EN)
 
 	struct  list_node_t
 		*node_del = NULL;
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_pos_repetitive; cnt++) {
 		for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = *(*(pos_repetitive_store + cnt) + 0); pos <= *(*(pos_repetitive_store + cnt) + 1); pos++) {
-			list_like_control_destroy_node(list, list_like_control_node_operator.del(list, *(*(pos_repetitive_store + cnt) + 0)));
+			list_family_control_destroy_node(list, list_family_control_node_operator.del(list, *(*(pos_repetitive_store + cnt) + 0)));
 		}
 	}
 
@@ -954,23 +927,23 @@ void list_like_control_list_operations_unique(struct list_like_t *list)
  * @return NONE
  */
 
-void list_like_control_list_operations_sort(struct list_like_t *list,
-											bool (*comp)(void *dst, void *src, size_t len))
+void list_family_control_list_operations_sort(struct list_family_s *list,
+											  bool (*comp)(void *dst, void *src, size_t len))
 {
 	assert(list);
 
-	list->link_like_shared_pack_analysis();
+	list->switch_control();
 
 	if (NULL == comp) {
-		comp = list_like_control_default_sort_comp_greater;
+		comp = list_family_control_default_sort_comp_greater;
 	}
 
-	struct sort_pack_t list_sort_pack = {
+	struct sort_pack_s list_sort_pack = {
 		.object = list,
 		.len = list->info.size,
 		.mem_len = list->info.mem_size,
 		.get_value_method = list_node_control_get_data,
-		.swap_method = list_like_control_node_operator.swap,
+		.swap_method = list_family_control_node_operator.swap,
 	};
 
 	sort_algorithm_control(sort_algorithm_control_convert_type_to_func_addr(BUBBLE_SORT),
@@ -985,7 +958,7 @@ void list_like_control_list_operations_sort(struct list_like_t *list,
  * @return the memory size of the specified node
  */
 
-size_t list_like_control_get_node_len(enum list_like_type type)
+size_t list_family_control_get_node_len(enum list_family_member_type_e type)
 {
 	assert(type);
 
@@ -993,10 +966,10 @@ size_t list_like_control_get_node_len(enum list_like_type type)
 
 	switch (type) {
 		case LIST:
-			mem_size = sizeof(struct list_node_t);
+			mem_size = sizeof(struct list_node_s);
 			break;
 		case FORWARD_LIST:
-			mem_size = sizeof(struct forward_list_node_t);
+			mem_size = sizeof(struct forward_list_node_s);
 			break;
 		default:
 			break;
@@ -1013,12 +986,12 @@ size_t list_like_control_get_node_len(enum list_like_type type)
  * @return NONE
  */
 
-void *list_like_control_init_node(struct list_like_t *list)
+void *list_family_control_init_node(struct list_family_s *list)
 {
 	assert(list);
 
 	void *node_alloced = list->allocator_ctrl->allocate(list->allocator,
-														1, list_like_control_get_node_len(list_like_control_list_like_type));	/* Allocate #1 */
+														1, list_family_control_get_node_len(list_family_control_type_in_control));	/* Allocate #1 */
 
 	void *data_pack_allocated = list->allocator_ctrl->allocate(list->allocator,
 															   1, list->info.mem_size);			/* Allocate #2 */
@@ -1045,8 +1018,8 @@ void *list_like_control_init_node(struct list_like_t *list)
  * @return NONE
  */
 
-void list_like_control_destroy_node(struct list_like_t *list,
-									void *node)
+void list_family_control_destroy_node(struct list_family_s *list,
+									  void *node)
 {
 	assert(list);
 
@@ -1074,19 +1047,19 @@ void list_like_control_destroy_node(struct list_like_t *list,
  * @return NONE
  */
 
-void list_node_control_set_data(struct list_like_t *list,
+void list_node_control_set_data(struct list_family_s *list,
 								CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source)
 {
 	assert(list);
 	assert(0 <= position);
 	assert(source);
 
-	list->link_like_shared_pack_analysis();
+	list->switch_control();
 
-	void *node = list_like_control_node_operator.get(list, position);
+	void *node = list_family_control_node_operator.get(list, position);
 
 	if (NULL == node) {
-		node = list_like_control_node_operator.set(list, position, NULL);
+		node = list_family_control_node_operator.set(list, position, NULL);
 
 		if (NULL == node) {
 			return;
@@ -1118,15 +1091,15 @@ void list_node_control_set_data(struct list_like_t *list,
 * @return NONE
 */
 
-void *list_node_control_get_data(struct list_like_t *list,
+void *list_node_control_get_data(struct list_family_s *list,
 								 CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
 {
 	assert(list);
 	assert(0 <= position);
 
-	list->link_like_shared_pack_analysis();
+	list->switch_control();
 
-	void *node = list_like_control_node_operator.get(list, position);
+	void *node = list_family_control_node_operator.get(list, position);
 
 	if (NULL == node) {
 		return NULL;
@@ -1147,13 +1120,13 @@ void *list_node_control_get_data(struct list_like_t *list,
 * @return NONE
 */
 
-void list_node_control_del_data(struct list_like_t *list,
+void list_node_control_del_data(struct list_family_s *list,
 								CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
 {
 	assert(list);
 	assert(0 <= position);
 
-	list->link_like_shared_pack_analysis();
+	list->switch_control();
 
 	void *data_ptr = list_node_control_get_data(list, position);
 
@@ -1163,9 +1136,9 @@ void list_node_control_del_data(struct list_like_t *list,
 		memset(data_ptr, '0', list->info.mem_size);															/* Memcpy source to destination */
 	}
 
-	#if (LIST_LIKE_CFG_DELETE_ELEMENT_EQUAL_DESTROY_NODE_EN)
+	#if (LIST_FAMILY_CFG_DELETE_ELEMENT_EQUAL_DESTROY_NODE_EN)
 
-	list_like_control_destroy_node(list, list_like_control_node_operator.del(list, position));
+	list_family_control_destroy_node(list, list_family_control_node_operator.del(list, position));
 
 	#endif // (LIST_CFG_DELETE_ELEMENT_EQUAL_DESTROY_NODE_EN)
 
@@ -1186,9 +1159,9 @@ void list_node_control_del_data(struct list_like_t *list,
 *	- false	no
 */
 
-bool list_like_control_remove_rule(void *data)
+bool list_family_control_remove_rule(void *data)
 {
-	if (0 == strcmp(data, list_like_control_list_operations_remove_value)) {
+	if (0 == strcmp(data, list_family_control_list_operations_remove_value)) {
 		return true;
 	}
 
@@ -1205,8 +1178,8 @@ bool list_like_control_remove_rule(void *data)
 *	- false	no
 */
 
-void list_like_control_sort_algorithm_bubble_sort(struct sort_pack_t sort_package,
-												  bool (*comp)(void *, void *, size_t))
+void list_family_control_sort_algorithm_bubble_sort(struct sort_pack_s sort_package,
+													bool (*comp)(void *, void *, size_t))
 {
 	char
 		*value_lhs = NULL,
@@ -1248,7 +1221,7 @@ void list_like_control_sort_algorithm_bubble_sort(struct sort_pack_t sort_packag
 *	- false	no
 */
 
-bool list_like_control_default_sort_comp_lesser(void *lhs, void *rhs, size_t len)
+bool list_family_control_default_sort_comp_lesser(void *lhs, void *rhs, size_t len)
 {
 	assert(lhs);
 	assert(rhs);
@@ -1274,7 +1247,7 @@ bool list_like_control_default_sort_comp_lesser(void *lhs, void *rhs, size_t len
 *	- false	no
 */
 
-bool list_like_control_default_sort_comp_greater(void *lhs, void *rhs, size_t len)
+bool list_family_control_default_sort_comp_greater(void *lhs, void *rhs, size_t len)
 {
 	assert(lhs);
 	assert(rhs);
@@ -1300,7 +1273,7 @@ bool list_like_control_default_sort_comp_greater(void *lhs, void *rhs, size_t le
 *	- false	no
 */
 
-bool list_like_control_default_sort_comp_equal(void *lhs, void *rhs, size_t len)
+bool list_family_control_default_sort_comp_equal(void *lhs, void *rhs, size_t len)
 {
 	assert(lhs);
 	assert(rhs);
@@ -1331,7 +1304,7 @@ bool list_like_control_default_sort_comp_equal(void *lhs, void *rhs, size_t len)
 * @return NONE
 */
 
-void list_like_control_configration_exception_default_empty_callback(void)
+void list_family_control_configration_exception_default_empty_callback(void)
 {
 }
 
@@ -1343,6 +1316,6 @@ void list_like_control_configration_exception_default_empty_callback(void)
  * @return NONE
  */
 
-void list_like_control_configration_exception_default_full_callback(void)
+void list_family_control_configration_exception_default_full_callback(void)
 {
 }

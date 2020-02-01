@@ -34,7 +34,7 @@
 * @brief This struct will contain the necessary information that sort needed.
 */
 
-struct sort_pack_t {
+struct sort_pack_s {
 	void *object;
 
 	size_t len;
@@ -71,7 +71,7 @@ void *sort_algorithm_control_convert_type_to_func_addr(enum sort_algorithm_type 
 */
 
 void sort_algorithm_control(void *sort_algorithm_addr,
-							struct sort_pack_t sort_package, bool (*comp)(void *, void *, size_t));
+							struct sort_pack_s sort_package, bool (*comp)(void *, void *, size_t));
 
 /*
 *********************************************************************************************************

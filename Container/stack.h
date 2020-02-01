@@ -20,7 +20,7 @@
 
 /*
 *********************************************************************************************************
-*									    STACK CONROL CONFIG DEFINES
+*									            DEFINES
 *********************************************************************************************************
 */
 
@@ -38,28 +38,27 @@
 
 /*
 *********************************************************************************************************
-*									       STACK DATA TYPES
+*									        DATA TYPES
 *********************************************************************************************************
 */
 
-/* ------------------------------------------- VECTOR TYPE -------------------------------------------- */
 /* Configure    vector ptr type.                                                                        */
-typedef struct stack_t *STACK_TYPEDEF_PTR;
+typedef struct stack_s *STACK_TYPEDEF_PTR;
 
 /* Configure    vector pptr type.                                                                       */
-typedef struct stack_t **STACK_TYPEDEF_PPTR;
+typedef struct stack_s **STACK_TYPEDEF_PPTR;
 
-struct stack_control_t {
+struct stack_control_s {
 	struct {
 		/* @brief This function will initialize the stack struct and the specified container. */
 		void (*init)(STACK_TYPEDEF_PPTR stack,
-					 enum container_type type,
+					 enum container_type_e type,
 					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will initialize the stack struct and attach to the specified container. */
 		void (*attach)(STACK_TYPEDEF_PPTR stack,
-					   enum container_type type, void *container);
+					   enum container_type_e type, void *container);
 
 		/* @brief This function will destroy the stack struct. */
 		void (*destroy)(STACK_TYPEDEF_PPTR stack);
@@ -106,7 +105,7 @@ struct stack_control_t {
 
 /*
 *********************************************************************************************************
-*								    STACK CONROL FUNCTION PROTOTYPES
+*								        FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
 
@@ -124,7 +123,7 @@ struct stack_control_t {
  */
 
 void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
-									 enum container_type type,
+									 enum container_type_e type,
 									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
@@ -139,7 +138,7 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
  */
 
 void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
-									   enum container_type type, void *container);
+									   enum container_type_e type, void *container);
 
 /**
  * @brief This function will destroy the stack struct
@@ -247,11 +246,11 @@ void stack_control_modifiers_copy(STACK_TYPEDEF_PPTR destination, STACK_TYPEDEF_
 
 /*
 *********************************************************************************************************
-*                                   STACK EXTERN GLOBAL VARIABLES
+*                                       EXTERN GLOBAL VARIABLES
 *********************************************************************************************************
 */
 
-extern struct stack_control_t stack_ctrl;
+extern struct stack_control_s stack_ctrl;
 
 /*
 *********************************************************************************************************

@@ -40,7 +40,7 @@
 typedef ALLOCATOR_GLOBAL_CFG_SIZE_TYPE ALLOCATOR_SIZE_TYPEDEF;
 
 /* TODO .                                                                                               */
-typedef struct allocator_t *ALLOCATOR_COMMON_TYPEDEF_PTR, **ALLOCATOR_COMMON_TYPEDEF_PPTR;
+typedef struct allocator_s *ALLOCATOR_COMMON_TYPEDEF_PTR, **ALLOCATOR_COMMON_TYPEDEF_PPTR;
 
 /*
 *********************************************************************************************************

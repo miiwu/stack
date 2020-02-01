@@ -1,10 +1,22 @@
 #include "main_cfg.h"
 
-#define MAIN_STACK_CFG_ADAPT_VECTOR_EN				0u
+#define MAIN_STACK_CFG_ADAPT_ARRAY_EN				MAIN_ARRAY_EN
 
-#define MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN		0u
+#define MAIN_STACK_CFG_ADAPT_VECTOR_EN				MAIN_VECTOR_EN
 
-#define MAIN_STACK_CFG_ADAPT_LIST_EN				1u
+#define MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN		MAIN_FORWARD_LIST_EN
+
+#define MAIN_STACK_CFG_ADAPT_LIST_EN				MAIN_LIST_EN
+
+#if (MAIN_STACK_CFG_ADAPT_ARRAY_EN)
+
+#define MAIN_STACK_CONTAINER	ARRAY
+
+#define MAIN_STACK_CONTAINER_CONTROL	array_ctrl
+
+ARRAY_TYPEDEF_PTR stack_container = NULL;
+
+#endif // (MAIN_STACK_CFG_ADAPT_ARRAY_EN)
 
 #if (MAIN_STACK_CFG_ADAPT_VECTOR_EN)
 
@@ -117,7 +129,7 @@ void main_stack_generic_type_operator_assign(void *gnc, void *src)					/* functi
 	assert(gnc);
 	assert(src);
 
-	struct generic_type_t 
+	struct generic_type_t
 		*generic_type_gnc = gnc,
 		*generic_type_src = src;
 

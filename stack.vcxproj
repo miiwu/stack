@@ -21,10 +21,12 @@
   <ItemGroup>
     <ClCompile Include="Algorithm\sort.c" />
     <ClCompile Include="Allocator\allocator_common.c" />
+    <ClCompile Include="Container\array.c" />
+    <ClCompile Include="Container\array_family.c" />
     <ClCompile Include="Container\deque.c" />
     <ClCompile Include="Container\forward_list.c" />
     <ClCompile Include="Container\list.c" />
-    <ClCompile Include="Container\list_like_shared.c" />
+    <ClCompile Include="Container\list_family.c" />
     <ClCompile Include="Container\priority_queue.c" />
     <ClCompile Include="Container\queue.c" />
     <ClCompile Include="Container\stack.c" />
@@ -32,6 +34,7 @@
     <ClCompile Include="Debug Component\debug_stack_back_trace.c" />
     <ClCompile Include="Main\main.c" />
     <ClCompile Include="Main\main_allocator.c" />
+    <ClCompile Include="Main\main_array.c" />
     <ClCompile Include="Main\main_debug_component.c" />
     <ClCompile Include="Main\main_deque.c" />
     <ClCompile Include="Main\main_forward_list.c" />
@@ -48,12 +51,14 @@
     <ClInclude Include="Allocator\allocator.h" />
     <ClInclude Include="Allocator\allocator_common.h" />
     <ClInclude Include="Allocator\allocator_def.h" />
+    <ClInclude Include="Container\array.h" />
+    <ClInclude Include="Container\array_family.h" />
     <ClInclude Include="Container\container.h" />
     <ClInclude Include="Container\container_def.h" />
     <ClInclude Include="Container\deque.h" />
     <ClInclude Include="Container\forward_list.h" />
     <ClInclude Include="Container\list.h" />
-    <ClInclude Include="Container\list_like_shared.h" />
+    <ClInclude Include="Container\list_family.h" />
     <ClInclude Include="Container\priority_queue.h" />
     <ClInclude Include="Container\queue.h" />
     <ClInclude Include="Container\stack.h" />

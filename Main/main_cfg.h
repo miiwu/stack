@@ -11,6 +11,8 @@
 
 #define MAIN_ALLOCATOR_EN			0u
 
+#define MAIN_ARRAY_EN				1u
+
 #define MAIN_VECTOR_EN				0u
 
 #define MAIN_DEQUE_EN				0u
@@ -34,6 +36,12 @@ void main_debug_component(void);
 #if	(MAIN_ALLOCATOR_EN)
 
 void main_allocator(void);
+
+#endif
+
+#if	(MAIN_ARRAY_EN)
+
+void main_array(void);
 
 #endif
 

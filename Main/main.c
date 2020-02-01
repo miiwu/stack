@@ -14,6 +14,12 @@ void main(void)
 
 	#endif
 
+	#if	(MAIN_ARRAY_EN)
+
+	main_array();
+
+	#endif
+
 	#if	(MAIN_VECTOR_EN)
 
 	main_vector();

@@ -18,6 +18,8 @@
 
 /* Sequence Containers */
 
+#include "array.h"
+
 #include "vector.h"
 
 #include "forward_list.h"

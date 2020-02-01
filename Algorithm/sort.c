@@ -52,7 +52,7 @@
 *	- false	no
 */
 
-void sort_algorithm_quick_sort(struct sort_pack_t sort_package,
+void sort_algorithm_quick_sort(struct sort_pack_s sort_package,
 							   bool (*comp)(void *, void *, size_t));
 
 /**
@@ -65,7 +65,7 @@ void sort_algorithm_quick_sort(struct sort_pack_t sort_package,
 *	- false	no
 */
 
-void sort_algorithm_bubble_sort(struct sort_pack_t sort_package,
+void sort_algorithm_bubble_sort(struct sort_pack_s sort_package,
 								bool (*comp)(void *, void *, size_t));
 
 /*
@@ -84,9 +84,9 @@ void sort_algorithm_bubble_sort(struct sort_pack_t sort_package,
 */
 
 void sort_algorithm_control(void *sort_algorithm_addr,
-							struct sort_pack_t sort_package, bool (*comp)(void *, void *, size_t))
+							struct sort_pack_s sort_package, bool (*comp)(void *, void *, size_t))
 {
-	void (*sort_algorithm)(struct sort_pack_t, bool (*comp)(void *, void *, size_t)) = sort_algorithm_addr;
+	void (*sort_algorithm)(struct sort_pack_s, bool (*comp)(void *, void *, size_t)) = sort_algorithm_addr;
 
 	sort_algorithm(sort_package, comp);
 }
@@ -127,7 +127,7 @@ void *sort_algorithm_control_convert_type_to_func_addr(enum sort_algorithm_type 
 *	- false	no
 */
 
-void sort_algorithm_quick_sort(struct sort_pack_t sort_package,
+void sort_algorithm_quick_sort(struct sort_pack_s sort_package,
 							   bool (*comp)(void *, void *, size_t))
 {
 }
@@ -142,7 +142,7 @@ void sort_algorithm_quick_sort(struct sort_pack_t sort_package,
 *	- false	no
 */
 
-void sort_algorithm_bubble_sort(struct sort_pack_t sort_package,
+void sort_algorithm_bubble_sort(struct sort_pack_s sort_package,
 								bool (*comp)(void *, void *, size_t))
 {
 	char

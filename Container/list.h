@@ -16,7 +16,7 @@
 *********************************************************************************************************
 */
 
-#include "list_like_shared.h"
+#include "list_family.h"
 
 /*
 *********************************************************************************************************
@@ -37,10 +37,10 @@
 */
 
 /* Configure    list ptr type.                                                                          */
-typedef struct list_like_t *LIST_TYPEDEF_PTR;
+typedef struct list_family_s *LIST_TYPEDEF_PTR;
 
 /* Configure    list pptr type.                                                                         */
-typedef struct list_like_t **LIST_TYPEDEF_PPTR;
+typedef struct list_family_s **LIST_TYPEDEF_PPTR;
 
 /*
 *********************************************************************************************************
@@ -81,7 +81,7 @@ void list_control_configuration_init(LIST_TYPEDEF_PPTR list,
  * @brief This struct will control all the list functions conveniently.
  */
 
-extern struct list_like_control_t list_ctrl;
+extern struct list_family_control_s list_ctrl;
 
 #endif
 

@@ -105,7 +105,16 @@
     <ClCompile Include="Algorithm\sort.c">
       <Filter>源文件\algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="Container\list_like_shared.c">
+    <ClCompile Include="Container\array.c">
+      <Filter>源文件\container</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\array_family.c">
+      <Filter>源文件\container</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\main_array.c">
+      <Filter>源文件\main</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\list_family.c">
       <Filter>源文件\container</Filter>
     </ClCompile>
   </ItemGroup>
@@ -167,7 +176,13 @@
     <ClInclude Include="Algorithm\sort.h">
       <Filter>头文件\algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="Container\list_like_shared.h">
+    <ClInclude Include="Container\array.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\array_family.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\list_family.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,8 +14,8 @@ void main_vector(void)
 		buffer[100] = { 0 },
 		*string_start = "####",
 		string_moudle[] = "vector";
-	
-	LONG start = 0,end = 0;
+
+	LONG start = 0, end = 0;
 
 	printf("\r\n ------------------------+ vector demo start +------------------------\r\n");
 
@@ -48,8 +48,8 @@ void main_vector(void)
 	vector_ctrl.modifiers.copy(&vector_copy, vector);
 
 	printf("\r\nvector.pop back start\r\n");
-	vector_ctrl.modifiers.pop_back(vector, string_moudle);
-	printf("vector.pop back : %s \r\n", string_moudle);
+	vector_ctrl.modifiers.pop_back(vector);
+	printf("vector.pop back : %s \r\n", (char *)vector_ctrl.element_access.at(vector, vector_ctrl.capacity.size(vector)));
 
 	printf("\r\nvector.at start\r\n");
 	for (size_t cnt = 0; cnt < 15; cnt++) {

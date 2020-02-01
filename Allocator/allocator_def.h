@@ -46,7 +46,7 @@
 */
 
 /* Configure the enum type of allocator.																*/
-enum allocator_type {
+enum allocator_type_e {
 	ALLOCATOR_COMMON,
 };
 
@@ -54,7 +54,7 @@ enum allocator_type {
  * @brief This struct is the allocator structure control module
  */
 
-struct allocator_control_t {
+struct allocator_control_s {
 	struct {
 		/* @brief This function will initialize the allocator struct.									*/
 		void (*init)(void **allocator,
@@ -93,7 +93,7 @@ struct allocator_control_t {
  * @return the pointer to the specified container function address table.
  */
 
-void *allocator_control_convert_type_to_func_addr_table(enum allocator_type type);
+void *allocator_control_convert_type_to_func_addr_table(enum allocator_type_e type);
 
 /**
  * @brief This function will handle the exception that lack of memory.
@@ -127,7 +127,7 @@ extern void *allocator_common_function_address_tables[];
  * @return the pointer to the specified container function address table.
  */
 
-inline void *allocator_control_convert_type_to_func_addr_table(enum container_type type)
+inline void *allocator_control_convert_type_to_func_addr_table(enum allocator_type_e type)
 {
 	void
 		*func_addr_table = NULL;

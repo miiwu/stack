@@ -44,23 +44,23 @@ void *list_function_address_tables[] =
 {
 	(void *)&list_control_configuration_init,							/* No.0 : initialize */
 
-	(void *)&list_like_control_configuration_destroy,						/* No.1 : destroy */
+	(void *)&list_family_control_configuration_destroy,						/* No.1 : destroy */
 
-	(void *)&list_like_control_element_access_at,							/* No.3 : at */
+	(void *)&list_family_control_element_access_at,							/* No.3 : at */
 
-	(void *)&list_like_control_capacity_empty,								/* No.4 : empty */
+	(void *)&list_family_control_capacity_empty,								/* No.4 : empty */
 
-	(void *)&list_like_control_capacity_size,								/* No.5 : size */
+	(void *)&list_family_control_capacity_size,								/* No.5 : size */
 
-	(void *)&list_like_control_capacity_max_size,							/* No.6 : max_size */
+	(void *)&list_family_control_capacity_max_size,							/* No.6 : max_size */
 
-	(void *)&list_like_control_modifiers_insert_after,						/* No.7 : insert */
+	(void *)&list_family_control_modifiers_insert_after,						/* No.7 : insert */
 
-	(void *)&list_like_control_modifiers_erase_after,						/* No.8 : erase */
+	(void *)&list_family_control_modifiers_erase_after,						/* No.8 : erase */
 
-	(void *)&list_like_control_modifiers_swap,								/* No.9 : swap */
+	(void *)&list_family_control_modifiers_swap,								/* No.9 : swap */
 
-	(void *)&list_like_control_modifiers_copy,								/* No.10 : copy */
+	(void *)&list_family_control_modifiers_copy,								/* No.10 : copy */
 };
 
 #if (LIST_CFG_INTERGRATED_STRUCTURE_MODE_EN)
@@ -69,45 +69,45 @@ void *list_function_address_tables[] =
  * @brief This struct will control all the list functions conveniently.
  */
 
-struct list_like_control_t list_ctrl = {
+struct list_family_control_s list_ctrl = {
 	{
 		list_control_configuration_init,
-		list_like_control_configuration_destroy,
-		list_like_control_configuration_element_handler,
-		list_like_control_configuration_exception,
+		list_family_control_configuration_destroy,
+		list_family_control_configuration_element_handler,
+		list_family_control_configuration_exception,
 	},
 	{
 		NULL
 	},
 	{
-		list_like_control_element_access_front,
-		list_like_control_element_access_at,
+		list_family_control_element_access_front,
+		list_family_control_element_access_at,
 	},
 	{
-		list_like_control_capacity_empty,
-		list_like_control_capacity_max_size,
-		list_like_control_capacity_size,
+		list_family_control_capacity_empty,
+		list_family_control_capacity_max_size,
+		list_family_control_capacity_size,
 	},
 	{
-		list_like_control_modifiers_clear,
-		list_like_control_modifiers_insert_after,
-		list_like_control_modifiers_emplace_after,
-		list_like_control_modifiers_erase_after,
-		list_like_control_modifiers_push_front,
-		list_like_control_modifiers_emplace_front,
-		list_like_control_modifiers_pop_front,
-		list_like_control_modifiers_resize,
-		list_like_control_modifiers_swap,
-		list_like_control_modifiers_copy,
+		list_family_control_modifiers_clear,
+		list_family_control_modifiers_insert_after,
+		list_family_control_modifiers_emplace_after,
+		list_family_control_modifiers_erase_after,
+		list_family_control_modifiers_push_front,
+		list_family_control_modifiers_emplace_front,
+		list_family_control_modifiers_pop_front,
+		list_family_control_modifiers_resize,
+		list_family_control_modifiers_swap,
+		list_family_control_modifiers_copy,
 	},
 	{
-		list_like_control_list_operations_merge,
-		list_like_control_list_operations_splice_after,
-		list_like_control_list_operations_remove,
-		list_like_control_list_operations_remove_if,
-		list_like_control_list_operations_reverse,
-		list_like_control_list_operations_unique,
-		list_like_control_list_operations_sort,
+		list_family_control_list_operations_merge,
+		list_family_control_list_operations_splice_after,
+		list_family_control_list_operations_remove,
+		list_family_control_list_operations_remove_if,
+		list_family_control_list_operations_reverse,
+		list_family_control_list_operations_unique,
+		list_family_control_list_operations_sort,
 	}
 };
 
@@ -126,27 +126,14 @@ void *list_control_list_operations_remove_value = NULL;
 */
 
 /**
- * @brief This function will analysis the shared pack.
+ * @brief This function will switch the list-family control.
  *
  * @param void
  *
  * @return void
  */
 
-void list_control_shared_pack_analysis(void);
-
-/**
- * @brief This function will set the node at the specified location in the container.
- *
- * @param list the pointer to the list struct pointer
- * @param node the pointer to the list node struct pointer
- * @param position the position of node
- *
- * @return NONE
- */
-
-void *list_control_set_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position, struct list_node_t *node);
+void list_control_switch_control(void);
 
 /**
  * @brief This function will get the node at the specified location in the container.
@@ -159,6 +146,19 @@ void *list_control_set_node(LIST_TYPEDEF_PTR list,
 
 void *list_control_get_node(LIST_TYPEDEF_PTR list,
 							CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+
+/**
+ * @brief This function will set the node at the specified location in the container.
+ *
+ * @param list the pointer to the list struct pointer
+ * @param node the pointer to the list node struct pointer
+ * @param position the position of node
+ *
+ * @return NONE
+ */
+
+void *list_control_set_node(LIST_TYPEDEF_PTR list,
+							CONTAINER_GLOBAL_CFG_SIZE_TYPE position, struct list_node_s *node);
 
 /**
  * @brief This function will delete the node at the specified location in the container.
@@ -196,7 +196,7 @@ void list_control_swap_node(LIST_TYPEDEF_PTR list,
  * @brief This struct will record the list's node operators.
  */
 
-struct node_operator_t list_control_node_operator = {
+struct node_operator_s list_control_node_operator = {
 	list_control_get_node,
 	list_control_set_node,
 	list_control_del_node,
@@ -227,8 +227,8 @@ void list_control_configuration_init(LIST_TYPEDEF_PPTR list,
 	assert(list);
 	assert(0 <= element_size);
 
-	list_like_control_configuration_init(list, list_control_shared_pack_analysis,
-										 LIST_CFG_ALLOCATOR_TYPE, element_size, assign, free);
+	list_family_control_configuration_init(list, list_control_switch_control,
+										   LIST_CFG_ALLOCATOR_TYPE, element_size, assign, free);
 }
 
 /**
@@ -239,9 +239,50 @@ void list_control_configuration_init(LIST_TYPEDEF_PPTR list,
  * @return void
  */
 
-void list_control_shared_pack_analysis(void)
+void list_control_switch_control(void)
 {
-	list_like_control_get_list_control(LIST_LIKE_TYPE_LIST, list_control_node_operator);
+	list_family_control_get_control(LIST_FAMILY_LIST, list_control_node_operator);
+}
+
+/**
+ * @brief This function will get the node at the specified location in the container.
+ *
+ * @param list the pointer to the list struct pointer
+ * @param position the position of node,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void *list_control_get_node(LIST_TYPEDEF_PTR list,
+							CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+{
+	assert(list);
+	assert((0 <= position));
+
+	if (list->info.max_size <= position ||
+		0 > position) {
+		return NULL;
+	}
+
+	struct list_node_s
+		**current_node = (struct list_node_s **) & list->node;
+
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE
+		currrent_position = 0;
+
+LOOP:
+
+	if (NULL == current_node ||
+		NULL == *current_node ||
+		currrent_position >= position) {
+		return *current_node;
+	}
+
+	current_node = &(*current_node)->next;
+
+	currrent_position++;
+
+	goto LOOP;
 }
 
 /**
@@ -255,7 +296,7 @@ void list_control_shared_pack_analysis(void)
  */
 
 void *list_control_set_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position, struct list_node_t *node)
+							CONTAINER_GLOBAL_CFG_SIZE_TYPE position, struct list_node_s *node)
 {
 	assert(list);
 	assert((0 <= position));
@@ -266,11 +307,11 @@ void *list_control_set_node(LIST_TYPEDEF_PTR list,
 	}
 
 	if (NULL == node &&
-		NULL == (node = list_like_control_init_node(list))) {
+		NULL == (node = list_family_control_init_node(list))) {
 		return NULL;
 	}
 
-	struct list_node_t
+	struct list_node_s
 		*node_prev = list_control_get_node(list, position - 1),
 		*node_next = list_control_get_node(list, position);
 
@@ -294,47 +335,6 @@ void *list_control_set_node(LIST_TYPEDEF_PTR list,
 }
 
 /**
- * @brief This function will get the node at the specified location in the container.
- *
- * @param list the pointer to the list struct pointer
- * @param position the position of node,it would be equal or greater than zero
- *
- * @return NONE
- */
-
-void *list_control_get_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
-{
-	assert(list);
-	assert((0 <= position));
-
-	if (list->info.max_size <= position ||
-		0 > position) {
-		return NULL;
-	}
-
-	struct list_node_t
-		**current_node = (struct list_node_t **)&list->node;
-
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE
-		currrent_position = 0;
-
-LOOP:
-
-	if (NULL == current_node ||
-		NULL == *current_node ||
-		currrent_position >= position) {
-		return *current_node;
-	}
-
-	current_node = &(*current_node)->next;
-
-	currrent_position++;
-
-	goto LOOP;
-}
-
-/**
  * @brief This function will delete the node at the specified location in the container.
  *
  * @param list the pointer to the list struct pointer
@@ -349,7 +349,7 @@ void *list_control_del_node(LIST_TYPEDEF_PTR list,
 	assert(list);
 	assert((0 <= position));
 
-	struct list_node_t
+	struct list_node_s
 		*node_del = list_control_get_node(list, position);
 
 	if (list->info.max_size <= position ||
@@ -403,7 +403,7 @@ void list_control_swap_node(LIST_TYPEDEF_PTR list,
 		rhs_pos = tmp;
 	}
 
-	struct list_node_t
+	struct list_node_s
 		*node_lhs = list_control_get_node(list, lhs_pos),
 		*node_lhs_prev = node_lhs->prev,
 		*node_lhs_next = node_lhs->next,

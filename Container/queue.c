@@ -30,7 +30,7 @@
 
 struct queue_t {
 	/* @brief RESERVED This variables will record the identity code of container type.					*/
-	enum container_type	container_type_id;
+	enum container_type_e	container_type_id;
 
 	/* @brief This variables will record if the queue attach to other container instead of initialize.	*/
 	bool attach;
@@ -39,13 +39,13 @@ struct queue_t {
 	void *container;
 
 	/* @brief This variables will point to the function address table of front container type.			*/
-	struct container_control_t *container_control;
+	struct container_control_s *container_control;
 
 	/* @brief This variables will point to the allocator.												*/
 	void *allocator;
 
 	/* @brief This variables will point to the allocator control.										*/
-	struct allocator_control_t *allocator_ctrl;
+	struct allocator_control_s *allocator_ctrl;
 };
 
 /*
@@ -115,14 +115,14 @@ struct queue_control_t queue_ctrl =
  */
 
 void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
-									 enum container_type type,
+									 enum container_type_e type,
 									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(queue);
 	assert(element_size);
 
-	enum container_type
+	enum container_type_e
 		adapt_container_type = QUEUE_CFG_DEFAULT_ADAPT_CONTAINER_TYPE;
 
 	if (type) {
@@ -132,7 +132,7 @@ void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
 	void
 		*allocator = NULL;																		/* Variables pointer to	the allocator struct */
 
-	struct allocator_control_t
+	struct allocator_control_s
 		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
 																									specified allocator type		*/
 
@@ -144,7 +144,7 @@ void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
 																								/* Variables pointer to	the queue struct which
 																									will be allocate and assign to the queue 	*/
 
-	struct container_control_t
+	struct container_control_s
 		*container_ctrl = NULL;
 
 	void
@@ -192,13 +192,13 @@ void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
  */
 
 void queue_control_configration_attach(QUEUE_TYPEDEF_PPTR queue,
-									   enum container_type type, void *container)
+									   enum container_type_e type, void *container)
 {
 	assert(queue);
 	assert(container);
 	assert(type);
 
-	enum container_type
+	enum container_type_e
 		adapt_container_type = QUEUE_CFG_DEFAULT_ADAPT_CONTAINER_TYPE;
 
 	if (type) {
@@ -208,7 +208,7 @@ void queue_control_configration_attach(QUEUE_TYPEDEF_PPTR queue,
 	void
 		*allocator = NULL;																		/* Variables pointer to	the allocator struct */
 
-	struct allocator_control_t
+	struct allocator_control_s
 		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
 																									specified allocator type		*/
 
@@ -272,7 +272,7 @@ void queue_control_configration_destroy(QUEUE_TYPEDEF_PPTR queue)
 	void
 		*allocator = (*queue)->allocator;;																	/* Variables pointer to	the allocator struct */
 
-	struct allocator_control_t
+	struct allocator_control_s
 		*allocator_ctrl = (*queue)->allocator_ctrl;
 
 	(*queue)->container_control->configuration.destroy(&(*queue)->container);				/* Destroy the container */

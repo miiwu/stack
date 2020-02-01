@@ -7,80 +7,81 @@
 *********************************************************************************************************
 */
 
-#ifndef __FORWARD_LIST_H
-#define __FORWARD_LIST_H
+#ifndef __ARRAY_H
+#define __ARRAY_H
 
 /*
 *********************************************************************************************************
-*                                          INCLUDE FILES
+*                                            INCLUDE FILES
 *********************************************************************************************************
 */
 
-#include "list_family.h"
+#include "array_family.h"
 
 /*
 *********************************************************************************************************
-*									    FORWARD_LIST CONROL CONFIG DEFINES
+*									            DEFINES
 *********************************************************************************************************
 */
 
-/* Configure    the type of allocator.                                                                  */
-#define FORWARD_LIST_CFG_ALLOCATOR_TYPE								    ALLOCATOR_COMMON
+/* Configure    the default max size of array.                                                         */
+#define ARRAY_CFG_DEFAULT_MAX_SIZE								100u
 
 /* Configure    if enable integrated structure.                                                         */
-#define FORWARD_LIST_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
+#define ARRAY_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE		1024u
+
+/* Configure    the type of allocator.                                                                  */
+#define ARRAY_CFG_ALLOCATOR_TYPE                               ALLOCATOR_COMMON
+
+/* Configure    if enable integrated structure.                                                         */
+#define ARRAY_CFG_INTERGRATED_STRUCTURE_MODE_EN			        1u
 
 /*
 *********************************************************************************************************
-*									        FORWARD_LIST DATA TYPES
+*									            DATA TYPES
 *********************************************************************************************************
 */
 
-/* Configure    forward_list ptr type.                                                                  */
-typedef struct list_family_s
-*FORWARD_LIST_TYPEDEF_PTR,
-**FORWARD_LIST_TYPEDEF_PPTR;
+/* Configure    array ptr type.                                                                        */
+typedef struct array_family_s
+*ARRAY_TYPEDEF_PTR,
+**ARRAY_TYPEDEF_PPTR;
 
 /*
 *********************************************************************************************************
-*								    FORWARD_LIST CONROL FUNCTION PROTOTYPES
-*********************************************************************************************************
-*/
-
-/*
-*********************************************************************************************************
-*                                            FUNCTIONS
+*								            FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
 
 /**
- * @brief This function will initialize the forward_list struct
+ * @brief This function will initialize the array struct.
  *
- * @param forward_list the pointer to the forward list struct pointer
- * @param element_size the element memory size of the forward list struct
+ * @param array the pointer to the container struct pointer
+ * @param element_size the pointer to container
+ * @param string_type the pointer to container
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-void forward_list_control_configuration_init(FORWARD_LIST_TYPEDEF_PPTR forward_list,
-											 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
-											 void (*assign)(void *dst, void *src), void (*free)(void *dst));
+void array_control_configuration_init(ARRAY_TYPEDEF_PPTR array,
+									  CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									  void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /*
 *********************************************************************************************************
-*                                   VECTOR EXTERN GLOBAL VARIABLES
+*                                       EXTERN GLOBAL VARIABLES
 *********************************************************************************************************
 */
 
-#if (FORWARD_LIST_CFG_INTERGRATED_STRUCTURE_MODE_EN)
+#if (ARRAY_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 /**
- * @brief This struct will control all the vector functions conveniently.
+ * @brief This struct will control all the array functions conveniently.
  */
 
-extern struct list_family_control_s forward_list_ctrl;
+extern struct array_family_control_s array_ctrl;
 
 #endif
 
@@ -90,4 +91,4 @@ extern struct list_family_control_s forward_list_ctrl;
 *********************************************************************************************************
 */
 
-#endif // !__FORWARD_LIST_H
+#endif // !__ARRAY_H

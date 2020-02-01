@@ -8,7 +8,7 @@
 
 #endif // (MAIN_ALLOCATOR_CFG_ALLOCATOR_COMMON_EN)
 
-struct allocator_control_t
+struct allocator_control_s
 	*allocator_ctrl = NULL;
 
 void

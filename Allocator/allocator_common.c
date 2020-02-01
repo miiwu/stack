@@ -30,9 +30,9 @@
  * @brief This struct is the allocator structure module
  */
 
-struct allocator_t {
+struct allocator_s {
 	/* @brief RESERVED This variables will record the identity code of allocator type.					*/
-	enum allocator_type	allocator_type_id;
+	enum allocator_type_e	allocator_type_id;
 
 	struct {
 		/* @brief This variables will record the size of allocator allocated.						    */
@@ -41,7 +41,7 @@ struct allocator_t {
 
 	struct {
 		/* @brief This variables will point to the exception handler of lack of memory.			        */
-		void (*lack_of_memory)(void* allocator);
+		void (*lack_of_memory)(void *allocator);
 	}exception;
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
@@ -52,7 +52,7 @@ struct allocator_t {
 	#endif
 };
 
-struct memory_control_t {
+struct memory_control_s {
 	/* @brief This variables will record which memory block is available by check bit.					*/
 	int available[ALLOCATOR_GLOBAL_CFG_MEMORY_POOL_SIZE / sizeof(int) * 8];
 
@@ -117,19 +117,19 @@ void *allocator_common_function_address_tables[] =
  */
 
 void allocator_control_configration_init(ALLOCATOR_COMMON_TYPEDEF_PPTR allocator,
-										 void (*lack_of_memory)(void*))
+										 void (*lack_of_memory)(void *))
 {
 	assert(allocator);
 
-	struct allocator_t
-		*allocator_alloced = (struct allocator_t *)calloc(1, sizeof(struct allocator_t));			/* Malloc #1 */
+	struct allocator_s
+		*allocator_alloced = (struct allocator_s *)calloc(1, sizeof(struct allocator_s));			/* Malloc #1 */
 
 	if (NULL == allocator_alloced) {
 		return;
 	}
 
 	allocator_alloced->allocator_type_id = ALLOCATOR_COMMON;                                       /* Assign the allocator struct */
-	allocator_alloced->info.size = 0u;			             
+	allocator_alloced->info.size = 0u;
 	allocator_control_configration_exception(allocator_alloced, lack_of_memory);
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
@@ -194,7 +194,7 @@ void allocator_control_configration_destroy(ALLOCATOR_COMMON_TYPEDEF_PPTR alloca
  */
 
 void allocator_control_configration_exception(ALLOCATOR_COMMON_TYPEDEF_PTR allocator,
-											  void (*lack_of_memory)(void*))
+											  void (*lack_of_memory)(void *))
 {
 	assert(allocator);
 

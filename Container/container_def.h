@@ -46,7 +46,7 @@
 */
 
 /* Configure the enum category of container.															*/
-enum container_category {
+enum container_category_e {
 	SEQUENCE_CONTAINERS = 0x10,
 
 	ASSOCIATIVE_CONTAINERS = 0x20,
@@ -59,8 +59,9 @@ enum container_category {
 };
 
 /* Configure the enum type of container.																*/
-enum container_type {
-	VECTOR = SEQUENCE_CONTAINERS,
+enum container_type_e {
+	ARRAY = SEQUENCE_CONTAINERS,
+	VECTOR,
 	DEQUE,
 	FORWARD_LIST,
 	LIST,
@@ -75,7 +76,7 @@ enum container_type {
 	PRIORITY_QUEUE,
 };
 
-struct element_handler_t {
+struct element_handler_s {
 	/* @brief This variables will point to the address of the vector element assign handler.			*/
 	void (*assign)(void *dst, void *src);
 
@@ -84,7 +85,7 @@ struct element_handler_t {
 };
 
 /* Configure the enum universal function type of container.												*/
-struct container_control_t {
+struct container_control_s {
 	struct {
 		/* @brief This function will initialize the container struct and the specified container.		*/
 		void (*init)(void **container,
@@ -147,13 +148,19 @@ struct container_control_t {
  * @return the pointer to the specified container function address table.
  */
 
-inline void *container_control_convert_type_to_func_addr_table(enum container_type type);
+inline void *container_control_convert_type_to_func_addr_table(enum container_type_e type);
 
 /*
 *********************************************************************************************************
 *                                       EXTERN GLOBAL VARIABLES
 *********************************************************************************************************
 */
+
+/**
+ * @brief This array will contain all the universal array functions address.
+ */
+
+extern void *array_function_address_tables[];
 
 /**
  * @brief This array will contain all the universal vector functions address.
@@ -187,12 +194,15 @@ extern void *list_function_address_tables[];
  * @return the pointer to the specified container function address table.
  */
 
-inline void *container_control_convert_type_to_func_addr_table(enum container_type type)
+inline void *container_control_convert_type_to_func_addr_table(enum container_type_e type)
 {
 	void
 		*func_addr_table = NULL;
 
 	switch (type) {
+		case ARRAY:
+			func_addr_table = &array_function_address_tables;
+			break;
 		case VECTOR:
 			func_addr_table = &vector_function_address_tables;
 			break;
@@ -209,10 +219,6 @@ inline void *container_control_convert_type_to_func_addr_table(enum container_ty
 		case MAP:
 			break;
 		case UNORDERED_SET:
-			break;
-		case STACK:
-			break;
-		case QUEUE:
 			break;
 		default:
 			break;

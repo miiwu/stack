@@ -4,7 +4,7 @@
 *********************************************************************************************************
 */
 
-#include "vector.h"
+#include "array.h"
 
 /*
 *********************************************************************************************************
@@ -24,6 +24,12 @@
 *********************************************************************************************************
 */
 
+/**
+ * @brief This struct is the array structure module
+ */
+
+typedef struct array_family_s array_st;
+
 /*
 *********************************************************************************************************
 *                                            LOCAL TABLES
@@ -37,12 +43,12 @@
 */
 
 /**
- * @brief This array will contain all the universal vector functions address.
+ * @brief This array will contain all the universal array functions address.
  */
 
-void *vector_function_address_tables[] =
+void *array_function_address_tables[] =
 {
-	(void *)&vector_control_configuration_init,						/* No.0 : initialize */
+	(void *)&array_control_configuration_init,						/* No.0 : initialize */
 
 	(void *)&array_family_control_configuration_destroy,					/* No.1 : destroy */
 
@@ -63,15 +69,15 @@ void *vector_function_address_tables[] =
 	(void *)&array_family_control_modifiers_copy,							/* No.10 : copy */
 };
 
-#if (VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
+#if (ARRAY_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 /**
- * @brief This struct will control all the vector functions conveniently.
+ * @brief This struct will control all the array functions conveniently.
  */
 
-struct vector_control_t vector_ctrl = {
+struct array_family_control_s array_ctrl = {
 	{
-		vector_control_configuration_init,
+		array_control_configuration_init,
 
 		array_family_control_configuration_destroy,
 
@@ -101,10 +107,6 @@ struct vector_control_t vector_ctrl = {
 		array_family_control_capacity_max_size,
 
 		array_family_control_capacity_capacity,
-
-		vector_control_capacity_reserve,
-
-		vector_control_capacity_shrink_to_fit,
 	},
 	{
 		array_family_control_modifiers_clear,
@@ -117,15 +119,13 @@ struct vector_control_t vector_ctrl = {
 
 		array_family_control_modifiers_pop_back,
 
-		vector_control_modifiers_resize,
-
 		array_family_control_modifiers_copy,
 
 		array_family_control_modifiers_swap,
 	}
 };
 
-#endif
+#endif // (ARRAY_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 /*
 *********************************************************************************************************
@@ -141,7 +141,7 @@ struct vector_control_t vector_ctrl = {
  * @return void
  */
 
-void vector_control_switch_control(void);
+void array_control_switch_control(void);
 
 /*
 *********************************************************************************************************
@@ -160,93 +160,25 @@ void vector_control_switch_control(void);
  * @return NONE
  */
 
-void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
-									   void (*assign)(void *dst, void *src), void (*free)(void *dst))
+void array_control_configuration_init(ARRAY_TYPEDEF_PPTR array,
+									  CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									  void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
-	assert(vector);
+	assert(array);
 
-	array_family_control_configuration_init(vector, vector_control_switch_control,
-											VECTOR_CFG_ALLOCATOR_TYPE, element_size, assign, free);
+	array_family_control_configuration_init(array, array_control_switch_control,
+											ARRAY_CFG_ALLOCATOR_TYPE, element_size, assign, free);
 }
 
 /**
- * @brief This function will This function will switch the array-family control.
+ * @brief This function will analysis the shared pack.
  *
  * @param void
  *
  * @return void
  */
 
-void vector_control_switch_control(void)
+void array_control_switch_control(void)
 {
-	array_family_control_get_control(ARRAY_FAMILY_VECTOR);
-}
-
-/**
- * @brief This function will increase the capacity of the vector to a size that's greater or equal to new_cap.
- *
- * @param vector the pointer to the container struct
- * @param position the position of element,it would be equal or greater than zero
- * @param size the size of elements
- *
- * @return NONE
- */
-
-void vector_control_capacity_reserve(VECTOR_TYPEDEF_PPTR vector,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE size)
-{
-	assert(vector);
-	assert(0 <= size);
-
-	// TODO...
-}
-
-/**
- * @brief This function will requests the removal of unused capacity.
- *
- * @param vector the pointer to the container struct
- *
- * @return NONE
- */
-
-void vector_control_capacity_shrink_to_fit(VECTOR_TYPEDEF_PPTR vector)
-{
-	assert(vector);
-
-	// TODO...
-}
-
-/**
- * @brief This function will resizes the container to contain count elements.
- *
- * @param vector the pointer to the container struct
- * @param count the count of elements
- *
- * @return NONE
- */
-
-void vector_control_modifiers_resize(VECTOR_TYPEDEF_PPTR vector,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE count)
-{
-	assert(vector);
-	assert(0 <= count);
-
-	if ((*vector)->info.max_size >= count) {
-		return;
-	}
-
-	(*vector)->allocator_ctrl->deallocate((*vector)->allocator, (*vector)->data, 1);									/* Deallocate #2.1 */
-
-	void
-		*data_pack_alloced = (*vector)->allocator_ctrl->allocate((*vector)->allocator,
-																 count,
-																 (*vector)->info.mem_size);								/* Malloc	vector malloc #2.1 */
-
-	if (NULL == data_pack_alloced) {
-		return;
-	}
-
-	(*vector)->info.max_size = count;
-	(*vector)->data = data_pack_alloced;
+	array_family_control_get_control(ARRAY_FAMILY_ARRAY);
 }

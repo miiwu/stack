@@ -28,9 +28,9 @@
  * @brief This struct is the stack structure module
  */
 
-struct stack_t {
+struct stack_s {
 	/* @brief RESERVED This variables will record the identity code of container type.					*/
-	enum container_type	container_type_id;
+	enum container_type_e	container_type_id;
 
 	/* @brief This variables will record if the stack attach to other container instead of initialize.	*/
 	bool attach;
@@ -39,13 +39,13 @@ struct stack_t {
 	void *container;
 
 	/* @brief This variables will point to the function address table of front container type.			*/
-	struct container_control_t *container_control;
+	struct container_control_s *container_control;
 
 	/* @brief This variables will point to the allocator.												*/
 	void *allocator;
 
 	/* @brief This variables will point to the allocator control.										*/
-	struct allocator_control_t *allocator_ctrl;
+	struct allocator_control_s *allocator_ctrl;
 };
 
 /*
@@ -60,7 +60,7 @@ struct stack_t {
 *********************************************************************************************************
 */
 
-struct stack_control_t stack_ctrl =
+struct stack_control_s stack_ctrl =
 {
 	stack_control_configration_init,
 
@@ -113,14 +113,14 @@ struct stack_control_t stack_ctrl =
  */
 
 void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
-									 enum container_type type,
+									 enum container_type_e type,
 									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(stack);
 	assert(element_size);
 
-	enum container_type
+	enum container_type_e
 		adapt_container_type = STACK_CFG_DEFAULT_ADAPT_CONTAINER_TYPE;
 
 	if (type) {
@@ -130,19 +130,19 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 	void
 		*allocator = NULL;																		/* Variables pointer to	the allocator struct */
 
-	struct allocator_control_t
+	struct allocator_control_s
 		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
 																									specified allocator type		*/
 
 	allocator_ctrl->configration.init(&allocator, NULL);										/* Initialize the allocator struct */
 
-	struct stack_t
-		*stack_alloced = (struct stack_t *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
-																	1, sizeof(struct stack_t));
+	struct stack_s
+		*stack_alloced = (struct stack_s *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
+																	1, sizeof(struct stack_s));
 																								/* Variables pointer to	the stack struct which
 																									will be allocate and assign to the stack 	*/
 
-	struct container_control_t
+	struct container_control_s
 		*container_ctrl = NULL;
 
 	void
@@ -189,14 +189,14 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
  * @return NONE
  */
 
-void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack, 
-									   enum container_type type,void *container)
+void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
+									   enum container_type_e type, void *container)
 {
 	assert(stack);
 	assert(container);
 	assert(type);
 
-	enum container_type
+	enum container_type_e
 		adapt_container_type = STACK_CFG_DEFAULT_ADAPT_CONTAINER_TYPE;
 
 	if (type) {
@@ -206,15 +206,15 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
 	void
 		*allocator = NULL;																		/* Variables pointer to	the allocator struct */
 
-	struct allocator_control_t
+	struct allocator_control_s
 		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
 																									specified allocator type		*/
 
 	allocator_ctrl->configration.init(&allocator, NULL);										/* Initialize the allocator struct */
 
-	struct stack_t
-		*stack_alloced = (struct stack_t *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
-																	1, sizeof(struct stack_t));
+	struct stack_s
+		*stack_alloced = (struct stack_s *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
+																	1, sizeof(struct stack_s));
 																								/* Variables pointer to	the stack struct which
 																									will be allocate and assign to the stack 	*/
 
@@ -270,7 +270,7 @@ void stack_control_configration_destroy(STACK_TYPEDEF_PPTR stack)
 	void
 		*allocator = (*stack)->allocator;;																	/* Variables pointer to	the allocator struct */
 
-	struct allocator_control_t
+	struct allocator_control_s
 		*allocator_ctrl = (*stack)->allocator_ctrl;
 
 	(*stack)->container_control->configuration.destroy(&(*stack)->container);				/* Destroy the container */

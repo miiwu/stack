@@ -53,13 +53,13 @@ struct queue_control_t {
     struct {
         /* @brief This function will initialize the queue struct and the specified container.           */
         void (*init)(QUEUE_TYPEDEF_PPTR queue,
-                     enum container_type type,
+                     enum container_type_e type,
                      CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
                      void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
         /* @brief This function will initialize the queue struct and attach to the specified container. */
         void (*attach)(QUEUE_TYPEDEF_PPTR queue,
-                       enum container_type type, void *container);
+                       enum container_type_e type, void *container);
 
         /* @brief This function will destroy the queue struct.                                          */
         void (*destroy)(QUEUE_TYPEDEF_PPTR queue);
@@ -128,7 +128,7 @@ struct queue_control_t {
  */
 
 void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
-                                     enum container_type type,
+                                     enum container_type_e type,
                                      CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
                                      void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
@@ -143,7 +143,7 @@ void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
  */
 
 void queue_control_configration_attach(QUEUE_TYPEDEF_PPTR queue,
-                                       enum container_type type, void *container);
+                                       enum container_type_e type, void *container);
 
 /**
  * @brief This function will destroy the queue struct
