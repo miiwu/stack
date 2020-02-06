@@ -16,6 +16,10 @@
 *********************************************************************************************************
 */
 
+#include "two_three_tree.h"
+
+#include "red_black_tree.h"
+
 /* Sequence Containers */
 
 #include "array.h"

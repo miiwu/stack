@@ -121,45 +121,6 @@ static void list_node_control_del_data(struct list_family_s *list,
 bool list_family_control_remove_rule(void *data);
 
 /**
-* @brief This function will compare if the left-hand-side lesser than the right-hand-side.
-*
-* @param lhs the pointer to the left-hand-side value.
-* @param rhs the pointer to the right-hand-side value.
-*
-* @return if left-hand-side lesser than the right-hand-side
-*	- true	yes
-*	- false	no
-*/
-
-bool list_family_control_default_sort_comp_lesser(void *lhs, void *rhs, size_t len);
-
-/**
-* @brief This function will compare if the left-hand-side greater than the right-hand-side.
-*
-* @param lhs the pointer to the left-hand-side value.
-* @param rhs the pointer to the right-hand-side value.
-*
-* @return if left-hand-side greater than the right-hand-side
-*	- true	yes
-*	- false	no
-*/
-
-bool list_family_control_default_sort_comp_greater(void *lhs, void *rhs, size_t len);
-
-/**
-* @brief This function will compare if the left-hand-side equal with the right-hand-side.
-*
-* @param lhs the pointer to the left-hand-side value.
-* @param rhs the pointer to the right-hand-side value.
-*
-* @return if left-hand-side equal with the right-hand-side
-*	- true	yes
-*	- false	no
-*/
-
-bool list_family_control_default_sort_comp_equal(void *lhs, void *rhs, size_t len);
-
-/**
 * @brief This function will callback the handler that container has no elements when the container temp to insert.
 *
 * @param NODE
@@ -881,7 +842,7 @@ void list_family_control_list_operations_unique(struct list_family_s *list)
 																	size_list, sizeof(CONTAINER_GLOBAL_CFG_SIZE_TYPE) * 2);
 
 	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 1; pos < size_list; pos++) {
-		if (list_family_control_default_sort_comp_equal(data_prev, (data = list_node_control_get_data(list, pos)), list->info.mem_size)) {
+		if (compare_control_equal(data_prev, (data = list_node_control_get_data(list, pos)), list->info.mem_size)) {
 			*(*(pos_repetitive_store + cnt_pos_repetitive) + 0) = pos;
 		} else {
 			if (*(*(pos_repetitive_store + cnt_pos_repetitive) + 0) != *(*(pos_repetitive_store + cnt_pos_repetitive) + 1)) {
@@ -928,14 +889,14 @@ void list_family_control_list_operations_unique(struct list_family_s *list)
  */
 
 void list_family_control_list_operations_sort(struct list_family_s *list,
-											  bool (*comp)(void *dst, void *src, size_t len))
+											  compare_t *comp)
 {
 	assert(list);
 
 	list->switch_control();
 
 	if (NULL == comp) {
-		comp = list_family_control_default_sort_comp_greater;
+		comp = compare_control_lesser;
 	}
 
 	struct sort_pack_s list_sort_pack = {
@@ -1207,92 +1168,6 @@ void list_family_control_sort_algorithm_bubble_sort(struct sort_pack_s sort_pack
 				sort_package.swap_method(sort_package.object, ct, ct + 1);
 			}
 		}
-	}
-}
-
-/**
-* @brief This function will compare if the left-hand-side lesser than the right-hand-side.
-*
-* @param lhs the pointer to the left-hand-side value.
-* @param rhs the pointer to the right-hand-side value.
-*
-* @return if left-hand-side lesser than the right-hand-side
-*	- true	yes
-*	- false	no
-*/
-
-bool list_family_control_default_sort_comp_lesser(void *lhs, void *rhs, size_t len)
-{
-	assert(lhs);
-	assert(rhs);
-	assert(len);
-
-	for (size_t cnt = 0; cnt < len; cnt++) {
-		if (*((char *)lhs + cnt) < *((char *)rhs + cnt)) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-/**
-* @brief This function will compare if the left-hand-side greater than the right-hand-side.
-*
-* @param lhs the pointer to the left-hand-side value.
-* @param rhs the pointer to the right-hand-side value.
-*
-* @return if left-hand-side greater than the right-hand-side
-*	- true	yes
-*	- false	no
-*/
-
-bool list_family_control_default_sort_comp_greater(void *lhs, void *rhs, size_t len)
-{
-	assert(lhs);
-	assert(rhs);
-	assert(len);
-
-	for (size_t cnt = 0; cnt < len; cnt++) {
-		if (*((char *)lhs + cnt) > *((char *)rhs + cnt)) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-/**
-* @brief This function will compare if the left-hand-side equal with the right-hand-side.
-*
-* @param lhs the pointer to the left-hand-side value.
-* @param rhs the pointer to the right-hand-side value.
-*
-* @return if left-hand-side equal with the right-hand-side
-*	- true	yes
-*	- false	no
-*/
-
-bool list_family_control_default_sort_comp_equal(void *lhs, void *rhs, size_t len)
-{
-	assert(lhs);
-	assert(rhs);
-	assert(len);
-
-	size_t cnt_equal_hit = 0;
-
-	for (size_t cnt = 0; cnt < len; cnt++) {
-		if (*((char *)lhs + cnt) == *((char *)rhs + cnt)) {
-			cnt_equal_hit++;
-		} else {
-			return false;
-		}
-	}
-
-	if (len == cnt_equal_hit) {
-		return true;
-	} else {
-		return false;
 	}
 }
 

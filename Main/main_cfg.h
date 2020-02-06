@@ -11,7 +11,11 @@
 
 #define MAIN_ALLOCATOR_EN			0u
 
-#define MAIN_ARRAY_EN				1u
+#define MAIN_TWO_THREE_TREE_EN		1u
+
+#define MAIN_RED_BLACK_TREE_EN		0u
+
+#define MAIN_ARRAY_EN				0u
 
 #define MAIN_VECTOR_EN				0u
 
@@ -21,7 +25,7 @@
 
 #define MAIN_LIST_EN				0u
 
-#define MAIN_STACK_EN				1u
+#define MAIN_STACK_EN				0u
 
 #define MAIN_QUEUE_EN				0u
 
@@ -36,6 +40,18 @@ void main_debug_component(void);
 #if	(MAIN_ALLOCATOR_EN)
 
 void main_allocator(void);
+
+#endif
+
+#if	(MAIN_TWO_THREE_TREE_EN)
+
+void main_two_three_tree(void);
+
+#endif
+
+#if	(MAIN_RED_BLACK_TREE_EN)
+
+void main_red_black_tree(void);
 
 #endif
 

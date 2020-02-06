@@ -109,7 +109,7 @@ struct list_family_s {
 	void *node;
 
 	/* @brief This variables will record the element handler of the container.							*/
-	struct element_handler_s element_handler;
+	struct container_element_handler_s element_handler;
 
 	struct {
 		/* @brief This variables will point to the address of the list empty exception handler.		    */

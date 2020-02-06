@@ -105,13 +105,8 @@ struct array_family_s {
 	/* @brief This variables will point to the address of the array_family data memory block.					*/
 	void *data;
 
-	struct {
-		/* @brief This variables will point to the address of the array_family element assign handler.		*/
-		void (*assign)(void *dst, void *src);
-
-		/* @brief This variables will point to the address of the array_family element free handler.			*/
-		void (*free)(void *dst);
-	}element_handler;
+	/* @brief This variables will record the element handler of the container.							*/
+	struct container_element_handler_s element_handler;
 
 	struct {
 		/* @brief This variables will point to the address of the array_family empty exception handler.		*/

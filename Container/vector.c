@@ -69,7 +69,7 @@ void *vector_function_address_tables[] =
  * @brief This struct will control all the vector functions conveniently.
  */
 
-struct vector_control_t vector_ctrl = {
+struct vector_control_s vector_ctrl = {
 	{
 		vector_control_configuration_init,
 

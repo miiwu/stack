@@ -53,7 +53,7 @@ typedef struct array_family_s **VECTOR_TYPEDEF_PPTR;
 
 #if (VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
-struct vector_control_t {
+struct vector_control_s {
 	struct {
 		/* @brief This function will initialize the vector struct.                                      */
 		void (*init)(VECTOR_TYPEDEF_PPTR vector,
@@ -223,7 +223,7 @@ void vector_control_modifiers_resize(VECTOR_TYPEDEF_PPTR vector,
 /**
  * @brief This struct will control all the vector functions conveniently.
  */
-extern struct vector_control_t vector_ctrl;
+extern struct vector_control_s vector_ctrl;
 
 #endif
 

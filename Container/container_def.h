@@ -76,12 +76,32 @@ enum container_type_e {
 	PRIORITY_QUEUE,
 };
 
-struct element_handler_s {
+struct container_common_information_s {
+	/* @brief This variables will record the size that each element will take up.						*/
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE mem_size;
+
+	/* @brief This variables will record the maximum number of elements.								*/
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE max_size;
+
+	/* @brief This variables will record the number of elements that
+			  the container has currently allocated space for.											*/
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE size;
+};
+
+struct container_element_handler_s {
 	/* @brief This variables will point to the address of the vector element assign handler.			*/
 	void (*assign)(void *dst, void *src);
 
 	/* @brief This variables will point to the address of the vector element free handler.				*/
 	void (*free)(void *dst);
+};
+
+struct container_common_exception_s {
+		/* @brief This variables will point to the address of the list empty exception handler.		    */
+	void (*empty)(void);
+
+	/* @brief This variables will point to the address of the list full exception handler.			*/
+	void (*full)(void);
 };
 
 /* Configure the enum universal function type of container.												*/

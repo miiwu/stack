@@ -40,7 +40,7 @@
  * @brief This variables will record the list_family_member_type_e.
  */
 
-enum array_family_member_type_e array_family_control_type_in_control = LIST;
+enum array_family_member_type_e array_family_control_type_in_control = ARRAY_FAMILY_ARRAY;
 
 /*
 *********************************************************************************************************
