@@ -16,7 +16,7 @@
 *********************************************************************************************************
 */
 
-#include "binary_tree_family.h"
+#include "tree_family.h"
 
 /*
 *********************************************************************************************************
@@ -37,9 +37,9 @@
 */
 
 /* Configure    red-black-tree type.																	*/
-typedef struct binary_tree_family_s 
+typedef struct tree_family_s
 *AVL_TREE_TYPEDEF_PTR,
-**AVL_TREE_TYPEDEF_PPTR;;
+**AVL_TREE_TYPEDEF_PPTR;
 
 /*
 *********************************************************************************************************

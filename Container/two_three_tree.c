@@ -12,7 +12,35 @@
 *********************************************************************************************************
 */
 
-#define TWO_THREE_TREE_GET_DATA_FROM_NODE(node)	((void*)(node))
+#define TWO_THREE_TREE_GET_DATA_FROM_NODE(node,dir)															\
+	(((struct two_three_tree_chain_node_data_s *)(((struct tree_family_chain_node_s *)node)->data))->dir)
+
+#define TWO_THREE_TREE_GET_DATA_FROM_FOUR_NODE_NODE(node,dir)															\
+	(((struct two_three_tree_chain_node_four_node_data_s *)(((struct tree_family_chain_node_s *)node)->data))->dir)
+
+#define TWO_THREE_TREE_GET_LINK_FROM_NODE(node)															\
+	(((struct tree_family_chain_node_s *)node)->link)
+
+#define TWO_THREE_TREE_GET_FAMILY_MEMBER_FROM_NODE(node,dir)											\
+	(((struct two_three_tree_chain_node_link_s *)TWO_THREE_TREE_GET_LINK_FROM_NODE(node))->dir)
+
+#define TWO_THREE_TREE_GET_KEY_FROM_FOUR_NODE_DATA(data,dir)													\
+	((NULL != (((struct tree_family_chain_node_data_content_s *)(((struct two_three_tree_chain_node_four_node_data_s *)data)->dir)))) ? 						\
+	(((struct tree_family_chain_node_data_content_s *)(((struct two_three_tree_chain_node_four_node_data_s *)data)->dir))->key) :								\
+	(0u))
+
+#define TWO_THREE_TREE_GET_KEY_FROM_DATA(data)														\
+	((NULL != ((struct tree_family_chain_node_data_content_s *)((struct two_three_tree_chain_node_data_s *)data))) ? 						\
+	(((struct tree_family_chain_node_data_content_s *)((struct two_three_tree_chain_node_data_s *)data))->key) :								\
+	(0u))
+
+#define TWO_THREE_TREE_GET_FAMILY_MEMBER_FROM_LINK(link,dir)											\
+	((dir == mlchild || dir == mrchild) ?																\
+	(((struct two_three_tree_chain_node_link_s *)link)->dir) :											\
+	(((struct two_three_tree_chain_node_four_node_link_s *)link)->dir))
+
+#define TWO_THREE_TREE_GET_KEY_FROM_NODE(node,dir)														\
+	TWO_THREE_TREE_GET_KEY_FROM_DATA(TWO_THREE_TREE_GET_DATA_FROM_NODE(node,dir))
 
 /*
 *********************************************************************************************************
@@ -30,22 +58,10 @@
  * @brief This struct is the binary tree link node structure module.
  */
 
-struct two_three_tree_chain_node_s {
-	void *data;
-
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE hight;
-
-	void *link;
-};
-
-/**
- * @brief This struct is the binary tree link node structure module.
- */
-
 struct two_three_tree_chain_node_data_s {
-	int left;
+	void *left;
 
-	int right;
+	void *right;
 };
 
 /**
@@ -53,13 +69,13 @@ struct two_three_tree_chain_node_data_s {
  */
 
 struct two_three_tree_chain_node_link_s {
-	struct two_three_tree_chain_node_s *parent;
+	void *parent;
 
-	struct two_three_tree_chain_node_s *lchild;
+	void *lchild;
 
-	struct two_three_tree_chain_node_s *mchild;
+	void *mchild;
 
-	struct two_three_tree_chain_node_s *rchild;
+	void *rchild;
 };
 
 /**
@@ -67,11 +83,11 @@ struct two_three_tree_chain_node_link_s {
  */
 
 struct two_three_tree_chain_node_four_node_data_s {
-	int left;
+	void *left;
 
-	int middle;
+	void *middle;
 
-	int right;
+	void *right;
 };
 
 /**
@@ -91,23 +107,11 @@ struct two_three_tree_chain_node_four_node_link_s {
 };
 
 /**
- * @brief This enum is the two-three tree node type structure module.
- */
-
-enum two_three_node_type_e {
-	TWO_THREE_TREE_TWO_NODE_TYPE,
-
-	TWO_THREE_TREE_THREE_NODE_TYPE,
-
-	TWO_THREE_TREE_NONE_NODE_TYPE
-};
-
-/**
  * @brief This enum is the two-three tree transform into four-node type node information pack structure module.
  */
 
 struct two_three_tree_transform_into_four_node_pack_s {
-	struct two_three_tree_chain_node_s *node;		/* the four-node inherit from three-node */
+	struct tree_family_chain_node_s *node;		/* the four-node inherit from three-node */
 
 	void *data_before_inherit;						/* the data of the previous three-node */
 	void *link_before_inherit;						/* the link of the previous three-node */
@@ -118,8 +122,8 @@ struct two_three_tree_transform_into_four_node_pack_s {
  */
 
 struct two_three_tree_transform_into_two_node_pack_s {
-	void *key;
-	struct two_three_tree_chain_node_s *node;
+	void *data;
+	struct tree_family_chain_node_s *node;
 
 	void *node_left;
 	void *node_right;
@@ -137,8 +141,20 @@ struct two_three_tree_transform_into_two_node_pack_s {
 *********************************************************************************************************
 */
 
+/* @brief This variable is the two-three tree global four-node data pointer. */
+
 struct two_three_tree_chain_node_four_node_data_s *two_three_tree_control_four_node_data = NULL;
+
+/* @brief This variable is the two-three tree global four-node link pointer. */
+
 struct two_three_tree_chain_node_four_node_link_s *two_three_tree_control_four_node_link = NULL;
+
+/* @brief This variable is the two-three tree global link memory length. */
+
+struct tree_family_node_infomation_s two_three_tree_control_four_node_type_infomation = {
+	.data_mem_len = sizeof(struct two_three_tree_chain_node_four_node_data_s),
+	.link_mem_len = sizeof(struct two_three_tree_chain_node_four_node_link_s)
+};
 
 /*
 *********************************************************************************************************
@@ -169,65 +185,40 @@ void *two_three_tree_control_delete_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
 										 void *key);
 
 /**
- * @brief This function will swap the node at the specified location in the container
- *			by the stable bubble swap algorithm.
- *
- * @param tree the pointer to the tree struct pointer
- * @param position the position of node,it would be equal or greater than zero
- *
- * @return NONE
- */
-
-void two_three_tree_control_swap_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
-									  CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
-									  CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos);
-
-/**
- * @brief This function will initialize the tree node struct.
- *
- * @param tree the pointer to the tree struct pointer
- *
- * @return NONE
- */
-
-void *two_three_tree_control_init_node(TWO_THREE_TREE_TYPEDEF_PTR tree);
-
-/**
- * @brief This function will destroy tree node struct and free the space.
- *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
- *
- * @return NONE
- */
-
-void two_three_tree_control_destroy_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
-										 void *node);
-
-/**
- * @brief This function will control two_three_tree_control_search_node()'s match.
+ * @brief This function will control two_three_tree_control_search()'s match.
  *
  * @param void
  *
  * @return void
  */
 
-enum two_three_tree_search_node_node_location_e
-	two_three_tree_control_search_node_match_rule(TWO_THREE_TREE_TYPEDEF_PTR tree,
-												  void *node,
-												  int key);
+size_t two_three_tree_control_search_match_rule(TWO_THREE_TREE_TYPEDEF_PTR tree,
+												void *node,
+												void *data);
 
 /**
- * @brief This function will control two_three_tree_control_search_node()'s recursion.
+ * @brief This function will control two_three_tree_control_search()'s recursion.
  *
  * @param void
  *
  * @return void
  */
 
-void *two_three_tree_control_search_node_recursion_rule(TWO_THREE_TREE_TYPEDEF_PTR tree,
-														void *node,
-														int key);
+void *two_three_tree_control_search_recursion_rule(TWO_THREE_TREE_TYPEDEF_PTR tree,
+												   void *node,
+												   void *data);
+
+/**
+ * @brief This function will control two_three_tree_control_insert()'s insert.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void two_three_tree_control_insert_rule(struct tree_family_s *tree,
+										struct tree_family_search_node_return_s search_return,
+										void *data);
 
 /**
  * @brief This function will return the type of the node.
@@ -237,18 +228,8 @@ void *two_three_tree_control_search_node_recursion_rule(TWO_THREE_TREE_TYPEDEF_P
  * @return void
  */
 
-enum two_three_node_type_e which_type_node(struct two_three_tree_chain_node_s *node);
-
-/**
- * @brief This function will return the type of the node.
- *
- * @param void
- *
- * @return void
- */
-
-void two_three_tree_transform_control_four_node_to_two_node_new_child(void *node,
-																	  struct two_three_tree_chain_node_s *four_node,
+void two_three_tree_transform_control_four_node_to_two_node_new_child(TWO_THREE_TREE_TYPEDEF_PTR tree, void *node,
+																	  struct tree_family_chain_node_s *four_node,
 																	  bool left_child);
 
 /**
@@ -276,18 +257,6 @@ struct two_three_tree_transform_into_two_node_pack_s
 														   struct two_three_tree_transform_into_four_node_pack_s four_node_pack);
 
 /**
- * @brief This function will set the key node into the node.
- *
- * @param void
- *
- * @return void
- */
-
-void two_three_tree_node_control_set_data(TWO_THREE_TREE_TYPEDEF_PTR tree,
-										  void *node,
-										  int key);
-
-/**
  * @brief This function will transform the tree partially.
  *
  * @param void
@@ -295,21 +264,9 @@ void two_three_tree_node_control_set_data(TWO_THREE_TREE_TYPEDEF_PTR tree,
  * @return void
  */
 
-void two_three_tree_control_partial_transformation(TWO_THREE_TREE_TYPEDEF_PTR tree,
-												   void *node,
-												   int key);
-
-/**
- * @brief This function will control two_three_tree_control_insert_node()'s insert rule.
- *
- * @param void
- *
- * @return void
- */
-
-void two_three_tree_control_insert_node_insert_rule(TWO_THREE_TREE_TYPEDEF_PTR tree,
-													void *node,
-													int key);
+void two_three_tree_node_control_partial_transformation(TWO_THREE_TREE_TYPEDEF_PTR tree,
+														void *node,
+														void *data);
 
 /*
 *********************************************************************************************************
@@ -321,12 +278,37 @@ void two_three_tree_control_insert_node_insert_rule(TWO_THREE_TREE_TYPEDEF_PTR t
  * @brief This struct will record the tree's node operators.
  */
 
-struct binary_tree_family_node_operator_s two_three_tree_control_node_operator = {
-	NULL
-	//two_three_tree_control_search_node,
-	//two_three_tree_control_insert_node,
-	//two_three_tree_control_delete_node,
-	//two_three_tree_control_swap_node,
+struct tree_family_control_environment_s two_three_tree_control_environment = {
+	{
+		BINARY_TREE_FAMILY_TWO_THREE_TREE,
+		sizeof(struct two_three_tree_chain_node_data_s),
+		sizeof(struct two_three_tree_chain_node_link_s),
+		sizeof(struct two_three_tree_chain_node_data_s) / sizeof(void *),
+		sizeof(struct two_three_tree_chain_node_link_s) / sizeof(void *),
+	},
+	{
+		two_three_tree_control_search_match_rule,
+		two_three_tree_control_search_recursion_rule,
+		two_three_tree_control_insert_rule
+	}
+};
+
+/**
+ * @brief This struct will record the tree's node operators.
+ */
+
+struct tree_family_control_environment_s two_three_four_tree_control_environment = {
+	{
+		BINARY_TREE_FAMILY_TWO_THREE_TREE,
+		sizeof(struct two_three_tree_chain_node_four_node_data_s),
+		sizeof(struct two_three_tree_chain_node_four_node_link_s),
+		sizeof(struct two_three_tree_chain_node_four_node_data_s) / sizeof(void *),
+		sizeof(struct two_three_tree_chain_node_four_node_link_s) / sizeof(void *),
+	},
+	{
+		two_three_tree_control_search_match_rule,
+		two_three_tree_control_search_recursion_rule
+	}
 };
 
 /*
@@ -353,8 +335,8 @@ void two_three_tree_control_configuration_init(TWO_THREE_TREE_TYPEDEF_PPTR tree,
 	assert(tree);
 	assert(0 <= element_size);
 
-	binary_tree_family_control_configuration_init(tree, two_three_tree_control_switch_control,
-												  TWO_THREE_TREE_CFG_ALLOCATOR_TYPE, element_size, assign, free);
+	tree_family_control_configuration_init(tree, two_three_tree_control_switch_control, BINARY_TREE_FAMILY_TWO_THREE_TREE,
+										   TWO_THREE_TREE_CFG_ALLOCATOR_TYPE, element_size, assign, free);
 
 	two_three_tree_control_four_node_data = (*tree)->allocator_ctrl->allocate((*tree)->allocator, 1, sizeof(struct two_three_tree_chain_node_four_node_data_s));
 	two_three_tree_control_four_node_link = (*tree)->allocator_ctrl->allocate((*tree)->allocator, 1, sizeof(struct two_three_tree_chain_node_four_node_link_s));
@@ -372,7 +354,7 @@ void two_three_tree_control_configuration_init(TWO_THREE_TREE_TYPEDEF_PPTR tree,
 
 void two_three_tree_control_switch_control(void)
 {
-	binary_tree_family_control_get_control(BINARY_TREE_FAMILY_TWO_THREE_TREE, two_three_tree_control_node_operator);
+	tree_family_control_get_control(two_three_tree_control_environment);
 }
 
 /**
@@ -384,32 +366,12 @@ void two_three_tree_control_switch_control(void)
  * @return NONE
  */
 
-struct two_three_tree_search_node_return_s two_three_tree_control_search_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
-	int key)
+tree_family_search_node_return_st two_three_tree_control_search(TWO_THREE_TREE_TYPEDEF_PTR tree,
+																void *data)
 {
 	assert(tree);
 
-	struct two_three_tree_search_node_return_s
-		search_return = { TWO_THREE_TREE_SEARCH_LOCATION_NONE };
-
-	struct two_three_tree_chain_node_s
-		*node_current = tree->root;
-
-	while (NULL != node_current) {
-		search_return.location = two_three_tree_control_search_node_match_rule(tree, node_current, key);
-
-		if (TWO_THREE_TREE_SEARCH_LOCATION_NONE != search_return.location) {
-			search_return.node = node_current;
-
-			return search_return;
-		}
-
-		search_return.node_prev = node_current;
-
-		node_current = two_three_tree_control_search_node_recursion_rule(tree, node_current, key);
-	}
-
-	return search_return;
+	return tree_family_control_search(tree, data);
 }
 
 /**
@@ -422,33 +384,12 @@ struct two_three_tree_search_node_return_s two_three_tree_control_search_node(TW
  * @return NONE
  */
 
-void two_three_tree_control_insert_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
-										int key)
+void two_three_tree_control_insert(TWO_THREE_TREE_TYPEDEF_PTR tree,
+								   void *data)
 {
 	assert(tree);
 
-	struct two_three_tree_search_node_return_s
-		search_return = { 0 };
-
-	printf("\r\n2-3 tree insert start %c \r\n", (int)key + '0');
-
-	search_return = two_three_tree_control_search_node(tree, key);
-
-	if (TWO_THREE_TREE_SEARCH_LOCATION_NONE == search_return.location) {       /* Can't search the node */
-		if (NULL == search_return.node_prev) {
-			struct two_three_tree_chain_node_s *node = two_three_tree_control_init_node(tree);
-
-			two_three_tree_node_control_set_data(tree, node, key);
-
-			tree->root = node;
-
-			printf("2-3 tree insert root %p \r\n", node);
-		} else {
-			two_three_tree_control_insert_node_insert_rule(tree, search_return.node_prev, key);
-		}
-	}
-
-	printf("2-3 tree insert end %c \r\n", (int)key + '0');
+	tree_family_control_insert(tree, data);
 }
 
 /**
@@ -461,404 +402,165 @@ void two_three_tree_control_insert_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
  */
 
 void *two_three_tree_control_delete_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
-										 void *key)
+										 void *data)
 {
 	assert(tree);
-	assert(key);
+	assert(data);
 
-	if (NULL == tree->root ||
-		NULL == key) {
-		return NULL;
+	struct tree_family_search_node_return_s
+		search_return = { 0 };
+
+	printf("\r\n2-3 tree delete start %c-%d \r\n", *(int *)data, *(int *)data);
+
+	search_return = two_three_tree_control_search(tree, data);
+
+	if (TWO_THREE_TREE_SEARCH_LOCATION_NONE != search_return.location) {		/* Can search the node */
 	}
 
 	return NULL;
 }
 
 /**
- * @brief This function will swap the node at the specified location in the container.
- *
- * @param tree the pointer to the tree struct pointer
- * @param position the position of node,it would be equal or greater than zero
- *
- * @return NONE
- */
-
-void two_three_tree_control_swap_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
-									  CONTAINER_GLOBAL_CFG_SIZE_TYPE lhs_pos,
-									  CONTAINER_GLOBAL_CFG_SIZE_TYPE rhs_pos)
-{
-	assert(tree);
-}
-
-/**
- * @brief This function will initialize the tree node struct.
- *
- * @param tree the pointer to the tree struct pointer
- *
- * @return NONE
- */
-
-void *two_three_tree_control_init_node(TWO_THREE_TREE_TYPEDEF_PTR tree)
-{
-	assert(tree);
-
-	struct two_three_tree_chain_node_s
-		*node_alloced = tree->allocator_ctrl->allocate(tree->allocator,
-													   1, sizeof(struct two_three_tree_chain_node_s));	/* Allocate #1 */
-
-	void *data_pack_allocated = tree->allocator_ctrl->allocate(tree->allocator,
-															   1, sizeof(struct two_three_tree_chain_node_data_s));			/* Allocate #2 */
-
-	void *link_pack_allocated = tree->allocator_ctrl->allocate(tree->allocator,
-															   1, sizeof(struct two_three_tree_chain_node_link_s));			/* Allocate #3 */
-
-	if (NULL == tree ||																			/* Check if tree point to NULL			*/
-		NULL == node_alloced ||																	/* Check if tree node point to NULL			*/
-		NULL == data_pack_allocated) {															/* Check if data_pack_alloced point to NULL	*/
-		return NULL;
-	}
-
-	node_alloced->data = data_pack_allocated;
-	node_alloced->link = link_pack_allocated;
-
-	return node_alloced;
-}
-
-/**
- * @brief This function will destroy tree node struct and free the space.
- *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
- *
- * @return NONE
- */
-
-void two_three_tree_control_destroy_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
-										 void *node)
-{
-	assert(tree);
-
-	if (NULL == node) {
-		return;
-	}
-
-	void **data_ptr = node;
-
-	tree->allocator_ctrl->deallocate(tree->allocator, *data_ptr, 1);				/* Deallocate #2 */
-
-	tree->allocator_ctrl->deallocate(tree->allocator, node, 1);					/* Deallocate #1 */
-
-	node = NULL;
-}
-
-/**
- * @brief This function will destroy tree node struct and free the space.
- *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
- *
- * @return NONE
- */
-
-void binary_tree_family_control_preorder_traversal(struct binary_tree_family_s *tree,
-												   void *node)
-{
-	assert(tree);
-
-	struct binary_tree_family_link_node_s
-		*node_current = node;
-
-	if (NULL == node) {
-		return;
-	}
-
-	/* printf */
-	binary_tree_family_control_preorder_traversal(tree, node_current->lchild);
-	binary_tree_family_control_preorder_traversal(tree, node_current->rchild);
-}
-
-/**
- * @brief This function will destroy tree node struct and free the space.
- *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
- *
- * @return NONE
- */
-
-void binary_tree_family_control_inorder_traversal(struct binary_tree_family_s *tree,
-												  void *node)
-{
-	assert(tree);
-
-	struct binary_tree_family_link_node_s
-		*node_current = node;
-
-	if (NULL == node) {
-		return;
-	}
-
-	binary_tree_family_control_inorder_traversal(tree, node_current->lchild);
-	/* printf */
-	//printf("left:%d right:%d \r\n", );
-	binary_tree_family_control_inorder_traversal(tree, node_current->rchild);
-}
-
-/**
- * @brief This function will destroy tree node struct and free the space.
- *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
- *
- * @return NONE
- */
-
-void binary_tree_family_control_posorder_traversal(struct binary_tree_family_s *tree,
-												   void *node)
-{
-	assert(tree);
-
-	struct binary_tree_family_link_node_s
-		*node_current = node;
-
-	if (NULL == node) {
-		return;
-	}
-
-	binary_tree_family_control_inorder_traversal(tree, node_current->lchild);
-	binary_tree_family_control_inorder_traversal(tree, node_current->rchild);
-	/* printf */
-}
-
-/**
- * @brief This function will set the key node into the node.
+ * @brief This function will control two_three_tree_control_search()'s match.
  *
  * @param void
  *
  * @return void
  */
 
-void two_three_tree_node_control_set_data(TWO_THREE_TREE_TYPEDEF_PTR tree,
-										  void *node,
-										  int key)
+size_t two_three_tree_control_search_match_rule(TWO_THREE_TREE_TYPEDEF_PTR tree,
+												void *node,
+												void *data)
 {
 	struct two_three_tree_chain_node_data_s
-		*data = ((struct two_three_tree_chain_node_s *)node)->data;
+		*node_data = ((struct tree_family_chain_node_s *)node)->data;
 
-	if (NULL != data->left) {
-		if (key < data->left) {
-			data->right = data->left;
-			data->left = key;
-		} else {
-			data->right = key;
-		}
-	} else if (NULL != data->right) {
-		if (key > data->right) {
-			data->left = data->right;
-			data->right = key;
-		} else {
-			data->left = key;
-		}
-	} else {
-		data->left = key;
+	if (NULL == node_data->left &&
+		NULL == node_data->right) {
+		goto EXIT;
 	}
 
-	printf("set data: L:%d R:%d \r\n", data->left, data->right);
-}
+	#if (TWO_THREE_TREE_CFG_DEBUG_EN)
 
-/**
- * @brief This function will control two_three_tree_control_search_node()'s match.
- *
- * @param void
- *
- * @return void
- */
+	printf("search.match rule:node:%p L:%c-%d R:%c-%d \r\n",
+		   node,
+		   TWO_THREE_TREE_GET_KEY_FROM_NODE(node, left), TWO_THREE_TREE_GET_KEY_FROM_NODE(node, left),
+		   TWO_THREE_TREE_GET_KEY_FROM_NODE(node, right), TWO_THREE_TREE_GET_KEY_FROM_NODE(node, right));
 
-enum two_three_tree_search_node_node_location_e
-	two_three_tree_control_search_node_match_rule(TWO_THREE_TREE_TYPEDEF_PTR tree,
-												  void *node,
-												  int key)
-{
-	struct two_three_tree_chain_node_data_s
-		*data = ((struct two_three_tree_chain_node_s *)node)->data;
+	#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
 
-	printf("search.match rule: L:%d R:%d node:%p \r\n", data->left, data->right, node);
-
-	if (data->left == key) {
+	if (NULL != node_data->left &&
+		compare_control_equal(data, node_data->left, tree->info.mem_size)) {
 		return TWO_THREE_TREE_SEARCH_LOCATION_LEFT;
-	} else if (data->right == key) {
+	} else if (NULL != node_data->right &&
+			   compare_control_equal(data, node_data->right, tree->info.mem_size)) {
 		return TWO_THREE_TREE_SEARCH_LOCATION_RIGHT;
 	}
+
+EXIT:
 
 	return TWO_THREE_TREE_SEARCH_LOCATION_NONE;
 }
 
 /**
- * @brief This function will control two_three_tree_control_search_node()'s recursion.
+ * @brief This function will control two_three_tree_control_search()'s recursion.
  *
  * @param void
  *
  * @return void
  */
 
-void *two_three_tree_control_search_node_recursion_rule(TWO_THREE_TREE_TYPEDEF_PTR tree,
-														void *node,
-														int key)
+void *two_three_tree_control_search_recursion_rule(TWO_THREE_TREE_TYPEDEF_PTR tree,
+												   void *node,
+												   void *data)
 {
 	struct two_three_tree_chain_node_data_s
-		*data = ((struct two_three_tree_chain_node_s *)node)->data;
+		*node_data = ((struct tree_family_chain_node_s *)node)->data;
 
 	struct two_three_tree_chain_node_link_s
-		*link = ((struct two_three_tree_chain_node_s *)node)->link;
+		*link = ((struct tree_family_chain_node_s *)node)->link;
 
-	if (NULL == data->left &&
-		NULL == data->right) {
-		return NULL;
-	}
-
-	if (data->left > key &&
-		data->right < key) {
-		return link->mchild;
-	} else if (data->right > key) {
-		return link->lchild;
-	} else if (data->left < key) {
-		return link->rchild;
-	}
-}
-
-/**
- * @brief This function will return the type of the node.
- *
- * @param void
- *
- * @return void
- */
-
-enum two_three_node_type_e which_type_node(struct two_three_tree_chain_node_s *node)
-{
-	if (NULL == node) {
+	if (NULL == node_data->left &&
+		NULL == node_data->right) {
 		goto EXIT;
 	}
 
-	struct two_three_tree_chain_node_data_s
-		*data = ((struct two_three_tree_chain_node_s *)node)->data;
+	if (NULL != node_data->left) {
+		if (compare_control_greater(data, node_data->left, tree->info.mem_size)) {
+			return link->rchild;
+		} else {
+			return link->lchild;
+		}
+	} else if (NULL != node_data->right) {
+		if (compare_control_greater(data, node_data->right, tree->info.mem_size)) {
+			return link->rchild;
+		} else {
+			return link->lchild;
+		}
+	}
 
-	unsigned short node_member = (0 == data->left) + (0 == data->right);
-
-	switch (node_member) {
-		case 0:
-			return TWO_THREE_TREE_THREE_NODE_TYPE;
-		case 1:
-			return TWO_THREE_TREE_TWO_NODE_TYPE;
-		default:
-			goto EXIT;
+	if (compare_control_lesser(data, node_data->left, tree->info.mem_size) &&
+		compare_control_greater(data, node_data->right, tree->info.mem_size)) {
+		return link->mchild;
+	} else if (compare_control_lesser(data, node_data->right, tree->info.mem_size)) {
+		return link->lchild;
+	} else if (compare_control_greater(data, node_data->left, tree->info.mem_size)) {
+		return link->rchild;
 	}
 
 EXIT:
-	return TWO_THREE_TREE_NONE_NODE_TYPE;
+	return NULL;
 }
 
 /**
- * @brief This function will return the type of the node.
+ * @brief This function will control two_three_tree_control_insert()'s insert.
  *
  * @param void
  *
  * @return void
  */
 
-void two_three_tree_transform_control_four_node_to_two_node_new_child(void *node,
-																	  struct two_three_tree_chain_node_s *four_node,
-																	  bool left_child)
+void two_three_tree_control_insert_rule(struct tree_family_s *tree,
+										struct tree_family_search_node_return_s search_return,
+										void *data)
 {
-	struct two_three_tree_chain_node_data_s *data = ((struct two_three_tree_chain_node_s *)node)->data;
-	struct two_three_tree_chain_node_link_s *link = ((struct two_three_tree_chain_node_s *)node)->link;
-	struct two_three_tree_chain_node_four_node_data_s *four_node_data = four_node->data;
-	struct two_three_tree_chain_node_four_node_link_s *four_node_link = four_node->link;
-
-	bool is_root_four_node = false;
-
-	if (NULL == four_node_link->parent) {
-		link->parent = four_node;
-
-		is_root_four_node = true;
-	} else {
-		link->parent = four_node_link->parent;
+	switch (tree_family_node_control_get_node_type(tree, search_return.node_prev)) {
+		case 2:																		/* Two-node type parent */
+			tree_family_node_control_set_data(tree, search_return.node_prev, data);
+			break;
+		case 3:																		/* Three-node type parent */
+			two_three_tree_node_control_partial_transformation(tree, search_return.node_prev, data);
+			break;
+		default:
+			break;
 	}
+}
 
-	if (left_child) {
-		data->left = four_node_data->left;
+/**
+ * @brief This function will transform the tree partially.
+ *
+ * @param void
+ *
+ * @return void
+ */
 
-		if (is_root_four_node && (
-			NULL != four_node_link->lchild ||
-			NULL != four_node_link->mlchild)) {
-			link->lchild = four_node_link->lchild;
-			link->rchild = four_node_link->mlchild;
+void two_three_tree_node_control_partial_transformation(TWO_THREE_TREE_TYPEDEF_PTR tree,
+														void *node,
+														void *data)
+{
+	struct two_three_tree_transform_into_four_node_pack_s four_node_pack = { 0 };
 
-			if (NULL != four_node_link->lchild) {
-				data = ((struct two_three_tree_chain_node_s *)four_node_link->lchild)->data;
-				link = ((struct two_three_tree_chain_node_s *)four_node_link->lchild)->link;
+	struct two_three_tree_transform_into_two_node_pack_s two_node_pack = { data,node };
 
-				link->parent = node;
+	while (NULL != two_node_pack.data) {
+		struct two_three_tree_chain_node_link_s
+			*link = ((struct tree_family_chain_node_s *)two_node_pack.node)->link;
 
-				printf("transform 4-node into new 2-node.Left  old node:%p DATA.lchild:%d rchild:%d LINK.parent:%p lchild:%p rchild:%p \r\n",
-					   four_node_link->lchild, data->left, data->right,
-					   link->parent, link->lchild, link->rchild);
-			}
-			if (NULL != four_node_link->mlchild) {
-				data = ((struct two_three_tree_chain_node_s *)four_node_link->mlchild)->data;
-				link = ((struct two_three_tree_chain_node_s *)four_node_link->mlchild)->link;
+		printf("partial transformation:node:%p parent:%p key:%d \r\n", two_node_pack.node, link->parent, TWO_THREE_TREE_GET_KEY_FROM_DATA(two_node_pack.data));
 
-				link->parent = node;
+		four_node_pack = two_three_tree_transform_control_three_node_to_four_node(tree, two_node_pack);
 
-				printf("transform 4-node into new 2-node.Middle Left  old node:%p DATA.lchild:%d rchild:%d LINK.parent:%p lchild:%p rchild:%p \r\n",
-					   four_node_link->mlchild, data->left, data->right,
-					   link->parent, link->lchild, link->rchild);
-			}
-		}
-
-		data = ((struct two_three_tree_chain_node_s *)node)->data;
-		link = ((struct two_three_tree_chain_node_s *)node)->link;
-
-		printf("transform 4-node into new 2-node.Left  new node:%p DATA.lchild:%d rchild:%d LINK.parent:%p lchild:%p rchild:%p \r\n",
-			   node, data->left, data->right,
-			   link->parent, link->lchild, link->rchild);
-	} else {
-		data->left = four_node_data->right;
-
-		if (is_root_four_node && (
-			NULL != four_node_link->mrchild ||
-			NULL != four_node_link->rchild)) {
-			link->lchild = four_node_link->mrchild;
-			link->rchild = four_node_link->rchild;
-
-			if (NULL != four_node_link->mrchild) {
-				data = ((struct two_three_tree_chain_node_s *)four_node_link->mrchild)->data;
-				link = ((struct two_three_tree_chain_node_s *)four_node_link->mrchild)->link;
-
-				link->parent = node;
-
-				printf("transform 4-node into new 2-node.Middle Right old node:%p DATA.lchild:%d rchild:%d LINK.parent:%p lchild:%p rchild:%p \r\n",
-					   four_node_link->mrchild, data->left, data->right,
-					   link->parent, link->lchild, link->rchild);
-			}
-			if (NULL != four_node_link->rchild) {
-				data = ((struct two_three_tree_chain_node_s *)four_node_link->rchild)->data;
-				link = ((struct two_three_tree_chain_node_s *)four_node_link->rchild)->link;
-
-				link->parent = node;
-
-				printf("transform 4-node into new 2-node.Right old node:%p DATA.lchild:%d rchild:%d LINK.parent:%p lchild:%p rchild:%p \r\n",
-					   four_node_link->rchild, data->left, data->right,
-					   link->parent, link->lchild, link->rchild);
-			}
-		}
-
-		data = ((struct two_three_tree_chain_node_s *)node)->data;
-		link = ((struct two_three_tree_chain_node_s *)node)->link;
-
-		printf("transform 4-node into new 2-node.Right new node:%p DATA.lchild:%d rchild:%d LINK.parent:%p lchild:%p rchild:%p \r\n",
-			   node, data->left, data->right,
-			   link->parent, link->lchild, link->rchild);
+		two_node_pack = two_three_tree_transform_control_four_node_to_two_node(tree, four_node_pack);
 	}
 }
 
@@ -875,9 +577,12 @@ struct two_three_tree_transform_into_four_node_pack_s
 															 struct two_three_tree_transform_into_two_node_pack_s two_node_pack)
 {
 	struct two_three_tree_chain_node_data_s
-		*three_node_data = ((struct two_three_tree_chain_node_s *)two_node_pack.node)->data;
+		*three_node_data = ((struct tree_family_chain_node_s *)two_node_pack.node)->data;
 	struct two_three_tree_chain_node_link_s
-		*three_node_link = ((struct two_three_tree_chain_node_s *)two_node_pack.node)->link;
+		*three_node_link = ((struct tree_family_chain_node_s *)two_node_pack.node)->link;
+
+	two_node_pack.node->data = two_three_tree_control_four_node_data;
+	two_node_pack.node->link = two_three_tree_control_four_node_link;
 
 	struct two_three_tree_transform_into_four_node_pack_s
 		four_node_pack = {
@@ -886,62 +591,38 @@ struct two_three_tree_transform_into_four_node_pack_s
 		.link_before_inherit = three_node_link		/* the link address of the origin 3-node */
 	};
 
-	enum four_node_data_location {
-		LEFT,
-		MIDDLE,
-		RIGHT,
-	}data_location;
-
 	printf("transform 3-node into 4-node.3-node:%p DATA.left:%d .right:%d LINK.parent:%p root:%p \r\n",
 		   two_node_pack.node,
-		   three_node_data->left, three_node_data->right,
+		   TWO_THREE_TREE_GET_KEY_FROM_DATA(three_node_data->left), TWO_THREE_TREE_GET_KEY_FROM_DATA(three_node_data->right),
 		   three_node_link->parent, tree->root);
 
-	if (two_node_pack.key < three_node_data->left) {
-		two_three_tree_control_four_node_data->left = two_node_pack.key;
-		two_three_tree_control_four_node_data->middle = three_node_data->left;
-		two_three_tree_control_four_node_data->right = three_node_data->right;
+	two_three_tree_control_four_node_data->left = three_node_data->left;
+	two_three_tree_control_four_node_data->middle = three_node_data->right;
+	two_three_tree_control_four_node_data->right = NULL;
 
-		data_location = LEFT;
-	} else if (two_node_pack.key > three_node_data->right) {
-		two_three_tree_control_four_node_data->left = three_node_data->left;
-		two_three_tree_control_four_node_data->middle = three_node_data->right;
-		two_three_tree_control_four_node_data->right = two_node_pack.key;
-
-		data_location = RIGHT;
-	} else {
-		two_three_tree_control_four_node_data->left = three_node_data->left;
-		two_three_tree_control_four_node_data->middle = two_node_pack.key;
-		two_three_tree_control_four_node_data->right = three_node_data->right;
-
-		data_location = MIDDLE;
-	}
+	tree_family_control_get_control_in_sandbox(tree, two_three_four_tree_control_environment,
+											   tree_family_node_control_set_data, 3,
+											   tree, four_node_pack.node, (void *)two_node_pack.data);
 
 	two_three_tree_control_four_node_link->parent = three_node_link->parent;
 
 	if (NULL != two_node_pack.node_left &&
 		NULL != two_node_pack.node_right) {
-		switch (data_location) {
-			case LEFT:
-				two_three_tree_control_four_node_link->lchild = two_node_pack.node_left;
-				two_three_tree_control_four_node_link->mlchild = two_node_pack.node_right;
-				two_three_tree_control_four_node_link->mrchild = three_node_link->mchild;
-				two_three_tree_control_four_node_link->rchild = three_node_link->rchild;
-				break;
-			case MIDDLE:
-				two_three_tree_control_four_node_link->lchild = three_node_link->lchild;
-				two_three_tree_control_four_node_link->mlchild = two_node_pack.node_left;
-				two_three_tree_control_four_node_link->mrchild = two_node_pack.node_right;
-				two_three_tree_control_four_node_link->rchild = three_node_link->rchild;
-				break;
-			case RIGHT:
-				two_three_tree_control_four_node_link->lchild = three_node_link->lchild;
-				two_three_tree_control_four_node_link->mlchild = three_node_link->mchild;
-				two_three_tree_control_four_node_link->mrchild = two_node_pack.node_left;
-				two_three_tree_control_four_node_link->rchild = two_node_pack.node_right;
-				break;
-			default:
-				break;
+		if (compare_control_equal(two_node_pack.data, two_three_tree_control_four_node_data->left, tree->info.mem_size)) {
+			two_three_tree_control_four_node_link->lchild = two_node_pack.node_left;
+			two_three_tree_control_four_node_link->mlchild = two_node_pack.node_right;
+			two_three_tree_control_four_node_link->mrchild = three_node_link->mchild;
+			two_three_tree_control_four_node_link->rchild = three_node_link->rchild;
+		} else if (compare_control_equal(two_node_pack.data, two_three_tree_control_four_node_data->middle, tree->info.mem_size)) {
+			two_three_tree_control_four_node_link->lchild = three_node_link->lchild;
+			two_three_tree_control_four_node_link->mlchild = two_node_pack.node_left;
+			two_three_tree_control_four_node_link->mrchild = two_node_pack.node_right;
+			two_three_tree_control_four_node_link->rchild = three_node_link->rchild;
+		} else {
+			two_three_tree_control_four_node_link->lchild = three_node_link->lchild;
+			two_three_tree_control_four_node_link->mlchild = three_node_link->mchild;
+			two_three_tree_control_four_node_link->mrchild = two_node_pack.node_left;
+			two_three_tree_control_four_node_link->rchild = two_node_pack.node_right;
 		}
 
 		printf("transform 3-node into 4-node.4-node:%p LINK.lchild:%p .mlchild:%p .mrchild:%p .rchild:%p \r\n",
@@ -950,12 +631,11 @@ struct two_three_tree_transform_into_four_node_pack_s
 			   two_three_tree_control_four_node_link->mrchild, two_three_tree_control_four_node_link->rchild);
 	}
 
-	four_node_pack.node->data = two_three_tree_control_four_node_data;
-	four_node_pack.node->link = two_three_tree_control_four_node_link;
-
 	printf("transform 3-node into 4-node.4-node:%p DATA.left:%d .middle:%d .right:%d LINK.parent:%p \r\n",
 		   four_node_pack.node,
-		   two_three_tree_control_four_node_data->left, two_three_tree_control_four_node_data->middle, two_three_tree_control_four_node_data->right,
+		   TWO_THREE_TREE_GET_KEY_FROM_FOUR_NODE_DATA(two_three_tree_control_four_node_data, left),
+		   TWO_THREE_TREE_GET_KEY_FROM_FOUR_NODE_DATA(two_three_tree_control_four_node_data, middle),
+		   TWO_THREE_TREE_GET_KEY_FROM_FOUR_NODE_DATA(two_three_tree_control_four_node_data, right),
 		   two_three_tree_control_four_node_link->parent);
 
 	return four_node_pack;
@@ -974,12 +654,14 @@ struct two_three_tree_transform_into_two_node_pack_s
 														   struct two_three_tree_transform_into_four_node_pack_s four_node_pack)
 {
 	void
-		*node_left = two_three_tree_control_init_node(tree),
-		*node_right = two_three_tree_control_init_node(tree);
+		*node_left = tree_family_control_init_node(tree),
+		*node_right = tree_family_control_init_node(tree);
+
+	struct two_three_tree_transform_into_two_node_pack_s two_node_pack = { 0 };
 
 	if (NULL == node_left ||
 		NULL == node_right) {
-		return;
+		goto EXIT;
 	}
 
 	struct two_three_tree_chain_node_four_node_data_s
@@ -992,10 +674,8 @@ struct two_three_tree_transform_into_two_node_pack_s
 	struct two_three_tree_chain_node_link_s
 		*link = four_node_pack.link_before_inherit;
 
-	struct two_three_tree_transform_into_two_node_pack_s two_node_pack = { 0 };
-
-	two_three_tree_transform_control_four_node_to_two_node_new_child(node_left, four_node_pack.node, true);
-	two_three_tree_transform_control_four_node_to_two_node_new_child(node_right, four_node_pack.node, false);
+	two_three_tree_transform_control_four_node_to_two_node_new_child(tree, node_left, four_node_pack.node, true);
+	two_three_tree_transform_control_four_node_to_two_node_new_child(tree, node_right, four_node_pack.node, false);
 
 	if (NULL == four_node_link->parent) {					/* If the parent of the four-node is NULL,the node will be the root,recycle the origin three-node */
 		printf("-----> transform 4-node into 2-node.3-node root \r\n");
@@ -1004,6 +684,7 @@ struct two_three_tree_transform_into_two_node_pack_s
 		data->right = 0;
 
 		link->lchild = node_left;
+		link->mchild = NULL;
 		link->rchild = node_right;
 
 		four_node_pack.node->data = data;
@@ -1013,14 +694,15 @@ struct two_three_tree_transform_into_two_node_pack_s
 
 		goto EXIT;
 	} else {
-		link = ((struct two_three_tree_chain_node_s *)four_node_link->parent)->link;
-		data = ((struct two_three_tree_chain_node_s *)four_node_link->parent)->data;
+		link = ((struct tree_family_chain_node_s *)four_node_link->parent)->link;
+		data = ((struct tree_family_chain_node_s *)four_node_link->parent)->data;
 
-		printf("transform 4-node into 2-node.4-node parent:%p  DATA.left:%d right:%d\r\n",
-			   four_node_link->parent, data->left, data->right);
+		printf("transform 4-node into 2-node.4-node parent:%p  DATA.left:%d .right:%d\r\n",
+			   four_node_link->parent,
+			   TWO_THREE_TREE_GET_KEY_FROM_DATA(data->left), TWO_THREE_TREE_GET_KEY_FROM_DATA(data->right));
 
-		switch (which_type_node(four_node_link->parent)) {
-			case TWO_THREE_TREE_TWO_NODE_TYPE:
+		switch (tree_family_node_control_get_node_type(tree, four_node_link->parent)) {
+			case 2:
 				printf("-----> transform 4-node into 2-node.2-node parent \r\n");
 
 				if (four_node_pack.node == link->lchild) {
@@ -1036,20 +718,17 @@ struct two_three_tree_transform_into_two_node_pack_s
 				}
 
 				printf("transform 4-node into 2-node.4-node parent:%p  DATA.left:%d right:%d\r\n",
-					   four_node_link->parent, data->left, data->right);
+					   four_node_link->parent,
+					   TWO_THREE_TREE_GET_KEY_FROM_DATA(data->left), TWO_THREE_TREE_GET_KEY_FROM_DATA(data->right));
 
 				break;
-			case TWO_THREE_TREE_THREE_NODE_TYPE:
+			case 3:
 				printf("-----> transform 4-node into 3-node.3-node parent \r\n");
 
-				two_node_pack.key = four_node_data->middle;
+				two_node_pack.data = four_node_data->middle;
 				two_node_pack.node = four_node_link->parent;
 				two_node_pack.node_left = node_left;
 				two_node_pack.node_right = node_right;
-
-				data = two_node_pack.node->data;
-				link = four_node_pack.link_before_inherit;
-
 				break;
 			default:
 				break;
@@ -1062,56 +741,97 @@ EXIT:
 }
 
 /**
- * @brief This function will transform the tree partially.
+ * @brief This function will return the type of the node.
  *
  * @param void
  *
  * @return void
  */
 
-void two_three_tree_control_partial_transformation(TWO_THREE_TREE_TYPEDEF_PTR tree,
-												   void *node,
-												   int key)
+void two_three_tree_transform_control_four_node_to_two_node_new_child(TWO_THREE_TREE_TYPEDEF_PTR tree, void *node,
+																	  struct tree_family_chain_node_s *four_node,
+																	  bool left_child)
 {
-	struct two_three_tree_transform_into_four_node_pack_s four_node_pack = { 0 };
+	struct two_three_tree_chain_node_data_s *data = ((struct tree_family_chain_node_s *)node)->data;
+	struct two_three_tree_chain_node_link_s *link = ((struct tree_family_chain_node_s *)node)->link;
+	struct two_three_tree_chain_node_four_node_data_s *four_node_data = four_node->data;
+	struct two_three_tree_chain_node_four_node_link_s *four_node_link = four_node->link;
 
-	struct two_three_tree_transform_into_two_node_pack_s two_node_pack = { key,node };
+	bool is_root_four_node = false;
 
-	while (0 != two_node_pack.key) {
-		struct two_three_tree_chain_node_link_s
-			*link = ((struct two_three_tree_chain_node_s *)two_node_pack.node)->link;
+	if (NULL == four_node_link->parent) {
+		link->parent = four_node;
 
-		printf("partial transformation:node:%p parent:%p key:%p \r\n", two_node_pack.node, link->parent, two_node_pack.key);
-
-		four_node_pack = two_three_tree_transform_control_three_node_to_four_node(tree, two_node_pack);
-
-		two_node_pack = two_three_tree_transform_control_four_node_to_two_node(tree, four_node_pack);
+		is_root_four_node = true;
+	} else {
+		link->parent = four_node_link->parent;
 	}
-}
 
-/**
- * @brief This function will control two_three_tree_control_insert_node()'s insert rule.
- *
- * @param void
- *
- * @return void
- */
+	void
+		*data_left = four_node_data->left,
+		*four_node_link_rltv_lchild = four_node_link->lchild,
+		*four_node_link_rltv_rchild = four_node_link->lchild;
 
-void two_three_tree_control_insert_node_insert_rule(TWO_THREE_TREE_TYPEDEF_PTR tree,
-													void *node,
-													int key)
-{
-	switch (which_type_node(node)) {
-		case TWO_THREE_TREE_TWO_NODE_TYPE:
-
-			printf("2-3 tree insert previous node is 2-node \r\n");
-
-			two_three_tree_node_control_set_data(tree, node, key);
-			break;
-		case TWO_THREE_TREE_THREE_NODE_TYPE:
-			two_three_tree_control_partial_transformation(tree, node, key);
-			break;
-		default:
-			break;
+	if (left_child) {
+		data_left = four_node_data->left;
+		four_node_link_rltv_lchild = four_node_link->lchild;
+		four_node_link_rltv_rchild = four_node_link->mlchild;
+	} else {
+		data_left = four_node_data->right;
+		four_node_link_rltv_lchild = four_node_link->mrchild;
+		four_node_link_rltv_rchild = four_node_link->rchild;
 	}
+
+	tree_family_node_control_set_data(tree, node, data_left);
+
+	if (is_root_four_node && (
+		NULL != four_node_link_rltv_lchild ||
+		NULL != four_node_link_rltv_rchild)) {
+		link->lchild = four_node_link_rltv_lchild;
+		link->rchild = four_node_link_rltv_rchild;
+
+		if (NULL != four_node_link_rltv_lchild) {
+			link = ((struct tree_family_chain_node_s *)four_node_link_rltv_lchild)->link;
+
+			link->parent = node;
+
+			#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+
+			printf("transform 4-node into new 2-node.%s old node:%p DATA.lchild:%d rchild:%d LINK.parent:%p lchild:%p rchild:%p \r\n",
+				   left_child ? "Left " : "Middle Right",
+				   four_node_link_rltv_lchild,
+				   TWO_THREE_TREE_GET_KEY_FROM_NODE(four_node_link_rltv_lchild, left), TWO_THREE_TREE_GET_KEY_FROM_NODE(four_node_link_rltv_lchild, right),
+				   link->parent, link->lchild, link->rchild);
+
+			#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
+		}
+		if (NULL != four_node_link_rltv_rchild) {
+			link = ((struct tree_family_chain_node_s *)four_node_link_rltv_rchild)->link;
+
+			link->parent = node;
+
+			#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+
+			printf("transform 4-node into new 2-node.%s old node:%p DATA.lchild:%d rchild:%d LINK.parent:%p lchild:%p rchild:%p \r\n",
+				   left_child ? "Middle Left " : "Right",
+				   four_node_link_rltv_rchild,
+				   TWO_THREE_TREE_GET_KEY_FROM_NODE(four_node_link_rltv_rchild, left), TWO_THREE_TREE_GET_KEY_FROM_NODE(four_node_link_rltv_rchild, right),
+				   link->parent, link->lchild, link->rchild);
+
+			#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
+		}
+	}
+
+	data = ((struct tree_family_chain_node_s *)node)->data;
+	link = ((struct tree_family_chain_node_s *)node)->link;
+
+	#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+
+	printf("transform 4-node into new 2-node.%s new node:%p DATA.lchild:%d rchild:%d LINK.parent:%p lchild:%p rchild:%p \r\n",
+		   left_child ? "Left " : "Right",
+		   node,
+		   TWO_THREE_TREE_GET_KEY_FROM_DATA(data->left), TWO_THREE_TREE_GET_KEY_FROM_DATA(data->right),
+		   link->parent, link->lchild, link->rchild);
+
+	#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
 }

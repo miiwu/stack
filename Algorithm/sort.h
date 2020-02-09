@@ -26,6 +26,8 @@
 *********************************************************************************************************
 */
 
+#define SORT_ALGORITHM_CFG_DEBUG_EN										0
+
 /*
 *********************************************************************************************************
 *									           DATA TYPES
@@ -36,15 +38,17 @@
 * @brief This struct will contain the necessary information that sort needed.
 */
 
-struct sort_pack_s {
+struct sort_package_s {
 	void *object;
 
 	size_t len;
 	size_t mem_len;
 
-	void (*swap_method)(void *, size_t, size_t);
+	void *(*get_value_method)(void *object, size_t loc);
 
-	void *(*get_value_method)(void *, size_t);
+	void (*swap_method)(void *object, size_t lhs, size_t rhs);
+
+	compare_t *compare_method;
 };
 
 /*
@@ -73,7 +77,7 @@ void *sort_algorithm_control_convert_type_to_func_addr(enum sort_algorithm_type 
 */
 
 void sort_algorithm_control(void *sort_algorithm_addr,
-							struct sort_pack_s sort_package, compare_t *comp);
+							struct sort_package_s sort_package, compare_t *comp);
 
 /*
 *********************************************************************************************************

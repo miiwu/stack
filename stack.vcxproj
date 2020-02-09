@@ -27,7 +27,7 @@
     <ClCompile Include="Container\avl_tree.c">
       <FileType>CppCode</FileType>
     </ClCompile>
-    <ClCompile Include="Container\binary_tree_family.c" />
+    <ClCompile Include="Container\tree_family.c" />
     <ClCompile Include="Container\deque.c" />
     <ClCompile Include="Container\forward_list.c" />
     <ClCompile Include="Container\list.c" />
@@ -64,7 +64,7 @@
     <ClInclude Include="Container\array.h" />
     <ClInclude Include="Container\array_family.h" />
     <ClInclude Include="Container\avl_tree.h" />
-    <ClInclude Include="Container\binary_tree_family.h" />
+    <ClInclude Include="Container\tree_family.h" />
     <ClInclude Include="Container\container.h" />
     <ClInclude Include="Container\container_def.h" />
     <ClInclude Include="Container\deque.h" />
@@ -135,19 +135,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Algorithm;D:\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Algorithm;D:\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Algorithm;D:\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Project\Microsoft-Visual-Studio\stack\Main;D:\Project\Microsoft-Visual-Studio\stack\Debug Component;D:\Project\Microsoft-Visual-Studio\stack\Container;D:\Project\Microsoft-Visual-Studio\stack\Algorithm;D:\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -65,8 +65,8 @@ bool compare_control_lesser(void *lhs, void *rhs, size_t len)
 	assert(rhs);
 	assert(len);
 
-	for (size_t cnt = 0; cnt < len; cnt++) {
-		if (*((char *)lhs + cnt) < *((char *)rhs + cnt)) {
+	for (size_t cnt = 1; cnt <= len; cnt++) {
+		if (*((char *)lhs + len - cnt) < *((char *)rhs + len - cnt)) {
 			return true;
 		}
 	}
@@ -91,8 +91,8 @@ bool compare_control_greater(void *lhs, void *rhs, size_t len)
 	assert(rhs);
 	assert(len);
 
-	for (size_t cnt = 0; cnt < len; cnt++) {
-		if (*((char *)lhs + cnt) > *((char *)rhs + cnt)) {
+	for (size_t cnt = 1; cnt <= len; cnt++) {
+		if (*((char *)lhs + len - cnt) > *((char *)rhs + len - cnt)) {
 			return true;
 		}
 	}

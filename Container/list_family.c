@@ -899,7 +899,7 @@ void list_family_control_list_operations_sort(struct list_family_s *list,
 		comp = compare_control_lesser;
 	}
 
-	struct sort_pack_s list_sort_pack = {
+	struct sort_package_s list_sort_pack = {
 		.object = list,
 		.len = list->info.size,
 		.mem_len = list->info.mem_size,
@@ -1139,7 +1139,7 @@ bool list_family_control_remove_rule(void *data)
 *	- false	no
 */
 
-void list_family_control_sort_algorithm_bubble_sort(struct sort_pack_s sort_package,
+void list_family_control_sort_algorithm_bubble_sort(struct sort_package_s sort_package,
 													bool (*comp)(void *, void *, size_t))
 {
 	char

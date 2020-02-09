@@ -16,7 +16,7 @@
 *********************************************************************************************************
 */
 
-#include "binary_tree_family.h"
+#include "tree_family.h"
 
 /*
 *********************************************************************************************************
@@ -30,6 +30,9 @@
 /* Configure    if enable integrated structure.                                                         */
 #define TWO_THREE_TREE_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
 
+/* Configure    if enable integrated structure.                                                         */
+#define TWO_THREE_TREE_CFG_DEBUG_EN					                        1u
+
 /*
 *********************************************************************************************************
 *									           DATA TYPES
@@ -37,7 +40,7 @@
 */
 
 /* Configure    red-black-tree type.																	*/
-typedef struct binary_tree_family_s
+typedef struct tree_family_s
 *TWO_THREE_TREE_TYPEDEF_PTR,
 **TWO_THREE_TREE_TYPEDEF_PPTR;;
 
@@ -46,23 +49,11 @@ typedef struct binary_tree_family_s
  */
 
 enum two_three_tree_search_node_node_location_e {
-    TWO_THREE_TREE_SEARCH_LOCATION_NONE,
+	TWO_THREE_TREE_SEARCH_LOCATION_LEFT,
 
-    TWO_THREE_TREE_SEARCH_LOCATION_LEFT,
+	TWO_THREE_TREE_SEARCH_LOCATION_RIGHT,
 
-    TWO_THREE_TREE_SEARCH_LOCATION_RIGHT,
-};
-
-/**
- * @brief This struct is the binary tree link node structure module.
- */
-
-struct two_three_tree_search_node_return_s {
-    enum two_three_tree_search_node_node_location_e location;
-
-    struct two_three_tree_chain_node_s *node;
-
-    struct two_three_tree_chain_node_s *node_prev;
+	TWO_THREE_TREE_SEARCH_LOCATION_NONE = 0xff,
 };
 
 typedef struct two_three_tree_chain_node_data_s *TWO_THREE_TREE_CHAIN_NODE_DATA_PTR;
@@ -87,8 +78,8 @@ typedef struct two_three_tree_chain_node_link_s *TWO_THREE_TREE_CHAIN_NODE_LINK_
  */
 
 void two_three_tree_control_configuration_init(TWO_THREE_TREE_TYPEDEF_PPTR tree,
-                                               CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
-                                               void (*assign)(void *dst, void *src), void (*free)(void *dst));
+											   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+											   void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
  * @brief This function will get the node at the specified location in the container.
@@ -99,8 +90,8 @@ void two_three_tree_control_configuration_init(TWO_THREE_TREE_TYPEDEF_PPTR tree,
  * @return NONE
  */
 
-struct two_three_tree_search_node_return_s two_three_tree_control_search_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
-    void *key);
+struct tree_family_search_node_return_s two_three_tree_control_search(TWO_THREE_TREE_TYPEDEF_PTR tree,
+	void *key);
 
 /**
  * @brief This function will set the node at the specified location in the container.
@@ -112,8 +103,8 @@ struct two_three_tree_search_node_return_s two_three_tree_control_search_node(TW
  * @return NONE
  */
 
-void two_three_tree_control_insert_node(TWO_THREE_TREE_TYPEDEF_PTR tree,
-                                        int key);
+void two_three_tree_control_insert(TWO_THREE_TREE_TYPEDEF_PTR tree,
+								   void *data);
 
 /*
 *********************************************************************************************************

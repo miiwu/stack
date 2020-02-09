@@ -34,7 +34,7 @@
  * @brief This struct is the compare structure module
  */
 
-typedef bool compare_t(void * lhs, void *rhs, size_t len);
+typedef bool compare_t(void *lhs, void *rhs, size_t len);
 
 /*
 *********************************************************************************************************

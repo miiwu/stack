@@ -117,9 +117,6 @@
     <ClCompile Include="Container\list_family.c">
       <Filter>源文件\container</Filter>
     </ClCompile>
-    <ClCompile Include="Container\binary_tree_family.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
     <ClCompile Include="Container\red_black_tree.c">
       <Filter>源文件\container</Filter>
     </ClCompile>
@@ -137,6 +134,9 @@
     </ClCompile>
     <ClCompile Include="Main\main_two_three_tree.c">
       <Filter>源文件\main</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\tree_family.c">
+      <Filter>源文件\container</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -206,9 +206,6 @@
     <ClInclude Include="Container\list_family.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
-    <ClInclude Include="Container\binary_tree_family.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
     <ClInclude Include="Container\red_black_tree.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
@@ -219,6 +216,9 @@
       <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="Container\two_three_tree.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\tree_family.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
   </ItemGroup>
