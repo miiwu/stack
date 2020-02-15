@@ -94,7 +94,7 @@ void avl_tree_control_configuration_init(AVL_TREE_TYPEDEF_PPTR tree,
 	assert(tree);
 	assert(0 <= element_size);
 
-	tree_family_control_configuration_init(tree, avl_tree_control_switch_control, BINARY_TREE_FAMILY_AVL_TREE,
+	tree_family_control_configuration_init(tree, avl_tree_control_switch_control, 2,TREE_FAMILY_AVL_TREE,
 										   AVL_TREE_CFG_ALLOCATOR_TYPE, element_size, assign, free);
 }
 
@@ -108,5 +108,5 @@ void avl_tree_control_configuration_init(AVL_TREE_TYPEDEF_PPTR tree,
 
 void avl_tree_control_switch_control(void)
 {
-	//tree_family_control_get_control(BINARY_TREE_FAMILY_AVL_TREE, avl_tree_control_node_operator);
+	//tree_family_control_get_control(TREE_FAMILY_AVL_TREE, avl_tree_control_node_operator);
 }

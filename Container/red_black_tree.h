@@ -30,6 +30,9 @@
 /* Configure    if enable integrated structure.                                                         */
 #define RED_BLACK_TREE_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
 
+/* Configure    if enable debug mode.																	*/
+#define RED_BLACK_TREE_CFG_DEBUG_EN											0u
+
 /*
 *********************************************************************************************************
 *									           DATA TYPES

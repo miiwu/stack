@@ -35,18 +35,21 @@ enum red_black_tree_color_e {
 };
 
 /**
- * @brief This struct is the red black tree link node structure module.
+ * @brief This struct is the binary tree chain node link structure module.
  */
 
-struct red_black_tree_data_s {
-	/* @brief This variables will record the data of the node.										    */
-	void *data;
+typedef struct tree_family_chain_node_data_content_s red_black_tree_chain_node_data_st;
 
-	/* @brief This variables will record the key of the node.										    */
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE key;
+/**
+ * @brief This struct is the binary tree chain node link structure module.
+ */
 
-	/* @brief This variables will record the color of the node.										    */
-	enum red_black_tree_color_e color;
+struct red_black_tree_chain_node_link_s {
+    void *parent;
+
+    void *lchild;
+
+    void *rchild;
 };
 
 /*
@@ -77,6 +80,30 @@ struct red_black_tree_data_s {
 
 void red_black_tree_control_switch_control(void);
 
+/**
+ * @brief This function will control the search()'s match rule.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+size_t red_black_tree_control_search_match_rule(RED_BLACK_TREE_TYPEDEF_PTR tree,
+                                                void *node,
+                                                void *data);
+
+/**
+ * @brief This function will control the search()'s recursion rule.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void *red_black_tree_control_search_recursion_rule(RED_BLACK_TREE_TYPEDEF_PTR tree,
+                                                   void *node,
+                                                   void *data);
+
 /*
 *********************************************************************************************************
 *					LOCAL GLOBAL VARIABLES & LOCAL FUNCTION PROTOTYPES INTERSECTION
@@ -84,15 +111,23 @@ void red_black_tree_control_switch_control(void);
 */
 
 /**
- * @brief This struct will record the tree's node operators.
+ * @brief This struct will record the red-black tree's environment.
  */
 
-struct tree_family_node_operator_s red_black_tree_control_node_operator = {
-    NULL
-	//red_black_tree_control_get_node,
-	//red_black_tree_control_set_node,
-	//red_black_tree_control_del_node,
-	//red_black_tree_control_swap_node,
+struct tree_family_control_environment_s red_black_tree_control_environment = {
+    {
+        TREE_FAMILY_RED_BLACK_TREE,
+        sizeof(red_black_tree_chain_node_data_st),
+        sizeof(struct red_black_tree_chain_node_link_s),
+        sizeof(red_black_tree_chain_node_data_st) / sizeof(void *),
+        sizeof(struct red_black_tree_chain_node_link_s) / sizeof(void *),
+    },
+    {
+        red_black_tree_control_search_match_rule,
+        red_black_tree_control_search_recursion_rule,
+        //red_black_tree_control_insert_rule,
+        //red_black_tree_control_delete_rule
+    }
 };
 
 /*
@@ -119,8 +154,8 @@ void red_black_tree_control_configuration_init(RED_BLACK_TREE_TYPEDEF_PPTR tree,
 	assert(tree);
 	assert(0 <= element_size);
 
-	tree_family_control_configuration_init(tree, red_black_tree_control_switch_control, BINARY_TREE_FAMILY_RED_BLACK_TREE,
-												  RED_BLACK_TREE_CFG_ALLOCATOR_TYPE, element_size, assign, free);
+    tree_family_control_configuration_init(tree, red_black_tree_control_switch_control, 2,TREE_FAMILY_RED_BLACK_TREE,
+                                           RED_BLACK_TREE_CFG_ALLOCATOR_TYPE, element_size, assign, free);
 }
 
 /**
@@ -133,5 +168,77 @@ void red_black_tree_control_configuration_init(RED_BLACK_TREE_TYPEDEF_PPTR tree,
 
 void red_black_tree_control_switch_control(void)
 {
-	//tree_family_control_get_control(BINARY_TREE_FAMILY_RED_BLACK_TREE, red_black_tree_control_node_operator);
+	tree_family_control_get_control(red_black_tree_control_environment);
+}
+
+/**
+ * @brief This function will control the search()'s match rule.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+size_t red_black_tree_control_search_match_rule(RED_BLACK_TREE_TYPEDEF_PTR tree,
+                                                void *node,
+                                                void *data)
+{
+    assert(tree);
+
+	void *node_data = ((struct tree_family_chain_node_s *)node)->data;
+
+	if (NULL == node_data) {
+		goto EXIT;
+	}
+
+	#if (RED_BLACK_TREE_CFG_DEBUG_EN)
+
+	printf("search.match rule:node:%p L:%c-%d R:%c-%d \r\n",
+		   node,
+		   TWO_THREE_TREE_GET_KEY_FROM_NODE(node, left), TWO_THREE_TREE_GET_KEY_FROM_NODE(node, left),
+		   TWO_THREE_TREE_GET_KEY_FROM_NODE(node, right), TWO_THREE_TREE_GET_KEY_FROM_NODE(node, right));
+
+	#endif // (RED_BLACK_TREE_CFG_DEBUG_EN)
+
+	if (compare_control_equal(data, node_data, tree->info.mem_size)) {
+		return true;
+	}
+
+EXIT:
+
+	return false;
+}
+
+/**
+ * @brief This function will control the search()'s recursion rule.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void *red_black_tree_control_search_recursion_rule(RED_BLACK_TREE_TYPEDEF_PTR tree,
+                                                   void *node,
+                                                   void *data)
+{
+    assert(tree);
+
+	struct two_three_tree_chain_node_data_s
+		*node_data = ((struct tree_family_chain_node_s *)node)->data;
+
+	struct red_black_tree_chain_node_link_s
+		*link = ((struct tree_family_chain_node_s *)node)->link;
+
+	if (NULL == node_data) {
+		goto EXIT;
+	}
+
+    if (compare_control_lesser(data, node_data, tree->info.mem_size)) {
+		return link->lchild;
+	} else if (compare_control_greater(data, node_data, tree->info.mem_size)) {
+		return link->rchild;
+	}
+
+EXIT:
+	return NULL;
 }

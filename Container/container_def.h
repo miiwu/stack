@@ -17,6 +17,7 @@
 */
 
 #include <stdio.h>
+#include <math.h>
 #include <string.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -97,10 +98,10 @@ struct container_element_handler_s {
 };
 
 struct container_common_exception_s {
-		/* @brief This variables will point to the address of the list empty exception handler.		    */
+	/* @brief This variables will point to the address of the list empty exception handler.				*/
 	void (*empty)(void);
 
-	/* @brief This variables will point to the address of the list full exception handler.			*/
+	/* @brief This variables will point to the address of the list full exception handler.				*/
 	void (*full)(void);
 };
 
@@ -148,7 +149,7 @@ struct container_control_s {
 		void (*swap)(void **container,
 					 void **other);
 
-		/* @brief This function will erase the specified elements from the container. */
+		/* @brief This function will erase the specified elements from the container.					*/
 		void (*copy)(void **destination,
 					 void *source);
 	}modifiers;

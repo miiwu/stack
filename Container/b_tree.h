@@ -31,7 +31,7 @@
 #define TWO_THREE_TREE_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
 
 /* Configure    if enable integrated structure.                                                         */
-#define TWO_THREE_TREE_CFG_DEBUG_EN					                        1u
+#define TWO_THREE_TREE_CFG_DEBUG_EN					                        0u
 
 /*
 *********************************************************************************************************
@@ -41,7 +41,7 @@
 
 /* Configure    red-black-tree type.																	*/
 typedef struct tree_family_s
-*TWO_THREE_TREE_TYPEDEF_PTR,
+*B_TREE_TYPEDEF_PTR,
 **TWO_THREE_TREE_TYPEDEF_PPTR;;
 
 /**
@@ -55,10 +55,6 @@ enum two_three_tree_search_node_node_location_e {
 
 	TWO_THREE_TREE_SEARCH_LOCATION_NONE = 0xff,
 };
-
-typedef struct two_three_tree_chain_node_data_s *TWO_THREE_TREE_CHAIN_NODE_DATA_PTR;
-
-typedef struct two_three_tree_chain_node_link_s *TWO_THREE_TREE_CHAIN_NODE_LINK_PTR;
 
 /*
 *********************************************************************************************************
@@ -77,9 +73,10 @@ typedef struct two_three_tree_chain_node_link_s *TWO_THREE_TREE_CHAIN_NODE_LINK_
  * @return NONE
  */
 
-void two_three_tree_control_configuration_init(TWO_THREE_TREE_TYPEDEF_PPTR tree,
-											   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
-											   void (*assign)(void *dst, void *src), void (*free)(void *dst));
+void b_tree_control_configuration_init(TWO_THREE_TREE_TYPEDEF_PPTR tree,
+									   CONTAINER_GLOBAL_CFG_SIZE_TYPE degree,
+									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									   void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
  * @brief This function will get the node at the specified location in the container.
@@ -90,7 +87,7 @@ void two_three_tree_control_configuration_init(TWO_THREE_TREE_TYPEDEF_PPTR tree,
  * @return NONE
  */
 
-struct tree_family_search_node_return_s two_three_tree_control_search(TWO_THREE_TREE_TYPEDEF_PTR tree,
+struct tree_family_search_node_return_s two_three_tree_control_search(B_TREE_TYPEDEF_PTR tree,
 	void *key);
 
 /**
@@ -103,8 +100,20 @@ struct tree_family_search_node_return_s two_three_tree_control_search(TWO_THREE_
  * @return NONE
  */
 
-void two_three_tree_control_insert(TWO_THREE_TREE_TYPEDEF_PTR tree,
+void two_three_tree_control_insert(B_TREE_TYPEDEF_PTR tree,
 								   void *data);
+
+/**
+ * @brief This function will delete the node at the specified location in the container.
+ *
+ * @param tree the pointer to the tree struct pointer
+ * @param position the position of node,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void *b_tree_control_delete(B_TREE_TYPEDEF_PTR tree,
+							void *data);
 
 /*
 *********************************************************************************************************

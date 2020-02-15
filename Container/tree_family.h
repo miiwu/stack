@@ -41,11 +41,13 @@
  */
 
 enum tree_family_member_type_e {
-	BINARY_TREE_FAMILY_AVL_TREE,
+	TREE_FAMILY_BINARY_TREE,
 
-	BINARY_TREE_FAMILY_TWO_THREE_TREE,
+	TREE_FAMILY_AVL_TREE,
 
-	BINARY_TREE_FAMILY_RED_BLACK_TREE,
+	TREE_FAMILY_B_TREE,
+
+	TREE_FAMILY_RED_BLACK_TREE,
 };
 
 /**
@@ -54,8 +56,6 @@ enum tree_family_member_type_e {
 
 struct tree_family_chain_node_s {
 	void *data;
-
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE hight;
 
 	void *link;
 };
@@ -86,19 +86,42 @@ typedef struct tree_family_search_node_return_s {
  * @brief This struct is the binary tree link node structure module.
  */
 
-typedef size_t tree_family_search_match_rule_t(struct tree_family_s *, void *, void *);
+typedef struct tree_family_get_precursor_and_successor_return_s {
+	size_t location;
+
+	void *data;
+
+	struct tree_family_chain_node_s *node;
+}tree_family_get_precursor_and_successor_return_st;
 
 /**
  * @brief This struct is the binary tree link node structure module.
  */
 
-typedef void *tree_family_search_recursion_rule_t(struct tree_family_s *, void *, void *);
+typedef size_t tree_family_search_match_rule_t(struct tree_family_s *tree,
+											   void *node, void *data);
 
 /**
  * @brief This struct is the binary tree link node structure module.
  */
 
-typedef void tree_family_insert_rule_t(struct tree_family_s *, struct tree_family_search_node_return_s, void *);
+typedef void *tree_family_search_recursion_rule_t(struct tree_family_s *tree,
+												  void *node, void *data);
+
+/**
+ * @brief This struct is the binary tree link node structure module.
+ */
+
+typedef void tree_family_insert_and_delete_rule_t(struct tree_family_s *tree,
+												  struct tree_family_search_node_return_s search_return,
+												  void *data);
+
+/**
+ * @brief This struct is the binary tree link node structure module.
+ */
+
+typedef void tree_family_traversal_operator_t(struct tree_family_s *tree,
+											  void *node, size_t data_element_count);
 
 /**
  * @brief This struct will control the unique operator.
@@ -125,7 +148,9 @@ struct tree_family_node_operator_s {
 
 	tree_family_search_recursion_rule_t *search_recursion_rule;
 
-    tree_family_insert_rule_t *insert_rule;
+	tree_family_insert_and_delete_rule_t *insert_rule;
+
+	tree_family_insert_and_delete_rule_t *delete_rule;
 };
 
 /**
@@ -138,6 +163,24 @@ struct tree_family_control_environment_s {
 	struct tree_family_node_operator_s node_operator;
 };
 
+struct tree_family_information_s {
+	/* @brief This variables will record the size that each element will take up.						*/
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE mem_size;
+
+	/* @brief This variables will record the maximum number of elements.								*/
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE max_size;
+
+	/* @brief This variables will record the number of elements that
+			  the container has currently allocated space for.											*/
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE size;
+
+	/* @brief This variables will record the degree of the tree											*/
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE degree;
+
+	/* @brief This variables will record the degree of the tree											*/
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE minimum_key;
+};
+
 /**
  * @brief This struct is the binary tree structure module
  */
@@ -147,7 +190,7 @@ struct tree_family_s {
 	enum container_type_e container_type_id;
 
 	/* @brief This variables will record the information of container type.								*/
-	struct container_common_information_s info;
+	struct tree_family_information_s info;
 
 	/* @brief This variables will point to the allocator.												*/
 	void *allocator;
@@ -217,6 +260,7 @@ void tree_family_control_get_control_in_sandbox(struct tree_family_s *tree,
 
 void tree_family_control_configuration_init(struct tree_family_s **tree,
 											void (*switch_control)(void),
+											size_t degree,
 											enum tree_family_member_type_e member_type,
 											enum allocator_type_e allocator_type,
 											CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
@@ -243,7 +287,8 @@ void tree_family_control_configuration_destroy(struct tree_family_s **tree);
  */
 
 void tree_family_control_configuration_element_handler(struct tree_family_s *tree,
-													   void (*assign)(void *dst, void *src), void(*free)(void *dst));
+													   void (*assign)(void *dst, void *src),
+													   void(*free)(void *dst));
 
 /**
  * @brief This function will configure the tree exception callback
@@ -314,6 +359,18 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE tree_family_control_capacity_size(s
  */
 
 void tree_family_control_insert(struct tree_family_s *tree, void *data);
+
+/**
+ * @brief This function will delete the node at the specified location in the container.
+ *
+ * @param tree the pointer to the tree struct pointer
+ * @param position the position of node,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void *tree_family_control_delete(struct tree_family_s *tree,
+								 void *data);
 
 /**
  * @brief This function will erases all elements from the container
@@ -495,7 +552,7 @@ void *tree_family_control_init_node(struct tree_family_s *tree);
  */
 
 void tree_family_control_destroy_node(struct tree_family_s *tree,
-									  void *node);
+									  void **node);
 
 /**
  * @brief This function will set the key node into the node.
@@ -508,6 +565,17 @@ void tree_family_control_destroy_node(struct tree_family_s *tree,
 void *tree_family_node_control_init_data(struct tree_family_s *tree);
 
 /**
+ * @brief This function will destroy the data.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void tree_family_node_control_destroy_data(struct tree_family_s *tree,
+										   void **data);
+
+/**
  * @brief This function will return the type of the node.
  *
  * @param void
@@ -515,7 +583,8 @@ void *tree_family_node_control_init_data(struct tree_family_s *tree);
  * @return void
  */
 
-void *tree_family_node_control_get_data(struct tree_family_chain_node_s *node,
+void *tree_family_node_control_get_data(struct tree_family_s *tree,
+										struct tree_family_chain_node_s *node,
 										size_t location);
 
 /**
@@ -527,8 +596,46 @@ void *tree_family_node_control_get_data(struct tree_family_chain_node_s *node,
  */
 
 void tree_family_node_control_set_data(struct tree_family_s *tree,
-									   void *node,
+									   struct tree_family_chain_node_s *node,
 									   void *data);
+
+/**
+ * @brief This function will delete the data of the node,and return the data's address.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void *tree_family_node_control_del_data(struct tree_family_s *tree,
+										struct tree_family_chain_node_s *node,
+										size_t location);
+
+/**
+ * @brief This function will return the family member of the node.
+ *
+ * @param tree the pointer to the tree
+ * @param node the pointer to the node
+ * @param id the id member that the parent is 0,children are greater than 0
+ *
+ * @return void
+ */
+
+void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
+												 struct tree_family_chain_node_s *node,
+												 size_t id);
+
+/**
+ * @brief This function will return the type of the node.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+size_t tree_family_node_control_get_relation_with_parent(struct tree_family_s *tree,
+														 struct tree_family_chain_node_s *node,
+														 struct tree_family_chain_node_s *parent);
 
 /**
  * @brief This function will return the type of the node.
@@ -540,6 +647,18 @@ void tree_family_node_control_set_data(struct tree_family_s *tree,
 
 bool tree_family_node_control_get_if_leaf(struct tree_family_s *tree,
 										  struct tree_family_chain_node_s *node);
+
+/**
+ * @brief This function will return if one of the parent's left child is node.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+bool tree_family_node_control_get_if_left_child(struct tree_family_s *tree,
+												struct tree_family_chain_node_s *node,
+												struct tree_family_chain_node_s *parent);
 
 /**
  * @brief This function will return the type of the node.
@@ -562,7 +681,8 @@ size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
  */
 
 void tree_family_control_preorder_traversal(struct tree_family_s *tree,
-											struct tree_family_chain_node_s *node);
+											struct tree_family_chain_node_s *node,
+											tree_family_traversal_operator_t *operator);
 
 /**
  * @brief This function will destroy tree node struct and free the space.
@@ -574,7 +694,8 @@ void tree_family_control_preorder_traversal(struct tree_family_s *tree,
  */
 
 void tree_family_control_inorder_traversal(struct tree_family_s *tree,
-										   struct tree_family_chain_node_s *node);
+										   struct tree_family_chain_node_s *node,
+										   tree_family_traversal_operator_t *operator);
 
 /**
  * @brief This function will destroy tree node struct and free the space.
@@ -586,7 +707,48 @@ void tree_family_control_inorder_traversal(struct tree_family_s *tree,
  */
 
 void tree_family_control_posorder_traversal(struct tree_family_s *tree,
-											struct tree_family_chain_node_s *node);
+											struct tree_family_chain_node_s *node,
+											tree_family_traversal_operator_t *operator);
+
+/**
+ * @brief This function will get the node's precursor node.
+ *
+ * @param tree the pointer to the tree struct pointer
+ * @param node the pointer to node
+ *
+ * @return the address of the precursor node
+ */
+
+tree_family_get_precursor_and_successor_return_st
+tree_family_control_get_precursor(struct tree_family_s *tree,
+								  struct tree_family_chain_node_s *node,
+								  size_t location);
+
+/**
+ * @brief This function will get the node's successor node.
+ *
+ * @param tree the pointer to the tree struct pointer
+ * @param node the pointer to node
+ *
+ * @return the address of the successor node
+ */
+
+tree_family_get_precursor_and_successor_return_st
+tree_family_control_get_successor(struct tree_family_s *tree,
+								  struct tree_family_chain_node_s *node,
+								  size_t location);
+
+/**
+* @brief This function will print all the node when traversal.
+*
+* @param void
+*
+* @return void
+*/
+
+void tree_family_control_traversal_printer(struct tree_family_s *tree,
+										   void *node,
+										   size_t data_element_count);
 
 /**
 * @brief This function will callback the handler that container has no elements when the container temp to insert.

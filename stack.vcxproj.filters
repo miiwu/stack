@@ -123,9 +123,6 @@
     <ClCompile Include="Algorithm\compare.c">
       <Filter>源文件\algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="Container\two_three_tree.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
     <ClCompile Include="Container\avl_tree.c">
       <Filter>源文件\container</Filter>
     </ClCompile>
@@ -136,6 +133,9 @@
       <Filter>源文件\main</Filter>
     </ClCompile>
     <ClCompile Include="Container\tree_family.c">
+      <Filter>源文件\container</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\b_tree.c">
       <Filter>源文件\container</Filter>
     </ClCompile>
   </ItemGroup>
@@ -215,10 +215,10 @@
     <ClInclude Include="Container\avl_tree.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
-    <ClInclude Include="Container\two_three_tree.h">
+    <ClInclude Include="Container\tree_family.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
-    <ClInclude Include="Container\tree_family.h">
+    <ClInclude Include="Container\b_tree.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
   </ItemGroup>

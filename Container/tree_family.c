@@ -98,6 +98,18 @@ void tree_family_sort_algorithm_control_swap_data(void *object, size_t lhs, size
 bool tree_family_node_control_compare_greater(void *lhs, void *rhs, size_t len);
 
 /**
+* @brief This function will destroy all the node when traversal.
+*
+* @param void
+*
+* @return void
+*/
+
+void tree_family_control_destroy_posorder_traversal_operator(struct tree_family_s *tree,
+															 void *node,
+															 size_t data_element_count);
+
+/**
 * @brief This function will replace the switch_control() before enter control sandbox.
 *
 * @param void
@@ -198,6 +210,7 @@ void tree_family_control_get_control_in_sandbox(struct tree_family_s *tree,
 
 void tree_family_control_configuration_init(struct tree_family_s **tree,
 											void (*switch_control)(void),
+											size_t degree,
 											enum tree_family_member_type_e member_type,
 											enum allocator_type_e allocator_type,
 											CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
@@ -231,6 +244,8 @@ void tree_family_control_configuration_init(struct tree_family_s **tree,
 	tree_alloced->info.max_size = 0;
 	tree_alloced->info.size = 0u;
 	tree_alloced->info.mem_size = element_size;
+	tree_alloced->info.degree = degree;
+	tree_alloced->info.minimum_key = (size_t)ceil((float)degree / 2) - 1;
 
 	tree_alloced->allocator = allocator;
 	tree_alloced->allocator_ctrl = allocator_ctrl;
@@ -278,13 +293,13 @@ void tree_family_control_configuration_destroy(struct tree_family_s **tree)
 
 	#if (TREE_FAMILY_CFG_DEBUG_EN)
 
-	printf("tree.configuration.destroy:allocator : %p \r\n", allocator);
 	printf("tree.configuration.destroy:tree block : %p \r\n", (*tree));
-	printf("tree.configuration.destroy:tree node block : %p \r\n", (*tree)->root);
+	printf("tree.configuration.destroy:allocator : %p \r\n", allocator);
 
 	#endif // (TREE_FAMILY_CFG_DEBUG_EN)
 
-	//TODO...
+	tree_family_control_posorder_traversal(*tree, (*tree)->root,
+										   tree_family_control_destroy_posorder_traversal_operator);
 
 	allocator_ctrl->deallocate(allocator, *tree, 1);																			/* deallocate #1 */
 
@@ -389,6 +404,8 @@ void tree_family_control_insert(struct tree_family_s *tree, void *data)
 {
 	assert(tree);
 
+	tree->switch_control();
+
 	tree_family_search_node_return_st
 		search_return = { 0 };
 
@@ -400,9 +417,38 @@ void tree_family_control_insert(struct tree_family_s *tree, void *data)
 
 			tree_family_node_control_set_data(tree, tree->root, data);
 		} else {
-			tree_family_control_environment.node_operator.insert_rule(tree,search_return,data);
+			tree_family_control_environment.node_operator.insert_rule(tree, search_return, data);
 		}
 	}
+}
+
+/**
+ * @brief This function will delete the node at the specified location in the container.
+ *
+ * @param tree the pointer to the tree struct pointer
+ * @param position the position of node,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
+
+void *tree_family_control_delete(struct tree_family_s *tree,
+								 void *data)
+{
+	assert(tree);
+	assert(data);
+
+	tree->switch_control();
+
+	struct tree_family_search_node_return_s
+		search_return = { 0 };
+
+	search_return = tree_family_control_search(tree, data);
+
+	if (0xff != search_return.location) {								/* Can search the node */
+		tree_family_control_environment.node_operator.delete_rule(tree, search_return, data);
+	}
+
+	return NULL;
 }
 
 /**
@@ -450,23 +496,23 @@ void *tree_family_control_init_node(struct tree_family_s *tree)
  */
 
 void tree_family_control_destroy_node(struct tree_family_s *tree,
-									  void *node)
+									  void **node)
 {
 	assert(tree);
 
-	if (NULL == node) {
+	if (NULL == *node) {
 		return;
 	}
 
-	struct tree_family_chain_node_s *node_destroy = node;
+	struct tree_family_chain_node_s *node_destroy = *node;
 
 	tree->allocator_ctrl->deallocate(tree->allocator, node_destroy->data, 1);				/* Deallocate #2 */
 
 	tree->allocator_ctrl->deallocate(tree->allocator, node_destroy->link, 1);				/* Deallocate #3 */
 
-	tree->allocator_ctrl->deallocate(tree->allocator, node, 1);								/* Deallocate #1 */
+	tree->allocator_ctrl->deallocate(tree->allocator, *node, 1);							/* Deallocate #1 */
 
-	node = NULL;
+	*node = NULL;
 }
 
 /**
@@ -491,7 +537,7 @@ void *tree_family_node_control_init_data(struct tree_family_s *tree)
 }
 
 /**
- * @brief This function will set the key node into the node.
+ * @brief This function will destroy the data.
  *
  * @param void
  *
@@ -499,31 +545,45 @@ void *tree_family_node_control_init_data(struct tree_family_s *tree)
  */
 
 void tree_family_node_control_destroy_data(struct tree_family_s *tree,
-										   void *data)
+										   void **data)
 {
-	tree->allocator_ctrl->deallocate(tree->allocator, data, 1);
+	assert(tree);
+	assert(data);
+
+	tree->allocator_ctrl->deallocate(tree->allocator, *data, 1);
+
+	*data = NULL;
 }
 
 /**
- * @brief This function will return the type of the node.
+ * @brief This function will return the specified data of the node.
  *
  * @param void
  *
  * @return void
  */
 
-void *tree_family_node_control_get_data(struct tree_family_chain_node_s *node,
+void *tree_family_node_control_get_data(struct tree_family_s *tree,
+										struct tree_family_chain_node_s *node,
 										size_t location)
 {
 	assert(node);
 
 	void ***data_node = (void ***)node;
 
-	return *(*data_node + location);
+	if (location >= tree->info.degree) {				/* Get the data far right */
+		location = tree->info.degree - 1;
+		while (0 < location &&
+			   NULL == *((void **)data_node + location)) {
+			location--;
+		}
+	}
+
+	return *((void **)data_node + location);
 }
 
 /**
- * @brief This function will set the key node into the node.
+ * @brief This function will set the data into the node.
  *
  * @param void
  *
@@ -531,17 +591,18 @@ void *tree_family_node_control_get_data(struct tree_family_chain_node_s *node,
  */
 
 void tree_family_node_control_set_data(struct tree_family_s *tree,
-									   void *node,
+									   struct tree_family_chain_node_s *node,
 									   void *data)
 {
+	assert(tree);
 	assert(node);
-	assert(data);
 
 	tree->switch_control();
 
-	void ***data_node = node;
+	void ***data_node = (void ***)node;
 
-	if (NULL == data_node) {
+	if (NULL == data_node ||
+		NULL == data) {
 		return;
 	}
 
@@ -590,6 +651,39 @@ void tree_family_node_control_set_data(struct tree_family_s *tree,
 }
 
 /**
+ * @brief This function will delete the data of the node,and return the data's address.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void *tree_family_node_control_del_data(struct tree_family_s *tree,
+										struct tree_family_chain_node_s *node,
+										size_t location)
+{
+	assert(node);
+
+	void *data_del = NULL;
+
+	if (location >= tree->info.degree) {				/* Get the data far right */
+		location = tree->info.degree - 1;
+		while (0 < location &&
+			   NULL == *((void **)node->data + location)) {
+			location--;
+		}
+	}
+
+	data_del = *((void **)node->data + location);
+
+	for (size_t id = location; id < tree->info.degree - 1; id++) {
+		*((void **)node->data + id) = *((void **)node->data + id + 1);
+	}
+
+	return data_del;
+}
+
+/**
  * @brief This function will return the type of the node.
  *
  * @param void
@@ -600,6 +694,7 @@ void tree_family_node_control_set_data(struct tree_family_s *tree,
 size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
 											  struct tree_family_chain_node_s *node)
 {
+	assert(tree);
 	assert(node);
 
 	tree->switch_control();
@@ -614,10 +709,148 @@ size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
 		}
 	}
 
-	if (0 != count_have_data) {
-		return count_have_data + 1;
-	}
+	//if (0 != count_have_data) {
+	//	return count_have_data;
+	//}
 	return count_have_data;
+}
+
+/**
+ * @brief This function will return the family member of the node.
+ *
+ * @param tree the pointer to the tree
+ * @param node the pointer to the node
+ * @param id the id member that the parent is 0,children are greater than 0
+ *
+ * @return void
+ */
+
+void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
+												 struct tree_family_chain_node_s *node,
+												 size_t id)
+{
+	assert(tree);
+	assert(node);
+
+	tree->switch_control();
+
+	void **link_node = *((void **)node + 1);
+
+	if (tree->info.degree + 1 < id) {
+		return NULL;
+	} else if (tree->info.degree + 1 == id) {
+		size_t id_far_right = tree->info.degree;
+		while (2 < id_far_right &&
+			   NULL == *((void **)link_node + id_far_right)) {
+			id_far_right--;
+		}
+
+		return *((void **)link_node + id_far_right);
+	}
+
+	return *(link_node + id);
+}
+
+/**
+ * @brief This function will return if one of the parent's left child is node.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+bool tree_family_node_control_get_if_left_child(struct tree_family_s *tree,
+												struct tree_family_chain_node_s *node,
+												struct tree_family_chain_node_s *parent)
+{
+	assert(tree);
+	assert(node);
+	assert(parent);
+
+	if (NULL == parent &&
+		NULL == (parent = *((void **)node->link))) {
+		return false;
+	}
+
+	size_t
+		link_id_far_left = 1,
+		link_id_far_right = tree_family_node_control_get_node_type(tree, parent) + 1;
+
+	while (link_id_far_right > link_id_far_left &&
+		   node != *((void **)parent->link + link_id_far_left)) {
+		link_id_far_left++;
+	}
+
+	if (link_id_far_right > link_id_far_left) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * @brief This function will return the type of the node.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+bool tree_family_node_control_get_if_right_child(struct tree_family_s *tree,
+												 struct tree_family_chain_node_s *node,
+												 struct tree_family_chain_node_s *parent)
+{
+	assert(tree);
+	assert(node);
+
+	if (NULL == parent &&
+		NULL == (parent = *((void **)node->link))) {
+		return false;
+	}
+
+	size_t
+		link_id_far_left = 1,
+		link_id_far_right = tree_family_node_control_get_node_type(tree, parent) + 1;
+
+	while (link_id_far_left < link_id_far_right &&
+		   node != *((void **)parent->link + link_id_far_right)) {
+		link_id_far_right--;
+	}
+
+	if (link_id_far_left < link_id_far_right) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * @brief This function will return the type of the node.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+size_t tree_family_node_control_get_relation_with_parent(struct tree_family_s *tree,
+														 struct tree_family_chain_node_s *node,
+														 struct tree_family_chain_node_s *parent)
+{
+	assert(tree);
+	assert(node);
+
+	if (NULL == parent &&
+		NULL == (parent = *((void **)node->link))) {
+		return 0xff;
+	}
+
+	for (size_t id = 1; id <= tree->info.degree + 1; id++) {
+		if (node == *((void **)parent->link + id)) {
+			return id;
+		}
+	}
+
+	return 0xff;
 }
 
 /**
@@ -642,15 +875,15 @@ bool tree_family_node_control_get_if_leaf(struct tree_family_s *tree,
 	void
 		**link_node = node->link;
 
-	size_t count_have_parent = 0;
+	size_t count_have_brother = 0;
 
-	for (size_t cnt = 0; cnt < tree_family_control_environment.node_infomation.link_element_count; cnt++) {
+	for (size_t cnt = 1; cnt < tree_family_control_environment.node_infomation.link_element_count; cnt++) {
 		if (NULL != *(link_node + cnt)) {
-			count_have_parent++;
+			count_have_brother++;
 		}
 	}
 
-	if (0 < count_have_parent) {
+	if (0 < count_have_brother) {
 		return false;
 	} else {
 		return true;
@@ -731,22 +964,6 @@ bool tree_family_node_control_compare_greater(void *lhs, void *rhs, size_t len)
 	return false;
 }
 
-void tree_family_control_default_printf_data(void *node,
-											 size_t data_mem_len)
-{
-	printf("node:%p data: ", node);
-
-	char ***data = node;
-
-	for (size_t cnt = 0; cnt < data_mem_len / sizeof(void *); cnt++) {
-		if (NULL != *(*data + cnt)) {
-			printf("\"%s\" ", *(*data + cnt));
-		}
-	}
-
-	printf("\r\n");
-}
-
 /**
  * @brief This function will destroy tree node struct and free the space.
  *
@@ -757,7 +974,8 @@ void tree_family_control_default_printf_data(void *node,
  */
 
 void tree_family_control_preorder_traversal(struct tree_family_s *tree,
-											struct tree_family_chain_node_s *node)
+											struct tree_family_chain_node_s *node,
+											tree_family_traversal_operator_t *operator)
 {
 	assert(tree);
 
@@ -769,9 +987,10 @@ void tree_family_control_preorder_traversal(struct tree_family_s *tree,
 
 	void **link = node->link;
 
-	tree_family_control_default_printf_data(node, tree_family_control_environment.node_infomation.data_mem_len);														/* printf */
+	operator(tree, node, tree_family_control_environment.node_infomation.data_element_count);
+
 	for (size_t cnt = 1; cnt < tree_family_control_environment.node_infomation.link_element_count; cnt++) {
-		tree_family_control_preorder_traversal(tree, *(link + cnt));
+		tree_family_control_preorder_traversal(tree, *(link + cnt), operator);
 	}
 }
 
@@ -785,7 +1004,8 @@ void tree_family_control_preorder_traversal(struct tree_family_s *tree,
  */
 
 void tree_family_control_inorder_traversal(struct tree_family_s *tree,
-										   struct tree_family_chain_node_s *node)
+										   struct tree_family_chain_node_s *node,
+										   tree_family_traversal_operator_t *operator)
 {
 	assert(tree);
 
@@ -797,12 +1017,12 @@ void tree_family_control_inorder_traversal(struct tree_family_s *tree,
 
 	void **link = node->link;
 
-	tree_family_control_inorder_traversal(tree, *(link + 1));
+	tree_family_control_inorder_traversal(tree, *(link + 1), operator);
 
-	tree_family_control_default_printf_data(node, tree_family_control_environment.node_infomation.data_mem_len);														/* printf */
+	operator(tree, node, tree_family_control_environment.node_infomation.data_element_count);
 
 	for (size_t cnt = 2; cnt < tree_family_control_environment.node_infomation.link_element_count; cnt++) {
-		tree_family_control_inorder_traversal(tree, *(link + cnt));
+		tree_family_control_inorder_traversal(tree, *(link + cnt), operator);
 	}
 }
 
@@ -816,7 +1036,8 @@ void tree_family_control_inorder_traversal(struct tree_family_s *tree,
  */
 
 void tree_family_control_posorder_traversal(struct tree_family_s *tree,
-											struct tree_family_chain_node_s *node)
+											struct tree_family_chain_node_s *node,
+											tree_family_traversal_operator_t *operator)
 {
 	assert(tree);
 
@@ -829,10 +1050,209 @@ void tree_family_control_posorder_traversal(struct tree_family_s *tree,
 	void **link = node->link;
 
 	for (size_t cnt = 1; cnt < tree_family_control_environment.node_infomation.link_element_count; cnt++) {
-		tree_family_control_posorder_traversal(tree, *(link + cnt));
+		tree_family_control_posorder_traversal(tree, *(link + cnt), operator);
 	}
 
-	tree_family_control_default_printf_data(node, tree_family_control_environment.node_infomation.data_mem_len);
+	operator(tree, node, tree_family_control_environment.node_infomation.data_element_count);
+}
+
+/**
+ * @brief This function will get the node's precursor node.
+ *
+ * @param tree the pointer to the tree struct pointer
+ * @param node the pointer to node
+ *
+ * @return the address of the precursor node
+ */
+
+tree_family_get_precursor_and_successor_return_st
+tree_family_control_get_precursor(struct tree_family_s *tree,
+								  struct tree_family_chain_node_s *node,
+								  size_t location)
+{
+	assert(tree);
+	assert(node);
+
+	tree->switch_control();
+
+	size_t
+		id_parent = 0,
+		id_far_left = location + 1,
+		id_far_right = location + 2;
+
+	tree_family_get_precursor_and_successor_return_st
+		get_precursor_successor_return = { 0 };
+	struct tree_family_chain_node_s
+		*node_current = tree_family_node_control_get_family_member(tree, node, id_far_left);						/* Get the node's left child */
+
+	printf("\"%s\"'s ", (char *)*((void **)node->data + location));
+
+	if (NULL != node_current) {																						/* If the node's left child is valid */
+		void *node_tmp = NULL;
+
+		while (NULL != (node_tmp = tree_family_node_control_get_family_member(tree, node_current, id_far_right))) {	/* Get the node_current's right child,then assign to the node */
+			node_current = node_tmp;																				/* Assign the node to the node_current */
+		}
+
+		goto EXIT;
+	} else {
+		node_current = tree_family_node_control_get_family_member(tree, node, id_parent);							/* Get the node's parent,then assign to the node_current */
+
+		while (NULL != node_current &&
+			   !tree_family_node_control_get_if_right_child(tree, node, node_current)) {
+			node = node_current;																					/* Set the node as his own parent */
+			node_current = tree_family_node_control_get_family_member(tree, node, id_parent);						/* Get the node's parent,then assign to the node_current */
+		}
+
+		goto EXIT;
+	}
+
+EXIT:
+
+	/*if (NULL != node_current && 1 < (id_far_right = tree_family_node_control_get_node_type(tree,node_current))) {
+		while (0 < id_far_right &&
+			   NULL == *((void **)node_current->data + id_far_right)) {
+			id_far_right--;
+		}
+	} else {
+		id_far_right = 0;
+	}
+
+	if (NULL != node_current && 2 < tree->info.degree) {
+		id_far_right = tree_family_node_control_get_relation_with_parent(tree, node, node_current) - 2;
+	} else {
+		id_far_right = 0;
+	}*/
+
+	if (NULL != node_current) {
+		get_precursor_successor_return.node = node_current;
+		get_precursor_successor_return.location = id_far_right;
+		get_precursor_successor_return.data = *((void **)node_current->data + id_far_right);
+	}
+
+	printf("precursor is %p's No.%d:\"%s\"\r\n",
+		   get_precursor_successor_return.node,
+		   get_precursor_successor_return.location,
+		   (char *)get_precursor_successor_return.data);
+
+	return get_precursor_successor_return;
+}
+
+/**
+ * @brief This function will get the node's successor node.
+ *
+ * @param tree the pointer to the tree struct pointer
+ * @param node the pointer to node
+ *
+ * @return the address of the successor node
+ */
+
+tree_family_get_precursor_and_successor_return_st
+tree_family_control_get_successor(struct tree_family_s *tree,
+								  struct tree_family_chain_node_s *node,
+								  size_t location)
+{
+	assert(tree);
+	assert(node);
+
+	tree->switch_control();
+
+	size_t
+		id_parent = 0,
+		id_far_left = location + 1,
+		id_far_right = location + 2;
+
+	tree_family_get_precursor_and_successor_return_st
+		get_precursor_successor_return = { 0 };
+	struct tree_family_chain_node_s
+		*node_current = tree_family_node_control_get_family_member(tree, node, id_far_right);						/* Get the node's right child */
+
+	printf("\"%s\"'s ", (char *)*((void **)node->data + location));
+
+	if (NULL != node_current) {																						/* If the node's right child is valid */
+		while (NULL != (node = tree_family_node_control_get_family_member(tree, node_current, id_far_left))) {		/* Get the node_current's left child,then assign to the node */
+			node_current = node;																					/* Assign the node to the node_current */
+		}
+
+		goto EXIT;
+	} else {
+		node_current = tree_family_node_control_get_family_member(tree, node, id_parent);							/* Get the node's parent,then assign to the node_current */
+
+		bool result = false;
+
+		while (NULL != node_current &&
+			   !(result = tree_family_node_control_get_if_left_child(tree, node, node_current))) {
+			node = node_current;																					/* Set the node as his own parent */
+			node_current = tree_family_node_control_get_family_member(tree, node, id_parent);						/* Get the node's parent,then assign to the node_current */
+		}
+
+		goto EXIT;
+	}
+
+EXIT:
+
+	id_far_left = 0;
+
+	if (NULL != node_current) {
+		get_precursor_successor_return.node = node_current;
+		get_precursor_successor_return.location = id_far_left;
+		get_precursor_successor_return.data = *((void **)node_current->data + id_far_left);
+	}
+
+	printf("successor is %p's No.%d:\"%s\"\r\n",
+		   get_precursor_successor_return.node,
+		   get_precursor_successor_return.location,
+		   (char *)get_precursor_successor_return.data);
+
+	return get_precursor_successor_return;
+}
+
+/**
+* @brief This function will print all the node when traversal.
+*
+* @param void
+*
+* @return void
+*/
+
+void tree_family_control_traversal_printer(struct tree_family_s *tree,
+										   void *node,
+										   size_t data_element_count)
+{
+	printf("node:%p data: ", node);
+
+	char ***data = node;
+
+	for (size_t cnt = 0; cnt < data_element_count; cnt++) {
+		if (NULL != *(*data + cnt)) {
+			printf("\"%s\" ", *(*data + cnt));
+		}
+	}
+
+	printf("\r\n");
+}
+
+/**
+* @brief This function will destroy all the node when traversal.
+*
+* @param void
+*
+* @return void
+*/
+
+void tree_family_control_destroy_posorder_traversal_operator(struct tree_family_s *tree,
+															 void *node,
+															 size_t data_element_count)
+{
+	printf("will destroy ");
+
+	tree_family_control_traversal_printer(tree, node, data_element_count);
+
+	//if (2 <= tree_family_node_control_get_node_type(tree, node)) {		/* Not binary node */
+	//
+	//}
+
+	//tree_family_control_destroy_node(tree, &node);
 }
 
 /**
