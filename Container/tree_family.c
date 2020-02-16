@@ -155,7 +155,9 @@ void tree_family_control_configration_exception_default_full_callback(void);
 
 extern inline void tree_family_control_get_control(struct tree_family_control_environment_s environment)
 {
-	tree_family_control_environment = environment;
+	if (tree_family_control_environment.node_infomation.member_type != environment.node_infomation.member_type) {
+		tree_family_control_environment = environment;
+	}
 }
 
 /**
@@ -525,7 +527,7 @@ void tree_family_control_destroy_node(struct tree_family_s *tree,
 
 void *tree_family_node_control_init_data(struct tree_family_s *tree)
 {
-	struct two_three_tree_chain_node_data_s
+	struct tree_family_chain_node_data_content_s
 		*block_data_allocated = tree->allocator_ctrl->allocate(tree->allocator, 1,
 															   tree_family_control_environment.node_infomation.data_mem_len);
 
@@ -699,19 +701,16 @@ size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
 
 	tree->switch_control();
 
-	void ***data_node = (void ***)node;
+	void *data_node = node->data;
 
 	size_t count_have_data = 0;
 
 	for (size_t cnt = 0; cnt < tree_family_control_environment.node_infomation.data_element_count; cnt++) {
-		if (NULL != *(*data_node + cnt)) {
+		if (NULL != *((void**)data_node + cnt)) {
 			count_have_data++;
 		}
 	}
 
-	//if (0 != count_have_data) {
-	//	return count_have_data;
-	//}
 	return count_have_data;
 }
 
@@ -1085,44 +1084,58 @@ tree_family_control_get_precursor(struct tree_family_s *tree,
 	struct tree_family_chain_node_s
 		*node_current = tree_family_node_control_get_family_member(tree, node, id_far_left);						/* Get the node's left child */
 
+	#if (TREE_FAMILY_CFG_DEBUG_EN)
+
 	printf("\"%s\"'s ", (char *)*((void **)node->data + location));
 
-	if (NULL != node_current) {																						/* If the node's left child is valid */
-		void *node_tmp = NULL;
+	#endif // (TREE_FAMILY_CFG_DEBUG_EN)
 
-		while (NULL != (node_tmp = tree_family_node_control_get_family_member(tree, node_current, id_far_right))) {	/* Get the node_current's right child,then assign to the node */
-			node_current = node_tmp;																				/* Assign the node to the node_current */
+	if (NULL != node_current) {																				/* If the node's left child is valid */
+		while (NULL != (node = tree_family_node_control_get_family_member(tree, node_current, id_far_right))) {		/* Get the node_current's right child,then assign to the node */
+			node_current = node;																					/* Assign the node to the node_current */
 		}
 
-		goto EXIT;
+		if (NULL != node_current) {																					/* It must be the leaf node,and get the far right data of the node */
+			if (2 < tree->info.degree) {
+				id_far_right = tree_family_node_control_get_node_type(tree, node_current);
+				while (0 < id_far_right &&
+					   NULL == *((void **)node_current->data + id_far_right)) {
+					id_far_right--;
+				}
+
+				goto EXIT;
+			}
+		}
 	} else {
-		node_current = tree_family_node_control_get_family_member(tree, node, id_parent);							/* Get the node's parent,then assign to the node_current */
+		if (1 < tree_family_node_control_get_node_type(tree, node) &&												/* If the node is multi-node */
+			2 <= id_far_left ) {												
+			node_current = node;
 
-		while (NULL != node_current &&
-			   !tree_family_node_control_get_if_right_child(tree, node, node_current)) {
-			node = node_current;																					/* Set the node as his own parent */
-			node_current = tree_family_node_control_get_family_member(tree, node, id_parent);						/* Get the node's parent,then assign to the node_current */
+			id_far_right = id_far_left - 2;
+
+			goto EXIT;
+		} else {
+			node_current = tree_family_node_control_get_family_member(tree, node, id_parent);							/* Get the node's parent,then assign to the node_current */
+
+			while (NULL != node_current &&
+				   !tree_family_node_control_get_if_right_child(tree, node, node_current)) {
+				node = node_current;																					/* Set the node as his own parent */
+				node_current = tree_family_node_control_get_family_member(tree, node, id_parent);						/* Get the node's parent,then assign to the node_current */
+			}
+
+			if (NULL != node) {
+				if (2 < tree->info.degree) {
+					id_far_right = tree_family_node_control_get_relation_with_parent(tree, node, node_current) - 2;
+
+					goto EXIT;
+				}
+			}
 		}
-
-		goto EXIT;
 	}
+
+	id_far_right = 0;
 
 EXIT:
-
-	/*if (NULL != node_current && 1 < (id_far_right = tree_family_node_control_get_node_type(tree,node_current))) {
-		while (0 < id_far_right &&
-			   NULL == *((void **)node_current->data + id_far_right)) {
-			id_far_right--;
-		}
-	} else {
-		id_far_right = 0;
-	}
-
-	if (NULL != node_current && 2 < tree->info.degree) {
-		id_far_right = tree_family_node_control_get_relation_with_parent(tree, node, node_current) - 2;
-	} else {
-		id_far_right = 0;
-	}*/
 
 	if (NULL != node_current) {
 		get_precursor_successor_return.node = node_current;
@@ -1130,10 +1143,14 @@ EXIT:
 		get_precursor_successor_return.data = *((void **)node_current->data + id_far_right);
 	}
 
+	#if (TREE_FAMILY_CFG_DEBUG_EN)
+
 	printf("precursor is %p's No.%d:\"%s\"\r\n",
 		   get_precursor_successor_return.node,
 		   get_precursor_successor_return.location,
 		   (char *)get_precursor_successor_return.data);
+
+	#endif // (TREE_FAMILY_CFG_DEBUG_EN)
 
 	return get_precursor_successor_return;
 }
@@ -1167,31 +1184,43 @@ tree_family_control_get_successor(struct tree_family_s *tree,
 	struct tree_family_chain_node_s
 		*node_current = tree_family_node_control_get_family_member(tree, node, id_far_right);						/* Get the node's right child */
 
+	#if (TREE_FAMILY_CFG_DEBUG_EN)
+
 	printf("\"%s\"'s ", (char *)*((void **)node->data + location));
+
+	#endif // (TREE_FAMILY_CFG_DEBUG_EN)
 
 	if (NULL != node_current) {																						/* If the node's right child is valid */
 		while (NULL != (node = tree_family_node_control_get_family_member(tree, node_current, id_far_left))) {		/* Get the node_current's left child,then assign to the node */
 			node_current = node;																					/* Assign the node to the node_current */
 		}
-
-		goto EXIT;
 	} else {
-		node_current = tree_family_node_control_get_family_member(tree, node, id_parent);							/* Get the node's parent,then assign to the node_current */
+		if (1 < tree_family_node_control_get_node_type(tree, node)) {												/* If the node is multi-node */
+			node_current = node;
 
-		bool result = false;
+			id_far_left = id_far_right - 1;
 
-		while (NULL != node_current &&
-			   !(result = tree_family_node_control_get_if_left_child(tree, node, node_current))) {
-			node = node_current;																					/* Set the node as his own parent */
+			goto EXIT;
+		} else {
 			node_current = tree_family_node_control_get_family_member(tree, node, id_parent);						/* Get the node's parent,then assign to the node_current */
-		}
 
-		goto EXIT;
+			while (NULL != node_current &&
+				   !tree_family_node_control_get_if_left_child(tree, node, node_current)) {
+				node = node_current;																				/* Set the node as his own parent */
+				node_current = tree_family_node_control_get_family_member(tree, node, id_parent);					/* Get the node's parent,then assign to the node_current */
+			}
+
+			if (NULL != node) {
+				id_far_left = tree_family_node_control_get_relation_with_parent(tree, node, node_current) - 2 + 1;
+
+				goto EXIT;
+			}
+		}
 	}
 
-EXIT:
-
 	id_far_left = 0;
+
+EXIT:
 
 	if (NULL != node_current) {
 		get_precursor_successor_return.node = node_current;
@@ -1199,10 +1228,14 @@ EXIT:
 		get_precursor_successor_return.data = *((void **)node_current->data + id_far_left);
 	}
 
+	#if (TREE_FAMILY_CFG_DEBUG_EN)
+
 	printf("successor is %p's No.%d:\"%s\"\r\n",
 		   get_precursor_successor_return.node,
 		   get_precursor_successor_return.location,
 		   (char *)get_precursor_successor_return.data);
+
+	#endif // (TREE_FAMILY_CFG_DEBUG_EN)
 
 	return get_precursor_successor_return;
 }

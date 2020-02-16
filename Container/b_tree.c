@@ -37,6 +37,24 @@
 */
 
 /**
+ * @brief This struct is the binary tree link node structure module.
+ */
+
+struct b_tree_chain_node_data_s {
+	void *left;
+};
+
+/**
+ * @brief This struct is the binary tree link node structure module.
+ */
+
+struct b_tree_chain_node_link_s {
+	void *parent;
+
+	void *child;
+};
+
+/**
  * @brief This enum is the two-three tree transform into four-node type node information pack structure module.
  */
 
@@ -59,26 +77,6 @@ struct b_tree_split_into_lesser_pack_s {
 	void *child_splited_left_part;
 	void *child_splited_right_part;
 };
-
-/**
- * @brief This struct is the binary tree link node structure module.
- */
-
-struct b_tree_chain_node_data_s {
-	void *left;
-};
-
-/**
- * @brief This struct is the binary tree link node structure module.
- */
-
-struct b_tree_chain_node_link_s {
-	void *parent;
-
-	void *child;
-};
-
-//#define tree->info.degree			3
 
 /*
 *********************************************************************************************************
@@ -109,31 +107,31 @@ struct b_tree_chain_node_link_s {
 void b_tree_control_switch_control(void);
 
 /**
- * @brief This function will control two_three_tree_control_search()'s match.
+ * @brief This function will control b_tree_control_search()'s match.
  *
  * @param void
  *
  * @return void
  */
 
-size_t b_tree_control_search_match_rule(B_TREE_TYPEDEF_PTR tree,
+size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
 										void *node,
 										void *data);
 
 /**
- * @brief This function will control two_three_tree_control_search()'s recursion.
+ * @brief This function will control b_tree_control_search()'s recursion.
  *
  * @param void
  *
  * @return void
  */
 
-void *b_tree_control_search_recursion_rule(B_TREE_TYPEDEF_PTR tree,
+void *b_tree_control_search_recursion_rule(struct tree_family_s *tree,
 										   void *node,
 										   void *data);
 
 /**
- * @brief This function will control two_three_tree_control_insert()'s insert.
+ * @brief This function will control b_tree_control_insert()'s insert.
  *
  * @param void
  *
@@ -152,7 +150,7 @@ void b_tree_control_insert_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void b_tree_control_delete_rule(B_TREE_TYPEDEF_PTR tree,
+void b_tree_control_delete_rule(struct tree_family_s *tree,
 								struct tree_family_search_node_return_s search_return,
 								void *data);
 
@@ -164,7 +162,7 @@ void b_tree_control_delete_rule(B_TREE_TYPEDEF_PTR tree,
  * @return void
  */
 
-void b_tree_node_control_partial_transformation(B_TREE_TYPEDEF_PTR tree,
+void b_tree_node_control_partial_transformation(struct tree_family_s *tree,
 												void *node,
 												void *data);
 
@@ -177,7 +175,7 @@ void b_tree_node_control_partial_transformation(B_TREE_TYPEDEF_PTR tree,
  */
 
 struct b_tree_insert_into_greater_pack_s
-	b_tree_control_insert_into_greater(B_TREE_TYPEDEF_PTR tree,
+	b_tree_control_insert_into_greater(struct tree_family_s *tree,
 									   struct b_tree_split_into_lesser_pack_s lesser_pack);
 
 /**
@@ -189,8 +187,20 @@ struct b_tree_insert_into_greater_pack_s
  */
 
 struct b_tree_split_into_lesser_pack_s
-	b_tree_control_split_into_lesser(B_TREE_TYPEDEF_PTR tree,
+	b_tree_control_split_into_lesser(struct tree_family_s *tree,
 									 struct b_tree_insert_into_greater_pack_s greater_pack);
+
+/**
+ * @brief This function will fix the tree as a b-tree.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
+									 struct tree_family_chain_node_s *node,
+									 struct tree_family_chain_node_s *parent);
 
 /**
  * @brief This function will get the node's available brother node.
@@ -238,7 +248,7 @@ struct tree_family_control_environment_s b_tree_control_environment = {
 
 struct tree_family_control_environment_s b_tree_control_greater_environment = {
 	{
-		TREE_FAMILY_B_TREE,
+		TREE_FAMILY_B_TREE + 1,
 		sizeof(void *) * 3,
 		sizeof(void *) * 5,
 		3,
@@ -269,7 +279,7 @@ struct tree_family_control_environment_s b_tree_control_greater_environment = {
  * @return NONE
  */
 
-void b_tree_control_configuration_init(TWO_THREE_TREE_TYPEDEF_PPTR tree,
+void b_tree_control_configuration_init(struct tree_family_s **tree,
 									   CONTAINER_GLOBAL_CFG_SIZE_TYPE degree,
 									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 									   void (*assign)(void *dst, void *src), void (*free)(void *dst))
@@ -303,7 +313,7 @@ void b_tree_control_switch_control(void)
  * @return NONE
  */
 
-tree_family_search_node_return_st two_three_tree_control_search(B_TREE_TYPEDEF_PTR tree,
+tree_family_search_node_return_st b_tree_control_search(struct tree_family_s *tree,
 																void *data)
 {
 	assert(tree);
@@ -321,7 +331,7 @@ tree_family_search_node_return_st two_three_tree_control_search(B_TREE_TYPEDEF_P
  * @return NONE
  */
 
-void two_three_tree_control_insert(B_TREE_TYPEDEF_PTR tree,
+void b_tree_control_insert(struct tree_family_s *tree,
 								   void *data)
 {
 	assert(tree);
@@ -338,7 +348,7 @@ void two_three_tree_control_insert(B_TREE_TYPEDEF_PTR tree,
  * @return NONE
  */
 
-void *b_tree_control_delete(B_TREE_TYPEDEF_PTR tree,
+void *b_tree_control_delete(struct tree_family_s *tree,
 							void *data)
 {
 	assert(tree);
@@ -348,14 +358,14 @@ void *b_tree_control_delete(B_TREE_TYPEDEF_PTR tree,
 }
 
 /**
- * @brief This function will control two_three_tree_control_search()'s match.
+ * @brief This function will control b_tree_control_search()'s match.
  *
  * @param void
  *
  * @return void
  */
 
-size_t b_tree_control_search_match_rule(B_TREE_TYPEDEF_PTR tree,
+size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
 										void *node,
 										void *data)
 {
@@ -392,14 +402,14 @@ EXIT:
 }
 
 /**
- * @brief This function will control two_three_tree_control_search()'s recursion.
+ * @brief This function will control b_tree_control_search()'s recursion.
  *
  * @param void
  *
  * @return void
  */
 
-void *b_tree_control_search_recursion_rule(B_TREE_TYPEDEF_PTR tree,
+void *b_tree_control_search_recursion_rule(struct tree_family_s *tree,
 										   void *node,
 										   void *data)
 {
@@ -440,7 +450,7 @@ EXIT:
 }
 
 /**
- * @brief This function will control two_three_tree_control_insert()'s insert.
+ * @brief This function will control b_tree_control_insert()'s insert.
  *
  * @param void
  *
@@ -458,52 +468,6 @@ void b_tree_control_insert_rule(struct tree_family_s *tree,
 	}
 }
 
-void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
-									 struct tree_family_chain_node_s *node,
-									 struct tree_family_chain_node_s *parent)
-{
-	struct tree_family_chain_node_s *node_brother = b_tree_control_get_neighbouring_brother(tree, node, parent, 0);
-
-	size_t
-		location = tree_family_node_control_get_relation_with_parent(tree, node, parent),
-		location_brother = tree_family_node_control_get_relation_with_parent(tree, node_brother, parent);
-
-	bool node_right = false;
-
-	if (location > location_brother) {
-		location = location_brother;
-
-		node_right = true;
-	}
-
-	if (tree->info.minimum_key < tree_family_node_control_get_node_type(tree, node_brother)) {	/* If the brother node has enough keys */
-
-		tree_family_node_control_set_data(tree, node, *((void **)parent->data + location - 1));
-
-		tree_family_node_control_destroy_data(tree, ((void **)parent->data + location - 1));
-
-		if (node_right) {
-			*((void **)parent->data + location - 1) = tree_family_node_control_del_data(tree, node_brother, tree->info.degree);
-		} else {
-			*((void **)parent->data + location - 1) = tree_family_node_control_del_data(tree, node_brother, 0);
-		}
-
-		return NULL;
-	} else {
-		tree_family_node_control_set_data(tree, node, tree_family_node_control_del_data(tree, parent, location - 1));
-
-		for (size_t id = 0; id < tree->info.degree - 1; id++) {
-			tree_family_node_control_set_data(tree, node, *((void **)node_brother->data + id));
-		}
-
-		tree_family_control_destroy_node(tree, &node_brother);
-
-		*((void **)parent->link + location_brother) = NULL;
-
-		return parent;
-	}
-}
-
 /**
  * @brief This function will control b_tree_control_delete()'s delete.
  *
@@ -512,7 +476,7 @@ void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void b_tree_control_delete_rule(B_TREE_TYPEDEF_PTR tree,
+void b_tree_control_delete_rule(struct tree_family_s *tree,
 								struct tree_family_search_node_return_s search_return,
 								void *data)
 {
@@ -567,7 +531,7 @@ void b_tree_control_delete_rule(B_TREE_TYPEDEF_PTR tree,
  * @return void
  */
 
-void b_tree_node_control_partial_transformation(B_TREE_TYPEDEF_PTR tree,
+void b_tree_node_control_partial_transformation(struct tree_family_s *tree,
 												void *node,
 												void *data)
 {
@@ -591,7 +555,7 @@ void b_tree_node_control_partial_transformation(B_TREE_TYPEDEF_PTR tree,
  */
 
 struct b_tree_insert_into_greater_pack_s
-	b_tree_control_insert_into_greater(B_TREE_TYPEDEF_PTR tree,
+	b_tree_control_insert_into_greater(struct tree_family_s *tree,
 									   struct b_tree_split_into_lesser_pack_s lesser_pack)
 {
 	struct b_tree_chain_node_data_s
@@ -665,7 +629,7 @@ struct b_tree_insert_into_greater_pack_s
  * @return void
  */
 
-void b_tree_control_split_greater_into_lesser_new_lesser_init(B_TREE_TYPEDEF_PTR tree, void *lesser_node,
+void b_tree_control_split_greater_into_lesser_new_lesser_init(struct tree_family_s *tree, void *lesser_node,
 															  struct tree_family_chain_node_s *greater_node,
 															  bool left_child)
 {
@@ -741,7 +705,7 @@ void b_tree_control_split_greater_into_lesser_new_lesser_init(B_TREE_TYPEDEF_PTR
  */
 
 struct b_tree_split_into_lesser_pack_s
-	b_tree_control_split_into_lesser(B_TREE_TYPEDEF_PTR tree,
+	b_tree_control_split_into_lesser(struct tree_family_s *tree,
 									 struct b_tree_insert_into_greater_pack_s greater_pack)
 {
 	void
@@ -838,6 +802,60 @@ struct b_tree_split_into_lesser_pack_s
 EXIT:
 
 	return lesser_pack;
+}
+
+/**
+ * @brief This function will fix the tree as a b-tree.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
+									 struct tree_family_chain_node_s *node,
+									 struct tree_family_chain_node_s *parent)
+{
+	struct tree_family_chain_node_s *node_brother = b_tree_control_get_neighbouring_brother(tree, node, parent, 0);
+
+	size_t
+		location = tree_family_node_control_get_relation_with_parent(tree, node, parent),
+		location_brother = tree_family_node_control_get_relation_with_parent(tree, node_brother, parent);
+
+	bool node_right = false;
+
+	if (location > location_brother) {
+		location = location_brother;
+
+		node_right = true;
+	}
+
+	if (tree->info.minimum_key < tree_family_node_control_get_node_type(tree, node_brother)) {	/* If the brother node has enough keys */
+
+		tree_family_node_control_set_data(tree, node, *((void **)parent->data + location - 1));
+
+		tree_family_node_control_destroy_data(tree, ((void **)parent->data + location - 1));
+
+		if (node_right) {
+			*((void **)parent->data + location - 1) = tree_family_node_control_del_data(tree, node_brother, tree->info.degree);
+		} else {
+			*((void **)parent->data + location - 1) = tree_family_node_control_del_data(tree, node_brother, 0);
+		}
+
+		return NULL;
+	} else {
+		tree_family_node_control_set_data(tree, node, tree_family_node_control_del_data(tree, parent, location - 1));
+
+		for (size_t id = 0; id < tree->info.degree - 1; id++) {
+			tree_family_node_control_set_data(tree, node, *((void **)node_brother->data + id));
+		}
+
+		tree_family_control_destroy_node(tree, &node_brother);
+
+		*((void **)parent->link + location_brother) = NULL;
+
+		return parent;
+	}
 }
 
 /**

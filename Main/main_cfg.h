@@ -45,7 +45,7 @@ void main_allocator(void);
 
 #if	(MAIN_TWO_THREE_TREE_EN)
 
-void main_two_three_tree(void);
+void main_b_tree(void);
 
 #endif
 

@@ -223,7 +223,7 @@ void *red_black_tree_control_search_recursion_rule(RED_BLACK_TREE_TYPEDEF_PTR tr
 {
     assert(tree);
 
-	struct two_three_tree_chain_node_data_s
+	struct b_tree_chain_node_data_s
 		*node_data = ((struct tree_family_chain_node_s *)node)->data;
 
 	struct red_black_tree_chain_node_link_s
