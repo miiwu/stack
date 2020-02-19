@@ -50,7 +50,7 @@
  * @return void
  */
 
-void avl_tree_control_switch_control(void);
+void avl_tree_control_switch_control(struct tree_family_s *tree);
 
 /*
 *********************************************************************************************************
@@ -106,7 +106,7 @@ void avl_tree_control_configuration_init(AVL_TREE_TYPEDEF_PPTR tree,
  * @return void
  */
 
-void avl_tree_control_switch_control(void)
+void avl_tree_control_switch_control(struct tree_family_s *tree)
 {
 	//tree_family_control_get_control(TREE_FAMILY_AVL_TREE, avl_tree_control_node_operator);
 }

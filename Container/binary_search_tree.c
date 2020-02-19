@@ -62,7 +62,7 @@ struct binary_search_tree_chain_node_link_s {
  * @return void
  */
 
-void binary_search_tree_control_switch_control(void);
+void binary_search_tree_control_switch_control(struct tree_family_s *tree);
 
 /**
  * @brief This function will control the search()'s match rule.
@@ -123,13 +123,7 @@ void binary_search_tree_control_delete_rule(struct tree_family_s *tree,
  */
 
 struct tree_family_control_environment_s binary_search_tree_control_environment = {
-	{
-		TREE_FAMILY_RED_BLACK_TREE,
-		sizeof(void *) * 1,
-		sizeof(void *) * 3,
-		1,
-		3,
-	},
+	TREE_FAMILY_2D_NODE_TYPE,
 	{
 		binary_search_tree_control_search_match_rule,
 		binary_search_tree_control_search_recursion_rule,
@@ -174,7 +168,7 @@ void binary_search_tree_control_configuration_init(struct tree_family_s **tree,
  * @return void
  */
 
-void binary_search_tree_control_switch_control(void)
+void binary_search_tree_control_switch_control(struct tree_family_s *tree)
 {
 	tree_family_control_get_control(binary_search_tree_control_environment);
 }
@@ -208,7 +202,7 @@ size_t binary_search_tree_control_search_match_rule(struct tree_family_s *tree,
 
 EXIT:
 
-	#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+	#if (BINARY_SEARCH_TREE_CFG_DEBUG_EN)
 
 	printf("search.match rule:node:%p Data ",
 		   node);
@@ -219,7 +213,7 @@ EXIT:
 
 	printf("\r\nmatch:%p location:%d\r\n", (0xff != count) ? *((void **)data_operator + count) : NULL, count);
 
-	#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
+	#endif // (BINARY_SEARCH_TREE_CFG_DEBUG_EN)
 
 	return count;
 }
@@ -255,7 +249,7 @@ void *binary_search_tree_control_search_recursion_rule(struct tree_family_s *tre
 
 EXIT:
 
-	#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+	#if (BINARY_SEARCH_TREE_CFG_DEBUG_EN)
 
 	printf("search.recursion rule:node:%p Link ",
 		   node);
@@ -266,7 +260,7 @@ EXIT:
 
 	printf("\r\nrecursion:%p location:%d\r\n", *((void **)link_operator + count), count);
 
-	#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
+	#endif // (BINARY_SEARCH_TREE_CFG_DEBUG_EN)
 
 	return *((void **)link_operator + count);
 }

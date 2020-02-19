@@ -43,6 +43,7 @@
     <ClCompile Include="Main\main.c" />
     <ClCompile Include="Main\main_allocator.c" />
     <ClCompile Include="Main\main_array.c" />
+    <ClCompile Include="Main\main_binary_search_tree.c" />
     <ClCompile Include="Main\main_b_tree.c" />
     <ClCompile Include="Main\main_debug_component.c" />
     <ClCompile Include="Main\main_deque.c" />

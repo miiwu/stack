@@ -202,7 +202,7 @@ void sort_algorithm_control_bubble_sort(struct sort_package_s sort_package,
 	for (size_t cnt = 0; cnt < sort_package.len - 1; cnt++) {
 		for (size_t ct = 0; ct < sort_package.len - cnt - 1; ct++) {
 			if (!sort_algorithm_control_get_value(sort_package, ct, &value_lhs, &value_rhs)) {	/* Get the value */
-				return;
+				continue;
 			}
 
 			if (compare(value_lhs, value_rhs, sort_package.mem_len)) {						    /* Compare the value */

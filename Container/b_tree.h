@@ -25,13 +25,13 @@
 */
 
 /* Configure    the type of allocator.                                                                  */
-#define TWO_THREE_TREE_CFG_ALLOCATOR_TYPE								    ALLOCATOR_COMMON
+#define B_TREE_CFG_ALLOCATOR_TYPE								    ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
-#define TWO_THREE_TREE_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
+#define B_TREE_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
 
 /* Configure    if enable integrated structure.                                                         */
-#define TWO_THREE_TREE_CFG_DEBUG_EN					                        0u
+#define B_TREE_CFG_DEBUG_EN					                        1u
 
 /*
 *********************************************************************************************************

@@ -20,6 +20,12 @@ void main(void)
 
 	#endif
 
+	#if	(MAIN_BINARY_SEARCH_TREE_EN)
+
+	main_binary_search_tree();
+
+	#endif
+
 	#if	(MAIN_RED_BLACK_TREE_EN)
 
 	main_red_black_tree();

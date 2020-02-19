@@ -78,7 +78,7 @@ struct red_black_tree_chain_node_link_s {
  * @return void
  */
 
-void red_black_tree_control_switch_control(void);
+void red_black_tree_control_switch_control(struct tree_family_s *tree);
 
 /**
  * @brief This function will control the search()'s match rule.
@@ -115,13 +115,7 @@ void *red_black_tree_control_search_recursion_rule(RED_BLACK_TREE_TYPEDEF_PTR tr
  */
 
 struct tree_family_control_environment_s red_black_tree_control_environment = {
-    {
-        TREE_FAMILY_RED_BLACK_TREE,
-        sizeof(red_black_tree_chain_node_data_st),
-        sizeof(struct red_black_tree_chain_node_link_s),
-        sizeof(red_black_tree_chain_node_data_st) / sizeof(void *),
-        sizeof(struct red_black_tree_chain_node_link_s) / sizeof(void *),
-    },
+    TREE_FAMILY_2D_NODE_TYPE,
     {
         red_black_tree_control_search_match_rule,
         red_black_tree_control_search_recursion_rule,
@@ -166,7 +160,7 @@ void red_black_tree_control_configuration_init(RED_BLACK_TREE_TYPEDEF_PPTR tree,
  * @return void
  */
 
-void red_black_tree_control_switch_control(void)
+void red_black_tree_control_switch_control(struct tree_family_s*tree)
 {
 	tree_family_control_get_control(red_black_tree_control_environment);
 }

@@ -104,7 +104,7 @@ struct b_tree_split_into_lesser_pack_s {
  * @return void
  */
 
-void b_tree_control_switch_control(void);
+void b_tree_control_switch_control(struct tree_family_s *tree);
 
 /**
  * @brief This function will control b_tree_control_search()'s match.
@@ -227,13 +227,7 @@ void *b_tree_control_get_neighbouring_brother(struct tree_family_s *tree,
   */
 
 struct tree_family_control_environment_s b_tree_control_environment = {
-	{
-		TREE_FAMILY_B_TREE,
-		sizeof(void *) * 2,
-		sizeof(void *) * 4,
-		2,
-		4,
-	},
+	TREE_FAMILY_3D_NODE_TYPE,
 	{
 		b_tree_control_search_match_rule,
 		b_tree_control_search_recursion_rule,
@@ -247,13 +241,7 @@ struct tree_family_control_environment_s b_tree_control_environment = {
  */
 
 struct tree_family_control_environment_s b_tree_control_greater_environment = {
-	{
-		TREE_FAMILY_B_TREE + 1,
-		sizeof(void *) * 3,
-		sizeof(void *) * 5,
-		3,
-		5,
-	},
+	TREE_FAMILY_4D_NODE_TYPE,
 	{
 		b_tree_control_search_match_rule,
 		b_tree_control_search_recursion_rule,
@@ -288,7 +276,7 @@ void b_tree_control_configuration_init(struct tree_family_s **tree,
 	assert(0 <= element_size);
 
 	tree_family_control_configuration_init(tree, b_tree_control_switch_control, degree, TREE_FAMILY_B_TREE,
-										   TWO_THREE_TREE_CFG_ALLOCATOR_TYPE, element_size, assign, free);
+										   B_TREE_CFG_ALLOCATOR_TYPE, element_size, assign, free);
 }
 
 /**
@@ -299,8 +287,11 @@ void b_tree_control_configuration_init(struct tree_family_s **tree,
  * @return void
  */
 
-void b_tree_control_switch_control(void)
+static inline void b_tree_control_switch_control(struct tree_family_s *tree)
 {
+	b_tree_control_environment.node_type = tree->info.degree;
+	b_tree_control_greater_environment.node_type = tree->info.degree + 1;
+
 	tree_family_control_get_control(b_tree_control_environment);
 }
 
@@ -385,7 +376,7 @@ size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
 
 EXIT:
 
-	#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+	#if (B_TREE_CFG_DEBUG_EN)
 
 	printf("search.match rule:node:%p Data ",
 		   node);
@@ -396,7 +387,7 @@ EXIT:
 
 	printf("\r\nmatch:%p location:%d\r\n", (0xff != count) ? *((void **)data_operator + count) : NULL, count);
 
-	#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
+	#endif // (B_TREE_CFG_DEBUG_EN)
 
 	return count;
 }
@@ -433,7 +424,7 @@ void *b_tree_control_search_recursion_rule(struct tree_family_s *tree,
 
 EXIT:
 
-	#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+	#if (B_TREE_CFG_DEBUG_EN)
 
 	printf("search.recursion rule:node:%p Link ",
 		   node);
@@ -444,7 +435,7 @@ EXIT:
 
 	printf("\r\nrecursion:%p location:%d\r\n", *((void **)link_operator + count), count);
 
-	#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
+	#endif // (B_TREE_CFG_DEBUG_EN)
 
 	return *((void **)link_operator + count);
 }
@@ -486,14 +477,20 @@ void b_tree_control_delete_rule(struct tree_family_s *tree,
 
 	size_t location = search_return.location;
 
+	printf("b tree.delete rule:\"%s\"-%d \r\n", (char *)data,*(char *)data - '0');
+
 	while (NULL != node) {
 		if (tree_family_node_control_get_if_leaf(tree, node)) {										/* Delete the node that is a leaf node */
 			tree_family_node_control_destroy_data(tree, ((void **)node->data + location));
 
-			while (NULL != node &&
-				   tree->info.minimum_key > tree_family_node_control_get_node_type(tree, node)) {
-				printf("b tree delete fix.node:%p \r\n", node);
+			while ((NULL != node) &&
+				   (NULL != parent || NULL != (parent = *((void **)node->link))) &&
+				   (tree->info.minimum_key > tree_family_node_control_get_node_type(tree, node))) {
+				printf("b tree delete fix.node:%p parent:%p \r\n", node, parent);
 				node = b_tree_control_delete_fix_rule(tree, node, parent);
+				parent = NULL;
+
+				//tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
 			}
 
 			node = NULL;
@@ -572,10 +569,17 @@ struct b_tree_insert_into_greater_pack_s
 		.link_before_inherit = lesser_pack.node->link		/* the link address of the origin lesser */
 	};
 
-	printf("transform 3-node into 4-node.3-node:%p DATA.left:%c .right:%c LINK.parent:%p root:%p \r\n",
-		   lesser_pack.node,
-		   B_TREE_GET_KEY_FROM_NODE(lesser_pack.node, 0), B_TREE_GET_KEY_FROM_NODE(lesser_pack.node, 1),
-		   lesser_link->parent, tree->root);
+	#if (B_TREE_CFG_DEBUG_EN)
+
+	printf("transform lesser into greater.lesser:%p DATA->", lesser_pack.node);
+
+	for (size_t id_data = 0; id_data < tree->info.degree - 1; id_data++) {
+		printf("No.%d:\"%c\" ", id_data, B_TREE_GET_KEY_FROM_NODE(lesser_pack.node, id_data));
+	}
+
+	printf("LINK->No.0:%p root:%p\r\n", lesser_link->parent, tree->root);
+
+	#endif // (B_TREE_CFG_DEBUG_EN)
 
 	greater_pack.node->data = greater_data;
 	greater_pack.node->link = greater_link;
@@ -603,20 +607,31 @@ struct b_tree_insert_into_greater_pack_s
 			id_sub++;
 		}
 
-		printf("transform 3-node into 4-node.4-node:%p LINK.lchild:%p .mlchild:%p .mrchild:%p .rchild:%p \r\n",
-			   greater_pack.node,
-			   B_TREE_GET_FAMILY_MEMBER_FROM_NODE(greater_pack.node, 1),
-			   B_TREE_GET_FAMILY_MEMBER_FROM_NODE(greater_pack.node, 2),
-			   B_TREE_GET_FAMILY_MEMBER_FROM_NODE(greater_pack.node, 3),
-			   B_TREE_GET_FAMILY_MEMBER_FROM_NODE(greater_pack.node, 4));
+
+		#if (B_TREE_CFG_DEBUG_EN)
+
+		printf("transform lesser into greater.greater:%p LINK->", greater_pack.node);
+
+		for (size_t id_link = 1; id_link <= tree->info.degree; id_link++) {
+			printf("No.%d:%p ", id_link, B_TREE_GET_FAMILY_MEMBER_FROM_NODE(greater_pack.node, id_link));
+		}
+
+		printf("\r\n");
+
+		#endif // (B_TREE_CFG_DEBUG_EN)
 	}
 
-	printf("transform 3-node into 4-node.4-node:%p DATA.left:%c .middle:%c .right:%c LINK.parent:%p \r\n",
-		   greater_pack.node,
-		   B_TREE_GET_KEY_FROM_NODE(greater_pack.node, 0),
-		   B_TREE_GET_KEY_FROM_NODE(greater_pack.node, 1),
-		   B_TREE_GET_KEY_FROM_NODE(greater_pack.node, 2),
-		   B_TREE_GET_FAMILY_MEMBER_FROM_NODE(greater_pack.node, 0));
+	#if (B_TREE_CFG_DEBUG_EN)
+
+	printf("transform lesser into greater.greater:%p DATA->", greater_pack.node);
+
+	for (size_t id_data = 0; id_data < tree->info.degree; id_data++) {
+		printf("No.%d:\"%c\" ", id_data, B_TREE_GET_KEY_FROM_NODE(greater_pack.node, id_data));
+	}
+
+	printf("LINK->No.0:%p \r\n", B_TREE_GET_FAMILY_MEMBER_FROM_NODE(greater_pack.node, 0));
+
+	#endif // (B_TREE_CFG_DEBUG_EN)
 
 	return greater_pack;
 }
@@ -656,9 +671,9 @@ void b_tree_control_split_greater_into_lesser_new_lesser_init(struct tree_family
 
 	if (left_child) {
 		offset_initial = 0;
-		offset_end = tree->info.degree / 2;
+		offset_end = tree->info.minimum_key;
 	} else {
-		offset_initial = tree->info.degree / 2 + 1;
+		offset_initial = tree->info.minimum_key + 1;
 		offset_end = tree->info.degree;
 	}
 
@@ -683,17 +698,23 @@ void b_tree_control_split_greater_into_lesser_new_lesser_init(struct tree_family
 		id_sub++;
 	}
 
-	#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+	#if (B_TREE_CFG_DEBUG_EN)
 
-	printf("transform 4-node into new 2-node.%s new node:%p DATA.left:%c right:%c LINK.parent:%p left:%p right:%p \r\n",
-		   left_child ? "Left " : "Right",
-		   lesser_node,
-		   B_TREE_GET_KEY_FROM_NODE(lesser_node, 0), B_TREE_GET_KEY_FROM_NODE(lesser_node, 1),
-		   B_TREE_GET_FAMILY_MEMBER_FROM_NODE(lesser_node, 0),
-		   B_TREE_GET_FAMILY_MEMBER_FROM_NODE(lesser_node, 1),
-		   B_TREE_GET_FAMILY_MEMBER_FROM_NODE(lesser_node, 2));
+	printf("split greater into new lesser.%s new node:%p DATA->", left_child ? "Left " : "Right", lesser_node);
 
-	#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
+	for (size_t id_data = 0; id_data < tree->info.degree - 1; id_data++) {
+		printf("No.%d:\"%c\" ", id_data, B_TREE_GET_KEY_FROM_NODE(lesser_node, id_data));
+	}
+
+	printf("LINK->");
+
+	for (size_t id_link = 0; id_link <= tree->info.degree; id_link++) {
+		printf("No.%d:%p ", id_link, B_TREE_GET_FAMILY_MEMBER_FROM_NODE(lesser_node, id_link));
+	}
+
+	printf("\r\n");
+
+	#endif // (B_TREE_CFG_DEBUG_EN)
 }
 
 /**
@@ -730,11 +751,11 @@ struct b_tree_split_into_lesser_pack_s
 	b_tree_control_split_greater_into_lesser_new_lesser_init(tree, node_right_new_part, greater_pack.node, false);
 
 	if (NULL == link_greater->parent) {					/* If the parent of the four-node is NULL,the node will be the root,recycle the origin three-node */
-		#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+		#if (B_TREE_CFG_DEBUG_EN)
 
 		printf("-----> split greater into lesser.root greater \r\n");
 
-		#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
+		#endif // (B_TREE_CFG_DEBUG_EN)
 
 		for (size_t cnt = 0; cnt < tree->info.degree; cnt++) {
 			*((void **)data_lesser + cnt) = NULL;
@@ -756,11 +777,11 @@ struct b_tree_split_into_lesser_pack_s
 		goto EXIT;
 	} else {
 		if (tree->info.degree - 1 > tree_family_node_control_get_node_type(tree, link_greater->parent)) {		/* This node is not full */
-			#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+			#if (B_TREE_CFG_DEBUG_EN)
 
 			printf("-----> split greater into lesser.not full parent \r\n");
 
-			#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
+			#endif // (B_TREE_CFG_DEBUG_EN)
 
 			link_lesser = ((struct tree_family_chain_node_s *)link_greater->parent)->link;
 			data_lesser = ((struct tree_family_chain_node_s *)link_greater->parent)->data;
@@ -780,16 +801,23 @@ struct b_tree_split_into_lesser_pack_s
 				}
 			}
 
-			printf("transform 4-node into 2-node.4-node parent:%p  DATA.left:%c right:%c\r\n",
-				   link_greater->parent,
-				   B_TREE_GET_KEY_FROM_NODE(link_greater->parent, 0),
-				   B_TREE_GET_KEY_FROM_NODE(link_greater->parent, 1));
+			#if (B_TREE_CFG_DEBUG_EN)
+
+			printf("transform greater into lesser.greater's parent:%p DATA->", link_greater->parent);
+
+			for (size_t id_data = 0; id_data < tree->info.degree - 1; id_data++) {
+				printf("No.%d:\"%c\" ", id_data, B_TREE_GET_KEY_FROM_NODE(link_greater->parent, id_data));
+			}
+
+			printf("\r\n");
+
+			#endif // (B_TREE_CFG_DEBUG_EN)
 		} else {
-			#if (TWO_THREE_TREE_CFG_DEBUG_EN)
+			#if (B_TREE_CFG_DEBUG_EN)
 
 			printf("-----> split greater into lesser.full parent \r\n");
 
-			#endif // (TWO_THREE_TREE_CFG_DEBUG_EN)
+			#endif // (B_TREE_CFG_DEBUG_EN)
 
 			lesser_pack.data = *((void **)data_greater + tree->info.degree / 2);
 			lesser_pack.node = link_greater->parent;
@@ -825,34 +853,54 @@ void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
 	bool node_right = false;
 
 	if (location > location_brother) {
-		location = location_brother;
+		ALGORITHM_SWAP(location, location_brother);
 
 		node_right = true;
 	}
 
 	if (tree->info.minimum_key < tree_family_node_control_get_node_type(tree, node_brother)) {	/* If the brother node has enough keys */
-
-		tree_family_node_control_set_data(tree, node, *((void **)parent->data + location - 1));
-
-		tree_family_node_control_destroy_data(tree, ((void **)parent->data + location - 1));
+		void *family_member = NULL;
 
 		if (node_right) {
-			*((void **)parent->data + location - 1) = tree_family_node_control_del_data(tree, node_brother, tree->info.degree);
+			*((void**)node->data + tree->info.minimum_key - 1) = 
+				tree_family_node_control_del_data(tree, parent, DATA_OPERATOR_CODE_DATA_FAR_RIGHT);
+			*((void **)parent->data + location - 1) = 
+				tree_family_node_control_del_data(tree, node_brother, DATA_OPERATOR_CODE_DATA_FAR_RIGHT);
+			family_member = 
+				tree_family_node_control_del_family_member(tree, node_brother, LIST_OPERATOR_CODE_CHILD_FAR_RIGHT);
+			tree_family_node_control_set_family_member(tree, node, family_member, LIST_OPERATOR_CODE_CHILD_FAR_LEFT);
 		} else {
-			*((void **)parent->data + location - 1) = tree_family_node_control_del_data(tree, node_brother, 0);
+			*((void **)node->data + tree->info.minimum_key - 1) = 
+				tree_family_node_control_del_data(tree, parent, DATA_OPERATOR_CODE_DATA_FAR_LEFT);
+			*((void **)parent->data + location - 1) = 
+				tree_family_node_control_del_data(tree, node_brother, DATA_OPERATOR_CODE_DATA_FAR_LEFT);
+			family_member = 
+				tree_family_node_control_del_family_member(tree, node_brother, LIST_OPERATOR_CODE_CHILD_FAR_LEFT);
+			tree_family_node_control_set_family_member(tree, node,family_member, LIST_OPERATOR_CODE_CHILD_FAR_RIGHT);
 		}
 
 		return NULL;
 	} else {
-		tree_family_node_control_set_data(tree, node, tree_family_node_control_del_data(tree, parent, location - 1));
-
-		for (size_t id = 0; id < tree->info.degree - 1; id++) {
-			tree_family_node_control_set_data(tree, node, *((void **)node_brother->data + id));
+		if (node_right) {
+			ALGORITHM_SWAP((size_t)node, (size_t)node_brother);				/* Let node always is the left one */
 		}
 
-		tree_family_control_destroy_node(tree, &node_brother);
+		size_t id_data = DATA_OPERATOR_CODE_DATA_FAR_LEFT;
+		size_t id_link = LIST_OPERATOR_CODE_CHILD_FAR_LEFT;
 
-		*((void **)parent->link + location_brother) = NULL;
+		tree_family_node_control_set_data(tree, node, tree_family_node_control_del_data(tree, parent, location - 1));
+
+		for (; id_data < tree->info.minimum_key; id_data++) {
+			tree_family_node_control_set_data(tree, node, *((void **)node_brother->data + id_data));
+		}
+
+		while (NULL != *((void **)node_brother->link + id_link)) {
+			tree_family_node_control_set_family_member(tree, node, *((void **)node_brother->link + id_link), tree->info.minimum_key + id_link + 1);
+
+			id_link ++ ;
+		}
+
+		tree_family_control_destroy_node(tree, ((void **)parent->link + location_brother));		/* Destroy the node_brother */
 
 		return parent;
 	}
@@ -894,7 +942,8 @@ void *b_tree_control_get_neighbouring_brother(struct tree_family_s *tree,
 		location = 0;
 
 	for (size_t id = relation_with_parent - 1; id <= id_next_node; id++) {
-		if (minimum <= (type_node = tree_family_node_control_get_node_type(tree, *((void **)link + id)))) {
+		if (NULL != *((void **)link + id) &&
+			minimum <= (type_node = tree_family_node_control_get_node_type(tree, *((void **)link + id)))) {
 			location = id;
 			minimum = type_node;
 		}

@@ -13,6 +13,8 @@
 
 #define MAIN_TWO_THREE_TREE_EN		1u
 
+#define MAIN_BINARY_SEARCH_TREE_EN	1u
+
 #define MAIN_RED_BLACK_TREE_EN		0u
 
 #define MAIN_ARRAY_EN				0u
@@ -46,6 +48,12 @@ void main_allocator(void);
 #if	(MAIN_TWO_THREE_TREE_EN)
 
 void main_b_tree(void);
+
+#endif
+
+#if	(MAIN_BINARY_SEARCH_TREE_EN)
+
+void main_binary_search_tree(void);
 
 #endif
 

@@ -41,13 +41,69 @@
  */
 
 enum tree_family_member_type_e {
-	TREE_FAMILY_BINARY_TREE,
+	TREE_FAMILY_BINARY_TREE = 0x02,
 
-	TREE_FAMILY_AVL_TREE,
+	TREE_FAMILY_AVL_TREE = 0x12,
 
-	TREE_FAMILY_B_TREE,
+	TREE_FAMILY_RED_BLACK_TREE = 0x22,
 
-	TREE_FAMILY_RED_BLACK_TREE,
+	TREE_FAMILY_B_TREE = 0x03,
+
+	TREE_FAMILY_4D_B_TREE = 0x13,
+
+	TREE_FAMILY_5D_B_TREE = 0x23,
+
+	TREE_FAMILY_6D_B_TREE = 0x23,
+
+	TREE_FAMILY_7D_B_TREE = 0x23,
+};
+
+/**
+ * @brief This struct is the binary tree structure module
+ */
+
+enum tree_family_node_type_e {
+    TREE_FAMILY_2D_NODE_TYPE = 2,
+
+    TREE_FAMILY_3D_NODE_TYPE,
+
+    TREE_FAMILY_4D_NODE_TYPE,
+
+    TREE_FAMILY_5D_NODE_TYPE,
+
+    TREE_FAMILY_6D_NODE_TYPE,
+
+    TREE_FAMILY_7D_NODE_TYPE,
+};
+
+/**
+ * @brief This struct is the binary tree structure module
+ */
+
+enum tree_family_search_code_type_e {
+    SEARCH_CODE_NOT_SEARCH = 0xff,
+};
+
+/**
+ * @brief This struct is the binary tree structure module
+ */
+
+enum tree_family_list_operators_code_type_e {
+	LIST_OPERATOR_CODE_PARENT = 0x00,
+
+    LIST_OPERATOR_CODE_CHILD_FAR_LEFT = 0x01,
+
+    LIST_OPERATOR_CODE_CHILD_FAR_RIGHT = 0xff,
+};
+
+/**
+ * @brief This struct is the binary tree structure module
+ */
+
+enum tree_family_data_operators_code_type_e {
+    DATA_OPERATOR_CODE_DATA_FAR_LEFT = 0x00,
+
+    DATA_OPERATOR_CODE_DATA_FAR_RIGHT = 0xff,
 };
 
 /**
@@ -122,21 +178,20 @@ typedef void tree_family_insert_and_delete_rule_t(struct tree_family_s *tree,
 
 typedef void tree_family_traversal_operator_t(struct tree_family_s *tree,
 											  void *node, size_t data_element_count);
-
 /**
  * @brief This struct will control the unique operator.
  */
 
 struct tree_family_node_infomation_s {
-	enum tree_family_member_type_e member_type;
+    enum tree_family_node_type_e node_type;
 
-	size_t data_mem_len;
+    size_t data_mem_len;
 
-	size_t link_mem_len;
+    size_t link_mem_len;
 
-	size_t data_element_count;
+    size_t data_element_count;
 
-	size_t link_element_count;
+    size_t link_element_count;
 };
 
 /**
@@ -158,7 +213,7 @@ struct tree_family_node_operator_s {
  */
 
 struct tree_family_control_environment_s {
-	struct tree_family_node_infomation_s node_infomation;
+	enum tree_family_node_type_e node_type;
 
 	struct tree_family_node_operator_s node_operator;
 };
@@ -179,6 +234,9 @@ struct tree_family_information_s {
 
 	/* @brief This variables will record the degree of the tree											*/
 	CONTAINER_GLOBAL_CFG_SIZE_TYPE minimum_key;
+
+	/* @brief This variables will record the size that each element will take up.						*/
+	CONTAINER_GLOBAL_CFG_SIZE_TYPE mem_size_key;
 };
 
 /**
@@ -208,7 +266,7 @@ struct tree_family_s {
 	struct container_common_exception_s exception;
 
 	/* @brief This variables will point to the address of the list-like shared-pack analysis.			*/
-	void (*switch_control)(void);
+	void (*switch_control)(struct tree_family_s *tree);
 };
 
 /*
@@ -259,7 +317,7 @@ void tree_family_control_get_control_in_sandbox(struct tree_family_s *tree,
  */
 
 void tree_family_control_configuration_init(struct tree_family_s **tree,
-											void (*switch_control)(void),
+											void (*switch_control)(struct tree_family_s *tree),
 											size_t degree,
 											enum tree_family_member_type_e member_type,
 											enum allocator_type_e allocator_type,
@@ -612,6 +670,27 @@ void *tree_family_node_control_del_data(struct tree_family_s *tree,
 										size_t location);
 
 /**
+ * @brief This function will initialize the tree node's link struct.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void *tree_family_node_control_init_link(struct tree_family_s *tree);
+
+/**
+ * @brief This function will destroy the link.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void tree_family_node_control_destroy_link(struct tree_family_s *tree,
+                                           void **link);
+
+/**
  * @brief This function will return the family member of the node.
  *
  * @param tree the pointer to the tree
@@ -624,6 +703,31 @@ void *tree_family_node_control_del_data(struct tree_family_s *tree,
 void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
 												 struct tree_family_chain_node_s *node,
 												 size_t id);
+
+/**
+ * @brief This function will delete the data of the node,and return the data's address.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void *tree_family_node_control_set_family_member(struct tree_family_s *tree,
+                                                 struct tree_family_chain_node_s *node,
+                                                 struct tree_family_chain_node_s *family_member,
+                                                 size_t id);
+
+/**
+ * @brief This function will delete the data of the node,and return the data's address.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void *tree_family_node_control_del_family_member(struct tree_family_s *tree,
+                                                 struct tree_family_chain_node_s *node,
+                                                 size_t location);
 
 /**
  * @brief This function will return the type of the node.
