@@ -24,11 +24,37 @@
 *********************************************************************************************************
 */
 
+/**
+ *                                          CONFIGRATION
+ */
+
 /* Configure    the type of sort algorithm.                                                             */
 #define TREE_FAMILY_CFG_SORT_ALGORITHM_TYPE								BUBBLE_SORT
 
 /* Configure    the type of sort algorithm.                                                             */
 #define TREE_FAMILY_CFG_DEBUG_EN								        1u
+
+/**
+ *                                          DEBUG OPERATOR
+ */
+
+#define TREE_FAMILY_DEBUG_OPERATOR_GET_DATA_FROM_NODE(node,id)			                                \
+    (*((void**)(((struct tree_family_chain_node_s *)(node))->data) + (id)))
+
+#define TREE_FAMILY_DEBUG_OPERATOR_GET_KEY_FROM_DATA(data)				                                \
+    ((NULL != data)?((char)*((void**)(data) + (0))):(0u))
+
+#define TREE_FAMILY_DEBUG_OPERATOR_GET_KEY_FROM_NODE(node,id)			                                \
+    TREE_FAMILY_DEBUG_OPERATOR_GET_KEY_FROM_DATA(TREE_FAMILY_DEBUG_OPERATOR_GET_DATA_FROM_NODE(node,id))
+
+#define TREE_FAMILY_DEBUG_OPERATOR_GET_LINK_FROM_NODE(node)				                                \
+    ((void**)(((struct tree_family_chain_node_s *)(node))->link))
+
+#define TREE_FAMILY_DEBUG_OPERATOR_GET_FAMILY_MEMBER_FROM_LINK(link,id)	                                \
+    ((NULL != link)?((*((void**)(link) + (id)))):(0u))
+
+#define TREE_FAMILY_DEBUG_OPERATOR_GET_FAMILY_MEMBER_FROM_NODE(node,id)	                                \
+    TREE_FAMILY_DEBUG_OPERATOR_GET_FAMILY_MEMBER_FROM_LINK(TREE_FAMILY_DEBUG_OPERATOR_GET_LINK_FROM_NODE(node),id)
 
 /*
 *********************************************************************************************************
@@ -63,17 +89,17 @@ enum tree_family_member_type_e {
  */
 
 enum tree_family_node_type_e {
-    TREE_FAMILY_2D_NODE_TYPE = 2,
+	TREE_FAMILY_2D_NODE_TYPE = 2,
 
-    TREE_FAMILY_3D_NODE_TYPE,
+	TREE_FAMILY_3D_NODE_TYPE,
 
-    TREE_FAMILY_4D_NODE_TYPE,
+	TREE_FAMILY_4D_NODE_TYPE,
 
-    TREE_FAMILY_5D_NODE_TYPE,
+	TREE_FAMILY_5D_NODE_TYPE,
 
-    TREE_FAMILY_6D_NODE_TYPE,
+	TREE_FAMILY_6D_NODE_TYPE,
 
-    TREE_FAMILY_7D_NODE_TYPE,
+	TREE_FAMILY_7D_NODE_TYPE,
 };
 
 /**
@@ -81,19 +107,19 @@ enum tree_family_node_type_e {
  */
 
 enum tree_family_search_code_type_e {
-    SEARCH_CODE_NOT_SEARCH = 0xff,
+	SEARCH_CODE_NOT_SEARCH = 0xff,
 };
 
 /**
  * @brief This struct is the binary tree structure module
  */
 
-enum tree_family_list_operators_code_type_e {
-	LIST_OPERATOR_CODE_PARENT = 0x00,
+enum tree_family_link_operators_code_type_e {
+	LINK_OPERATOR_CODE_PARENT = 0x00,
 
-    LIST_OPERATOR_CODE_CHILD_FAR_LEFT = 0x01,
+	LINK_OPERATOR_CODE_CHILD_FAR_LEFT = 0x01,
 
-    LIST_OPERATOR_CODE_CHILD_FAR_RIGHT = 0xff,
+	LINK_OPERATOR_CODE_CHILD_FAR_RIGHT = 0xff,
 };
 
 /**
@@ -101,9 +127,9 @@ enum tree_family_list_operators_code_type_e {
  */
 
 enum tree_family_data_operators_code_type_e {
-    DATA_OPERATOR_CODE_DATA_FAR_LEFT = 0x00,
+	DATA_OPERATOR_CODE_DATA_FAR_LEFT = 0x00,
 
-    DATA_OPERATOR_CODE_DATA_FAR_RIGHT = 0xff,
+	DATA_OPERATOR_CODE_DATA_FAR_RIGHT = 0xff,
 };
 
 /**
@@ -183,15 +209,15 @@ typedef void tree_family_traversal_operator_t(struct tree_family_s *tree,
  */
 
 struct tree_family_node_infomation_s {
-    enum tree_family_node_type_e node_type;
+	enum tree_family_node_type_e node_type;
 
-    size_t data_mem_len;
+	size_t data_mem_len;
 
-    size_t link_mem_len;
+	size_t link_mem_len;
 
-    size_t data_element_count;
+	size_t data_element_count;
 
-    size_t link_element_count;
+	size_t link_element_count;
 };
 
 /**
@@ -646,7 +672,7 @@ void *tree_family_node_control_get_data(struct tree_family_s *tree,
 										size_t location);
 
 /**
- * @brief This function will set the key node into the node.
+ * @brief This function will set the data into the node.
  *
  * @param void
  *
@@ -655,7 +681,20 @@ void *tree_family_node_control_get_data(struct tree_family_s *tree,
 
 void tree_family_node_control_set_data(struct tree_family_s *tree,
 									   struct tree_family_chain_node_s *node,
-									   void *data);
+									   void *data,
+									   size_t id);
+
+/**
+ * @brief This function will insert the data into the node,which means have to sort.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void tree_family_node_control_insert_data(struct tree_family_s *tree,
+										  struct tree_family_chain_node_s *node,
+										  void *data);
 
 /**
  * @brief This function will delete the data of the node,and return the data's address.
@@ -667,7 +706,7 @@ void tree_family_node_control_set_data(struct tree_family_s *tree,
 
 void *tree_family_node_control_del_data(struct tree_family_s *tree,
 										struct tree_family_chain_node_s *node,
-										size_t location);
+										size_t id);
 
 /**
  * @brief This function will initialize the tree node's link struct.
@@ -688,7 +727,7 @@ void *tree_family_node_control_init_link(struct tree_family_s *tree);
  */
 
 void tree_family_node_control_destroy_link(struct tree_family_s *tree,
-                                           void **link);
+										   void **link);
 
 /**
  * @brief This function will return the family member of the node.
@@ -705,6 +744,20 @@ void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
 												 size_t id);
 
 /**
+ * @brief This function will get the node's available brother node.
+ *
+ * @param tree the pointer to the tree struct pointer
+ * @param node the pointer to node
+ *
+ * @return the address of the node's available brother node
+ */
+
+void *tree_family_control_get_neighbour(struct tree_family_s *tree,
+                                        struct tree_family_chain_node_s *node,
+                                        struct tree_family_chain_node_s *parent,
+                                        size_t relation_with_parent);
+
+/**
  * @brief This function will delete the data of the node,and return the data's address.
  *
  * @param void
@@ -713,9 +766,9 @@ void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
  */
 
 void *tree_family_node_control_set_family_member(struct tree_family_s *tree,
-                                                 struct tree_family_chain_node_s *node,
-                                                 struct tree_family_chain_node_s *family_member,
-                                                 size_t id);
+												 struct tree_family_chain_node_s *node,
+												 struct tree_family_chain_node_s *family_member,
+												 size_t id);
 
 /**
  * @brief This function will delete the data of the node,and return the data's address.
@@ -726,8 +779,8 @@ void *tree_family_node_control_set_family_member(struct tree_family_s *tree,
  */
 
 void *tree_family_node_control_del_family_member(struct tree_family_s *tree,
-                                                 struct tree_family_chain_node_s *node,
-                                                 size_t location);
+												 struct tree_family_chain_node_s *node,
+												 size_t id);
 
 /**
  * @brief This function will return the type of the node.
@@ -826,7 +879,7 @@ void tree_family_control_posorder_traversal(struct tree_family_s *tree,
 tree_family_get_precursor_and_successor_return_st
 tree_family_control_get_precursor(struct tree_family_s *tree,
 								  struct tree_family_chain_node_s *node,
-								  size_t location);
+								  size_t id_data);
 
 /**
  * @brief This function will get the node's successor node.
@@ -840,7 +893,7 @@ tree_family_control_get_precursor(struct tree_family_s *tree,
 tree_family_get_precursor_and_successor_return_st
 tree_family_control_get_successor(struct tree_family_s *tree,
 								  struct tree_family_chain_node_s *node,
-								  size_t location);
+								  size_t id_data);
 
 /**
 * @brief This function will print all the node when traversal.

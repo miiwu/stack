@@ -280,19 +280,18 @@ void binary_search_tree_control_insert_rule(struct tree_family_s *tree,
 	assert(tree);
 	assert(data);
 
-	void 
+	void
 		*data_operator = search_return.node_prev->data,
 		*link_operatpr = search_return.node_prev->link;
 
 	struct tree_family_chain_node_s *node = tree_family_control_init_node(tree);
 
-	memcpy(node->data,data, tree->info.mem_size);
+	memcpy(node->data, data, tree->info.mem_size);
 	*((void **)node->link) = search_return.node_prev;
 
-	if (compare_control_greater(data, data_operator,4)) {
+	if (compare_control_greater(data, data_operator, 4)) {
 		*((void **)link_operatpr + 2) = node;
 	} else {
-
 		*((void **)link_operatpr + 1) = node;
 	}
 }

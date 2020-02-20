@@ -8,10 +8,10 @@ void main_b_tree(void)
 	printf("\r\n ------------------------+ two three tree demo start +------------------------ \r\n");
 
 	printf("\r\nb_tree.init start\r\n");
-	b_tree_control_configuration_init(&tree, 3, sizeof(int), NULL, NULL);
+	b_tree_control_configuration_init(&tree, 4, sizeof(int), NULL, NULL);
 
 	printf("\r\nb_tree.insert start\r\n");
-	for (size_t cnt = '1'; cnt <= '0' + 20; cnt++) {
+	for (size_t cnt = '1'; cnt < '0' + 30; cnt++) {
 		size_t count = cnt - '0';
 		printf("\r\nb_tree.insert start: %c-%d \r\n", cnt, count);
 		tree_family_control_insert(tree, (void *)&cnt);
@@ -23,46 +23,34 @@ void main_b_tree(void)
 
 	printf("\r\nb_tree.search start\r\n");
 	size_t key = 'A';
-	struct tree_family_search_node_return_s search = b_tree_control_search(tree, (void *)&key);
+	struct tree_family_search_node_return_s search = tree_family_control_search(tree, (void *)&key);
 	printf("search:\"%c\" location:%d node:%p nod_prev:%p \r\n", (char)key, search.location, search.node, search.node_prev);
 
-	/*printf("\r\nb_tree.precursor and successor check start\r\n");
-	for (size_t key = '1'; key <= '0' + 20; key++) {
+	printf("\r\nb_tree.precursor and successor check start\r\n");
+	for (size_t key = '1'; key < '0' + 30; key++) {
 		size_t count = key - '0';
-		struct tree_family_search_node_return_s search = b_tree_control_search(tree, (void *)&key);
+		struct tree_family_search_node_return_s search = tree_family_control_search(tree, (void *)&key);
 		printf("search:\"%c\" location:%d node:%p nod_prev:%p \r\n", (char)key, search.location, search.node, search.node_prev);
 
 		tree_family_control_get_precursor(tree, search.node, search.location);
 		tree_family_control_get_successor(tree, search.node, search.location);
-	}*/
+	}
 
 	printf("\r\nb_tree.delete start\r\n");
-	key = '7';
-	tree_family_control_delete(tree, (void *)&key);
+	#define B_TREE_DELETE_CASE								5
+	size_t key_pool[B_TREE_DELETE_CASE] = { 'M','I','E','8','6' };
 
-	printf("\r\nb_tree.in-order traversal start\r\n");
-	tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
+	for (size_t cnt = 0; cnt < B_TREE_DELETE_CASE; cnt++) {
+		printf("\r\nb_tree.delete \"%s\"-%d start\r\n", (char *)&key_pool[cnt], key_pool[cnt] - '0');
 
-	printf("\r\nb_tree.delete start\r\n");
-	key = '5';
-	tree_family_control_delete(tree, (void *)&key);
+		struct tree_family_search_node_return_s search = tree_family_control_search(tree, (void *)&key_pool[cnt]);
+		printf("\r\nsearch:\"%c\" location:%d node:%p nod_prev:%p \r\n", (char)key_pool[cnt], search.location, search.node, search.node_prev);
 
-	printf("\r\nb_tree.in-order traversal start\r\n");
-	tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
+		tree_family_control_delete(tree, (void *)&key_pool[cnt]);
+		tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
 
-	printf("\r\nb_tree.delete start\r\n"); 
-	key = 'A';
-	tree_family_control_delete(tree, (void *)&key);
-
-	printf("\r\nb_tree.in-order traversal start\r\n");
-	tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
-
-	printf("\r\nb_tree.delete start\r\n");
-	key = 'D';
-	tree_family_control_delete(tree, (void *)&key);
-
-	printf("\r\nb_tree.in-order traversal start\r\n");
-	tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
+		printf("\r\nb_tree.delete \"%s\"-%d end\r\n", (char *)&key_pool[cnt], key_pool[cnt] - '0');
+	}
 
 	printf("\r\nb_tree.destroy start\r\n");
 	tree_family_control_configuration_destroy(&tree);

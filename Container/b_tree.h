@@ -31,7 +31,7 @@
 #define B_TREE_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
 
 /* Configure    if enable integrated structure.                                                         */
-#define B_TREE_CFG_DEBUG_EN					                        1u
+#define B_TREE_CFG_DEBUG_EN					                        0u
 
 /*
 *********************************************************************************************************
@@ -68,47 +68,10 @@ enum b_tree_search_node_node_location_e {
  * @return NONE
  */
 
-void b_tree_control_configuration_init(struct tree_family_s ** tree,
+void b_tree_control_configuration_init(struct tree_family_s **tree,
 									   CONTAINER_GLOBAL_CFG_SIZE_TYPE degree,
 									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
 									   void (*assign)(void *dst, void *src), void (*free)(void *dst));
-
-/**
- * @brief This function will get the node at the specified location in the container.
- *
- * @param tree the pointer to the tree struct pointer
- * @param position the position of node,it would be equal or greater than zero
- *
- * @return NONE
- */
-
-struct tree_family_search_node_return_s b_tree_control_search(struct tree_family_s * tree,
-	void *key);
-
-/**
- * @brief This function will set the node at the specified location in the container.
- *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
- * @param position the position of node
- *
- * @return NONE
- */
-
-void b_tree_control_insert(struct tree_family_s * tree,
-								   void *data);
-
-/**
- * @brief This function will delete the node at the specified location in the container.
- *
- * @param tree the pointer to the tree struct pointer
- * @param position the position of node,it would be equal or greater than zero
- *
- * @return NONE
- */
-
-void *b_tree_control_delete(struct tree_family_s * tree,
-							void *data);
 
 /*
 *********************************************************************************************************

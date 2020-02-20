@@ -12,6 +12,23 @@
 *********************************************************************************************************
 */
 
+#define LINK_OPERATOR_IS_PARENT(id)																	\
+	(LINK_OPERATOR_CODE_PARENT == (id))
+
+#define LINK_OPERATOR_IS_CHILD_FAR_RIGHT(id)															\
+	(LINK_OPERATOR_CODE_CHILD_FAR_RIGHT >= (id) &&														\
+	(tree_family_control_node_infomation.link_element_count - 1) <= (id))
+
+#define LINK_OPERATOR_IS_CHILD_FAR_LEFT(id)															\
+	(LINK_OPERATOR_CODE_CHILD_FAR_LEFT == (id))
+
+#define DATA_OPERATOR_IS_DATA_FAR_RIGHT(id)															\
+	(DATA_OPERATOR_CODE_DATA_FAR_RIGHT >= (id) &&														\
+	(tree_family_control_node_infomation.data_element_count - 1) <= (id))
+
+#define DATA_OPERATOR_IS_DATA_FAR_LEFT(id)																\
+	(DATA_OPERATOR_CODE_DATA_FAR_LEFT == (id))
+
 /*
 *********************************************************************************************************
 *                                           LOCAL CONSTANTS
@@ -37,10 +54,14 @@
 */
 
 /**
- * @brief This variables will record the tree_node_operator.
+ * @brief This variables will record the tree control environment.
  */
 
 struct tree_family_control_environment_s tree_family_control_environment = { 0 };
+
+/**
+ * @brief This variables will record the tree's node information in control.
+ */
 
 struct tree_family_node_infomation_s tree_family_control_node_infomation = { 0 };
 
@@ -140,6 +161,25 @@ void tree_family_control_configration_exception_default_empty_callback(void);
  */
 
 void tree_family_control_configration_exception_default_full_callback(void);
+
+/*
+*********************************************************************************************************
+*					LOCAL GLOBAL VARIABLES & LOCAL FUNCTION PROTOTYPES INTERSECTION
+*********************************************************************************************************
+*/
+
+/**
+ * @brief This variables will record the tree's data sort package.
+ */
+
+struct sort_package_s tree_family_control_data_sort_package = {
+	.object = NULL,
+	.len = 0u,
+	.mem_len = 0u,
+	.get_value_method = tree_family_sort_algorithm_control_get_data,
+	.swap_method = tree_family_sort_algorithm_control_swap_data,
+	.compare_method = tree_family_node_control_compare_greater,
+};
 
 /*
 *********************************************************************************************************
@@ -439,9 +479,15 @@ void tree_family_control_insert(struct tree_family_s *tree, void *data)
 
 	if (SEARCH_CODE_NOT_SEARCH == search_return.location) {													/* Can't search the node */
 		if (NULL == search_return.node_prev) {
+			void *data_cpy = tree->allocator_ctrl->allocate(tree->allocator, 1, tree->info.mem_size);
+
 			tree->root = tree_family_control_init_node(tree);
 
-			tree_family_node_control_set_data(tree, tree->root, data);
+			if (NULL != tree->root &&
+				NULL != data_cpy) {
+				memcpy(data_cpy, data, tree->info.mem_size);
+				tree_family_node_control_set_data(tree, tree->root, data_cpy, DATA_OPERATOR_CODE_DATA_FAR_LEFT);
+			}
 		} else {
 			tree_family_control_environment.node_operator.insert_rule(tree, search_return, data);
 		}
@@ -587,7 +633,48 @@ void tree_family_node_control_destroy_data(struct tree_family_s *tree,
 
 void tree_family_node_control_set_data(struct tree_family_s *tree,
 									   struct tree_family_chain_node_s *node,
-									   void *data)
+									   void *data,
+									   size_t id)
+{
+	assert(tree);
+	assert(node);
+
+	tree->switch_control(tree);
+
+	if (NULL == data &&
+		NULL == *((void **)node->link + (id = tree->info.degree))) {					/* Have enough space for the data */
+		return;
+	}
+
+	if (DATA_OPERATOR_IS_DATA_FAR_RIGHT(id)) {											/* Determine the data's id,set the data as the far right one */
+		if (NULL != *((void **)node->data + (id = 1))) {
+			while (tree->info.degree > id++ &&
+				   NULL != *((void **)node->link + id)) {
+			}
+		}
+	}
+
+	size_t id_data = tree->info.degree - 1;
+
+	while (id < --id_data &&															/* Sort the data to make a space */
+		   NULL != *((void **)node->data + id_data)) {
+		*((void **)node->data + id_data + 1) = *((void **)node->data + id_data);
+	}
+
+	*((void **)node->data + id) = data;													/* Set the data to the space */
+}
+
+/**
+ * @brief This function will insert the data into the node,which means have to sort.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void tree_family_node_control_insert_data(struct tree_family_s *tree,
+										  struct tree_family_chain_node_s *node,
+										  void *data)
 {
 	assert(tree);
 	assert(node);
@@ -629,17 +716,12 @@ void tree_family_node_control_set_data(struct tree_family_s *tree,
 
 		*((void **)data_package_sort + tree_family_control_node_infomation.data_element_count) = &data_cpy;
 
-		struct sort_package_s sort_package = {												/* The package which store the information of the sort algorithm */
-			.object = data_package_sort,
-			.len = tree_family_control_node_infomation.data_element_count + 1,
-			.mem_len = tree->info.mem_size_key,
-			.get_value_method = tree_family_sort_algorithm_control_get_data,
-			.swap_method = tree_family_sort_algorithm_control_swap_data,
-			.compare_method = tree_family_node_control_compare_greater,
-		};
+		tree_family_control_data_sort_package.object = data_package_sort;
+		tree_family_control_data_sort_package.len = tree_family_control_node_infomation.data_element_count + 1;
+		tree_family_control_data_sort_package.mem_len = tree->info.mem_size_key;
 
 		sort_algorithm_control(sort_algorithm_control_convert_type_to_func_addr(TREE_FAMILY_CFG_SORT_ALGORITHM_TYPE),
-							   sort_package,												/* Sort the address of the data in the data package by the data's key */
+							   tree_family_control_data_sort_package,						/* Sort the address of the data in the data package by the data's key */
 							   tree_family_node_control_compare_greater);
 	}
 }
@@ -654,24 +736,22 @@ void tree_family_node_control_set_data(struct tree_family_s *tree,
 
 void *tree_family_node_control_del_data(struct tree_family_s *tree,
 										struct tree_family_chain_node_s *node,
-										size_t location)
+										size_t id)
 {
 	assert(node);
 
-	void *data_del = NULL;
-
-	if (tree->info.degree <= location) {				/* Get the data far right */
-		location = tree->info.degree - 1;
-		while (0 < location &&
-			   NULL == *((void **)node->data + location)) {
-			location--;
+	if (DATA_OPERATOR_IS_DATA_FAR_RIGHT(id)) {				/* Get the data far right */
+		id = tree->info.degree - 1;
+		while (0 < id &&
+			   NULL == *((void **)node->data + id)) {
+			id--;
 		}
 	}
 
-	data_del = *((void **)node->data + location);
+	void *data_del = *((void **)node->data + id);
 
-	for (size_t id = location; id < tree->info.degree - 2; id++) {
-		*((void **)node->data + id) = *((void **)node->data + id + 1);
+	for (size_t id_link = id; id_link < tree->info.degree - 2; id_link++) {
+		*((void **)node->data + id_link) = *((void **)node->data + id_link + 1);
 	}
 
 	*((void **)node->data + tree->info.degree - 2) = NULL;
@@ -765,9 +845,7 @@ void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
 
 	void **link_node = *((void **)node + 1);
 
-	if (tree->info.degree + 1 < id) {
-		return NULL;
-	} else if (tree->info.degree + 1 == id) {
+	if (LINK_OPERATOR_IS_CHILD_FAR_RIGHT(id)) {
 		size_t id_far_right = tree->info.degree;
 		while (2 < id_far_right &&
 			   NULL == *((void **)link_node + id_far_right)) {
@@ -778,6 +856,65 @@ void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
 	}
 
 	return *(link_node + id);
+}
+
+/**
+ * @brief This function will get the node's available brother node.
+ *
+ * @param tree the pointer to the tree struct pointer
+ * @param node the pointer to node
+ *
+ * @return the address of the node's available brother node
+ */
+
+void *tree_family_control_get_neighbour(struct tree_family_s *tree,
+										struct tree_family_chain_node_s *node,
+										struct tree_family_chain_node_s *parent,
+										size_t relation_with_parent)
+{
+	assert(tree);
+	assert(node);
+
+	if (NULL == parent &&
+		NULL == (parent = *((void **)node->link))) {
+		goto FAIL;
+	}
+
+	if (LINK_OPERATOR_CODE_PARENT == relation_with_parent &&
+		LINK_OPERATOR_CODE_PARENT == (relation_with_parent = 								/* Get the relation id with parent */
+									  tree_family_node_control_get_relation_with_parent(tree, node, parent))) {
+		goto FAIL;
+	} else if (LINK_OPERATOR_CODE_CHILD_FAR_LEFT == relation_with_parent) {
+		return *((void **)parent->link + LINK_OPERATOR_CODE_CHILD_FAR_LEFT + 1);
+	} else if (LINK_OPERATOR_CODE_CHILD_FAR_RIGHT == relation_with_parent) {
+		return *((void **)parent->link + tree->info.degree);
+	}
+
+	size_t
+		minimum = tree->info.minimum_key,
+		type_node = 0,
+		location = 0;
+
+	const int offset[2] = { 1,-1 };															/* Prefer the left one */
+
+	void *neignbour[2] = {
+		*((void **)parent->link + relation_with_parent + offset[0]) ,
+		*((void **)parent->link + relation_with_parent + offset[1]) };
+
+	for (size_t side = 0; side < 2; side++) {
+		if (NULL != neignbour[side] &&
+			minimum <= (type_node = tree_family_node_control_get_node_type(tree, neignbour[side]))) {
+			location = relation_with_parent + offset[side];
+			minimum = type_node;
+		}
+	}
+
+	if (0 >= location) {
+	FAIL:
+		return NULL;
+	}
+
+	return *((void **)parent->link + location);
 }
 
 /**
@@ -802,13 +939,13 @@ void *tree_family_node_control_set_family_member(struct tree_family_s *tree,
 		goto EXIT;
 	}
 
-	if (0xff == id) {
+	if (LINK_OPERATOR_IS_CHILD_FAR_RIGHT(id)) {
 		if (NULL != *((void **)node->link + (id = 1))) {								/* If the first one is NULL */
 			while (tree->info.degree > id++ &&
 				   NULL != *((void **)node->link + id)) {
 			}
 		}
-	} else if (1 == id) {
+	} else if (LINK_OPERATOR_IS_CHILD_FAR_LEFT(id)) {
 		if (NULL != *((void **)node->link + id)) {
 			if (NULL == *((void **)node->link + (id = tree->info.degree))) {			/* Have enough space for the family member */
 				while (1 < --id &&
@@ -837,27 +974,28 @@ EXIT:
 
 void *tree_family_node_control_del_family_member(struct tree_family_s *tree,
 												 struct tree_family_chain_node_s *node,
-												 size_t location)
+												 size_t id)
 {
 	assert(node);
 
 	void *family_member_del = NULL;
 
-	if (location >= tree->info.degree) {				/* Get the data far right */
-		location = tree->info.degree;
-		while (1 < location &&
-			   NULL == *((void **)node->link + location)) {
-			location--;
+	if (LINK_OPERATOR_IS_CHILD_FAR_RIGHT(id)) {										/* Get the child far right */
+		id = tree->info.degree;
+		while (1 < id &&
+			   NULL == *((void **)node->link + id)) {
+			id--;
 		}
 	}
 
-	family_member_del = *((void **)node->link + location);
+	family_member_del = *((void **)node->link + id);
 
-	for (size_t id = location; id <= tree->info.degree; id++) {
-		*((void **)node->link + id) = *((void **)node->link + id + 1);
+	for (size_t id_link = (LINK_OPERATOR_IS_PARENT(id)) ? tree->info.degree : id; 		/* Sort the child member */
+		 id_link < tree->info.degree; id_link++) {
+		*((void **)node->link + id_link) = *((void **)node->link + id_link + 1);
 	}
 
-	*((void **)node->link + tree->info.degree + 1) = NULL;
+	*((void **)node->link + tree->info.degree) = NULL;
 
 	return family_member_del;
 }
@@ -952,7 +1090,7 @@ size_t tree_family_node_control_get_relation_with_parent(struct tree_family_s *t
 
 	if (NULL == parent &&
 		NULL == (parent = *((void **)node->link))) {
-		return 0xff;
+		goto FAIL;
 	}
 
 	for (size_t id = 1; id <= tree->info.degree + 1; id++) {
@@ -961,7 +1099,9 @@ size_t tree_family_node_control_get_relation_with_parent(struct tree_family_s *t
 		}
 	}
 
-	return 0xff;
+FAIL:
+
+	return LINK_OPERATOR_CODE_PARENT;
 }
 
 /**
@@ -1192,8 +1332,10 @@ tree_family_control_get_precursor(struct tree_family_s *tree,
 
 	#endif // (TREE_FAMILY_CFG_DEBUG_EN)
 
-	if (NULL != node_current) {																				/* If the node's left child is valid */
-		while (NULL != (node = tree_family_node_control_get_family_member(tree, node_current, id_far_right))) {		/* Get the node_current's right child,then assign to the node */
+	if (NULL != node_current) {																						/* If the node's left child is valid */
+		while (NULL != (node = tree_family_node_control_get_family_member(tree,										/* Get the node_current's right child,then assign to the node */
+																		  node_current,
+																		  LINK_OPERATOR_CODE_CHILD_FAR_RIGHT))) {
 			node_current = node;																					/* Assign the node to the node_current */
 		}
 
@@ -1247,10 +1389,11 @@ EXIT:
 
 	#if (TREE_FAMILY_CFG_DEBUG_EN)
 
-	printf("precursor is %p's No.%d:\"%s\"\r\n",
+	printf("precursor is %p's No.%d:\"%s\"-%d \r\n",
 		   get_precursor_successor_return.node,
 		   get_precursor_successor_return.location,
-		   (char *)get_precursor_successor_return.data);
+		   (char *)get_precursor_successor_return.data,
+		   (size_t)TREE_FAMILY_DEBUG_OPERATOR_GET_KEY_FROM_DATA(get_precursor_successor_return.data) - '0');
 
 	#endif // (TREE_FAMILY_CFG_DEBUG_EN)
 
@@ -1293,7 +1436,7 @@ tree_family_control_get_successor(struct tree_family_s *tree,
 	#endif // (TREE_FAMILY_CFG_DEBUG_EN)
 
 	if (NULL != node_current) {																						/* If the node's right child is valid */
-		while (NULL != (node = tree_family_node_control_get_family_member(tree, node_current, id_far_left))) {		/* Get the node_current's left child,then assign to the node */
+		while (NULL != (node = tree_family_node_control_get_family_member(tree, node_current, LINK_OPERATOR_CODE_CHILD_FAR_LEFT))) {		/* Get the node_current's left child,then assign to the node */
 			node_current = node;																					/* Assign the node to the node_current */
 		}
 	} else {
@@ -1332,10 +1475,11 @@ EXIT:
 
 	#if (TREE_FAMILY_CFG_DEBUG_EN)
 
-	printf("successor is %p's No.%d:\"%s\"\r\n",
+	printf("successor is %p's No.%d:\"%s\"-%d \r\n",
 		   get_precursor_successor_return.node,
 		   get_precursor_successor_return.location,
-		   (char *)get_precursor_successor_return.data);
+		   (char *)get_precursor_successor_return.data,
+		   (size_t)TREE_FAMILY_DEBUG_OPERATOR_GET_KEY_FROM_DATA(get_precursor_successor_return.data) - '0');
 
 	#endif // (TREE_FAMILY_CFG_DEBUG_EN)
 
