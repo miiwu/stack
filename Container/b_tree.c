@@ -293,8 +293,8 @@ static inline void b_tree_control_switch_control(struct tree_family_s *tree)
  */
 
 container_size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
-										struct tree_family_chain_node_s *node,
-										void *data)
+												  struct tree_family_chain_node_s *node,
+												  void *data)
 {
 	struct b_tree_chain_node_data_s
 		*data_operator = ((struct tree_family_chain_node_s *)node)->data;

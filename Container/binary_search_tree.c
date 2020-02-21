@@ -250,7 +250,7 @@ binary_search_tree_control_search_recursion_rule(struct tree_family_s *tree,
 		}
 	}
 
-	evaluation_level = tree->info.degree;												/* the id of link far right */
+	evaluation_level = tree->info.degree;												/* Assign to be the id of link far right */
 
 EXIT:
 
@@ -287,10 +287,6 @@ void binary_search_tree_control_insert_rule(struct tree_family_s *tree,
 	assert(tree);
 	assert(data);
 
-	void
-		*data_operator = search_return.node_prev->data,
-		*link_operatpr = search_return.node_prev->link;
-
 	struct tree_family_chain_node_s *node = tree_family_control_init_node(tree);
 	void *data_cpy = tree->allocator_ctrl->allocate(tree->allocator, 1, tree->info.mem_size);
 
@@ -300,16 +296,11 @@ void binary_search_tree_control_insert_rule(struct tree_family_s *tree,
 
 	memcpy(data_cpy, data, tree->info.mem_size);
 
-	*((void **)node->data) = data_cpy;
-	*((void **)node->link) = search_return.node_prev;
+	*((void **)node->data) = data_cpy;												/* Copy the data and assign to data */
+	*((void **)node->link) = search_return.node_prev;								/* Link the search parent to be node's parent */
 
-	struct tree_family_chain_node_s *node_current = 0;
-
-	if (tree->info.degree <= search_return.estimate) {
-		*((void **)link_operatpr + 2) = node;
-	} else {
-		*((void **)link_operatpr + 1) = node;
-	}
+	*((void **)search_return.node_prev->link + search_return.estimate) = node;		/* Link the node to be the search parent's child,
+																						the estimate would be two value [1 or 2] */
 }
 
 /**
@@ -324,4 +315,66 @@ void binary_search_tree_control_delete_rule(struct tree_family_s *tree,
 											struct tree_family_search_node_return_s search_return,
 											void *data)
 {
+	assert(tree);
+	assert(data);
+
+	struct tree_family_chain_node_s
+		*node = search_return.node,
+		*parent = search_return.node_prev;
+
+	container_size_t relation = LINK_OPERATOR_CODE_PARENT;											/* Record the relation id with their parent */
+
+	while (NULL != node) {
+		if (tree_family_node_control_get_if_leaf(tree, node)) {										/* Delete the node that is a leaf node */
+			if (NULL == parent) {
+				tree->root = NULL;
+			} else {
+				relation = tree_family_node_control_get_relation_with_parent(tree, node, parent);
+
+				if (LINK_OPERATOR_CODE_PARENT != relation) {
+					*((void **)parent->link + relation) = NULL;
+				}
+			}
+
+		DESTROY:
+
+			tree_family_control_destroy_node(tree, &node);
+		} else if (NULL != *((void **)node->link + 1) &&											/* If it have two child linked */
+				   NULL != *((void **)node->link + 2)) {
+			tree_family_get_precursor_and_successor_return_st
+				get_precursor_successor_return = tree_family_control_get_precursor(tree, node, 0);
+
+			if (NULL == get_precursor_successor_return.node &&										/* If the precursor is NULL,get the successor */
+				(get_precursor_successor_return = tree_family_control_get_successor(tree, node, 0),
+				 NULL == get_precursor_successor_return.node)) {
+				return;
+			}
+
+			ALGORITHM_SWAP((size_t)(*((void **)get_precursor_successor_return.node->data +
+									  get_precursor_successor_return.location)),
+									  (size_t)(*((void **)node->data + search_return.location)));	/* Swap the data of the node with it's precursor or the successor */
+
+			node = get_precursor_successor_return.node;
+			parent = *((void **)node->link);
+		} else {																					/* If it have only one child linked */
+			struct tree_family_chain_node_s *node_cut = NULL;
+
+			if (NULL != *((void **)node->link + 1)) {
+				relation = 1;
+			} else if (NULL != *((void **)node->link + 2)) {
+				relation = 2;
+			}
+
+			node_cut = *((void **)node->link + relation);											/* Cut the node's child */
+
+			if (NULL == parent &&
+				NULL == (parent = tree->root = node_cut, node_cut = NULL)) {						/* If it's parent is NULL,it would be the root */
+				return;
+			} else {
+				*((void **)parent->link + LINK_OPERATOR_CODE_PARENT) = node_cut;					/* Link the node into parent to be one of it's child */
+			}
+
+			goto DESTROY;
+		}
+	}
 }

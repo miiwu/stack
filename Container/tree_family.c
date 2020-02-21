@@ -92,7 +92,7 @@ void tree_family_control_get_control_callback(enum tree_family_node_type_e node_
 *	- false	no
 */
 
-void *tree_family_sort_algorithm_control_get_data(void *object, 
+void *tree_family_sort_algorithm_control_get_data(void *object,
 												  container_size_t loc);
 
 /**
@@ -106,7 +106,7 @@ void *tree_family_sort_algorithm_control_get_data(void *object,
 *	- false	no
 */
 
-void tree_family_sort_algorithm_control_swap_data(void *object, 
+void tree_family_sort_algorithm_control_swap_data(void *object,
 												  container_size_t lhs, container_size_t rhs);
 
 /**
@@ -120,7 +120,7 @@ void tree_family_sort_algorithm_control_swap_data(void *object,
 *	- false	no
 */
 
-bool tree_family_node_control_compare_greater(void *lhs, 
+bool tree_family_node_control_compare_greater(void *lhs,
 											  void *rhs, container_size_t len);
 
 /**
@@ -489,7 +489,8 @@ void tree_family_control_insert(struct tree_family_s *tree, void *data)
 
 	tree->switch_control(tree);
 
-	tree_family_search_node_return_st search_return = tree_family_control_search(tree, data);
+	tree_family_search_node_return_st
+		search_return = tree_family_control_search(tree, data);
 
 	if (SEARCH_CODE_NO_SUCH_ELEMENT == search_return.location) {													/* Can't search the node */
 		if (NULL == search_return.node_prev) {
@@ -526,11 +527,9 @@ void tree_family_control_delete(struct tree_family_s *tree,
 	tree->switch_control(tree);
 
 	struct tree_family_search_node_return_s
-		search_return = { 0 };
+		search_return = tree_family_control_search(tree, data);
 
-	search_return = tree_family_control_search(tree, data);
-
-	if (0xff != search_return.location) {								/* Can search the node */
+	if (SEARCH_CODE_NO_SUCH_ELEMENT != search_return.location) {							/* Can search the node */
 		tree_family_control_environment.node_operator.delete_rule(tree, search_return, data);
 	}
 }
@@ -782,7 +781,7 @@ void *tree_family_node_control_del_data(struct tree_family_s *tree,
  */
 
 container_size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
-											  struct tree_family_chain_node_s *node)
+														struct tree_family_chain_node_s *node)
 {
 	assert(tree);
 	assert(node);
@@ -1095,15 +1094,17 @@ bool tree_family_node_control_get_if_right_child(struct tree_family_s *tree,
  * @return void
  */
 
-container_size_t tree_family_node_control_get_relation_with_parent(struct tree_family_s *tree,
-														 struct tree_family_chain_node_s *node,
-														 struct tree_family_chain_node_s *parent)
+container_size_t
+tree_family_node_control_get_relation_with_parent(struct tree_family_s *tree,
+												  struct tree_family_chain_node_s *node,
+												  struct tree_family_chain_node_s *parent)
 {
 	assert(tree);
 	assert(node);
 
-	if (NULL == parent &&
-		NULL == (parent = *((void **)node->link))) {
+	if ((NULL == parent &&
+		 NULL == (parent = *((void **)node->link))) ||
+		node == parent) {
 		goto FAIL;
 	}
 
@@ -1166,7 +1167,7 @@ bool tree_family_node_control_get_if_leaf(struct tree_family_s *tree,
 *	- false	no
 */
 
-static inline void *tree_family_sort_algorithm_control_get_data(void *object, 
+static inline void *tree_family_sort_algorithm_control_get_data(void *object,
 																container_size_t loc)
 {
 	assert(object);
@@ -1185,8 +1186,8 @@ static inline void *tree_family_sort_algorithm_control_get_data(void *object,
 *	- false	no
 */
 
-static inline void tree_family_sort_algorithm_control_swap_data(void *object, 
-																container_size_t lhs, 
+static inline void tree_family_sort_algorithm_control_swap_data(void *object,
+																container_size_t lhs,
 																container_size_t rhs)
 {
 	assert(object);
@@ -1205,7 +1206,7 @@ static inline void tree_family_sort_algorithm_control_swap_data(void *object,
 *	- false	no
 */
 
-bool tree_family_node_control_compare_greater(void *lhs, void *rhs, 
+bool tree_family_node_control_compare_greater(void *lhs, void *rhs,
 											  container_size_t len)
 {
 	if (NULL == lhs) {						/* Regard NULL is the greatest value */
