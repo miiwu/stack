@@ -428,30 +428,38 @@ void tree_family_control_configuration_exception(struct tree_family_s *tree,
  * @return NONE
  */
 
-extern inline tree_family_search_node_return_st
+tree_family_search_node_return_st
 tree_family_control_search(struct tree_family_s *tree, void *data)
 {
 	assert(tree);
 
-	tree->switch_control(tree);
+	tree_family_search_node_return_st search_return = { SEARCH_CODE_NO_SUCH_ELEMENT };
 
-	tree_family_search_node_return_st search_return = { 0xff };
+	if (NULL == data) {
+		goto EXIT;
+	}
+
+	tree->switch_control(tree);
 
 	struct tree_family_chain_node_s *node_current = tree->root;
 
 	while (NULL != node_current) {
 		search_return.location = tree_family_control_environment.node_operator.search_match_rule(tree, node_current, data);
 
-		if (SEARCH_CODE_NOT_SEARCH != search_return.location) {
+		if (SEARCH_CODE_NO_SUCH_ELEMENT != search_return.location) {
 			search_return.node = node_current;
+			search_return.content = (void *)((size_t)(*((void **)node_current->data + search_return.location)) +
+											 tree->info.mem_size_key);
 
-			return search_return;
+			goto EXIT;
 		}
 
 		search_return.node_prev = node_current;
 
 		node_current = tree_family_control_environment.node_operator.search_recursion_rule(tree, node_current, data);
 	}
+
+EXIT:
 
 	return search_return;
 }
@@ -470,14 +478,15 @@ void tree_family_control_insert(struct tree_family_s *tree, void *data)
 {
 	assert(tree);
 
+	if (NULL == data) {
+		return;
+	}
+
 	tree->switch_control(tree);
 
-	tree_family_search_node_return_st
-		search_return = { 0 };
+	tree_family_search_node_return_st search_return = tree_family_control_search(tree, data);
 
-	search_return = tree_family_control_search(tree, data);
-
-	if (SEARCH_CODE_NOT_SEARCH == search_return.location) {													/* Can't search the node */
+	if (SEARCH_CODE_NO_SUCH_ELEMENT == search_return.location) {													/* Can't search the node */
 		if (NULL == search_return.node_prev) {
 			void *data_cpy = tree->allocator_ctrl->allocate(tree->allocator, 1, tree->info.mem_size);
 
@@ -503,8 +512,8 @@ void tree_family_control_insert(struct tree_family_s *tree, void *data)
  * @return NONE
  */
 
-void *tree_family_control_delete(struct tree_family_s *tree,
-								 void *data)
+void tree_family_control_delete(struct tree_family_s *tree,
+								void *data)
 {
 	assert(tree);
 	assert(data);
@@ -519,8 +528,6 @@ void *tree_family_control_delete(struct tree_family_s *tree,
 	if (0xff != search_return.location) {								/* Can search the node */
 		tree_family_control_environment.node_operator.delete_rule(tree, search_return, data);
 	}
-
-	return NULL;
 }
 
 /**
@@ -698,7 +705,7 @@ void tree_family_node_control_insert_data(struct tree_family_s *tree,
 		memcpy(*((void **)data_node), data, tree->info.mem_size_key);
 	} else {
 		void
-			*data_cpy = tree_family_node_control_init_data(tree),
+			*data_cpy = tree->allocator_ctrl->allocate(tree->allocator, 1, tree->info.mem_size),
 			*data_package_sort = tree->allocator_ctrl->allocate(tree->allocator, 			/* The package which store the address of the node's data */
 																tree_family_control_node_infomation.data_element_count + 1,
 																sizeof(void *));

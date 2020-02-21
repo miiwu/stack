@@ -315,7 +315,7 @@ size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
 
 	for (; count < tree->info.degree - 1; count++) {
 		if (NULL != *((void **)data_operator + count) &&
-			compare_control_equal(data, *((void **)data_operator + count), tree->info.mem_size)) {
+			compare_control_equal(data, *((void **)data_operator + count), tree->info.mem_size_key)) {
 			goto EXIT;
 		}
 	}
@@ -363,7 +363,7 @@ void *b_tree_control_search_recursion_rule(struct tree_family_s *tree,
 	for (; count < tree->info.degree; count++) {
 		if ((NULL == *((void **)data_operator + count - 1) ||
 			(NULL != *((void **)data_operator + count - 1) &&
-			 compare_control_lesser(data, *((void **)data_operator + count - 1), tree->info.mem_size)))) {
+			 compare_control_lesser(data, *((void **)data_operator + count - 1), tree->info.mem_size_key)))) {
 			goto EXIT;
 		}
 	}
@@ -814,8 +814,8 @@ void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
 	}
 
 	if (tree->info.minimum_key < tree_family_node_control_get_node_type(tree, node_brother)) {	/* If the brother node has enough keys */
-		enum tree_family_data_operators_code_type_e data_operator = DATA_OPERATOR_CODE_DATA_FAR_LEFT;
-		enum tree_family_link_operators_code_type_e link_operator[2] = {
+		enum tree_family_data_operator_code_type_e data_operator = DATA_OPERATOR_CODE_DATA_FAR_LEFT;
+		enum tree_family_link_operator_code_type_e link_operator[2] = {
 			LINK_OPERATOR_CODE_CHILD_FAR_LEFT , LINK_OPERATOR_CODE_CHILD_FAR_RIGHT };
 
 		if (node_on_the_right_side) {

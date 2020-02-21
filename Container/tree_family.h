@@ -107,14 +107,14 @@ enum tree_family_node_type_e {
  */
 
 enum tree_family_search_code_type_e {
-	SEARCH_CODE_NOT_SEARCH = 0xff,
+	SEARCH_CODE_NO_SUCH_ELEMENT = 0xff,
 };
 
 /**
  * @brief This struct is the binary tree structure module
  */
 
-enum tree_family_link_operators_code_type_e {
+enum tree_family_link_operator_code_type_e {
 	LINK_OPERATOR_CODE_PARENT = 0x00,
 
 	LINK_OPERATOR_CODE_CHILD_FAR_LEFT = 0x01,
@@ -126,7 +126,7 @@ enum tree_family_link_operators_code_type_e {
  * @brief This struct is the binary tree structure module
  */
 
-enum tree_family_data_operators_code_type_e {
+enum tree_family_data_operator_code_type_e {
 	DATA_OPERATOR_CODE_DATA_FAR_LEFT = 0x00,
 
 	DATA_OPERATOR_CODE_DATA_FAR_RIGHT = 0xff,
@@ -158,6 +158,8 @@ struct tree_family_chain_node_data_content_s {
 
 typedef struct tree_family_search_node_return_s {
 	size_t location;
+
+	void *content;
 
 	struct tree_family_chain_node_s *node;
 
@@ -453,8 +455,8 @@ void tree_family_control_insert(struct tree_family_s *tree, void *data);
  * @return NONE
  */
 
-void *tree_family_control_delete(struct tree_family_s *tree,
-								 void *data);
+void tree_family_control_delete(struct tree_family_s *tree,
+								void *data);
 
 /**
  * @brief This function will erases all elements from the container
@@ -753,9 +755,9 @@ void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
  */
 
 void *tree_family_control_get_neighbour(struct tree_family_s *tree,
-                                        struct tree_family_chain_node_s *node,
-                                        struct tree_family_chain_node_s *parent,
-                                        size_t relation_with_parent);
+										struct tree_family_chain_node_s *node,
+										struct tree_family_chain_node_s *parent,
+										size_t relation_with_parent);
 
 /**
  * @brief This function will delete the data of the node,and return the data's address.
