@@ -39,18 +39,6 @@
 *********************************************************************************************************
 */
 
-/**
- * @brief This struct is the binary tree link node structure module.
- */
-
-enum b_tree_search_node_node_location_e {
-	TWO_THREE_TREE_SEARCH_LOCATION_LEFT,
-
-	TWO_THREE_TREE_SEARCH_LOCATION_RIGHT,
-
-	TWO_THREE_TREE_SEARCH_LOCATION_NONE = 0xff,
-};
-
 /*
 *********************************************************************************************************
 *								            FUNCTION PROTOTYPES
@@ -69,8 +57,8 @@ enum b_tree_search_node_node_location_e {
  */
 
 void b_tree_control_configuration_init(struct tree_family_s **tree,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE degree,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									   container_size_t degree,
+									   container_size_t element_size,
 									   void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /*

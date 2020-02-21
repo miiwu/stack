@@ -57,7 +57,7 @@ struct vector_control_s {
 	struct {
 		/* @brief This function will initialize the vector struct.                                      */
 		void (*init)(VECTOR_TYPEDEF_PPTR vector,
-					 CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_size,
+					 container_size_t dst_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will destroy the vector struct and free the space.                      */
@@ -84,7 +84,7 @@ struct vector_control_s {
 		/* @brief This function will returns a reference to the element
 				  at specified location position, with bounds checking.                                 */
 		void *(*at)(VECTOR_TYPEDEF_PTR vector,
-					CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+					container_size_t position);
 
 		/* @brief This function will returns pointer to the underlying array
 				  serving as element storage.                                                           */
@@ -102,20 +102,20 @@ struct vector_control_s {
 		bool (*empty)(VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns the number of elements in the container.                   */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*size)(VECTOR_TYPEDEF_PTR vector);
+		container_size_t(*size)(VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*max_size)(VECTOR_TYPEDEF_PTR vector);
+		container_size_t(*max_size)(VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will returns the number of elements
 				  that the container has currently allocated space for.                                 */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*capacity)(VECTOR_TYPEDEF_PTR vector);
+		container_size_t(*capacity)(VECTOR_TYPEDEF_PTR vector);
 
 		/* @brief This function will increase the capacity of the vector to a size
 				  that's greater or equal to new_cap. */
 		void (*reserve)(VECTOR_TYPEDEF_PPTR vector,
-						CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
+						container_size_t size);
 
 		/* @brief This function will requests the removal of unused capacity.                           */
 		void (*shrink_to_fit)(VECTOR_TYPEDEF_PPTR vector);
@@ -127,11 +127,11 @@ struct vector_control_s {
 
 		/* @brief This function will inserts elements at the specified location in the container.       */
 		void (*insert)(VECTOR_TYPEDEF_PTR vector,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
+					   container_size_t position, container_size_t amount, void **source);
 
 	   /* @brief This function will erases the specified elements from the container.                  */
 		void (*erase)(VECTOR_TYPEDEF_PTR vector,
-					  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+					  container_size_t position);
 
 		/* @brief This function will appends the given element source to the end of the container.      */
 		void (*push_back)(VECTOR_TYPEDEF_PTR vector,
@@ -142,7 +142,7 @@ struct vector_control_s {
 
 		/* @brief This function will resizes the container to contain count elements.                   */
 		void (*resize)(VECTOR_TYPEDEF_PPTR vector,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
+					   container_size_t size);
 
 		/* @brief This function will copy the contents of the container to those of other.              */
 		void (*copy)(VECTOR_TYPEDEF_PPTR destination,
@@ -174,7 +174,7 @@ struct vector_control_s {
  */
 
 void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									   container_size_t element_size,
 									   void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -188,7 +188,7 @@ void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
  */
 
 void vector_control_capacity_reserve(VECTOR_TYPEDEF_PPTR vector,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
+									 container_size_t size);
 
 /**
  * @brief This function will requests the removal of unused capacity.
@@ -210,7 +210,7 @@ void vector_control_capacity_shrink_to_fit(VECTOR_TYPEDEF_PPTR vector);
  */
 
 void vector_control_modifiers_resize(VECTOR_TYPEDEF_PPTR vector,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE count);
+									 container_size_t count);
 
 /*
 *********************************************************************************************************

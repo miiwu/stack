@@ -92,7 +92,8 @@ void tree_family_control_get_control_callback(enum tree_family_node_type_e node_
 *	- false	no
 */
 
-void *tree_family_sort_algorithm_control_get_data(void *object, size_t loc);
+void *tree_family_sort_algorithm_control_get_data(void *object, 
+												  container_size_t loc);
 
 /**
 * @brief This function will compare if the left-hand-side greater than the right-hand-side.
@@ -105,7 +106,8 @@ void *tree_family_sort_algorithm_control_get_data(void *object, size_t loc);
 *	- false	no
 */
 
-void tree_family_sort_algorithm_control_swap_data(void *object, size_t lhs, size_t rhs);
+void tree_family_sort_algorithm_control_swap_data(void *object, 
+												  container_size_t lhs, container_size_t rhs);
 
 /**
 * @brief This function will compare if the left-hand-side greater than the right-hand-side.
@@ -118,7 +120,8 @@ void tree_family_sort_algorithm_control_swap_data(void *object, size_t lhs, size
 *	- false	no
 */
 
-bool tree_family_node_control_compare_greater(void *lhs, void *rhs, size_t len);
+bool tree_family_node_control_compare_greater(void *lhs, 
+											  void *rhs, container_size_t len);
 
 /**
 * @brief This function will destroy all the node when traversal.
@@ -130,7 +133,7 @@ bool tree_family_node_control_compare_greater(void *lhs, void *rhs, size_t len);
 
 void tree_family_control_destroy_posorder_traversal_operator(struct tree_family_s *tree,
 															 void *node,
-															 size_t data_element_count);
+															 container_size_t data_element_count);
 
 /**
 * @brief This function will replace the switch_control(tree) before enter control sandbox.
@@ -256,8 +259,10 @@ void tree_family_control_get_control_in_sandbox(struct tree_family_s *tree,
 static inline void tree_family_control_get_control_callback(enum tree_family_node_type_e node_type)
 {
 	tree_family_control_node_infomation.node_type = node_type;
-	tree_family_control_node_infomation.data_element_count = tree_family_control_node_infomation.node_type - 1;
-	tree_family_control_node_infomation.link_element_count = tree_family_control_node_infomation.node_type + 1;
+	tree_family_control_node_infomation.data_element_count = node_type - 1;
+	tree_family_control_node_infomation.link_element_count = node_type + 1;
+	tree_family_control_node_infomation.id_data_far_right = node_type - 2;
+	tree_family_control_node_infomation.id_link_far_right = node_type;
 	tree_family_control_node_infomation.data_mem_len = tree_family_control_node_infomation.data_element_count * sizeof(void *);
 	tree_family_control_node_infomation.link_mem_len = tree_family_control_node_infomation.link_element_count * sizeof(void *);
 }
@@ -275,10 +280,10 @@ static inline void tree_family_control_get_control_callback(enum tree_family_nod
 
 void tree_family_control_configuration_init(struct tree_family_s **tree,
 											void (*switch_control)(struct tree_family_s *tree),
-											size_t degree,
+											container_size_t degree,
 											enum tree_family_member_type_e member_type,
 											enum allocator_type_e allocator_type,
-											CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+											container_size_t element_size,
 											void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(tree);
@@ -456,7 +461,7 @@ tree_family_control_search(struct tree_family_s *tree, void *data)
 
 		search_return.node_prev = node_current;
 
-		node_current = tree_family_control_environment.node_operator.search_recursion_rule(tree, node_current, data);
+		search_return.estimate = tree_family_control_environment.node_operator.search_recursion_rule(tree, &node_current, data);
 	}
 
 EXIT:
@@ -641,31 +646,33 @@ void tree_family_node_control_destroy_data(struct tree_family_s *tree,
 void tree_family_node_control_set_data(struct tree_family_s *tree,
 									   struct tree_family_chain_node_s *node,
 									   void *data,
-									   size_t id)
+									   container_size_t id)
 {
 	assert(tree);
 	assert(node);
 
 	tree->switch_control(tree);
 
-	if (NULL == data &&
-		NULL == *((void **)node->link + (id = tree->info.degree))) {					/* Have enough space for the data */
+	if (NULL == data ||
+		NULL != *((void **)node->data + 												/* If have enough space for the data */
+				  tree_family_control_node_infomation.id_data_far_right)) {
 		return;
 	}
 
-	if (DATA_OPERATOR_IS_DATA_FAR_RIGHT(id)) {											/* Determine the data's id,set the data as the far right one */
-		if (NULL != *((void **)node->data + (id = 1))) {
-			while (tree->info.degree > id++ &&
-				   NULL != *((void **)node->link + id)) {
-			}
+	if (DATA_OPERATOR_IS_DATA_FAR_RIGHT(id)) {											/* Determine the data's id */
+		if (NULL != *((void **)node->data + DATA_OPERATOR_CODE_DATA_FAR_LEFT)) {		/* Set the data as the far right one */
+			id = tree_family_control_node_infomation.id_data_far_right;
+
+			while (NULL == *((void **)node->link + id) &&
+				   DATA_OPERATOR_CODE_DATA_FAR_LEFT < --id);
 		}
 	}
 
-	size_t id_data = tree->info.degree - 1;
+	container_size_t id_data = tree_family_control_node_infomation.id_data_far_right;
 
-	while (id < --id_data &&															/* Sort the data to make a space */
+	while (id < id_data &&																/* Sort the data to make a space */
 		   NULL != *((void **)node->data + id_data)) {
-		*((void **)node->data + id_data + 1) = *((void **)node->data + id_data);
+		*((void **)node->data + id_data) = *((void **)node->data + --id_data);
 	}
 
 	*((void **)node->data + id) = data;													/* Set the data to the space */
@@ -743,7 +750,7 @@ void tree_family_node_control_insert_data(struct tree_family_s *tree,
 
 void *tree_family_node_control_del_data(struct tree_family_s *tree,
 										struct tree_family_chain_node_s *node,
-										size_t id)
+										container_size_t id)
 {
 	assert(node);
 
@@ -774,7 +781,7 @@ void *tree_family_node_control_del_data(struct tree_family_s *tree,
  * @return void
  */
 
-size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
+container_size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
 											  struct tree_family_chain_node_s *node)
 {
 	assert(tree);
@@ -784,7 +791,7 @@ size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
 
 	void *data_node = node->data;
 
-	size_t count_have_data = 0;
+	container_size_t count_have_data = 0;
 
 	for (size_t cnt = 0; cnt < tree_family_control_node_infomation.data_element_count; cnt++) {
 		if (NULL != *((void **)data_node + cnt)) {
@@ -843,7 +850,7 @@ void tree_family_node_control_destroy_link(struct tree_family_s *tree,
 
 void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
 												 struct tree_family_chain_node_s *node,
-												 size_t id)
+												 container_size_t id)
 {
 	assert(tree);
 	assert(node);
@@ -853,7 +860,7 @@ void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
 	void **link_node = *((void **)node + 1);
 
 	if (LINK_OPERATOR_IS_CHILD_FAR_RIGHT(id)) {
-		size_t id_far_right = tree->info.degree;
+		container_size_t id_far_right = tree->info.degree;
 		while (2 < id_far_right &&
 			   NULL == *((void **)link_node + id_far_right)) {
 			id_far_right--;
@@ -877,7 +884,7 @@ void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
 void *tree_family_control_get_neighbour(struct tree_family_s *tree,
 										struct tree_family_chain_node_s *node,
 										struct tree_family_chain_node_s *parent,
-										size_t relation_with_parent)
+										container_size_t relation_with_parent)
 {
 	assert(tree);
 	assert(node);
@@ -897,7 +904,7 @@ void *tree_family_control_get_neighbour(struct tree_family_s *tree,
 		return *((void **)parent->link + tree->info.degree);
 	}
 
-	size_t
+	container_size_t
 		minimum = tree->info.minimum_key,
 		type_node = 0,
 		location = 0;
@@ -935,7 +942,7 @@ void *tree_family_control_get_neighbour(struct tree_family_s *tree,
 void *tree_family_node_control_set_family_member(struct tree_family_s *tree,
 												 struct tree_family_chain_node_s *node,
 												 struct tree_family_chain_node_s *family_member,
-												 size_t id)
+												 container_size_t id)
 {
 	assert(tree);
 	assert(node);
@@ -981,7 +988,7 @@ EXIT:
 
 void *tree_family_node_control_del_family_member(struct tree_family_s *tree,
 												 struct tree_family_chain_node_s *node,
-												 size_t id)
+												 container_size_t id)
 {
 	assert(node);
 
@@ -1028,7 +1035,7 @@ bool tree_family_node_control_get_if_left_child(struct tree_family_s *tree,
 		return false;
 	}
 
-	size_t
+	container_size_t
 		link_id_far_left = 1,
 		link_id_far_right = tree_family_node_control_get_node_type(tree, parent) + 1;
 
@@ -1064,7 +1071,7 @@ bool tree_family_node_control_get_if_right_child(struct tree_family_s *tree,
 		return false;
 	}
 
-	size_t
+	container_size_t
 		link_id_far_left = 1,
 		link_id_far_right = tree_family_node_control_get_node_type(tree, parent) + 1;
 
@@ -1088,7 +1095,7 @@ bool tree_family_node_control_get_if_right_child(struct tree_family_s *tree,
  * @return void
  */
 
-size_t tree_family_node_control_get_relation_with_parent(struct tree_family_s *tree,
+container_size_t tree_family_node_control_get_relation_with_parent(struct tree_family_s *tree,
 														 struct tree_family_chain_node_s *node,
 														 struct tree_family_chain_node_s *parent)
 {
@@ -1133,7 +1140,7 @@ bool tree_family_node_control_get_if_leaf(struct tree_family_s *tree,
 	void
 		**link_node = node->link;
 
-	size_t count_have_brother = 0;
+	container_size_t count_have_brother = 0;
 
 	for (size_t cnt = 1; cnt < tree_family_control_node_infomation.link_element_count; cnt++) {
 		if (NULL != *(link_node + cnt)) {
@@ -1159,7 +1166,8 @@ bool tree_family_node_control_get_if_leaf(struct tree_family_s *tree,
 *	- false	no
 */
 
-static inline void *tree_family_sort_algorithm_control_get_data(void *object, size_t loc)
+static inline void *tree_family_sort_algorithm_control_get_data(void *object, 
+																container_size_t loc)
 {
 	assert(object);
 
@@ -1177,7 +1185,9 @@ static inline void *tree_family_sort_algorithm_control_get_data(void *object, si
 *	- false	no
 */
 
-static inline void tree_family_sort_algorithm_control_swap_data(void *object, size_t lhs, size_t rhs)
+static inline void tree_family_sort_algorithm_control_swap_data(void *object, 
+																container_size_t lhs, 
+																container_size_t rhs)
 {
 	assert(object);
 
@@ -1195,7 +1205,8 @@ static inline void tree_family_sort_algorithm_control_swap_data(void *object, si
 *	- false	no
 */
 
-bool tree_family_node_control_compare_greater(void *lhs, void *rhs, size_t len)
+bool tree_family_node_control_compare_greater(void *lhs, void *rhs, 
+											  container_size_t len)
 {
 	if (NULL == lhs) {						/* Regard NULL is the greatest value */
 		return true;
@@ -1316,14 +1327,14 @@ void tree_family_control_posorder_traversal(struct tree_family_s *tree,
 tree_family_get_precursor_and_successor_return_st
 tree_family_control_get_precursor(struct tree_family_s *tree,
 								  struct tree_family_chain_node_s *node,
-								  size_t location)
+								  container_size_t location)
 {
 	assert(tree);
 	assert(node);
 
 	tree->switch_control(tree);
 
-	size_t
+	container_size_t
 		id_parent = 0,
 		id_far_left = location + 1,
 		id_far_right = location + 2;
@@ -1419,14 +1430,14 @@ EXIT:
 tree_family_get_precursor_and_successor_return_st
 tree_family_control_get_successor(struct tree_family_s *tree,
 								  struct tree_family_chain_node_s *node,
-								  size_t location)
+								  container_size_t location)
 {
 	assert(tree);
 	assert(node);
 
 	tree->switch_control(tree);
 
-	size_t
+	container_size_t
 		id_parent = 0,
 		id_far_left = location + 1,
 		id_far_right = location + 2;
@@ -1503,7 +1514,7 @@ EXIT:
 
 void tree_family_control_traversal_printer(struct tree_family_s *tree,
 										   void *node,
-										   size_t data_element_count)
+										   container_size_t data_element_count)
 {
 	printf("node:%p data: ", node);
 
@@ -1528,7 +1539,7 @@ void tree_family_control_traversal_printer(struct tree_family_s *tree,
 
 void tree_family_control_destroy_posorder_traversal_operator(struct tree_family_s *tree,
 															 void *node,
-															 size_t data_element_count)
+															 container_size_t data_element_count)
 {
 	printf("will destroy ");
 

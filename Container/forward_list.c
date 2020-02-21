@@ -140,7 +140,7 @@ void forward_list_control_switch_control(void);
 */
 
 void *forward_list_control_get_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+									container_size_t position);
 
 /**
  * @brief This function will set the node at the specified location in the container.
@@ -153,7 +153,7 @@ void *forward_list_control_get_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
  */
 
 void *forward_list_control_set_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position, struct forward_list_node_s *node);
+									container_size_t position, struct forward_list_node_s *node);
 
 /**
  * @brief This function will delete the node at the specified location in the container.
@@ -165,7 +165,7 @@ void *forward_list_control_set_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
  */
 
 void *forward_list_control_del_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+									container_size_t position);
 
  /**
   * @brief This function will swap the node at the specified location in the container
@@ -178,8 +178,8 @@ void *forward_list_control_del_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
   */
 
 void forward_list_control_swap_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos);
+									container_size_t dst_pos,
+									container_size_t src_pos);
 
 /*
 *********************************************************************************************************
@@ -229,7 +229,7 @@ void forward_list_control_switch_control(void)
  */
 
 void forward_list_control_configuration_init(FORWARD_LIST_TYPEDEF_PPTR forward_list,
-											 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+											 container_size_t element_size,
 											 void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(forward_list);
@@ -249,7 +249,7 @@ void forward_list_control_configuration_init(FORWARD_LIST_TYPEDEF_PPTR forward_l
  */
 
 void *forward_list_control_get_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+									container_size_t position)
 {
 	assert(forward_list);
 	assert((0 <= position));
@@ -262,7 +262,7 @@ void *forward_list_control_get_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
 	struct forward_list_node_s
 		**current_node = (struct forward_list_node_s **) & forward_list->node;
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE
+	container_size_t
 		currrent_position = 0;
 
 LOOP:
@@ -291,7 +291,7 @@ LOOP:
  */
 
 void *forward_list_control_set_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position, struct forward_list_node_s *node)
+									container_size_t position, struct forward_list_node_s *node)
 {
 	assert(forward_list);
 	assert((0 <= position));
@@ -337,7 +337,7 @@ void *forward_list_control_set_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
  */
 
 void *forward_list_control_del_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+									container_size_t position)
 {
 	assert(forward_list);
 	assert((0 <= position));
@@ -377,8 +377,8 @@ void *forward_list_control_del_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
  */
 
 void forward_list_control_swap_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos)
+									container_size_t dst_pos,
+									container_size_t src_pos)
 {
 	assert(forward_list);
 
@@ -388,7 +388,7 @@ void forward_list_control_swap_node(FORWARD_LIST_TYPEDEF_PTR forward_list,
 	}
 
 	if (dst_pos > src_pos) {
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE tmp = dst_pos;
+		container_size_t tmp = dst_pos;
 
 		dst_pos = src_pos;
 		src_pos = tmp;

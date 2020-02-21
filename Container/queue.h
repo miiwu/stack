@@ -54,7 +54,7 @@ struct queue_control_t {
         /* @brief This function will initialize the queue struct and the specified container.           */
         void (*init)(QUEUE_TYPEDEF_PPTR queue,
                      enum container_type_e type,
-                     CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+                     container_size_t element_size,
                      void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
         /* @brief This function will initialize the queue struct and attach to the specified container. */
@@ -129,7 +129,7 @@ struct queue_control_t {
 
 void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
                                      enum container_type_e type,
-                                     CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+                                     container_size_t element_size,
                                      void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -191,7 +191,7 @@ void *queue_control_element_access_back(QUEUE_TYPEDEF_PTR queue);
  * @return NONE
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE queue_control_capacity_size(QUEUE_TYPEDEF_PTR queue);
+container_size_t queue_control_capacity_size(QUEUE_TYPEDEF_PTR queue);
 
 /**
  * @brief This function will push the given element source to the top of the queue.
@@ -212,7 +212,7 @@ bool queue_control_capacity_empty(QUEUE_TYPEDEF_PTR queue);
  * @return NONE
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE queue_control_capacity_max_size(QUEUE_TYPEDEF_PTR queue);
+container_size_t queue_control_capacity_max_size(QUEUE_TYPEDEF_PTR queue);
 
 void queue_control_modifiers_push(QUEUE_TYPEDEF_PTR queue, void *source);
 

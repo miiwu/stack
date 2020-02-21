@@ -88,7 +88,7 @@ struct tree_family_node_operator_s avl_tree_control_node_operator = {
  */
 
 void avl_tree_control_configuration_init(AVL_TREE_TYPEDEF_PPTR tree,
-										 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+										 container_size_t element_size,
 										 void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(tree);

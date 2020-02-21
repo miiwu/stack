@@ -161,7 +161,7 @@ void array_control_switch_control(void);
  */
 
 void array_control_configuration_init(ARRAY_TYPEDEF_PPTR array,
-									  CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									  container_size_t element_size,
 									  void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(array);

@@ -53,7 +53,7 @@ struct priority_queue_control_s {
 		/* @brief This function will initialize the priority_queue struct and the specified container.           */
 		void (*init)(PRIORITY_QUEUE_TYPEDEF_PPTR priority_queue,
 					 enum container_type_e type,
-					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+					 container_size_t element_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will initialize the priority_queue struct and attach to the specified container. */

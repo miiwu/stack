@@ -53,7 +53,7 @@ struct stack_control_s {
 		/* @brief This function will initialize the stack struct and the specified container. */
 		void (*init)(STACK_TYPEDEF_PPTR stack,
 					 enum container_type_e type,
-					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+					 container_size_t element_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will initialize the stack struct and attach to the specified container. */
@@ -124,7 +124,7 @@ struct stack_control_s {
 
 void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 									 enum container_type_e type,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									 container_size_t element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -176,7 +176,7 @@ void *stack_control_element_access_top(STACK_TYPEDEF_PTR stack);
  * @return NONE
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_size(STACK_TYPEDEF_PTR stack);
+container_size_t stack_control_capacity_size(STACK_TYPEDEF_PTR stack);
 
 /**
  * @brief This function will push the given element source to the top of the stack.
@@ -197,7 +197,7 @@ bool stack_control_capacity_empty(STACK_TYPEDEF_PTR stack);
  * @return NONE
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_max_size(STACK_TYPEDEF_PTR stack);
+container_size_t stack_control_capacity_max_size(STACK_TYPEDEF_PTR stack);
 
 void stack_control_modifiers_push(STACK_TYPEDEF_PTR stack, void *source);
 

@@ -161,7 +161,7 @@ void vector_control_switch_control(void);
  */
 
 void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									   container_size_t element_size,
 									   void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(vector);
@@ -194,7 +194,7 @@ void vector_control_switch_control(void)
  */
 
 void vector_control_capacity_reserve(VECTOR_TYPEDEF_PPTR vector,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE size)
+									 container_size_t size)
 {
 	assert(vector);
 	assert(0 <= size);
@@ -227,7 +227,7 @@ void vector_control_capacity_shrink_to_fit(VECTOR_TYPEDEF_PPTR vector)
  */
 
 void vector_control_modifiers_resize(VECTOR_TYPEDEF_PPTR vector,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE count)
+									 container_size_t count)
 {
 	assert(vector);
 	assert(0 <= count);

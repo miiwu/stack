@@ -59,21 +59,21 @@ enum array_family_member_type_e {
 struct array_family_element_operator_s {
 	/* @brief This function will return the node at the specified location in the container.			*/
 	void *(*get)(struct array_family_s *array_family,
-				 CONTAINER_GLOBAL_CFG_SIZE_TYPE pos);
+				 container_size_t pos);
 
 	/* @brief This variables will set the node at the specified location in the container and
 				return the node.			                                                            */
 	void *(*set)(struct array_family_s *array_family,
-				 CONTAINER_GLOBAL_CFG_SIZE_TYPE pos, void *node);
+				 container_size_t pos, void *node);
 
 	/* @brief This variables will delete the node at the specified location in the container.			*/
 	void *(*del)(struct array_family_s *array_family,
-				 CONTAINER_GLOBAL_CFG_SIZE_TYPE pos);
+				 container_size_t pos);
 
 	/* @brief This variables will swap the nodes at the specified location in the container.			*/
 	void (*swap)(struct array_family_s *array_family,
-				 CONTAINER_GLOBAL_CFG_SIZE_TYPE lhs_pos,
-				 CONTAINER_GLOBAL_CFG_SIZE_TYPE rhs_pos);
+				 container_size_t lhs_pos,
+				 container_size_t rhs_pos);
 };
 
 /**
@@ -86,14 +86,14 @@ struct array_family_s {
 
 	struct {
 		/* @brief This variables will record the maximum number of elements.							*/
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE max_size;
+		container_size_t max_size;
 
 		/* @brief This variables will record the number of elements that
 				  the container has currently allocated space for.										*/
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE size;
+		container_size_t size;
 
 		/* @brief This variables will record the size that each element will take up.					*/
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE mem_size;
+		container_size_t mem_size;
 	}info;
 
 	/* @brief This variables will point to the allocator.												*/
@@ -128,7 +128,7 @@ struct array_family_control_s {
 	struct {
 		/* @brief This function will initialize the array_family struct.                                      */
 		void (*init)(struct array_family_s **array_family,
-					 CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_size,
+					 container_size_t dst_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will destroy the array_family struct and free the space.                      */
@@ -155,7 +155,7 @@ struct array_family_control_s {
 		/* @brief This function will returns a reference to the element
 				  at specified location position, with bounds checking.                                 */
 		void *(*at)(struct array_family_s *array_family,
-					CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+					container_size_t position);
 
 		/* @brief This function will returns pointer to the underlying array
 				  serving as element storage.                                                           */
@@ -173,15 +173,15 @@ struct array_family_control_s {
 		bool (*empty)(struct array_family_s *array_family);
 
 		/* @brief This function will returns the number of elements in the container.                   */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*size)(struct array_family_s *array_family);
+		container_size_t(*size)(struct array_family_s *array_family);
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*max_size)(struct array_family_s *array_family);
+		container_size_t(*max_size)(struct array_family_s *array_family);
 
 		/* @brief This function will returns the number of elements
 				  that the container has currently allocated space for.                                 */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*capacity)(struct array_family_s *array_family);
+		container_size_t(*capacity)(struct array_family_s *array_family);
 	}capacity;
 
 	struct {
@@ -190,12 +190,12 @@ struct array_family_control_s {
 
 		/* @brief This function will inserts elements at the specified location in the container.       */
 		void (*insert)(struct array_family_s *array_family,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
+					   container_size_t position,
+					   container_size_t amount, void **source);
 
 	   /* @brief This function will erases the specified elements from the container.                  */
 		void (*erase)(struct array_family_s *array_family,
-					  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+					  container_size_t position);
 
 		/* @brief This function will appends the given element source to the end of the container.      */
 		void (*push_back)(struct array_family_s *array_family,
@@ -256,7 +256,7 @@ void aray_family_control_get_control(enum array_family_member_type_e member,
 void array_family_control_configuration_init(struct array_family_s **array_family,
 											 void (*switch_control)(void),
 											 enum allocator_type_e allocator_type,
-											 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+											 container_size_t element_size,
 											 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -325,7 +325,7 @@ void array_family_control_iterators_back(struct array_family_s *array_family);
  */
 
 void *array_family_control_element_access_at(struct array_family_s *array_family,
-											 CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+											 container_size_t position);
 
 /**
  * @brief This function will returns a reference to the first element in the container.
@@ -377,7 +377,7 @@ bool array_family_control_capacity_empty(struct array_family_s *array_family);
  *  the number of elements in the container
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE array_family_control_capacity_size(struct array_family_s *array_family);
+container_size_t array_family_control_capacity_size(struct array_family_s *array_family);
 
 /**
  * @brief This function will returns the maximum number of elements the container.
@@ -389,7 +389,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE array_family_control_capacity_size(struct array_f
  *  the maximum number of elements the container
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE array_family_control_capacity_max_size(struct array_family_s *array_family);
+container_size_t array_family_control_capacity_max_size(struct array_family_s *array_family);
 
 /**
  * @brief This function will returns the number of elements that the container has currently allocated space for.
@@ -400,7 +400,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE array_family_control_capacity_max_size(struct arr
  *  the number of elements that the container has currently allocated space for
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE array_family_control_capacity_capacity(struct array_family_s *array_family);
+container_size_t array_family_control_capacity_capacity(struct array_family_s *array_family);
 
 /**
  * @brief This function will erases all elements from the container.
@@ -425,7 +425,7 @@ void array_family_control_modifiers_clear(struct array_family_s *array_family);
  */
 
 void array_family_control_modifiers_insert(struct array_family_s *array_family,
-										   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
+										   container_size_t position, container_size_t amount, void **source);
 
 /**
  * @brief This function will erases the specified elements from the container.
@@ -438,7 +438,7 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
  */
 
 void array_family_control_modifiers_erase(struct array_family_s *array_family,
-										  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+										  container_size_t position);
 
 /**
  * @brief This function will appends the given element source to the end of the container.

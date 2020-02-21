@@ -102,9 +102,10 @@ void b_tree_control_switch_control(struct tree_family_s *tree);
  * @return void
  */
 
-size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
-										void *node,
-										void *data);
+container_size_t
+b_tree_control_search_match_rule(struct tree_family_s *tree,
+								 struct tree_family_chain_node_s *node,
+								 void *data);
 
 /**
  * @brief This function will control b_tree_control_search()'s recursion.
@@ -114,9 +115,10 @@ size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *b_tree_control_search_recursion_rule(struct tree_family_s *tree,
-										   void *node,
-										   void *data);
+container_size_t
+b_tree_control_search_recursion_rule(struct tree_family_s *tree,
+									 struct tree_family_chain_node_s **node,
+									 void *data);
 
 /**
  * @brief This function will control b_tree_control_insert()'s insert.
@@ -189,7 +191,7 @@ struct b_tree_split_into_lesser_pack_s
 void b_tree_control_split_greater_into_new_lesser(struct tree_family_s *tree,
 												  struct tree_family_chain_node_s *node_lesser[2],
 												  struct tree_family_chain_node_s *node_greater,
-												  size_t id_data_split);
+												  container_size_t id_data_split);
 
 /**
  * @brief This function will fix the tree as a b-tree.
@@ -202,20 +204,6 @@ void b_tree_control_split_greater_into_new_lesser(struct tree_family_s *tree,
 void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
 									 struct tree_family_chain_node_s *node,
 									 struct tree_family_chain_node_s *parent);
-
-/**
- * @brief This function will get the node's available brother node.
- *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to node
- *
- * @return the address of the node's available brother node
- */
-
-void *tree_family_control_get_neighbour(struct tree_family_s *tree,
-											struct tree_family_chain_node_s *node,
-											struct tree_family_chain_node_s *parent,
-											size_t relation_with_parent);
 
 /*
 *********************************************************************************************************
@@ -269,8 +257,8 @@ struct tree_family_control_environment_s b_tree_control_greater_environment = {
  */
 
 void b_tree_control_configuration_init(struct tree_family_s **tree,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE degree,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									   container_size_t degree,
+									   container_size_t element_size,
 									   void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(tree);
@@ -304,14 +292,14 @@ static inline void b_tree_control_switch_control(struct tree_family_s *tree)
  * @return void
  */
 
-size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
-										void *node,
+container_size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
+										struct tree_family_chain_node_s *node,
 										void *data)
 {
 	struct b_tree_chain_node_data_s
 		*data_operator = ((struct tree_family_chain_node_s *)node)->data;
 
-	size_t count = 0;
+	container_size_t count = 0;
 
 	for (; count < tree->info.degree - 1; count++) {
 		if (NULL != *((void **)data_operator + count) &&
@@ -320,7 +308,7 @@ size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
 		}
 	}
 
-	count = 0xff;
+	count = SEARCH_CODE_NO_SUCH_ELEMENT;
 
 EXIT:
 
@@ -348,44 +336,42 @@ EXIT:
  * @return void
  */
 
-void *b_tree_control_search_recursion_rule(struct tree_family_s *tree,
-										   void *node,
-										   void *data)
+container_size_t
+b_tree_control_search_recursion_rule(struct tree_family_s *tree,
+									 struct tree_family_chain_node_s **node,
+									 void *data)
 {
-	struct b_tree_chain_node_data_s
-		*data_operator = ((struct tree_family_chain_node_s *)node)->data;
+	container_size_t evaluation_level = 1;
 
-	struct b_tree_chain_node_link_s
-		*link_operator = ((struct tree_family_chain_node_s *)node)->link;
-
-	size_t count = 1;
-
-	for (; count < tree->info.degree; count++) {
-		if ((NULL == *((void **)data_operator + count - 1) ||
-			(NULL != *((void **)data_operator + count - 1) &&
-			 compare_control_lesser(data, *((void **)data_operator + count - 1), tree->info.mem_size_key)))) {
+	for (; evaluation_level < tree->info.degree; evaluation_level++) {
+		if ((NULL == *((void **)(*node)->data + evaluation_level - 1) ||
+			(NULL != *((void **)(*node)->data + evaluation_level - 1) &&
+			 compare_control_lesser(data, *((void **)(*node)->data + evaluation_level - 1),
+									tree->info.mem_size_key)))) {
 			goto EXIT;
 		}
 	}
 
-	count = tree->info.degree;
+	evaluation_level = tree->info.degree;
 
 EXIT:
 
 	#if (B_TREE_CFG_DEBUG_EN)
 
-	printf("search.recursion rule:node:%p Link ",
-		   node);
+	printf("search.recursion rule:(*node):%p Link ",
+		(*node));
 
 	for (size_t cnt = 1; cnt <= tree->info.degree; cnt++) {
-		printf("No.%d:%p ", cnt, *((void **)link_operator + cnt));
+		printf("No.%d:%p ", cnt, *((void **)(*node)->link + cnt));
 	}
 
-	printf("\r\nrecursion:%p location:%d\r\n", *((void **)link_operator + count), count);
+	printf("\r\nrecursion:%p location:%d\r\n", *((void **)(*node)->link + evaluation_level), evaluation_level);
 
 	#endif // (B_TREE_CFG_DEBUG_EN)
 
-	return *((void **)link_operator + count);
+	*node = *((void **)(*node)->link + evaluation_level);								/* Recursion to it's child */
+
+	return evaluation_level;
 }
 
 /**
@@ -423,7 +409,7 @@ void b_tree_control_delete_rule(struct tree_family_s *tree,
 		*node = search_return.node,
 		*parent = search_return.node_prev;
 
-	size_t location = search_return.location;
+	container_size_t location = search_return.location;
 
 	#if (B_TREE_CFG_DEBUG_EN)
 
@@ -550,7 +536,7 @@ struct b_tree_insert_into_greater_pack_s
 	greater_link->parent = lesser_link->parent;
 
 	if (NULL != lesser_pack.child_last_splited) {
-		size_t id_sub = 1;
+		container_size_t id_sub = 1;
 		for (size_t id = 1; id <= tree->info.degree; id++) {
 			if (lesser_pack.child_last_splited == *((void **)lesser_link + id)) {
 				*((void **)greater_link + id_sub) = lesser_pack.child_splited_left_part;
@@ -621,7 +607,7 @@ struct b_tree_split_into_lesser_pack_s
 		*link_greater = greater_pack.node->link,
 		*link_lesser = greater_pack.link_before_inherit;
 
-	size_t id_split_data = ((0 == tree->info.degree % 2) ? tree->info.degree - 1 : tree->info.degree) / 2;
+	container_size_t id_split_data = ((0 == tree->info.degree % 2) ? tree->info.degree - 1 : tree->info.degree) / 2;
 
 	b_tree_control_split_greater_into_new_lesser(tree, node_new_inited,
 												 greater_pack.node, id_split_data);
@@ -718,7 +704,7 @@ EXIT:
 void b_tree_control_split_greater_into_new_lesser(struct tree_family_s *tree,
 												  struct tree_family_chain_node_s *node_lesser[2],
 												  struct tree_family_chain_node_s *node_greater,
-												  size_t id_data_split)
+												  container_size_t id_data_split)
 {
 	struct b_tree_chain_node_data_s
 		*data_lesser[2] = { node_lesser[0]->data,node_lesser[1]->data },
@@ -728,7 +714,7 @@ void b_tree_control_split_greater_into_new_lesser(struct tree_family_s *tree,
 		*link_lesser[2] = { node_lesser[0]->link,node_lesser[1]->link },
 		*link_greater = node_greater->link;
 
-	size_t
+	container_size_t
 		offset_initial[2] = { 0 ,id_data_split + 1 },
 		offset_end[2] = { id_data_split ,tree->info.degree };
 
@@ -739,7 +725,7 @@ void b_tree_control_split_greater_into_new_lesser(struct tree_family_s *tree,
 			link_lesser[part]->parent = link_greater->parent;
 		}
 
-		size_t id_sub = DATA_OPERATOR_CODE_DATA_FAR_LEFT;
+		container_size_t id_sub = DATA_OPERATOR_CODE_DATA_FAR_LEFT;
 		for (size_t id_data = offset_initial[part]; id_data < offset_end[part]; id_data++) {
 			*((void **)data_lesser[part] + id_sub++) = *((void **)data_greater + id_data);
 			*((void **)data_greater + id_data) = NULL;
@@ -801,7 +787,7 @@ void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
 	struct tree_family_chain_node_s *node_brother =
 		tree_family_control_get_neighbour(tree, node, parent, LINK_OPERATOR_CODE_PARENT);
 
-	size_t
+	container_size_t
 		location = tree_family_node_control_get_relation_with_parent(tree, node, parent),
 		location_brother = tree_family_node_control_get_relation_with_parent(tree, node_brother, parent);
 
@@ -814,6 +800,12 @@ void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
 	}
 
 	if (tree->info.minimum_key < tree_family_node_control_get_node_type(tree, node_brother)) {	/* If the brother node has enough keys */
+		#if (B_TREE_CFG_DEBUG_EN)
+
+		printf("b_tree_control.delete.fix_rule:brother have enough keys \r\n");
+
+		#endif // (B_TREE_CFG_DEBUG_EN)
+
 		enum tree_family_data_operator_code_type_e data_operator = DATA_OPERATOR_CODE_DATA_FAR_LEFT;
 		enum tree_family_link_operator_code_type_e link_operator[2] = {
 			LINK_OPERATOR_CODE_CHILD_FAR_LEFT , LINK_OPERATOR_CODE_CHILD_FAR_RIGHT };
@@ -832,8 +824,14 @@ void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
 
 		return NULL;
 	} else {
-		size_t id_set_data = tree->info.minimum_key - 1;
-		size_t id_del_data = DATA_OPERATOR_CODE_DATA_FAR_LEFT;
+		#if (B_TREE_CFG_DEBUG_EN)
+
+		printf("b_tree_control.delete.fix_rule:brother have not enough keys \r\n");
+
+		#endif // (B_TREE_CFG_DEBUG_EN)
+
+		container_size_t id_set_data = tree->info.minimum_key - 1;
+		container_size_t id_del_data = DATA_OPERATOR_CODE_DATA_FAR_LEFT;
 
 		if (node_on_the_right_side) {
 			ALGORITHM_SWAP((size_t)node, (size_t)node_brother);									/* Let node always is the left one */
@@ -848,8 +846,8 @@ void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
 			tree_family_node_control_set_data(tree, node, *((void **)node_brother->data + id_del_data++), id_set_data);
 		}
 
-		size_t id_set_link = id_set_data + LINK_OPERATOR_CODE_CHILD_FAR_LEFT + 1;
-		size_t id_del_link = LINK_OPERATOR_CODE_CHILD_FAR_LEFT;
+		container_size_t id_set_link = id_set_data + LINK_OPERATOR_CODE_CHILD_FAR_LEFT + 1;
+		container_size_t id_del_link = LINK_OPERATOR_CODE_CHILD_FAR_LEFT;
 
 		while (NULL != *((void **)node_brother->link + id_del_link)) {
 			tree_family_node_control_set_family_member(tree, node, *((void **)node_brother->link + id_del_link++), id_set_link++);

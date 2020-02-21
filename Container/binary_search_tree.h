@@ -57,8 +57,8 @@
  */
 
 void binary_search_tree_control_configuration_init(struct tree_family_s **tree,
-                                                   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
-                                                   void (*assign)(void *dst, void *src), void (*free)(void *dst));
+												   container_size_t element_size,
+												   void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /*
 *********************************************************************************************************

@@ -65,7 +65,7 @@ typedef struct list_family_s
  */
 
 void forward_list_control_configuration_init(FORWARD_LIST_TYPEDEF_PPTR forward_list,
-											 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+											 container_size_t element_size,
 											 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /*

@@ -46,7 +46,16 @@
 *********************************************************************************************************
 */
 
-/* Configure the enum category of container.															*/
+/**
+ * @brief This typedef is the container size type
+ */
+
+typedef CONTAINER_GLOBAL_CFG_SIZE_TYPE container_size_t;
+
+/**
+ * @brief This enum is the container's category enums
+ */
+
 enum container_category_e {
 	SEQUENCE_CONTAINERS = 0x10,
 
@@ -59,7 +68,10 @@ enum container_category_e {
 	SPAN = 0x50,
 };
 
-/* Configure the enum type of container.																*/
+/**
+ * @brief This enum is the container's type enums
+ */
+
 enum container_type_e {
 	ARRAY = SEQUENCE_CONTAINERS,
 	VECTOR,
@@ -77,17 +89,25 @@ enum container_type_e {
 	PRIORITY_QUEUE,
 };
 
+/**
+ * @brief This struct is the container's common information
+ */
+
 struct container_common_information_s {
 	/* @brief This variables will record the size that each element will take up.						*/
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE mem_size;
+	container_size_t mem_size;
 
 	/* @brief This variables will record the maximum number of elements.								*/
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE max_size;
+	container_size_t max_size;
 
 	/* @brief This variables will record the number of elements that
 			  the container has currently allocated space for.											*/
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE size;
+	container_size_t size;
 };
+
+/**
+ * @brief This struct is the container's generic element handler
+ */
 
 struct container_element_handler_s {
 	/* @brief This variables will point to the address of the vector element assign handler.			*/
@@ -97,6 +117,10 @@ struct container_element_handler_s {
 	void (*free)(void *dst);
 };
 
+/**
+ * @brief This struct is the container's common exception
+ */
+
 struct container_common_exception_s {
 	/* @brief This variables will point to the address of the list empty exception handler.				*/
 	void (*empty)(void);
@@ -105,12 +129,15 @@ struct container_common_exception_s {
 	void (*full)(void);
 };
 
-/* Configure the enum universal function type of container.												*/
+/**
+ * @brief This struct is the container's common control
+ */
+
 struct container_control_s {
 	struct {
 		/* @brief This function will initialize the container struct and the specified container.		*/
 		void (*init)(void **container,
-					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+					 container_size_t element_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will destroy the container struct. */
@@ -120,7 +147,7 @@ struct container_control_s {
 	struct {
 		/* @brief This function will returns a reference to the element
 					at specified location position, with bounds checking.								*/
-		void *(*at)(void *container, CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+		void *(*at)(void *container, container_size_t position);
 	}element_access;
 
 	struct {
@@ -138,12 +165,12 @@ struct container_control_s {
 	struct {
 		/* @brief This function will inserts elements at the specified location in the container.		*/
 		void (*insert)(void *container,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
+					   container_size_t position,
+					   container_size_t amount, void **source);
 
 		/* @brief This function will erases the specified elements from the container.                  */
 		void (*earse)(void *container,
-					  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+					  container_size_t position);
 
 	   /* @brief This function will exchange the contents of the container adaptor with those of other. */
 		void (*swap)(void **container,

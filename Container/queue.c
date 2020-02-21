@@ -116,7 +116,7 @@ struct queue_control_t queue_ctrl =
 
 void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
 									 enum container_type_e type,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									 container_size_t element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(queue);
@@ -342,8 +342,8 @@ bool queue_control_capacity_empty(QUEUE_TYPEDEF_PTR queue)
 {
 	assert(queue);
 
-	if (((CONTAINER_GLOBAL_CFG_SIZE_TYPE)queue_control_capacity_size(queue)) <=
-		((CONTAINER_GLOBAL_CFG_SIZE_TYPE)queue_control_capacity_max_size(queue))) {
+	if (((container_size_t)queue_control_capacity_size(queue)) <=
+		((container_size_t)queue_control_capacity_max_size(queue))) {
 		return true;
 	} else {
 		return false;
@@ -358,7 +358,7 @@ bool queue_control_capacity_empty(QUEUE_TYPEDEF_PTR queue)
  * @return NONE
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE queue_control_capacity_size(QUEUE_TYPEDEF_PTR queue)
+container_size_t queue_control_capacity_size(QUEUE_TYPEDEF_PTR queue)
 {
 	assert(queue);
 
@@ -383,7 +383,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE queue_control_capacity_size(QUEUE_TYPEDEF_PTR que
  * @return NONE
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE queue_control_capacity_max_size(QUEUE_TYPEDEF_PTR queue)
+container_size_t queue_control_capacity_max_size(QUEUE_TYPEDEF_PTR queue)
 {
 	assert(queue);
 

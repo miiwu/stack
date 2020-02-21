@@ -11,7 +11,7 @@
 
 #define MAIN_ALLOCATOR_EN			0u
 
-#define MAIN_TWO_THREE_TREE_EN		1u
+#define MAIN_B_TREE_EN				1u
 
 #define MAIN_BINARY_SEARCH_TREE_EN	1u
 
@@ -45,7 +45,7 @@ void main_allocator(void);
 
 #endif
 
-#if	(MAIN_TWO_THREE_TREE_EN)
+#if	(MAIN_B_TREE_EN)
 
 void main_b_tree(void);
 

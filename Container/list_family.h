@@ -89,14 +89,14 @@ struct list_family_s {
 
 	struct {
 		/* @brief This variables will record the maximum number of elements.							*/
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE max_size;
+		container_size_t max_size;
 
 		/* @brief This variables will record the number of elements that
 					the container has currently allocated space for.								    */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE size;
+		container_size_t size;
 
 		/* @brief This variables will record the size that each element will take up.					*/
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE mem_size;
+		container_size_t mem_size;
 	}info;
 
 	/* @brief This variables will point to the allocator.												*/
@@ -127,7 +127,7 @@ struct list_family_control_s {
 	struct {
 		/* @brief This function will initialize the list struct.                                        */
 		void (*init)(struct list_family_s **list,
-					 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+					 container_size_t element_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will destroy the list struct and free the space.                        */
@@ -156,7 +156,7 @@ struct list_family_control_s {
 
 		/* @brief This function will returns a reference to the specified element in the container.     */
 		void *(*at)(struct list_family_s *list,
-					CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+					container_size_t position);
 	}element_access;
 
 	struct {
@@ -165,10 +165,10 @@ struct list_family_control_s {
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*max_size)(struct list_family_s *list);
+		container_size_t(*max_size)(struct list_family_s *list);
 
 	   /* @brief This function will returns the number of elements in the container.                    */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*size)(struct list_family_s *list);
+		container_size_t(*size)(struct list_family_s *list);
 	}capacity;
 
 	struct {
@@ -177,17 +177,17 @@ struct list_family_control_s {
 
 		/* @brief This function will inserts elements after the specified position in the container.    */
 		void (*insert_after)(struct list_family_s *list,
-							 CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-							 CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
+							 container_size_t position,
+							 container_size_t amount, void **source);
 
 		/* @brief This function will inserts a new element into a position
 					after the specified position in the container.                                      */
 		void (*emplace_after)(struct list_family_s *stack,
-							  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+							  container_size_t position);
 
 		/* @brief This function will removes specified elements from the container.                     */
 		void (*erase_after)(struct list_family_s *list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+							container_size_t position);
 
 		/* @brief This function will prepends the given element value to the beginning of the container.*/
 		void (*push_front)(struct list_family_s *list,
@@ -202,7 +202,7 @@ struct list_family_control_s {
 
 		/* @brief This function will resizes the container to contain count elements. */
 		void (*resize)(struct list_family_s **list,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
+					   container_size_t size);
 
 		/* @brief This function will exchanges the contents of the container with those of other.       */
 		void (*swap)(struct list_family_s **list,
@@ -220,8 +220,8 @@ struct list_family_control_s {
 
 		/* @brief This function will moves elements from another list to list.                          */
 		void (*splice_after)(struct list_family_s *list,
-							 CONTAINER_GLOBAL_CFG_SIZE_TYPE position, struct list_family_s *other,
-							 CONTAINER_GLOBAL_CFG_SIZE_TYPE first, CONTAINER_GLOBAL_CFG_SIZE_TYPE last);
+							 container_size_t position, struct list_family_s *other,
+							 container_size_t first, container_size_t last);
 
 		/* @brief This function will removes all elements satisfying specific criteria.                 */
 		void (*remove)(struct list_family_s *list,
@@ -246,21 +246,21 @@ struct list_family_control_s {
 struct node_operator_s {
 	/* @brief This function will return the node at the specified location in the container.			*/
 	void *(*get)(struct list_family_s *list,
-				 CONTAINER_GLOBAL_CFG_SIZE_TYPE pos);
+				 container_size_t pos);
 
 	/* @brief This variables will set the node at the specified location in the container and
 				return the node.			                                                            */
 	void *(*set)(struct list_family_s *list,
-				 CONTAINER_GLOBAL_CFG_SIZE_TYPE pos, void *node);
+				 container_size_t pos, void *node);
 
 	/* @brief This variables will delete the node at the specified location in the container.			*/
 	void *(*del)(struct list_family_s *list,
-				 CONTAINER_GLOBAL_CFG_SIZE_TYPE pos);
+				 container_size_t pos);
 
 	/* @brief This variables will swap the nodes at the specified location in the container.			*/
 	void (*swap)(struct list_family_s *list,
-				 CONTAINER_GLOBAL_CFG_SIZE_TYPE lhs_pos,
-				 CONTAINER_GLOBAL_CFG_SIZE_TYPE rhs_pos);
+				 container_size_t lhs_pos,
+				 container_size_t rhs_pos);
 };
 
 /*
@@ -300,7 +300,7 @@ extern inline void list_family_control_get_control(enum list_family_member_type_
 void list_family_control_configuration_init(struct list_family_s **list,
 											void (*switch_control)(void),
 											enum allocator_type_e allocator_type,
-											CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+											container_size_t element_size,
 											void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -360,7 +360,7 @@ void *list_family_control_element_access_front(struct list_family_s *list);
  */
 
 void *list_family_control_element_access_at(struct list_family_s *list,
-											CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+											container_size_t position);
 
   /**
    * @brief This function will checks if the container has no elements
@@ -383,7 +383,7 @@ bool list_family_control_capacity_empty(struct list_family_s *list);
  * @return the maximum number of elements
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE list_family_control_capacity_max_size(struct list_family_s *list);
+container_size_t list_family_control_capacity_max_size(struct list_family_s *list);
 
 /**
  * @brief This function will returns the number of elements in the container
@@ -393,7 +393,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE list_family_control_capacity_max_size(struct list
  * @return the number of elements in the container
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE list_family_control_capacity_size(struct list_family_s *list);
+container_size_t list_family_control_capacity_size(struct list_family_s *list);
 
 /**
  * @brief This function will returns the number of elements in the container
@@ -403,7 +403,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE list_family_control_capacity_size(struct list_fam
  * @return NONE
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE list_family_control_capacity_size(struct list_family_s *list);
+container_size_t list_family_control_capacity_size(struct list_family_s *list);
 
 /**
  * @brief This function will erases all elements from the container
@@ -427,8 +427,8 @@ void list_family_control_modifiers_clear(struct list_family_s *list);
  */
 
 void list_family_control_modifiers_insert_after(struct list_family_s *list,
-												CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-												CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
+												container_size_t position,
+												container_size_t amount, void **source);
 
   /**
    * @brief This function will push a new element on top of the stack, and the element is constructed in-place
@@ -440,7 +440,7 @@ void list_family_control_modifiers_insert_after(struct list_family_s *list,
    */
 
 void list_family_control_modifiers_emplace_after(struct list_family_s *stack,
-												 CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+												 container_size_t position);
 
   /**
    * @brief This function will erases the specified elements from the container
@@ -452,7 +452,7 @@ void list_family_control_modifiers_emplace_after(struct list_family_s *stack,
    */
 
 void list_family_control_modifiers_erase_after(struct list_family_s *list,
-											   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+											   container_size_t position);
 
   /**
    * @brief This function will prepends the given element value to the beginning of the container
@@ -504,7 +504,7 @@ void list_family_control_modifiers_pop_front(struct list_family_s *list);
  */
 
 void list_family_control_modifiers_resize(struct list_family_s **list,
-										  CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
+										  container_size_t size);
 
   /**
    * @brief This function will exchanges the contents of the container with those of other
@@ -553,8 +553,8 @@ void list_family_control_list_operations_merge(struct list_family_s *destination
    */
 
 void list_family_control_list_operations_splice_after(struct list_family_s *list,
-													  CONTAINER_GLOBAL_CFG_SIZE_TYPE position, struct list_family_s *other,
-													  CONTAINER_GLOBAL_CFG_SIZE_TYPE first, CONTAINER_GLOBAL_CFG_SIZE_TYPE last);
+													  container_size_t position, struct list_family_s *other,
+													  container_size_t first, container_size_t last);
 
   /**
    * @brief This function will removes all elements satisfying specific criteria

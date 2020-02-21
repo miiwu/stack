@@ -145,7 +145,7 @@ void list_control_switch_control(void);
  */
 
 void *list_control_get_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+							container_size_t position);
 
 /**
  * @brief This function will set the node at the specified location in the container.
@@ -158,7 +158,7 @@ void *list_control_get_node(LIST_TYPEDEF_PTR list,
  */
 
 void *list_control_set_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position, struct list_node_s *node);
+							container_size_t position, struct list_node_s *node);
 
 /**
  * @brief This function will delete the node at the specified location in the container.
@@ -170,7 +170,7 @@ void *list_control_set_node(LIST_TYPEDEF_PTR list,
  */
 
 void *list_control_del_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+							container_size_t position);
 
 /**
  * @brief This function will swap the node at the specified location in the container
@@ -183,8 +183,8 @@ void *list_control_del_node(LIST_TYPEDEF_PTR list,
  */
 
 void list_control_swap_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_pos,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE src_pos);
+							container_size_t dst_pos,
+							container_size_t src_pos);
 
 /*
 *********************************************************************************************************
@@ -221,7 +221,7 @@ struct node_operator_s list_control_node_operator = {
  */
 
 void list_control_configuration_init(LIST_TYPEDEF_PPTR list,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									 container_size_t element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(list);
@@ -254,7 +254,7 @@ void list_control_switch_control(void)
  */
 
 void *list_control_get_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+							container_size_t position)
 {
 	assert(list);
 	assert((0 <= position));
@@ -267,7 +267,7 @@ void *list_control_get_node(LIST_TYPEDEF_PTR list,
 	struct list_node_s
 		**current_node = (struct list_node_s **) & list->node;
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE
+	container_size_t
 		currrent_position = 0;
 
 LOOP:
@@ -296,7 +296,7 @@ LOOP:
  */
 
 void *list_control_set_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position, struct list_node_s *node)
+							container_size_t position, struct list_node_s *node)
 {
 	assert(list);
 	assert((0 <= position));
@@ -344,7 +344,7 @@ void *list_control_set_node(LIST_TYPEDEF_PTR list,
  */
 
 void *list_control_del_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+							container_size_t position)
 {
 	assert(list);
 	assert((0 <= position));
@@ -386,8 +386,8 @@ void *list_control_del_node(LIST_TYPEDEF_PTR list,
  */
 
 void list_control_swap_node(LIST_TYPEDEF_PTR list,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE lhs_pos,
-							CONTAINER_GLOBAL_CFG_SIZE_TYPE rhs_pos)
+							container_size_t lhs_pos,
+							container_size_t rhs_pos)
 {
 	assert(list);
 
@@ -397,7 +397,7 @@ void list_control_swap_node(LIST_TYPEDEF_PTR list,
 	}
 
 	if (lhs_pos > rhs_pos) {
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE tmp = lhs_pos;
+		container_size_t tmp = lhs_pos;
 
 		lhs_pos = rhs_pos;
 		rhs_pos = tmp;

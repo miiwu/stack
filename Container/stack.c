@@ -114,7 +114,7 @@ struct stack_control_s stack_ctrl =
 
 void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 									 enum container_type_e type,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									 container_size_t element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(stack);
@@ -320,8 +320,8 @@ bool stack_control_capacity_empty(STACK_TYPEDEF_PTR stack)
 {
 	assert(stack);
 
-	if (((CONTAINER_GLOBAL_CFG_SIZE_TYPE)stack_control_capacity_size(stack)) <=
-		((CONTAINER_GLOBAL_CFG_SIZE_TYPE)stack_control_capacity_max_size(stack))) {
+	if (((container_size_t)stack_control_capacity_size(stack)) <=
+		((container_size_t)stack_control_capacity_max_size(stack))) {
 		return true;
 	} else {
 		return false;
@@ -336,7 +336,7 @@ bool stack_control_capacity_empty(STACK_TYPEDEF_PTR stack)
  * @return NONE
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_size(STACK_TYPEDEF_PTR stack)
+container_size_t stack_control_capacity_size(STACK_TYPEDEF_PTR stack)
 {
 	assert(stack);
 
@@ -361,7 +361,7 @@ CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_size(STACK_TYPEDEF_PTR sta
  * @return NONE
  */
 
-CONTAINER_GLOBAL_CFG_SIZE_TYPE stack_control_capacity_max_size(STACK_TYPEDEF_PTR stack)
+container_size_t stack_control_capacity_max_size(STACK_TYPEDEF_PTR stack)
 {
 	assert(stack);
 

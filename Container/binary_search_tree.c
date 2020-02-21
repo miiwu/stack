@@ -72,9 +72,10 @@ void binary_search_tree_control_switch_control(struct tree_family_s *tree);
  * @return void
  */
 
-size_t binary_search_tree_control_search_match_rule(struct tree_family_s *tree,
-													void *node,
-													void *data);
+container_size_t
+binary_search_tree_control_search_match_rule(struct tree_family_s *tree,
+											 struct tree_family_chain_node_s *node,
+											 void *data);
 
 /**
  * @brief This function will control the search()'s recursion rule.
@@ -84,9 +85,10 @@ size_t binary_search_tree_control_search_match_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *binary_search_tree_control_search_recursion_rule(struct tree_family_s *tree,
-													   void *node,
-													   void *data);
+container_size_t
+binary_search_tree_control_search_recursion_rule(struct tree_family_s *tree,
+												 struct tree_family_chain_node_s **node,
+												 void *data);
 
 /**
  * @brief This function will control b_tree_control_insert()'s insert.
@@ -150,7 +152,7 @@ struct tree_family_control_environment_s binary_search_tree_control_environment 
  */
 
 void binary_search_tree_control_configuration_init(struct tree_family_s **tree,
-												   CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+												   container_size_t element_size,
 												   void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(tree);
@@ -181,24 +183,25 @@ void binary_search_tree_control_switch_control(struct tree_family_s *tree)
  * @return void
  */
 
-size_t binary_search_tree_control_search_match_rule(struct tree_family_s *tree,
-													void *node,
-													void *data)
+container_size_t
+binary_search_tree_control_search_match_rule(struct tree_family_s *tree,
+											 struct tree_family_chain_node_s *node,
+											 void *data)
 {
 	assert(tree);
+	assert(node);
+	assert(data);
 
-	void *data_operator = ((struct tree_family_chain_node_s *)node)->data;
+	container_size_t location = 0;
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE count = 0;
-
-	for (; count < tree->info.degree - 1; count++) {
-		if (NULL != *((void **)data_operator + count) &&
-			compare_control_equal(data, *((void **)data_operator + count), tree->info.mem_size)) {
+	for (; location < tree->info.degree - 1; location++) {
+		if (NULL != *((void **)node->data + location) &&
+			compare_control_equal(data, *((void **)node->data + location), tree->info.mem_size)) {
 			goto EXIT;
 		}
 	}
 
-	count = 0xff;
+	location = SEARCH_CODE_NO_SUCH_ELEMENT;
 
 EXIT:
 
@@ -208,14 +211,14 @@ EXIT:
 		   node);
 
 	for (size_t cnt = 0; cnt < tree->info.degree - 1; cnt++) {
-		printf("No.%d:\"%s\"-%p ", cnt, (char *)*((void **)data_operator + cnt), *((void **)data_operator + cnt));
+		printf("No.%d:\"%s\"-%p ", cnt, (char *)*((void **)node->data + cnt), *((void **)node->data + cnt));
 	}
 
-	printf("\r\nmatch:%p location:%d\r\n", (0xff != count) ? *((void **)data_operator + count) : NULL, count);
+	printf("-->match:%p location:%d\r\n", (0xff != location) ? *((void **)node->data + location) : NULL, location);
 
 	#endif // (BINARY_SEARCH_TREE_CFG_DEBUG_EN)
 
-	return count;
+	return location;
 }
 
 /**
@@ -226,43 +229,47 @@ EXIT:
  * @return void
  */
 
-void *binary_search_tree_control_search_recursion_rule(struct tree_family_s *tree,
-													   void *node,
-													   void *data)
+container_size_t
+binary_search_tree_control_search_recursion_rule(struct tree_family_s *tree,
+												 struct tree_family_chain_node_s **node,
+												 void *data)
 {
 	assert(tree);
-	void
-		*data_operator = ((struct tree_family_chain_node_s *)node)->data,
-		*link_operator = ((struct tree_family_chain_node_s *)node)->link;
+	assert(node);
+	assert(*node);
+	assert(data);
 
-	size_t count = 1;
+	container_size_t evaluation_level = LINK_OPERATOR_CODE_CHILD_FAR_LEFT;
 
-	for (; count < tree->info.degree; count++) {
-		if ((NULL == *((void **)data_operator + count - 1) ||
-			(NULL != *((void **)data_operator + count - 1) &&
-			 compare_control_lesser(data, *((void **)data_operator + count - 1), tree->info.mem_size)))) {
+	for (; evaluation_level < tree->info.degree; evaluation_level++) {
+		if ((NULL == *((void **)(*node)->data + evaluation_level - 1) ||				/* If the data of this evaluation_level is NULL,the previous would the far right one */
+			(NULL != *((void **)(*node)->data + evaluation_level - 1) &&				/* If the data of this evaluation_level isn't NULL,and the data is lesser than the data of this evaluation_level */
+			 compare_control_lesser(data, *((void **)(*node)->data + evaluation_level - 1),
+									tree->info.mem_size)))) {
 			goto EXIT;
 		}
 	}
 
-	count = tree->info.degree;
+	evaluation_level = tree->info.degree;												/* the id of link far right */
 
 EXIT:
 
 	#if (BINARY_SEARCH_TREE_CFG_DEBUG_EN)
 
-	printf("search.recursion rule:node:%p Link ",
-		   node);
+	printf("search.recursion rule:(*node):%p Link ",
+		(*node));
 
 	for (size_t cnt = 1; cnt <= tree->info.degree; cnt++) {
-		printf("No.%d:%p ", cnt, *((void **)link_operator + cnt));
+		printf("No.%d:%p ", cnt, *((void **)(*node)->link + cnt));
 	}
 
-	printf("\r\nrecursion:%p location:%d\r\n", *((void **)link_operator + count), count);
+	printf("-->next:%p evaluation_level:%d\r\n", *((void **)(*node)->link + evaluation_level), evaluation_level);
 
 	#endif // (BINARY_SEARCH_TREE_CFG_DEBUG_EN)
 
-	return *((void **)link_operator + count);
+	*node = *((void **)(*node)->link + evaluation_level);								/* Recursion to it's child */
+
+	return evaluation_level;
 }
 
 /**
@@ -285,11 +292,20 @@ void binary_search_tree_control_insert_rule(struct tree_family_s *tree,
 		*link_operatpr = search_return.node_prev->link;
 
 	struct tree_family_chain_node_s *node = tree_family_control_init_node(tree);
+	void *data_cpy = tree->allocator_ctrl->allocate(tree->allocator, 1, tree->info.mem_size);
 
-	memcpy(node->data, data, tree->info.mem_size);
+	if (NULL == data_cpy) {
+		return;
+	}
+
+	memcpy(data_cpy, data, tree->info.mem_size);
+
+	*((void **)node->data) = data_cpy;
 	*((void **)node->link) = search_return.node_prev;
 
-	if (compare_control_greater(data, data_operator, 4)) {
+	struct tree_family_chain_node_s *node_current = 0;
+
+	if (tree->info.degree <= search_return.estimate) {
 		*((void **)link_operatpr + 2) = node;
 	} else {
 		*((void **)link_operatpr + 1) = node;

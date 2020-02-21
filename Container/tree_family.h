@@ -157,7 +157,9 @@ struct tree_family_chain_node_data_content_s {
  */
 
 typedef struct tree_family_search_node_return_s {
-	size_t location;
+	container_size_t location;
+
+	container_size_t estimate;
 
 	void *content;
 
@@ -171,7 +173,7 @@ typedef struct tree_family_search_node_return_s {
  */
 
 typedef struct tree_family_get_precursor_and_successor_return_s {
-	size_t location;
+	container_size_t location;
 
 	void *data;
 
@@ -182,15 +184,17 @@ typedef struct tree_family_get_precursor_and_successor_return_s {
  * @brief This struct is the binary tree link node structure module.
  */
 
-typedef size_t tree_family_search_match_rule_t(struct tree_family_s *tree,
-											   void *node, void *data);
+typedef container_size_t tree_family_search_match_rule_t(struct tree_family_s *tree,
+														 struct tree_family_chain_node_s *node,
+														 void *data);
 
 /**
  * @brief This struct is the binary tree link node structure module.
  */
 
-typedef void *tree_family_search_recursion_rule_t(struct tree_family_s *tree,
-												  void *node, void *data);
+typedef container_size_t tree_family_search_recursion_rule_t(struct tree_family_s *tree,
+															 struct tree_family_chain_node_s **node,
+															 void *data);
 
 /**
  * @brief This struct is the binary tree link node structure module.
@@ -205,7 +209,9 @@ typedef void tree_family_insert_and_delete_rule_t(struct tree_family_s *tree,
  */
 
 typedef void tree_family_traversal_operator_t(struct tree_family_s *tree,
-											  void *node, size_t data_element_count);
+											  struct tree_family_chain_node_s *node, 
+                                              container_size_t data_element_count);
+
 /**
  * @brief This struct will control the unique operator.
  */
@@ -213,13 +219,17 @@ typedef void tree_family_traversal_operator_t(struct tree_family_s *tree,
 struct tree_family_node_infomation_s {
 	enum tree_family_node_type_e node_type;
 
-	size_t data_mem_len;
+	container_size_t data_mem_len;
 
-	size_t link_mem_len;
+	container_size_t link_mem_len;
 
-	size_t data_element_count;
+	container_size_t id_data_far_right;
 
-	size_t link_element_count;
+	container_size_t id_link_far_right;
+
+	container_size_t data_element_count;
+
+	container_size_t link_element_count;
 };
 
 /**
@@ -248,23 +258,23 @@ struct tree_family_control_environment_s {
 
 struct tree_family_information_s {
 	/* @brief This variables will record the size that each element will take up.						*/
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE mem_size;
+	container_size_t mem_size;
 
 	/* @brief This variables will record the maximum number of elements.								*/
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE max_size;
+	container_size_t max_size;
 
 	/* @brief This variables will record the number of elements that
 			  the container has currently allocated space for.											*/
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE size;
+	container_size_t size;
 
 	/* @brief This variables will record the degree of the tree											*/
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE degree;
+	container_size_t degree;
 
 	/* @brief This variables will record the degree of the tree											*/
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE minimum_key;
+	container_size_t minimum_key;
 
 	/* @brief This variables will record the size that each element will take up.						*/
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE mem_size_key;
+	container_size_t mem_size_key;
 };
 
 /**
@@ -330,7 +340,7 @@ void tree_family_control_get_control(struct tree_family_control_environment_s en
 void tree_family_control_get_control_in_sandbox(struct tree_family_s *tree,
 												struct tree_family_control_environment_s environment,
 												void (*func_addr)(void *, ...),
-												size_t count_param,
+												container_size_t count_param,
 												...);
 
 /**
@@ -346,10 +356,10 @@ void tree_family_control_get_control_in_sandbox(struct tree_family_s *tree,
 
 void tree_family_control_configuration_init(struct tree_family_s **tree,
 											void (*switch_control)(struct tree_family_s *tree),
-											size_t degree,
+                                            container_size_t degree,
 											enum tree_family_member_type_e member_type,
 											enum allocator_type_e allocator_type,
-											CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+											container_size_t element_size,
 											void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -422,7 +432,7 @@ extern inline bool tree_family_control_capacity_empty(struct tree_family_s *tree
  * @return the maximum number of elements
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE tree_family_control_capacity_max_size(struct tree_family_s *tree);
+extern inline container_size_t tree_family_control_capacity_max_size(struct tree_family_s *tree);
 
 /**
  * @brief This function will returns the number of elements in the container
@@ -432,7 +442,7 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE tree_family_control_capacity_max_si
  * @return the number of elements in the container
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE tree_family_control_capacity_size(struct tree_family_s *tree);
+extern inline container_size_t tree_family_control_capacity_size(struct tree_family_s *tree);
 
 /**
  * @brief This function will set the node at the specified location in the container.
@@ -480,8 +490,8 @@ void tree_family_control_modifiers_clear(struct tree_family_s *tree);
  */
 
 void tree_family_control_modifiers_insert_after(struct tree_family_s *tree,
-												CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-												CONTAINER_GLOBAL_CFG_SIZE_TYPE amount,
+												container_size_t position,
+												container_size_t amount,
 												void **source);
 
 /**
@@ -495,7 +505,7 @@ void tree_family_control_modifiers_insert_after(struct tree_family_s *tree,
  */
 
 void tree_family_control_modifiers_emplace_after(struct tree_family_s *stack,
-												 CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+												 container_size_t position);
 
 /**
  * @brief This function will erases the specified elements from the container
@@ -507,7 +517,7 @@ void tree_family_control_modifiers_emplace_after(struct tree_family_s *stack,
  */
 
 void tree_family_control_modifiers_erase_after(struct tree_family_s *tree,
-											   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+											   container_size_t position);
 
 /**
  * @brief This function will prepends the given element value to the beginning of the container
@@ -558,7 +568,7 @@ void tree_family_control_modifiers_pop_front(struct tree_family_s *tree);
  */
 
 void tree_family_control_modifiers_resize(struct tree_family_s **tree,
-										  CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
+										  container_size_t size);
 
 /**
  * @brief This function will exchanges the contents of the container with those of other
@@ -594,7 +604,7 @@ tree_family_control_search(struct tree_family_s *tree, void *data);
  */
 
 void tree_family_control_lookup_find(struct tree_family_s *tree,
-									 CONTAINER_GLOBAL_CFG_SIZE_TYPE key);
+									 container_size_t key);
 
 /**
  * @brief This function will copy the contents of the container to those of other
@@ -607,16 +617,6 @@ void tree_family_control_lookup_find(struct tree_family_s *tree,
 
 void tree_family_control_modifiers_copy(struct tree_family_s **destination,
 										struct tree_family_s *source);
-
-/**
- * @brief This function will return the memory size of the specified tree type node.
- *
- * @param type the specified tree type
- *
- * @return the memory size of the specified node
- */
-
-size_t tree_family_control_get_node_len(enum tree_family_member_type_e type);
 
 /**
  * @brief This function will initialize the tree node struct.
@@ -671,7 +671,7 @@ void tree_family_node_control_destroy_data(struct tree_family_s *tree,
 
 void *tree_family_node_control_get_data(struct tree_family_s *tree,
 										struct tree_family_chain_node_s *node,
-										size_t location);
+                                        container_size_t id);
 
 /**
  * @brief This function will set the data into the node.
@@ -684,7 +684,7 @@ void *tree_family_node_control_get_data(struct tree_family_s *tree,
 void tree_family_node_control_set_data(struct tree_family_s *tree,
 									   struct tree_family_chain_node_s *node,
 									   void *data,
-									   size_t id);
+                                       container_size_t id);
 
 /**
  * @brief This function will insert the data into the node,which means have to sort.
@@ -708,7 +708,7 @@ void tree_family_node_control_insert_data(struct tree_family_s *tree,
 
 void *tree_family_node_control_del_data(struct tree_family_s *tree,
 										struct tree_family_chain_node_s *node,
-										size_t id);
+                                        container_size_t id);
 
 /**
  * @brief This function will initialize the tree node's link struct.
@@ -743,7 +743,7 @@ void tree_family_node_control_destroy_link(struct tree_family_s *tree,
 
 void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
 												 struct tree_family_chain_node_s *node,
-												 size_t id);
+                                                 container_size_t id);
 
 /**
  * @brief This function will get the node's available brother node.
@@ -757,7 +757,7 @@ void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
 void *tree_family_control_get_neighbour(struct tree_family_s *tree,
 										struct tree_family_chain_node_s *node,
 										struct tree_family_chain_node_s *parent,
-										size_t relation_with_parent);
+                                        container_size_t relation_with_parent);
 
 /**
  * @brief This function will delete the data of the node,and return the data's address.
@@ -770,7 +770,7 @@ void *tree_family_control_get_neighbour(struct tree_family_s *tree,
 void *tree_family_node_control_set_family_member(struct tree_family_s *tree,
 												 struct tree_family_chain_node_s *node,
 												 struct tree_family_chain_node_s *family_member,
-												 size_t id);
+                                                 container_size_t id);
 
 /**
  * @brief This function will delete the data of the node,and return the data's address.
@@ -782,7 +782,7 @@ void *tree_family_node_control_set_family_member(struct tree_family_s *tree,
 
 void *tree_family_node_control_del_family_member(struct tree_family_s *tree,
 												 struct tree_family_chain_node_s *node,
-												 size_t id);
+                                                 container_size_t id);
 
 /**
  * @brief This function will return the type of the node.
@@ -792,7 +792,7 @@ void *tree_family_node_control_del_family_member(struct tree_family_s *tree,
  * @return void
  */
 
-size_t tree_family_node_control_get_relation_with_parent(struct tree_family_s *tree,
+container_size_t tree_family_node_control_get_relation_with_parent(struct tree_family_s *tree,
 														 struct tree_family_chain_node_s *node,
 														 struct tree_family_chain_node_s *parent);
 
@@ -827,7 +827,7 @@ bool tree_family_node_control_get_if_left_child(struct tree_family_s *tree,
  * @return void
  */
 
-size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
+container_size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
 											  struct tree_family_chain_node_s *node);
 
 /**
@@ -881,7 +881,7 @@ void tree_family_control_posorder_traversal(struct tree_family_s *tree,
 tree_family_get_precursor_and_successor_return_st
 tree_family_control_get_precursor(struct tree_family_s *tree,
 								  struct tree_family_chain_node_s *node,
-								  size_t id_data);
+                                  container_size_t id_data);
 
 /**
  * @brief This function will get the node's successor node.
@@ -895,7 +895,7 @@ tree_family_control_get_precursor(struct tree_family_s *tree,
 tree_family_get_precursor_and_successor_return_st
 tree_family_control_get_successor(struct tree_family_s *tree,
 								  struct tree_family_chain_node_s *node,
-								  size_t id_data);
+                                  container_size_t id_data);
 
 /**
 * @brief This function will print all the node when traversal.
@@ -907,7 +907,7 @@ tree_family_control_get_successor(struct tree_family_s *tree,
 
 void tree_family_control_traversal_printer(struct tree_family_s *tree,
 										   void *node,
-										   size_t data_element_count);
+                                           container_size_t data_element_count);
 
 /**
 * @brief This function will callback the handler that container has no elements when the container temp to insert.

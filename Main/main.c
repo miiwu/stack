@@ -14,7 +14,7 @@ void main(void)
 
 	#endif
 
-	#if	(MAIN_TWO_THREE_TREE_EN)
+	#if	(MAIN_B_TREE_EN)
 
 	main_b_tree();
 

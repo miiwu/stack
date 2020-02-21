@@ -59,7 +59,7 @@ enum array_family_member_type_e array_family_control_type_in_control = ARRAY_FAM
  */
 
 void array_family_element_control_set_data(struct array_family_s *array_family,
-										   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source);
+										   container_size_t position, void *source);
 
 /**
  * @brief This function will get elements at the specified location in the container.
@@ -72,7 +72,7 @@ void array_family_element_control_set_data(struct array_family_s *array_family,
  */
 
 void *array_family_element_control_get_data(struct array_family_s *array_family,
-											CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+											container_size_t position);
 
  /**
   * @brief This function will delete elements at the specified location in the container.
@@ -84,7 +84,7 @@ void *array_family_element_control_get_data(struct array_family_s *array_family,
   */
 
 void array_family_element_control_del_data(struct array_family_s *array_family,
-										   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+										   container_size_t position);
 
 /**
  * @brief This function will callback the handler that container has no elements when the container temp to insert.
@@ -142,7 +142,7 @@ extern inline void array_family_control_get_control(enum list_family_member_type
 void array_family_control_configuration_init(struct array_family_s **array_family,
 											 void (*switch_control)(void),
 											 enum allocator_type_e allocator_type,
-											 CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+											 container_size_t element_size,
 											 void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(array_family);
@@ -348,7 +348,7 @@ void array_family_control_iterators_back(struct array_family_s *array_family)
  */
 
 void *array_family_control_element_access_at(struct array_family_s *array_family,
-											 CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+											 container_size_t position)
 {
 	assert(array_family);
 	assert(0 <= position);
@@ -439,7 +439,7 @@ extern inline bool array_family_control_capacity_empty(struct array_family_s *ar
  *  the number of elements in the container
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE array_family_control_capacity_size(struct array_family_s *array_family)
+extern inline container_size_t array_family_control_capacity_size(struct array_family_s *array_family)
 {
 	assert(array_family);
 
@@ -456,7 +456,7 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE array_family_control_capacity_size(
  *  the maximum number of elements the container
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE array_family_control_capacity_max_size(struct array_family_s *array_family)
+extern inline container_size_t array_family_control_capacity_max_size(struct array_family_s *array_family)
 {
 	assert(array_family);
 
@@ -472,7 +472,7 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE array_family_control_capacity_max_s
  *  the number of elements that the container has currently allocated space for
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE array_family_control_capacity_capacity(struct array_family_s *array_family)
+extern inline container_size_t array_family_control_capacity_capacity(struct array_family_s *array_family)
 {
 	assert(array_family);
 
@@ -499,7 +499,7 @@ void array_family_control_modifiers_clear(struct array_family_s *array_family)
 		return;
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = 0; element_pos < array_family->info.size; element_pos++) {
+	for (container_size_t element_pos = 0; element_pos < array_family->info.size; element_pos++) {
 		array_family_element_control_set_data(array_family, element_pos, "");
 	}
 
@@ -519,7 +519,7 @@ void array_family_control_modifiers_clear(struct array_family_s *array_family)
  */
 
 void array_family_control_modifiers_insert(struct array_family_s *array_family,
-										   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source)
+										   container_size_t position, container_size_t amount, void **source)
 {
 	assert(array_family);
 	assert(0 <= position);
@@ -535,7 +535,7 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
 		return;
 	}
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE
+	container_size_t
 		element_amount = array_family->info.size - position,
 		back_element_pos = position + amount;
 
@@ -557,7 +557,7 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
 
 	#endif // (ARRAY_FAMILY_CFG_DEBUG_EN)
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = position; element_pos < array_family->info.size; element_pos++) {		/* Copy the array_family to element */
+	for (container_size_t element_pos = position; element_pos < array_family->info.size; element_pos++) {		/* Copy the array_family to element */
 		void *
 			element_addr = (void *)((size_t)element_block + element_pos * array_family->info.mem_size);
 
@@ -570,7 +570,7 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
 		#endif // (ARRAY_FAMILY_CFG_DEBUG_EN)
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = 0; element_pos < back_element_pos - position; element_pos++) {			/* Insert the source to the array_family */
+	for (container_size_t element_pos = 0; element_pos < back_element_pos - position; element_pos++) {			/* Insert the source to the array_family */
 		size_t
 			source_addr = (size_t)*source + element_pos * array_family->info.mem_size;
 
@@ -583,7 +583,7 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
 		#endif // (ARRAY_FAMILY_CFG_DEBUG_EN)
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_pos = back_element_pos; element_pos < back_element_pos + element_amount; element_pos++) {	/* Insert the elements to the array_family */
+	for (container_size_t element_pos = back_element_pos; element_pos < back_element_pos + element_amount; element_pos++) {	/* Insert the elements to the array_family */
 		size_t
 			element_plus_insert_addr = (size_t)element_block + (element_pos - back_element_pos) * array_family->info.mem_size;
 
@@ -611,7 +611,7 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
  */
 
 void array_family_control_modifiers_erase(struct array_family_s *array_family,
-										  CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+										  container_size_t position)
 {
 	assert(array_family);
 	assert(0 <= position);
@@ -722,7 +722,7 @@ void array_family_control_modifiers_copy(struct array_family_s **destination,
 
 	(*destination)->info.size = source->info.size;
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE element_amt = 0; element_amt < source->info.size; element_amt++) {
+	for (container_size_t element_amt = 0; element_amt < source->info.size; element_amt++) {
 		array_family_element_control_set_data(*destination,
 											  element_amt,
 											  (void *)((size_t)source_data + element_amt * source->info.mem_size));/* Copy the destination to source */
@@ -765,7 +765,7 @@ void array_family_control_modifiers_swap(struct array_family_s **array_family,
  */
 
 void array_family_element_control_set_data(struct array_family_s *array_family,
-										   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source)
+										   container_size_t position, void *source)
 {
 	assert(array_family);
 	assert(0 <= position);
@@ -792,7 +792,7 @@ void array_family_element_control_set_data(struct array_family_s *array_family,
  */
 
 void *array_family_element_control_get_data(struct array_family_s *array_family,
-											CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+											container_size_t position)
 {
 	assert(array_family);
 	assert(0 <= position);
@@ -813,7 +813,7 @@ void *array_family_element_control_get_data(struct array_family_s *array_family,
  */
 
 void array_family_element_control_del_data(struct array_family_s *array_family,
-										   CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+										   container_size_t position)
 {
 	assert(array_family);
 	assert(0 <= position);

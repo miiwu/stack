@@ -81,7 +81,7 @@ static size_t list_family_control_get_node_len(enum list_family_member_type_e ty
 */
 
 static void list_node_control_set_data(struct list_family_s *list,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source);
+									   container_size_t position, void *source);
 
 /**
 * @brief This function will get elements at the specified location node in the container.
@@ -94,7 +94,7 @@ static void list_node_control_set_data(struct list_family_s *list,
 */
 
 static void *list_node_control_get_data(struct list_family_s *list,
-										CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+										container_size_t position);
 
 /**
 * @brief This function will delete elements at the specified location node in the container.
@@ -106,7 +106,7 @@ static void *list_node_control_get_data(struct list_family_s *list,
 */
 
 static void list_node_control_del_data(struct list_family_s *list,
-									   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+									   container_size_t position);
 
 /**
 * @brief This function will control the remove run under the rule of remove_if.
@@ -174,7 +174,7 @@ inline void list_family_control_get_control(enum list_family_member_type_e type,
 void list_family_control_configuration_init(struct list_family_s **list,
 											void (*switch_control)(void),
 											enum allocator_type_e allocator_type,
-											CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+											container_size_t element_size,
 											void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(list);
@@ -359,7 +359,7 @@ void *list_family_control_element_access_front(struct list_family_s *list)
  */
 
 void *list_family_control_element_access_at(struct list_family_s *list,
-											CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+											container_size_t position)
 {
 	assert(list);
 
@@ -396,7 +396,7 @@ extern inline bool list_family_control_capacity_empty(struct list_family_s *list
  * @return the maximum number of elements
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE list_family_control_capacity_max_size(struct list_family_s *list)
+extern inline container_size_t list_family_control_capacity_max_size(struct list_family_s *list)
 {
 	assert(list);
 
@@ -411,7 +411,7 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE list_family_control_capacity_max_si
  * @return the number of elements in the container
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE list_family_control_capacity_size(struct list_family_s *list)
+extern inline container_size_t list_family_control_capacity_size(struct list_family_s *list)
 {
 	assert(list);
 
@@ -447,8 +447,8 @@ void list_family_control_modifiers_clear(struct list_family_s *list)
  */
 
 void list_family_control_modifiers_insert_after(struct list_family_s *list,
-												CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-												CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source)
+												container_size_t position,
+												container_size_t amount, void **source)
 {
 	assert(list);
 	assert(0 <= position);
@@ -461,19 +461,19 @@ void list_family_control_modifiers_insert_after(struct list_family_s *list,
 	void
 		*source_addr = NULL;
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE
+	container_size_t
 		pos_insert_head = list->info.size,
 		pos_insert_tail = position + amount;
 
 ENSURE_THE_LIST_HAS_ENOUGH_NODE:
 
 	if (pos_insert_tail > pos_insert_head) {												/* Ensure the list has enough node */
-		for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = pos_insert_head; pos < pos_insert_tail; pos++) {
+		for (container_size_t pos = pos_insert_head; pos < pos_insert_tail; pos++) {
 			list_family_control_node_operator.set(list, pos_insert_head, NULL);
 		}
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = position; pos < pos_insert_tail; pos++) {		/* Set the data to the list node */
+	for (container_size_t pos = position; pos < pos_insert_tail; pos++) {		/* Set the data to the list node */
 		source_addr = (void *)((size_t)*source + (pos - position) * list->info.mem_size);
 
 		if ('\0' != *(char *)list_node_control_get_data(list, pos)) {			/* Ensure the list node has no data */
@@ -503,7 +503,7 @@ ENSURE_THE_LIST_HAS_ENOUGH_NODE:
  */
 
 void list_family_control_modifiers_emplace_after(struct list_family_s *stack,
-												 CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+												 container_size_t position)
 {
 }
 
@@ -517,7 +517,7 @@ void list_family_control_modifiers_emplace_after(struct list_family_s *stack,
  */
 
 void list_family_control_modifiers_erase_after(struct list_family_s *list,
-											   CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+											   container_size_t position)
 {
 	assert(list);
 	assert(0 <= position);
@@ -596,7 +596,7 @@ void list_family_control_modifiers_pop_front(struct list_family_s *list)
  */
 
 void list_family_control_modifiers_resize(struct list_family_s **list,
-										  CONTAINER_GLOBAL_CFG_SIZE_TYPE size)
+										  container_size_t size)
 {
 }
 
@@ -659,7 +659,7 @@ void list_family_control_modifiers_copy(struct list_family_s **destination,
 		(*destination)->exception = source->exception;
 	}
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 0; pos < source->info.size; pos++) {
+	for (container_size_t pos = 0; pos < source->info.size; pos++) {
 		list_node_control_set_data(*destination, pos, list_node_control_get_data(source, pos));
 	}
 }
@@ -696,10 +696,10 @@ void list_family_control_list_operations_merge(struct list_family_s *destination
  */
 
 void list_family_control_list_operations_splice_after(struct list_family_s *list,
-													  CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
+													  container_size_t position,
 													  struct list_family_s *other,
-													  CONTAINER_GLOBAL_CFG_SIZE_TYPE first,
-													  CONTAINER_GLOBAL_CFG_SIZE_TYPE last)
+													  container_size_t first,
+													  container_size_t last)
 {
 	assert(list);
 	assert(other);
@@ -709,10 +709,10 @@ void list_family_control_list_operations_splice_after(struct list_family_s *list
 	struct list_node_s
 		*node_other = NULL;
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE
+	container_size_t
 		pos_tail_splice = position + last - first;
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = position; pos < pos_tail_splice; pos++) {
+	for (container_size_t pos = position; pos < pos_tail_splice; pos++) {
 		#if (LIST_FAMILY_CFG_DEBUG_EN)
 
 		printf("list.list_operatons.splice_after.source data no.%d:\"%s\" \r\n",
@@ -764,11 +764,11 @@ void list_family_control_list_operations_remove_if(struct list_family_s *list, b
 	assert(list);
 	assert(rule);
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE
+	container_size_t
 		cnt_reomve = 0,
-		*pos_remove = list->allocator_ctrl->allocate(list->allocator, list->info.size, sizeof(CONTAINER_GLOBAL_CFG_SIZE_TYPE));
+		*pos_remove = list->allocator_ctrl->allocate(list->allocator, list->info.size, sizeof(container_size_t));
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 0; pos < list->info.size; pos++) {	/* Get which node's data is match */
+	for (container_size_t pos = 0; pos < list->info.size; pos++) {	/* Get which node's data is match */
 		if (rule(list_node_control_get_data(list, pos))) {
 			*(pos_remove + cnt_reomve++) = pos;
 		}
@@ -777,7 +777,7 @@ void list_family_control_list_operations_remove_if(struct list_family_s *list, b
 	struct  list_node_t
 		*node_del = NULL;
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_reomve; cnt++) {					/* Delete nodes matched */
+	for (container_size_t cnt = 0; cnt < cnt_reomve; cnt++) {					/* Delete nodes matched */
 		#if (LIST_FAMILY_CFG_DEBUG_EN)
 
 		printf("list.list_operatons.remove_if.no.%d: \"%s\" \r\n",
@@ -808,9 +808,9 @@ void list_family_control_list_operations_reverse(struct list_family_s *list)
 	struct  list_node_t
 		*node_reverse = NULL;
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE pos_last_list_node_valid = list->info.size - 1;
+	container_size_t pos_last_list_node_valid = list->info.size - 1;
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 0; pos <= pos_last_list_node_valid; pos++) {
+	for (container_size_t pos = 0; pos <= pos_last_list_node_valid; pos++) {
 		node_reverse = list_family_control_node_operator.del(list, pos_last_list_node_valid);
 
 		list_family_control_node_operator.set(list, pos, node_reverse);
@@ -835,13 +835,13 @@ void list_family_control_list_operations_unique(struct list_family_s *list)
 		*data_prev = list_node_control_get_data(list, 0),
 		*data = NULL;
 
-	CONTAINER_GLOBAL_CFG_SIZE_TYPE
+	container_size_t
 		size_list = list->info.size,
 		cnt_pos_repetitive = 0,
 		(*pos_repetitive_store)[2] = list->allocator_ctrl->allocate(list->allocator,
-																	size_list, sizeof(CONTAINER_GLOBAL_CFG_SIZE_TYPE) * 2);
+																	size_list, sizeof(container_size_t) * 2);
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = 1; pos < size_list; pos++) {
+	for (container_size_t pos = 1; pos < size_list; pos++) {
 		if (compare_control_equal(data_prev, (data = list_node_control_get_data(list, pos)), list->info.mem_size)) {
 			*(*(pos_repetitive_store + cnt_pos_repetitive) + 0) = pos;
 		} else {
@@ -857,7 +857,7 @@ void list_family_control_list_operations_unique(struct list_family_s *list)
 
 	#if (LIST_FAMILY_CFG_DEBUG_EN)
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_pos_repetitive; cnt++) {
+	for (container_size_t cnt = 0; cnt < cnt_pos_repetitive; cnt++) {
 		printf("list.list_operatons.unique:no.%d from %d to %d is \"%s\" \r\n",
 			   cnt, *(*(pos_repetitive_store + cnt) + 0),
 			   *(*(pos_repetitive_store + cnt) + 1),
@@ -869,8 +869,8 @@ void list_family_control_list_operations_unique(struct list_family_s *list)
 	struct  list_node_t
 		*node_del = NULL;
 
-	for (CONTAINER_GLOBAL_CFG_SIZE_TYPE cnt = 0; cnt < cnt_pos_repetitive; cnt++) {
-		for (CONTAINER_GLOBAL_CFG_SIZE_TYPE pos = *(*(pos_repetitive_store + cnt) + 0); pos <= *(*(pos_repetitive_store + cnt) + 1); pos++) {
+	for (container_size_t cnt = 0; cnt < cnt_pos_repetitive; cnt++) {
+		for (container_size_t pos = *(*(pos_repetitive_store + cnt) + 0); pos <= *(*(pos_repetitive_store + cnt) + 1); pos++) {
 			list_family_control_destroy_node(list, list_family_control_node_operator.del(list, *(*(pos_repetitive_store + cnt) + 0)));
 		}
 	}
@@ -1009,7 +1009,7 @@ void list_family_control_destroy_node(struct list_family_s *list,
  */
 
 void list_node_control_set_data(struct list_family_s *list,
-								CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source)
+								container_size_t position, void *source)
 {
 	assert(list);
 	assert(0 <= position);
@@ -1053,7 +1053,7 @@ void list_node_control_set_data(struct list_family_s *list,
 */
 
 void *list_node_control_get_data(struct list_family_s *list,
-								 CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+								 container_size_t position)
 {
 	assert(list);
 	assert(0 <= position);
@@ -1082,7 +1082,7 @@ void *list_node_control_get_data(struct list_family_s *list,
 */
 
 void list_node_control_del_data(struct list_family_s *list,
-								CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+								container_size_t position)
 {
 	assert(list);
 	assert(0 <= position);

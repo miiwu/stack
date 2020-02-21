@@ -54,7 +54,7 @@ struct deque_control_s {
 	struct {
 		/* @brief This function will initialize the deque struct.                                      */
 		void (*init)(DEQUE_TYPEDEF_PPTR deque,
-					 CONTAINER_GLOBAL_CFG_SIZE_TYPE dst_size,
+					 container_size_t dst_size,
 					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 		/* @brief This function will destroy the deque struct and free the space.                      */
@@ -81,7 +81,7 @@ struct deque_control_s {
 		/* @brief This function will returns a reference to the element
 				  at specified location position, with bounds checking.                                 */
 		void *(*at)(DEQUE_TYPEDEF_PTR deque,
-					CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+					container_size_t position);
 
 		/* @brief This function will returns a reference to the first element in the container.         */
 		void *(*front)(DEQUE_TYPEDEF_PTR deque);
@@ -95,15 +95,15 @@ struct deque_control_s {
 		bool (*empty)(DEQUE_TYPEDEF_PTR deque);
 
 		/* @brief This function will returns the number of elements in the container.                   */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*size)(DEQUE_TYPEDEF_PTR deque);
+		container_size_t(*size)(DEQUE_TYPEDEF_PTR deque);
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		CONTAINER_GLOBAL_CFG_SIZE_TYPE(*max_size)(DEQUE_TYPEDEF_PTR deque);
+		container_size_t(*max_size)(DEQUE_TYPEDEF_PTR deque);
 
 		/* @brief This function will resizes the container to contain count elements.                   */
 		void (*resize)(DEQUE_TYPEDEF_PPTR deque,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
+					   container_size_t size);
 
 		/* @brief This function will requests the removal of unused capacity.                           */
 		void (*shrink_to_fit)(DEQUE_TYPEDEF_PPTR deque);
@@ -115,12 +115,12 @@ struct deque_control_s {
 
 		/* @brief This function will inserts elements at the specified location in the container.       */
 		void (*insert)(DEQUE_TYPEDEF_PTR deque,
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE position, 
-					   CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
+					   container_size_t position, 
+					   container_size_t amount, void **source);
 
 	   /* @brief This function will erases the specified elements from the container.                  */
 		void (*erase)(DEQUE_TYPEDEF_PTR deque,
-					  CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+					  container_size_t position);
 
 		/* @brief This function will prepends the given element value to the beginning of the container.*/
 		void (*push_front)(DEQUE_TYPEDEF_PTR deque,
@@ -175,7 +175,7 @@ struct deque_control_s {
  */
 
 void deque_control_configuration_init(struct deque_s **deque,
-                                      CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+                                      container_size_t element_size,
                                       void (*assign)(void *dst, void *src), void (*free)(void *dst));
 
 /**
@@ -246,7 +246,7 @@ void deque_control_iterators_back(struct deque_s *deque);
  */
 
 void *deque_control_element_access_at(struct deque_s *deque,
-                                      CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+                                      container_size_t position);
 
 /**
  * @brief This function will returns a reference to the first element in the container.
@@ -288,7 +288,7 @@ extern inline bool deque_control_capacity_empty(struct deque_s *deque);
  *  the number of elements in the container
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE deque_control_capacity_size(struct deque_s *deque);
+extern inline container_size_t deque_control_capacity_size(struct deque_s *deque);
 
 /**
  * @brief This function will returns the maximum number of elements the container.
@@ -300,7 +300,7 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE deque_control_capacity_size(struct 
  *  the maximum number of elements the container
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE deque_control_capacity_max_size(struct deque_s *deque);
+extern inline container_size_t deque_control_capacity_max_size(struct deque_s *deque);
 
 /**
  * @brief This function will increase the capacity of the deque to a size that's greater or equal to new_cap.
@@ -313,7 +313,7 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE deque_control_capacity_max_size(str
  */
 
 void deque_control_capacity_resize(struct deque_s **deque,
-								   CONTAINER_GLOBAL_CFG_SIZE_TYPE size);
+								   container_size_t size);
 
 /**
  * @brief This function will requests the removal of unused capacity.
@@ -348,8 +348,8 @@ void deque_control_modifiers_clear(struct deque_s *deque);
  */
 
 void deque_control_modifiers_insert(struct deque_s *deque,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source);
+									container_size_t position,
+									container_size_t amount, void **source);
 
 /**
  * @brief This function will erases the specified elements from the container.
@@ -362,7 +362,7 @@ void deque_control_modifiers_insert(struct deque_s *deque,
  */
 
 void deque_control_modifiers_erase(struct deque_s *deque,
-								   CONTAINER_GLOBAL_CFG_SIZE_TYPE position);
+								   container_size_t position);
 
 /**
  * @brief This function will prepends the given element value to the beginning of the container

@@ -173,7 +173,7 @@ void deque_control_configration_exception_default_full_callback(void);
  */
 
 void deque_control_configuration_init(struct deque_s **deque,
-									  CONTAINER_GLOBAL_CFG_SIZE_TYPE element_size,
+									  container_size_t element_size,
 									  void (*assign)(void *dst, void *src), void (*free)(void *dst))
 {
 	assert(deque);
@@ -370,7 +370,7 @@ void deque_control_iterators_back(struct deque_s *deque)
  */
 
 void *deque_control_element_access_at(struct deque_s *deque,
-									  CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+									  container_size_t position)
 {
 	assert(deque);
 	assert(0 <= position);
@@ -446,7 +446,7 @@ extern inline bool deque_control_capacity_empty(struct deque_s *deque)
  *  the number of elements in the container
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE deque_control_capacity_size(struct deque_s *deque)
+extern inline container_size_t deque_control_capacity_size(struct deque_s *deque)
 {
 	assert(deque);
 
@@ -463,7 +463,7 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE deque_control_capacity_size(struct 
  *  the maximum number of elements the container
  */
 
-extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE deque_control_capacity_max_size(struct deque_s *deque)
+extern inline container_size_t deque_control_capacity_max_size(struct deque_s *deque)
 {
 	assert(deque);
 
@@ -481,7 +481,7 @@ extern inline CONTAINER_GLOBAL_CFG_SIZE_TYPE deque_control_capacity_max_size(str
  */
 
 void deque_control_capacity_resize(struct deque_s **deque,
-								   CONTAINER_GLOBAL_CFG_SIZE_TYPE size)
+								   container_size_t size)
 {
 	assert(deque);
 	assert(0 <= size);
@@ -530,8 +530,8 @@ void deque_control_modifiers_clear(struct deque_s *deque)
  */
 
 void deque_control_modifiers_insert(struct deque_s *deque,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position, 
-                                    CONTAINER_GLOBAL_CFG_SIZE_TYPE amount, void **source)
+									container_size_t position, 
+                                    container_size_t amount, void **source)
 {
 	assert(deque);
 	assert(0 <= position);
@@ -551,7 +551,7 @@ void deque_control_modifiers_insert(struct deque_s *deque,
  */
 
 void deque_control_modifiers_erase(struct deque_s *deque,
-								   CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+								   container_size_t position)
 {
 	assert(deque);
 	assert(0 <= position);
@@ -678,7 +678,7 @@ void deque_control_modifiers_swap(struct deque_s **deque,
  */
 
 void *deque_element_control_get_data(struct deque_s *deque,
-                                     CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+                                     container_size_t position)
 {
     assert(deque);
     assert(0 <= position);
@@ -700,7 +700,7 @@ void *deque_element_control_get_data(struct deque_s *deque,
  */
 
 void deque_element_control_set_data(struct deque_s *deque,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position, void *source)
+									container_size_t position, void *source)
 {
 	assert(deque);
 	assert(0 <= position);
@@ -726,7 +726,7 @@ void deque_element_control_set_data(struct deque_s *deque,
  */
 
 void deque_element_control_del_data(struct deque_s *deque,
-									CONTAINER_GLOBAL_CFG_SIZE_TYPE position)
+									container_size_t position)
 {
 	assert(deque);
 	assert(0 <= position);
