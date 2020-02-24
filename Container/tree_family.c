@@ -79,7 +79,7 @@ struct tree_family_node_infomation_s tree_family_control_node_infomation = { 0 }
  * @return NONE
  */
 
-void tree_family_control_get_control_callback(enum tree_family_node_type_e node_type);
+void tree_family_control_get_control_callback(enum tree_family_node_type_e member_type);
 
 /**
 * @brief This function will compare if the left-hand-side greater than the right-hand-side.
@@ -200,10 +200,10 @@ struct sort_package_s tree_family_control_data_sort_package = {
 
 extern inline void tree_family_control_get_control(struct tree_family_control_environment_s environment)
 {
-	if (tree_family_control_environment.node_type != environment.node_type) {
+	if (tree_family_control_environment.member_type != environment.member_type) {
 		tree_family_control_environment = environment;
 
-		tree_family_control_get_control_callback(environment.node_type);
+		tree_family_control_get_control_callback(environment.member_type);
 	}
 }
 
@@ -223,7 +223,7 @@ void tree_family_control_get_control_in_sandbox(struct tree_family_s *tree,
 {
 	tree_family_control_environment = environment;
 
-	tree_family_control_get_control_callback(environment.node_type);
+	tree_family_control_get_control_callback(environment.member_type);
 
 	void *switch_control_tree = tree->switch_control;										/* Store current tree's switch control address */
 
@@ -256,15 +256,17 @@ void tree_family_control_get_control_in_sandbox(struct tree_family_s *tree,
  * @return NONE
  */
 
-static inline void tree_family_control_get_control_callback(enum tree_family_node_type_e node_type)
+static inline void tree_family_control_get_control_callback(enum tree_family_member_type_e member_type)
 {
-	tree_family_control_node_infomation.node_type = node_type;
+	enum tree_family_node_type_e node_type = member_type & 0x0f;
+
+	tree_family_control_node_infomation.member_type = member_type;
 	tree_family_control_node_infomation.data_element_count = node_type - 1;
 	tree_family_control_node_infomation.link_element_count = node_type + 1;
 	tree_family_control_node_infomation.id_data_far_right = node_type - 2;
 	tree_family_control_node_infomation.id_link_far_right = node_type;
-	tree_family_control_node_infomation.data_mem_len = tree_family_control_node_infomation.data_element_count * sizeof(void *);
-	tree_family_control_node_infomation.link_mem_len = tree_family_control_node_infomation.link_element_count * sizeof(void *);
+	tree_family_control_node_infomation.link_mem_len = 
+		tree_family_control_node_infomation.link_element_count * sizeof(void *);
 }
 
 /**
@@ -530,7 +532,16 @@ void tree_family_control_delete(struct tree_family_s *tree,
 		search_return = tree_family_control_search(tree, data);
 
 	if (SEARCH_CODE_NO_SUCH_ELEMENT != search_return.location) {							/* Can search the node */
-		tree_family_control_environment.node_operator.delete_rule(tree, search_return, data);
+		void *node_del =
+			tree_family_control_environment.
+			node_operator.
+			delete_rule(tree, search_return, data);
+
+		if (TREE_FAMILY_B_TREE > tree->container_type_id) {
+			tree_family_control_destroy_node(tree, &node_del);
+		} else {
+			tree_family_node_control_destroy_data(tree, &node_del);
+		}
 	}
 }
 
@@ -551,7 +562,7 @@ void *tree_family_control_init_node(struct tree_family_s *tree)
 													   1, sizeof(struct tree_family_chain_node_s));	/* Allocate #1 */
 
 	void *data_pack_allocated = tree->allocator_ctrl->allocate(tree->allocator,
-															   1, tree_family_control_node_infomation.data_mem_len);					/* Allocate #2 */
+															   1, tree->info.mem_size);				/* Allocate #2 */
 
 	void *link_pack_allocated = tree->allocator_ctrl->allocate(tree->allocator,
 															   1, tree_family_control_node_infomation.link_mem_len);					/* Allocate #3 */
@@ -610,7 +621,7 @@ void *tree_family_node_control_init_data(struct tree_family_s *tree)
 {
 	struct tree_family_chain_node_data_content_s
 		*block_data_allocated = tree->allocator_ctrl->allocate(tree->allocator, 1,
-															   tree_family_control_node_infomation.data_mem_len);
+															   tree->info.mem_size);
 
 	return block_data_allocated;
 }
@@ -708,7 +719,7 @@ void tree_family_node_control_insert_data(struct tree_family_s *tree,
 			return;
 		}
 
-		memcpy(*((void **)data_node), data, tree->info.mem_size_key);
+		memcpy(*((void **)data_node), data, tree->info.mem_size);
 	} else {
 		void
 			*data_cpy = tree->allocator_ctrl->allocate(tree->allocator, 1, tree->info.mem_size),
@@ -880,10 +891,10 @@ void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
  * @return the address of the node's available brother node
  */
 
-void *tree_family_control_get_neighbour(struct tree_family_s *tree,
-										struct tree_family_chain_node_s *node,
-										struct tree_family_chain_node_s *parent,
-										container_size_t relation_with_parent)
+void *tree_family_node_control_get_neighbour(struct tree_family_s *tree,
+											 struct tree_family_chain_node_s *node,
+											 struct tree_family_chain_node_s *parent,
+											 container_size_t relation_with_parent)
 {
 	assert(tree);
 	assert(node);
@@ -931,24 +942,25 @@ void *tree_family_control_get_neighbour(struct tree_family_s *tree,
 }
 
 /**
- * @brief This function will delete the data of the node,and return the data's address.
+ * @brief This function will set the child of the node,and return the link's address.
  *
  * @param void
  *
  * @return void
  */
 
-void *tree_family_node_control_set_family_member(struct tree_family_s *tree,
-												 struct tree_family_chain_node_s *node,
-												 struct tree_family_chain_node_s *family_member,
-												 container_size_t id)
+void *tree_family_node_control_set_child(struct tree_family_s *tree,
+										 struct tree_family_chain_node_s *node,
+										 struct tree_family_chain_node_s *family_member,
+										 container_size_t id)
 {
 	assert(tree);
 	assert(node);
 
 	tree->switch_control(tree);
 
-	if (NULL == family_member) {
+	if (NULL == family_member ||
+		LINK_OPERATOR_IS_PARENT(id)) {
 		goto EXIT;
 	}
 
@@ -969,7 +981,7 @@ void *tree_family_node_control_set_family_member(struct tree_family_s *tree,
 		}
 	}
 
-	*((void **)family_member->link) = node;
+	*((void **)family_member->link + LINK_OPERATOR_CODE_PARENT) = node;
 	*((void **)node->link + id) = family_member;
 
 EXIT:
@@ -989,6 +1001,7 @@ void *tree_family_node_control_del_family_member(struct tree_family_s *tree,
 												 struct tree_family_chain_node_s *node,
 												 container_size_t id)
 {
+	assert(tree);
 	assert(node);
 
 	void *family_member_del = NULL;
@@ -1209,7 +1222,7 @@ static inline void tree_family_sort_algorithm_control_swap_data(void *object,
 bool tree_family_node_control_compare_greater(void *lhs, void *rhs,
 											  container_size_t len)
 {
-	if (NULL == lhs) {						/* Regard NULL is the greatest value */
+	if (NULL == lhs) {						/* Regard NULL as the greatest value */
 		return true;
 	} else if (NULL == rhs) {
 		return false;
@@ -1521,13 +1534,17 @@ void tree_family_control_traversal_printer(struct tree_family_s *tree,
 
 	char ***data = node;
 
-	for (size_t cnt = 0; cnt < data_element_count; cnt++) {
-		if (NULL != *(*data + cnt)) {
-			printf("\"%s\"-%d ", *(*data + cnt), *(*(*data + cnt)) - '0');
+	for (size_t id_data = DATA_OPERATOR_CODE_DATA_FAR_LEFT; id_data < data_element_count; id_data++) {
+		if (NULL != *(*data + id_data)) {
+			if (DATA_OPERATOR_CODE_DATA_FAR_LEFT < id_data) {
+				printf("\r\n");
+			}
+			printf("key:\"%s\"-%d content:\"%s\" ", *(*data + id_data), *(*(*data + id_data)) - '0', (char *)((size_t)(*(*data + id_data)) + tree->info.mem_size_key));
 		}
 	}
 
-	printf("\r\n");
+	printf("data_addr:%p link_addr:%p \r\n",
+		   *((void **)node + 0), *((void **)node + 1));
 }
 
 /**

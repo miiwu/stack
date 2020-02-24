@@ -58,13 +58,31 @@
 
 void binary_search_tree_control_configuration_init(struct tree_family_s **tree,
 												   container_size_t element_size,
-												   void (*assign)(void *dst, void *src), void (*free)(void *dst));
+												   void (*assign)(void *dst, void *src),
+												   void (*free)(void *dst));
+
+/**
+ * @brief This function will control b_tree_control_delete()'s delete.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+struct tree_family_control_environment_s
+	binary_search_tree_control_get_environment(void);
 
 /*
 *********************************************************************************************************
 *                                       EXTERN GLOBAL VARIABLES
 *********************************************************************************************************
 */
+
+/**
+ * @brief This struct will record the binary search tree's node operator.
+ */
+
+struct tree_family_node_operator_s binary_search_tree_control_node_operator;
 
 /*
 *********************************************************************************************************

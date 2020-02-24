@@ -11,11 +11,11 @@
 
 #define MAIN_ALLOCATOR_EN			0u
 
-#define MAIN_B_TREE_EN				0u
+#define MAIN_B_TREE_EN				1u
 
 #define MAIN_BINARY_SEARCH_TREE_EN	1u
 
-#define MAIN_RED_BLACK_TREE_EN		0u
+#define MAIN_RED_BLACK_TREE_EN		1u
 
 #define MAIN_ARRAY_EN				0u
 

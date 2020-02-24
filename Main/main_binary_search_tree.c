@@ -46,7 +46,7 @@ void main_binary_search_tree(void)
 	}
 
 	printf("\r\nb_tree.insert start\r\n");
-	for (size_t cnt = 0; cnt < BINARY_SEARCH_TREE_DELETE_CASE; cnt += 2) {
+	for (size_t cnt = 0; cnt < BINARY_SEARCH_TREE_DELETE_CASE; cnt++) {
 		size_t count = cnt - '0';
 		printf("\r\nb_tree.insert start: %c-%d \r\n", key_pool[cnt], count);
 		tree_family_control_insert(tree, (void *)&key_pool[cnt]);

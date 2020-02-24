@@ -75,13 +75,13 @@ enum tree_family_member_type_e {
 
 	TREE_FAMILY_B_TREE = 0x03,
 
-	TREE_FAMILY_4D_B_TREE = 0x13,
+	TREE_FAMILY_4D_B_TREE = 0x04,
 
-	TREE_FAMILY_5D_B_TREE = 0x23,
+	TREE_FAMILY_5D_B_TREE = 0x05,
 
-	TREE_FAMILY_6D_B_TREE = 0x23,
+	TREE_FAMILY_6D_B_TREE = 0x06,
 
-	TREE_FAMILY_7D_B_TREE = 0x23,
+	TREE_FAMILY_7D_B_TREE = 0x07,
 };
 
 /**
@@ -200,9 +200,9 @@ typedef container_size_t tree_family_search_recursion_rule_t(struct tree_family_
  * @brief This struct is the binary tree link node structure module.
  */
 
-typedef void tree_family_insert_and_delete_rule_t(struct tree_family_s *tree,
-												  struct tree_family_search_node_return_s search_return,
-												  void *data);
+typedef void *tree_family_insert_and_delete_rule_t(struct tree_family_s *tree,
+												   struct tree_family_search_node_return_s search_return,
+												   void *data);
 
 /**
  * @brief This struct is the binary tree link node structure module.
@@ -217,9 +217,9 @@ typedef void tree_family_traversal_operator_t(struct tree_family_s *tree,
  */
 
 struct tree_family_node_infomation_s {
-	enum tree_family_node_type_e node_type;
+    enum tree_family_member_type_e member_type;
 
-	container_size_t data_mem_len;
+	//container_size_t data_mem_len;                /* Manage by tree_family_s */
 
 	container_size_t link_mem_len;
 
@@ -251,7 +251,7 @@ struct tree_family_node_operator_s {
  */
 
 struct tree_family_control_environment_s {
-	enum tree_family_node_type_e node_type;
+    enum tree_family_member_type_e member_type;
 
 	struct tree_family_node_operator_s node_operator;
 };
@@ -340,7 +340,7 @@ void tree_family_control_get_control(struct tree_family_control_environment_s en
 void tree_family_control_get_control_in_sandbox(struct tree_family_s *tree,
 												struct tree_family_control_environment_s environment,
 												void (*func_addr)(void *, ...),
-                                                size_t count_param,
+												size_t count_param,
 												...);
 
 /**
@@ -754,10 +754,10 @@ void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
  * @return the address of the node's available brother node
  */
 
-void *tree_family_control_get_neighbour(struct tree_family_s *tree,
-										struct tree_family_chain_node_s *node,
-										struct tree_family_chain_node_s *parent,
-										container_size_t relation_with_parent);
+void *tree_family_node_control_get_neighbour(struct tree_family_s *tree,
+											 struct tree_family_chain_node_s *node,
+											 struct tree_family_chain_node_s *parent,
+											 container_size_t relation_with_parent);
 
 /**
  * @brief This function will delete the data of the node,and return the data's address.
@@ -767,10 +767,10 @@ void *tree_family_control_get_neighbour(struct tree_family_s *tree,
  * @return void
  */
 
-void *tree_family_node_control_set_family_member(struct tree_family_s *tree,
-												 struct tree_family_chain_node_s *node,
-												 struct tree_family_chain_node_s *family_member,
-												 container_size_t id);
+void *tree_family_node_control_set_child(struct tree_family_s *tree,
+										 struct tree_family_chain_node_s *node,
+										 struct tree_family_chain_node_s *family_member,
+										 container_size_t id);
 
 /**
  * @brief This function will delete the data of the node,and return the data's address.
@@ -818,6 +818,18 @@ bool tree_family_node_control_get_if_leaf(struct tree_family_s *tree,
 bool tree_family_node_control_get_if_left_child(struct tree_family_s *tree,
 												struct tree_family_chain_node_s *node,
 												struct tree_family_chain_node_s *parent);
+
+/**
+ * @brief This function will return the type of the node.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+bool tree_family_node_control_get_if_right_child(struct tree_family_s *tree,
+												 struct tree_family_chain_node_s *node,
+												 struct tree_family_chain_node_s *parent);
 
 /**
  * @brief This function will return the type of the node.
