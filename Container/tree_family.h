@@ -217,7 +217,7 @@ typedef void tree_family_traversal_operator_t(struct tree_family_s *tree,
  */
 
 struct tree_family_node_infomation_s {
-    enum tree_family_member_type_e member_type;
+	enum tree_family_member_type_e member_type;
 
 	//container_size_t data_mem_len;                /* Manage by tree_family_s */
 
@@ -251,7 +251,7 @@ struct tree_family_node_operator_s {
  */
 
 struct tree_family_control_environment_s {
-    enum tree_family_member_type_e member_type;
+	enum tree_family_member_type_e member_type;
 
 	struct tree_family_node_operator_s node_operator;
 };

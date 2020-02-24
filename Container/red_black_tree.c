@@ -118,11 +118,11 @@ void *red_black_tree_control_insert_rule(struct tree_family_s *tree,
  */
 
 void *red_black_tree_control_delete_rule(struct tree_family_s *tree,
-										 struct tree_family_chain_node_s *node,
+										 struct tree_family_search_node_return_s search_return,
 										 void *data);
 
 /**
- * @brief This function will rotate the node to be the left child.
+ * @brief This function will fix the tree to be a red_black_tree after insert the node specified.
  *
  * @param void
  *
@@ -134,16 +134,16 @@ void red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
 											struct tree_family_chain_node_s *parent);
 
 /**
- * @brief This function will paint the node with the color.
+ * @brief This function will fix the tree to be a red_black_tree after delete the node specified.
  *
  * @param void
  *
  * @return void
  */
 
-void red_black_tree_node_control_paint_color(struct tree_family_s *tree,
-											 struct tree_family_chain_node_s *node,
-											 enum red_black_tree_color_e color);
+void red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
+											struct tree_family_chain_node_s *node,
+											struct tree_family_chain_node_s *parent);
 
 /**
  * @brief This function will extract the color of the node.
@@ -156,6 +156,18 @@ void red_black_tree_node_control_paint_color(struct tree_family_s *tree,
 enum red_black_tree_color_e
 	red_black_tree_node_control_extract_color(struct tree_family_s *tree,
 											  struct tree_family_chain_node_s *node);
+
+/**
+ * @brief This function will paint the node with the color.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void red_black_tree_node_control_paint_color(struct tree_family_s *tree,
+											 struct tree_family_chain_node_s *node,
+											 enum red_black_tree_color_e color);
 
 /**
  * @brief This function will rotate the node to be the left child.
@@ -347,17 +359,32 @@ EXIT:
  */
 
 void *red_black_tree_control_delete_rule(struct tree_family_s *tree,
-										 struct tree_family_chain_node_s *node,
+										 struct tree_family_search_node_return_s search_return,
 										 void *data)
 {
 	assert(tree);
-	assert(node);
+	assert(data);
 
-	return NULL;
+	struct tree_family_chain_node_s
+		*node = binary_search_tree_control_node_operator.delete_rule(tree, search_return, data),
+		*parent = NULL;
+
+	if (NULL == node ||
+		NULL == (parent = *((void **)node->link + LINK_OPERATOR_CODE_PARENT))) {
+		goto EXIT;
+	}
+
+	if (RED_BLACK_TREE_COLOR_BLACK == red_black_tree_node_control_extract_color(tree, parent)) {
+		red_black_tree_control_delete_fix_rule(tree, node, parent);
+	}
+
+EXIT:
+
+	return node;
 }
 
 /**
- * @brief This function will rotate the node to be the left child.
+ * @brief This function will fix the tree to be a red_black_tree after insert the node specified.
  *
  * @param void
  *
@@ -452,7 +479,7 @@ red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
 }
 
 /**
- * @brief This function will paint the node with the color.
+ * @brief This function will fix the tree to be a red_black_tree after delete the node specified.
  *
  * @param void
  *
@@ -460,21 +487,124 @@ red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
  */
 
 static inline void
-red_black_tree_node_control_paint_color(struct tree_family_s *tree,
-										struct tree_family_chain_node_s *node,
-										enum red_black_tree_color_e color)
+red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
+									   struct tree_family_chain_node_s *node,
+									   struct tree_family_chain_node_s *parent)
 {
 	assert(tree);
+	assert(node);
+	assert(parent);
 
-	if (NULL == node) {
-		return;
+	bool if_node_is_parent_right_child = false;
+
+	if (NULL == *((void **)parent->link + 2)) {
+		if_node_is_parent_right_child = true;
 	}
 
-	enum red_black_tree_color_e
-		*color_operator = (enum red_black_tree_color_e *)((size_t)(*((void **)node->data)) +
-														  tree->info.mem_size_key);
+	while (NULL != node &&
+		   tree->root != node &&
+		   NULL != parent &&
+		   RED_BLACK_TREE_COLOR_BLACK == red_black_tree_node_control_extract_color(tree, node)) {
+		red_black_tree_node_control_rotate_t red_black_tree_node_control_rotate[2] = {
+			red_black_tree_node_control_left_rotate,
+			red_black_tree_node_control_right_rotate };
 
-	*color_operator = color;
+		container_size_t
+			id_link_parent_child[2] = { 1,2 },
+			id_link_brother_child[2] = { 1,2 };
+
+		if (if_node_is_parent_right_child ||															/* If node is the parent's right child */
+			node == *((void **)parent->link + 2)) {
+			ALGORITHM_SWAP(id_link_parent_child[0], id_link_parent_child[1]);
+			ALGORITHM_SWAP(id_link_brother_child[0], id_link_brother_child[1]);
+			ALGORITHM_SWAP((size_t)red_black_tree_node_control_rotate[0],
+				(size_t)red_black_tree_node_control_rotate[1]);
+
+			if_node_is_parent_right_child = false;
+		}
+
+		struct tree_family_chain_node_s
+			*brother = *((void **)parent->link + id_link_parent_child[1]);								/* Get the brother of the node */
+
+		container_size_t
+			mem_size_color = sizeof(enum red_black_tree_color_e),
+			color_brother_both_child = 0;
+
+		switch (red_black_tree_node_control_extract_color(tree, brother)) {								/* Extract the color of the brother */
+			case RED_BLACK_TREE_COLOR_RED:																/* TAG:
+																											Node is left child of parent,
+																											BLACK-node + BLACK-both-node-child/nil +
+																											RED-brother */
+				red_black_tree_node_control_paint_color(tree, brother, RED_BLACK_TREE_COLOR_BLACK);
+				red_black_tree_node_control_paint_color(tree, parent, RED_BLACK_TREE_COLOR_RED);
+
+				red_black_tree_node_control_rotate[0](tree, parent);
+
+				brother = *((void **)parent->link + id_link_parent_child[1]);							/* Refresh the brother */
+			case RED_BLACK_TREE_COLOR_BLACK:
+				if (NULL != brother) {
+					color_brother_both_child =															/* Extract the color of the brother's both child */
+						red_black_tree_node_control_extract_color(tree, *((void **)brother->link +
+																		  id_link_brother_child[0]))
+						<< sizeof(enum red_black_tree_color_e) |
+						red_black_tree_node_control_extract_color(tree, *((void **)brother->link +
+																		  id_link_brother_child[1]));
+				} else {
+					color_brother_both_child = RED_BLACK_TREE_COLOR_BLACK << 4 | RED_BLACK_TREE_COLOR_BLACK;
+				}
+
+				switch (color_brother_both_child) {
+					case RED_BLACK_TREE_COLOR_BLACK << sizeof(enum red_black_tree_color_e) | RED_BLACK_TREE_COLOR_BLACK:
+																										/* TAG:
+																											Node is left child of parent,
+																											BLACK-node + BLACK-both-node-child/nil +
+																											BLACK-brother + BLACK-both-brother-child/nil */
+						red_black_tree_node_control_paint_color(tree, brother, RED_BLACK_TREE_COLOR_RED);
+
+						node = parent;
+						parent = *((void **)node->link + LINK_OPERATOR_CODE_PARENT);
+						break;
+					case RED_BLACK_TREE_COLOR_RED << sizeof(enum red_black_tree_color_e) | RED_BLACK_TREE_COLOR_BLACK:
+																										/* TAG:
+																											Node is right child of parent,
+																											BLACK-node + BLACK-both-node-child/nil +
+																											BLACK-brother + BLACK-brother-left-child/nil + RED-brother-right-child/nil */
+						red_black_tree_node_control_paint_color(tree,
+																*((void **)brother->link + id_link_brother_child[0]),
+																RED_BLACK_TREE_COLOR_BLACK);
+						red_black_tree_node_control_paint_color(tree, brother, RED_BLACK_TREE_COLOR_RED);
+
+						red_black_tree_node_control_rotate[1](tree, brother);
+
+						brother = *((void **)parent->link + id_link_parent_child[1]);
+					case RED_BLACK_TREE_COLOR_RED << sizeof(enum red_black_tree_color_e) | RED_BLACK_TREE_COLOR_RED:
+					case RED_BLACK_TREE_COLOR_BLACK << sizeof(enum red_black_tree_color_e) | RED_BLACK_TREE_COLOR_RED:
+																										/* TAG:
+																											Node is left child of parent,
+																											BLACK-node + BLACK-both-node-child/nil +
+																											BLACK-brother + ANY-brother-left-child/nil + RED-brother-right-child/nil */
+						red_black_tree_node_control_paint_color(tree, brother,
+																red_black_tree_node_control_extract_color(tree,
+																										  parent));
+						red_black_tree_node_control_paint_color(tree, parent, RED_BLACK_TREE_COLOR_BLACK);
+						red_black_tree_node_control_paint_color(tree,
+																*((void **)brother->link + id_link_brother_child[1]),
+																RED_BLACK_TREE_COLOR_BLACK);
+
+						red_black_tree_node_control_rotate[0](tree, parent);
+
+						node = tree->root;
+						break;
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	red_black_tree_node_control_paint_color(tree, node, RED_BLACK_TREE_COLOR_BLACK);
 }
 
 /**
@@ -492,14 +622,49 @@ red_black_tree_node_control_extract_color(struct tree_family_s *tree,
 	assert(tree);
 
 	if (NULL == node) {
-		return RED_BLACK_TREE_COLOR_BLACK;
+		goto BLACK;
 	}
 
 	enum red_black_tree_color_e
 		*color_operator = (enum red_black_tree_color_e *)((size_t)(*((void **)node->data)) +
 														  tree->info.mem_size_key);
 
-	return *color_operator;
+	switch (*color_operator) {
+		case RED_BLACK_TREE_COLOR_RED:
+			return RED_BLACK_TREE_COLOR_RED;
+		case RED_BLACK_TREE_COLOR_BLACK:
+		BLACK:
+			return RED_BLACK_TREE_COLOR_BLACK;
+		default:
+			return RED_BLACK_TREE_COLOR_NONE;
+	}
+}
+
+/**
+ * @brief This function will paint the node with the color.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+static inline void
+red_black_tree_node_control_paint_color(struct tree_family_s *tree,
+										struct tree_family_chain_node_s *node,
+										enum red_black_tree_color_e color)
+{
+	assert(tree);
+
+	if (NULL == node ||
+		color == red_black_tree_node_control_extract_color(tree, node)) {
+		return;
+	}
+
+	enum red_black_tree_color_e
+		*color_operator = (enum red_black_tree_color_e *)((size_t)(*((void **)node->data)) +
+														  tree->info.mem_size_key);
+
+	*color_operator = color;
 }
 
 /**

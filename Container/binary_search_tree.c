@@ -211,7 +211,7 @@ binary_search_tree_control_search_match_rule(struct tree_family_s *tree,
 
 	for (; location < tree->info.degree - 1; location++) {
 		if (NULL != *((void **)node->data + location) &&
-			compare_control_equal(data, *((void **)node->data + location), tree->info.mem_size)) {
+			compare_control_equal(data, *((void **)node->data + location), tree->info.mem_size_key)) {
 			goto EXIT;
 		}
 	}

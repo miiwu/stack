@@ -426,8 +426,7 @@ void *b_tree_control_delete_rule(struct tree_family_s *tree,
 
 	while (NULL != node) {
 		if (tree_family_node_control_get_if_leaf(tree, node)) {										/* Delete the node that is a leaf node */
-			//tree_family_node_control_destroy_data(tree, ((void **)node->data + location));
-			ALGORITHM_SWAP((size_t)data_delete, (size_t)*((void **)node->data + location));
+			ALGORITHM_SWAP((size_t)data_delete, (size_t) * ((void **)node->data + location));
 
 			while ((NULL != node) && (NULL != parent || NULL != (parent = *((void **)node->link))) &&
 				(tree->info.minimum_key > tree_family_node_control_get_node_type(tree, node))) {

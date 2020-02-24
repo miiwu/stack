@@ -29,6 +29,45 @@ void main_red_black_tree(void)
 	printf("\r\n");
 	tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
 
+	printf("\r\nred_black_tree.delete start\r\n");
+	#define RED_BLACK_TREE_DELETE_CASE								6
+	size_t key_pool[RED_BLACK_TREE_DELETE_CASE] = {
+		'9',																					/* TAG:
+																									Node is left child of parent,
+																									RED-node + BLACK-node-child/nil */
+		'>',																					/* TAG:
+																									Node is left child of parent,
+																									BLACK-node + BLACK-both-node-child/nil +
+																									RED-brother */
+		'1',																					/* TAG:
+																									Node is left child of parent,
+																									BLACK-node + BLACK-both-node-child/nil +
+																									BLACK-brother + BLACK-both-brother-child/nil */
+		'@','?',																				/* TAG:
+																									Node is left child of parent,
+																									BLACK-node + BLACK-both-node-child/nil +
+																									BLACK-brother + ANY-brother-left-child/nil + RED-brother-right-child/nil */
+		'D',																					/* TAG:
+																									Node is right child of parent,
+																									BLACK-node + BLACK-both-node-child/nil +
+																									BLACK-brother + BLACK-brother-left-child/nil + RED-brother-right-child/nil */
+	};
+
+	for (size_t cnt = 0; cnt < RED_BLACK_TREE_DELETE_CASE; cnt++) {
+		printf("\r\nred_black_tree.delete \"%s\"-%d start\r\n", (char *)&key_pool[cnt], key_pool[cnt] - '0');
+
+		struct tree_family_search_node_return_s search = tree_family_control_search(tree, (void *)&key_pool[cnt]);
+		printf("\r\nsearch:\"%c\" location:%d node:%p nod_prev:%p \r\n", (char)key_pool[cnt], search.location, search.node, search.node_prev);
+
+		tree_family_control_delete(tree, (void *)&key_pool[cnt]);
+		tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
+
+		printf("\r\nred_black_tree.delete \"%s\"-%d end\r\n", (char *)&key_pool[cnt], key_pool[cnt] - '0');
+	}
+
+	printf("\r\n");
+	tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
+
 	printf("\r\nred_black_tree.destroy start\r\n");
 	tree_family_control_configuration_destroy(&tree);
 

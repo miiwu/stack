@@ -265,7 +265,7 @@ static inline void tree_family_control_get_control_callback(enum tree_family_mem
 	tree_family_control_node_infomation.link_element_count = node_type + 1;
 	tree_family_control_node_infomation.id_data_far_right = node_type - 2;
 	tree_family_control_node_infomation.id_link_far_right = node_type;
-	tree_family_control_node_infomation.link_mem_len = 
+	tree_family_control_node_infomation.link_mem_len =
 		tree_family_control_node_infomation.link_element_count * sizeof(void *);
 }
 
@@ -532,15 +532,17 @@ void tree_family_control_delete(struct tree_family_s *tree,
 		search_return = tree_family_control_search(tree, data);
 
 	if (SEARCH_CODE_NO_SUCH_ELEMENT != search_return.location) {							/* Can search the node */
-		void *node_del =
+		void *item_del =
 			tree_family_control_environment.
 			node_operator.
 			delete_rule(tree, search_return, data);
 
-		if (TREE_FAMILY_B_TREE > tree->container_type_id) {
-			tree_family_control_destroy_node(tree, &node_del);
-		} else {
-			tree_family_node_control_destroy_data(tree, &node_del);
+		if (NULL != item_del) {
+			if (TREE_FAMILY_B_TREE > tree->container_type_id) {
+				tree_family_control_destroy_node(tree, &item_del);
+			} else {
+				tree_family_node_control_destroy_data(tree, &item_del);
+			}
 		}
 	}
 }
