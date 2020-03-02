@@ -6,7 +6,7 @@ This package contains some simple data structures together.
 
 ## Status
 
-![Constructing](D:\Storage\Downloads\Chrome\Constructing.png)
+![Constructing](<https://github.com/Miao-Mico/stack/blob/master/constructing.png>)
 
 ## Feature
 
