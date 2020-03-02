@@ -24,21 +24,13 @@
 #include <assert.h>
 #include <malloc.h>
 
-#include "allocator.h"
-
-#include "algorithm.h"
+#include "container_cfg.h"
 
 /*
 *********************************************************************************************************
 *												DEFINES
 *********************************************************************************************************
 */
-
-/* Configure    container global size type.																*/
-#define CONTAINER_GLOBAL_CFG_SIZE_TYPE															size_t
-
-#pragma warning( disable : 4996)
-#pragma warning( disable : 26812)
 
 /*
 *********************************************************************************************************
@@ -188,92 +180,11 @@ struct container_control_s {
 *********************************************************************************************************
 */
 
-/**
- * @brief This function will initialize the container struct and attach to the specified container.
- *
- * @param container the container adapter struct
- *
- * @return the pointer to the specified container function address table.
- */
-
-inline void *container_control_convert_type_to_func_addr_table(enum container_type_e type);
-
 /*
 *********************************************************************************************************
 *                                       EXTERN GLOBAL VARIABLES
 *********************************************************************************************************
 */
-
-/**
- * @brief This array will contain all the universal array functions address.
- */
-
-extern void *array_function_address_tables[];
-
-/**
- * @brief This array will contain all the universal vector functions address.
- */
-
-extern void *vector_function_address_tables[];
-
-/**
- * @brief This array will contain all the universal forward_list functions address.
- */
-
-extern void *forward_list_function_address_tables[];
-
-/**
- * @brief This array will contain all the universal list functions address.
- */
-
-extern void *list_function_address_tables[];
-
-/*
-*********************************************************************************************************
-*                                            FUNCTIONS
-*********************************************************************************************************
-*/
-
-/**
- * @brief This function will initialize the container struct and attach to the specified container.
- *
- * @param container the container adapter struct
- *
- * @return the pointer to the specified container function address table.
- */
-
-inline void *container_control_convert_type_to_func_addr_table(enum container_type_e type)
-{
-	void
-		*func_addr_table = NULL;
-
-	switch (type) {
-		case ARRAY:
-			func_addr_table = &array_function_address_tables;
-			break;
-		case VECTOR:
-			func_addr_table = &vector_function_address_tables;
-			break;
-		case DEQUE:
-			break;
-		case FORWARD_LIST:
-			func_addr_table = &forward_list_function_address_tables;
-			break;
-		case LIST:
-			func_addr_table = &list_function_address_tables;
-			break;
-		case SET:
-			break;
-		case MAP:
-			break;
-		case UNORDERED_SET:
-			break;
-		default:
-			break;
-	}
-
-	return func_addr_table;
-}
 
 /*
 *********************************************************************************************************

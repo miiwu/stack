@@ -141,7 +141,7 @@ struct deque_control_s deque_ctrl = {
  * @return NONE
  */
 
-void deque_control_configration_exception_default_empty_callback(void);
+void deque_control_configuration_exception_default_empty_callback(void);
 
 /**
  * @brief This function will callback the handler that container has no elements when the container temp to erase.
@@ -152,7 +152,7 @@ void deque_control_configration_exception_default_empty_callback(void);
  * @return NONE
  */
 
-void deque_control_configration_exception_default_full_callback(void);
+void deque_control_configuration_exception_default_full_callback(void);
 
 /*
 *********************************************************************************************************
@@ -188,7 +188,7 @@ void deque_control_configuration_init(struct deque_s **deque,
 	allocator_ctrl = allocator_control_convert_type_to_func_addr_table(DEQUE_CFG_ALLOCATOR_TYPE);	/* Variables pointer to	the function address table of
 																							specified allocator type		*/
 
-	allocator_ctrl->configration.init(&allocator, NULL);
+	allocator_ctrl->configuration.init(&allocator, NULL);
 
 	struct deque_s
 		*deque_alloced = (struct deque_s *)allocator_ctrl->allocate(allocator,
@@ -211,8 +211,8 @@ void deque_control_configuration_init(struct deque_s **deque,
 	deque_alloced->element_handler.assign = NULL;
 	deque_alloced->element_handler.free = NULL;
 
-	deque_alloced->exception.empty = deque_control_configration_exception_default_empty_callback;
-	deque_alloced->exception.full = deque_control_configration_exception_default_full_callback;
+	deque_alloced->exception.empty = deque_control_configuration_exception_default_empty_callback;
+	deque_alloced->exception.full = deque_control_configuration_exception_default_full_callback;
 
 	if (NULL != assign &&																	/* Check if assign point to NULL			*/
 		NULL != free) {																		/* Check if free point to NULL				*/
@@ -280,7 +280,7 @@ void deque_control_configuration_destroy(struct deque_s **deque)
 
 	deque_allocator_ctrl->deallocate(deque_allocator, *deque, 1);																			/* deallocate #1 */
 
-	deque_allocator_ctrl->configration.destroy(&deque_allocator);
+	deque_allocator_ctrl->configuration.destroy(&deque_allocator);
 
 	*deque = NULL;
 }
@@ -745,7 +745,7 @@ void deque_element_control_del_data(struct deque_s *deque,
  * @return NONE
  */
 
-void deque_control_configration_exception_default_empty_callback(void)
+void deque_control_configuration_exception_default_empty_callback(void)
 {
 	printf("\r\n the deque has no elements when you temp to insert \r\n");
 }
@@ -759,7 +759,7 @@ void deque_control_configration_exception_default_empty_callback(void)
  * @return NONE
  */
 
-void deque_control_configration_exception_default_full_callback(void)
+void deque_control_configuration_exception_default_full_callback(void)
 {
 	printf("\r\n the deque has no elements when you temp to erase \r\n");
 }

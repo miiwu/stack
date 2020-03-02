@@ -231,17 +231,6 @@ struct array_family_control_s {
 void array_family_control_get_control(enum list_family_member_type_e type);
 
 /**
- * @brief This function will get the control of the array_family system.
- *
- * @param node_operator the node's operator
- *
- * @return NONE
- */
-
-void aray_family_control_get_control(enum array_family_member_type_e member,
-									 struct array_family_element_operator_s operator);
-
-/**
  * @brief This function will initialize the array_family struct.
  *
  * @param array_family the pointer to the container struct pointer
@@ -257,7 +246,8 @@ void array_family_control_configuration_init(struct array_family_s **array_famil
 											 void (*switch_control)(void),
 											 enum allocator_type_e allocator_type,
 											 container_size_t element_size,
-											 void (*assign)(void *dst, void *src), void (*free)(void *dst));
+											 void (*assign)(void *dst, void *src),
+											 void (*free)(void *dst));
 
 /**
  * @brief This function will destroy the array_family struct and free the space.
@@ -280,7 +270,8 @@ void array_family_control_configuration_destroy(struct array_family_s **array_fa
  */
 
 void array_family_control_configuration_element_handler(struct array_family_s *array_family,
-														void (*assign)(void *dst, void *src), void (*free)(void *dst));
+														void (*assign)(void *dst, void *src),
+														void (*free)(void *dst));
 
 /**
  * @brief This function will configure the array_family exception callback.
@@ -425,7 +416,8 @@ void array_family_control_modifiers_clear(struct array_family_s *array_family);
  */
 
 void array_family_control_modifiers_insert(struct array_family_s *array_family,
-										   container_size_t position, container_size_t amount, void **source);
+										   container_size_t position,
+										   container_size_t amount, void **source);
 
 /**
  * @brief This function will erases the specified elements from the container.

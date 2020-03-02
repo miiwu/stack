@@ -7,8 +7,8 @@
 *********************************************************************************************************
 */
 
-#ifndef __ALLOCATOR_DEFINITION_H
-#define __ALLOCATOR_DEFINITION_H
+#ifndef __CONTAINER_ADAPTOR_FAMILY_H
+#define __CONTAINER_ADAPTOR_FAMILY_H
 
 /*
 *********************************************************************************************************
@@ -16,21 +16,7 @@
 *********************************************************************************************************
 */
 
-#include <errno.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <assert.h>
-#include <malloc.h>
-
-#include "allocator_cfg.h"
-
-#if (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
-
-#include "debug_component.h"
-
-#endif // (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
+#include "container.h"
 
 /*
 *********************************************************************************************************
@@ -43,40 +29,6 @@
 *									           DATA TYPES
 *********************************************************************************************************
 */
-
-/* Configure the enum type of allocator.																*/
-enum allocator_type_e {
-	ALLOCATOR_COMMON,
-};
-
-/**
- * @brief This struct is the allocator structure control module
- */
-
-struct allocator_control_s {
-	struct {
-		/* @brief This function will initialize the allocator struct.									*/
-		errno_t (*init)(void **allocator,
-					 void (*lack_of_memory)(void));
-
-		/* @brief This function will destroy the allocator struct.										*/
-		void (*destroy)(void **allocator);
-
-		/* @brief This function will configure the exceptions of allocator struct.					    */
-		void (*exception)(void **allocator,
-						  void (*lack_of_memory)(void));
-	}configuration;
-
-	/* @brief This function will allocates n * sizeof(Type) bytes of uninitialized storage by calling
-			  malloc(n * sizeof(Type)) or calloc(n,sizeof(Type)).										*/
-	void *(*allocate)(void *allocator,
-					  ALLOCATOR_GLOBAL_CFG_SIZE_TYPE count, ALLOCATOR_GLOBAL_CFG_SIZE_TYPE size);
-
-	/* @brief This function will deallocates the storage referenced by the pointer block,
-			  which must be a pointer obtained by an earlier call to allocate().						*/
-	void (*deallocate)(void *allocator,
-					   void *block, ALLOCATOR_GLOBAL_CFG_SIZE_TYPE count);
-};
 
 /*
 *********************************************************************************************************
@@ -92,25 +44,13 @@ struct allocator_control_s {
  * @return the pointer to the specified container function address table.
  */
 
-void *allocator_control_convert_type_to_func_addr_table(enum allocator_type_e type);
-
-/**
- * @brief This function will handle the exception that lack of memory.
- *
- * @param allocator the pointer to allocator
- *
- * @return NONE
- */
-
-void allocator_control_exception_default_lack_of_memory(void *allocator);
+void *container_control_convert_type_to_func_addr_table(enum container_type_e type);
 
 /*
 *********************************************************************************************************
 *                                       EXTERN GLOBAL VARIABLES
 *********************************************************************************************************
 */
-
-extern void *allocator_common_function_address_tables[];
 
 /*
 *********************************************************************************************************
@@ -126,14 +66,55 @@ extern void *allocator_common_function_address_tables[];
  * @return the pointer to the specified container function address table.
  */
 
-inline void *allocator_control_convert_type_to_func_addr_table(enum allocator_type_e type)
+extern inline void *container_control_convert_type_to_func_addr_table(enum container_type_e type)
 {
 	void
 		*func_addr_table = NULL;
 
 	switch (type) {
-		case ALLOCATOR_COMMON:
-			func_addr_table = &allocator_common_function_address_tables;
+		#if (CONTAINER_FAMILY_LEVEL_CFG_BINARY_TREE_EN)
+
+		#endif // (CONTAINER_FAMILY_LEVEL_CFG_BINARY_TREE_EN)
+
+		#if (CONTAINER_FAMILY_LEVEL_CFG_RED_BLACK_TREE_EN)
+
+		#endif // (CONTAINER_FAMILY_LEVEL_CFG_RED_BLACK_TREE_EN)
+
+		#if (CONTAINER_FAMILY_LEVEL_CFG_B_TREE_EN)
+
+		#endif // (CONTAINER_FAMILY_LEVEL_CFG_B_TREE_EN)
+
+		#if (CONTAINER_FAMILY_LEVEL_CFG_ARRAY_EN)
+
+		case ARRAY:
+			func_addr_table = &array_function_address_tables;
+			break;
+
+			#endif // (CONTAINER_FAMILY_LEVEL_CFG_ARRAY_EN)
+
+			#if (CONTAINER_FAMILY_LEVEL_CFG_VECTOR_EN)
+
+		case VECTOR:
+			func_addr_table = &vector_function_address_tables;
+			break;
+
+			#endif // (CONTAINER_FAMILY_LEVEL_CFG_VECTOR_EN)
+
+			#if (CONTAINER_FAMILY_LEVEL_CFG_FORWARD_LIST_EN)
+
+		case FORWARD_LIST:
+			func_addr_table = &forward_list_function_address_tables;
+			break;
+
+			#endif // (CONTAINER_FAMILY_LEVEL_CFG_FORWARD_LIST_EN)
+
+			#if (CONTAINER_FAMILY_LEVEL_CFG_LIST_EN)
+
+		case LIST:
+			func_addr_table = &list_function_address_tables;
+			break;
+
+			#endif // (CONTAINER_FAMILY_LEVEL_CFG_LIST_EN)
 			break;
 		default:
 			break;
@@ -142,25 +123,10 @@ inline void *allocator_control_convert_type_to_func_addr_table(enum allocator_ty
 	return func_addr_table;
 }
 
-/**
- * @brief This function will handle the exception that lack of memory.
- *
- * @param allocator the pointer to allocator
- *
- * @return NONE
- */
-
-inline void allocator_control_exception_default_lack_of_memory(void *allocator)
-{
-	assert(allocator);
-
-	printf("allocator.lack of memory \r\n");
-}
-
 /*
 *********************************************************************************************************
 *                                             MODULE END
 *********************************************************************************************************
 */
 
-#endif // !__ALLOCATOR_DEFINITION_H
+#endif // !__CONTAINER_ADAPTOR_FAMILY_H

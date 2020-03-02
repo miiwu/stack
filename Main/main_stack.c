@@ -8,11 +8,7 @@
 
 #define MAIN_STACK_CFG_ADAPT_LIST_EN				MAIN_LIST_EN
 
-#define MAIN_STACK_CONTAINER	ARRAY
-
-#define MAIN_STACK_CONTAINER_CONTROL	array_ctrl
-
-VECTOR_TYPEDEF_PTR stack_container = NULL;
+void *stack_container = NULL;
 
 #if (MAIN_STACK_CFG_ADAPT_ARRAY_EN)
 
@@ -20,7 +16,7 @@ VECTOR_TYPEDEF_PTR stack_container = NULL;
 
 #define MAIN_STACK_CONTAINER_CONTROL	array_ctrl
 
-ARRAY_TYPEDEF_PTR stack_container = NULL;
+#define MAIN_STACK_CONTAINER_TYPE		(struct array_s *)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_ARRAY_EN)
 
@@ -30,7 +26,7 @@ ARRAY_TYPEDEF_PTR stack_container = NULL;
 
 #define MAIN_STACK_CONTAINER_CONTROL	vector_ctrl
 
-VECTOR_TYPEDEF_PTR stack_container = NULL;
+#define MAIN_STACK_CONTAINER_TYPE		(struct vector_s *)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_VECTOR_EN)
 
@@ -40,7 +36,7 @@ VECTOR_TYPEDEF_PTR stack_container = NULL;
 
 #define MAIN_STACK_CONTAINER_CONTROL	forward_list_ctrl
 
-FORWARD_LIST_TYPEDEF_PTR stack_container = NULL;
+#define MAIN_STACK_CONTAINER_TYPE		(struct list_family_s *)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN)
 
@@ -50,9 +46,19 @@ FORWARD_LIST_TYPEDEF_PTR stack_container = NULL;
 
 #define MAIN_STACK_CONTAINER_CONTROL	list_ctrl
 
-LIST_TYPEDEF_PTR stack_container = NULL;
+#define MAIN_STACK_CONTAINER_TYPE		(struct list_family_s *)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN)
+
+#ifndef MAIN_STACK_CONTAINER
+
+#define MAIN_STACK_CONTAINER	ARRAY
+
+#define MAIN_STACK_CONTAINER_CONTROL	array_ctrl
+
+#define MAIN_STACK_CONTAINER_TYPE		(struct array_s *)stack_container
+
+#endif // !MAIN_STACK_CONTAINER
 
 void main_stack_generic_type_operator_assign(void *gnc, void *src);
 void main_stack_generic_type_operator_free(void *gnc);
@@ -88,9 +94,9 @@ void main_stack(void)
 	printf("stack.init start\r\n");
 	stack_ctrl.configuration.init(&stack, MAIN_STACK_CONTAINER, sizeof(struct generic_type_t),
 								  main_stack_generic_type_operator_assign, main_stack_generic_type_operator_free);						/* Initialize stack,char[sizeof(string_moudle)] type */
-	MAIN_STACK_CONTAINER_CONTROL.configuration.init(&stack_container, sizeof(struct generic_type_t),
+	MAIN_STACK_CONTAINER_CONTROL.configuration.init(&MAIN_STACK_CONTAINER_TYPE, sizeof(struct generic_type_t),
 													main_stack_generic_type_operator_assign, main_stack_generic_type_operator_free);	/* Initialize stack_container,char[sizeof(string_moudle)] type */
-	stack_ctrl.configuration.attach(&stack_attach, MAIN_STACK_CONTAINER, stack_container);
+	stack_ctrl.configuration.attach(&stack_attach, MAIN_STACK_CONTAINER, MAIN_STACK_CONTAINER_TYPE);
 
 	printf("\r\nstack.max_size start\r\n");
 	printf("max size : %d \r\n    ", stack_ctrl.capacity.max_size(stack));

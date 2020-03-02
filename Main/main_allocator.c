@@ -25,10 +25,10 @@ void main_allocator(void)
 																								specified container type		*/
 
 	printf("\r\nallocator.init start \r\n");
-	allocator_ctrl->configration.init(&allocator, NULL);
+	allocator_ctrl->configuration.init(&allocator, NULL);
 
 	printf("\r\nallocator.exception start \r\n");
-	allocator_ctrl->configration.exception(&allocator, NULL);
+	allocator_ctrl->configuration.exception(&allocator, NULL);
 
 	printf("\r\nallocator.allocate start \r\n");
 	block = allocator_ctrl->allocate(allocator, 1, 1);
@@ -38,7 +38,7 @@ void main_allocator(void)
 	allocator_ctrl->deallocate(allocator, block, 1);
 
 	printf("\r\nallocator.destroy start \r\n");
-	allocator_ctrl->configration.destroy(&allocator);
+	allocator_ctrl->configuration.destroy(&allocator);
 
 	printf("\r\n------------------------+ allocator demo end +------------------------\r\n");
 

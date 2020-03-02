@@ -95,7 +95,7 @@ void array_family_element_control_del_data(struct array_family_s *array_family,
  * @return NONE
  */
 
-void array_family_control_configration_exception_default_empty_callback(void);
+void array_family_control_configuration_exception_default_empty_callback(void);
 
 /**
  * @brief This function will callback the handler that container has no elements when the container temp to erase.
@@ -106,7 +106,7 @@ void array_family_control_configration_exception_default_empty_callback(void);
  * @return NONE
  */
 
-void array_family_control_configration_exception_default_full_callback(void);
+void array_family_control_configuration_exception_default_full_callback(void);
 
 /*
 *********************************************************************************************************
@@ -157,7 +157,7 @@ void array_family_control_configuration_init(struct array_family_s **array_famil
 	allocator_ctrl = allocator_control_convert_type_to_func_addr_table(allocator_type);	/* Variables pointer to	the function address table of
 																							specified allocator type		*/
 
-	allocator_ctrl->configration.init(&allocator, NULL);
+	allocator_ctrl->configuration.init(&allocator, NULL);
 
 	struct array_family_s
 		*array_family_alloced = (struct array_family_s *)allocator_ctrl->allocate(allocator,
@@ -187,8 +187,8 @@ void array_family_control_configuration_init(struct array_family_s **array_famil
 	array_family_alloced->element_handler.assign = NULL;
 	array_family_alloced->element_handler.free = NULL;
 
-	array_family_alloced->exception.empty = array_family_control_configration_exception_default_empty_callback;
-	array_family_alloced->exception.full = array_family_control_configration_exception_default_full_callback;
+	array_family_alloced->exception.empty = array_family_control_configuration_exception_default_empty_callback;
+	array_family_alloced->exception.full = array_family_control_configuration_exception_default_full_callback;
 
 	array_family_alloced->switch_control = switch_control;
 
@@ -258,7 +258,7 @@ void array_family_control_configuration_destroy(struct array_family_s **array_fa
 
 	array_family_allocator_ctrl->deallocate(array_family_allocator, *array_family, 1);																			/* deallocate #1 */
 
-	array_family_allocator_ctrl->configration.destroy(&array_family_allocator);
+	array_family_allocator_ctrl->configuration.destroy(&array_family_allocator);
 
 	*array_family = NULL;
 }
@@ -832,7 +832,7 @@ void array_family_element_control_del_data(struct array_family_s *array_family,
  * @return NONE
  */
 
-void array_family_control_configration_exception_default_empty_callback(void)
+void array_family_control_configuration_exception_default_empty_callback(void)
 {
 	printf("\r\n the array_family has no elements when you temp to insert \r\n");
 }
@@ -846,7 +846,7 @@ void array_family_control_configration_exception_default_empty_callback(void)
  * @return NONE
  */
 
-void array_family_control_configration_exception_default_full_callback(void)
+void array_family_control_configuration_exception_default_full_callback(void)
 {
 	printf("\r\n the array_family has no elements when you temp to erase \r\n");
 }

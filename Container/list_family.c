@@ -128,7 +128,7 @@ bool list_family_control_remove_rule(void *data);
 * @return NONE
 */
 
-void list_family_control_configration_exception_default_empty_callback(void);
+void list_family_control_configuration_exception_default_empty_callback(void);
 
 /**
  * @brief This function will callback the handler that container has no elements when the container temp to erase.
@@ -138,7 +138,7 @@ void list_family_control_configration_exception_default_empty_callback(void);
  * @return NONE
  */
 
-void list_family_control_configration_exception_default_full_callback(void);
+void list_family_control_configuration_exception_default_full_callback(void);
 
 /*
 *********************************************************************************************************
@@ -189,7 +189,7 @@ void list_family_control_configuration_init(struct list_family_s **list,
 	allocator_ctrl = allocator_control_convert_type_to_func_addr_table(allocator_type);	/* Variables pointer to	the function address table of
 																							specified container type		*/
 
-	allocator_ctrl->configration.init(&allocator, NULL);
+	allocator_ctrl->configuration.init(&allocator, NULL);
 
 	struct list_family_s
 		*list_alloced = allocator_ctrl->allocate(allocator,
@@ -211,8 +211,8 @@ void list_family_control_configuration_init(struct list_family_s **list,
 
 	list_alloced->node = NULL;
 
-	list_alloced->exception.empty = list_family_control_configration_exception_default_empty_callback;
-	list_alloced->exception.full = list_family_control_configration_exception_default_full_callback;
+	list_alloced->exception.empty = list_family_control_configuration_exception_default_empty_callback;
+	list_alloced->exception.full = list_family_control_configuration_exception_default_full_callback;
 
 	list_alloced->switch_control = switch_control;
 
@@ -284,7 +284,7 @@ void list_family_control_configuration_destroy(struct list_family_s **list)
 
 	allocator_ctrl->deallocate(allocator, *list, 1);																			/* deallocate #1 */
 
-	allocator_ctrl->configration.destroy(&allocator);
+	allocator_ctrl->configuration.destroy(&allocator);
 
 	*list = NULL;
 }
@@ -1179,7 +1179,7 @@ void list_family_control_sort_algorithm_bubble_sort(struct sort_package_s sort_p
 * @return NONE
 */
 
-void list_family_control_configration_exception_default_empty_callback(void)
+void list_family_control_configuration_exception_default_empty_callback(void)
 {
 }
 
@@ -1191,6 +1191,6 @@ void list_family_control_configration_exception_default_empty_callback(void)
  * @return NONE
  */
 
-void list_family_control_configration_exception_default_full_callback(void)
+void list_family_control_configuration_exception_default_full_callback(void)
 {
 }

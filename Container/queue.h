@@ -16,7 +16,7 @@
 *********************************************************************************************************
 */
 
-#include "container_def.h"
+#include "container_adaptor_family.h"
 
 /*
 *********************************************************************************************************
@@ -127,7 +127,7 @@ struct queue_control_t {
  * @return NONE
  */
 
-void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
+void queue_control_configuration_init(QUEUE_TYPEDEF_PPTR queue,
                                      enum container_type_e type,
                                      container_size_t element_size,
                                      void (*assign)(void *dst, void *src), void (*free)(void *dst));
@@ -142,7 +142,7 @@ void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
  * @return NONE
  */
 
-void queue_control_configration_attach(QUEUE_TYPEDEF_PPTR queue,
+void queue_control_configuration_attach(QUEUE_TYPEDEF_PPTR queue,
                                        enum container_type_e type, void *container);
 
 /**
@@ -153,7 +153,7 @@ void queue_control_configration_attach(QUEUE_TYPEDEF_PPTR queue,
  * @return NONE
  */
 
-void queue_control_configration_destroy(QUEUE_TYPEDEF_PPTR queue);
+void queue_control_configuration_destroy(QUEUE_TYPEDEF_PPTR queue);
 
 /**
  * @brief This function will return reference to the first element in the queue.

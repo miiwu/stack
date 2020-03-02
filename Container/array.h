@@ -75,6 +75,12 @@ void array_control_configuration_init(ARRAY_TYPEDEF_PPTR array,
 *********************************************************************************************************
 */
 
+/**
+ * @brief This array will contain all the universal array functions address.
+ */
+
+extern void *array_function_address_tables[];
+
 #if (ARRAY_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 /**

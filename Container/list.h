@@ -75,6 +75,12 @@ void list_control_configuration_init(LIST_TYPEDEF_PPTR list,
 *********************************************************************************************************
 */
 
+/**
+ * @brief This array will contain all the universal list functions address.
+ */
+
+extern void *list_function_address_tables[];
+
 #if (LIST_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 /**

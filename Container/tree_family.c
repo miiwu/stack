@@ -153,7 +153,7 @@ void tree_family_control_switch_control_in_sandbox(struct tree_family_s *tree);
 * @return NONE
 */
 
-void tree_family_control_configration_exception_default_empty_callback(void);
+void tree_family_control_configuration_exception_default_empty_callback(void);
 
 /**
  * @brief This function will callback the handler that container has no elements when the container temp to erase.
@@ -163,7 +163,7 @@ void tree_family_control_configration_exception_default_empty_callback(void);
  * @return NONE
  */
 
-void tree_family_control_configration_exception_default_full_callback(void);
+void tree_family_control_configuration_exception_default_full_callback(void);
 
 /*
 *********************************************************************************************************
@@ -300,7 +300,7 @@ void tree_family_control_configuration_init(struct tree_family_s **tree,
 	allocator_ctrl = allocator_control_convert_type_to_func_addr_table(allocator_type);	/* Variables pointer to	the function address table of
 																							specified container type		*/
 
-	allocator_ctrl->configration.init(&allocator, NULL);
+	allocator_ctrl->configuration.init(&allocator, NULL);
 
 	struct tree_family_s
 		*tree_alloced = allocator_ctrl->allocate(allocator,
@@ -325,8 +325,8 @@ void tree_family_control_configuration_init(struct tree_family_s **tree,
 
 	tree_alloced->root = NULL;
 
-	tree_alloced->exception.empty = tree_family_control_configration_exception_default_empty_callback;
-	tree_alloced->exception.full = tree_family_control_configration_exception_default_full_callback;
+	tree_alloced->exception.empty = tree_family_control_configuration_exception_default_empty_callback;
+	tree_alloced->exception.full = tree_family_control_configuration_exception_default_full_callback;
 
 	tree_alloced->switch_control = switch_control;
 
@@ -376,7 +376,7 @@ void tree_family_control_configuration_destroy(struct tree_family_s **tree)
 
 	allocator_ctrl->deallocate(allocator, *tree, 1);																			/* deallocate #1 */
 
-	allocator_ctrl->configration.destroy(&allocator);
+	allocator_ctrl->configuration.destroy(&allocator);
 
 	*tree = NULL;
 }
@@ -1592,7 +1592,7 @@ void tree_family_control_switch_control_in_sandbox(struct tree_family_s *tree)
 * @return NONE
 */
 
-void tree_family_control_configration_exception_default_empty_callback(void)
+void tree_family_control_configuration_exception_default_empty_callback(void)
 {
 }
 
@@ -1604,6 +1604,6 @@ void tree_family_control_configration_exception_default_empty_callback(void)
  * @return NONE
  */
 
-void tree_family_control_configration_exception_default_full_callback(void)
+void tree_family_control_configuration_exception_default_full_callback(void)
 {
 }

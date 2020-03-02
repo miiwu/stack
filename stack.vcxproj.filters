@@ -230,5 +230,14 @@
     <ClInclude Include="Container\binary_search_tree.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
+    <ClInclude Include="Container\container_cfg.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\container_adaptor_family.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Allocator\allocator_cfg.h">
+      <Filter>头文件\allocator</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

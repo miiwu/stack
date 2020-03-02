@@ -7,78 +7,32 @@
 *********************************************************************************************************
 */
 
-#ifndef __CONTAINER_H
-#define __CONTAINER_H
+#ifndef __ALLOCATOR_CONFIGURATION_H
+#define __ALLOCATOR_CONFIGURATION_H
 
 /*
 *********************************************************************************************************
-*                                          INCLUDE FILES
+*                                            INCLUDE FILES
 *********************************************************************************************************
 */
-
-#include "container_cfg.h"
-
-#if (CONTAINER_FAMILY_LEVEL_CFG_BINARY_TREE_EN)
-
-#include "binary_search_tree.h"
-
-#endif // (CONTAINER_FAMILY_LEVEL_CFG_BINARY_TREE_EN)
-
-#if (CONTAINER_FAMILY_LEVEL_CFG_RED_BLACK_TREE_EN)
-
-#include "red_black_tree.h"
-
-#endif // (CONTAINER_FAMILY_LEVEL_CFG_RED_BLACK_TREE_EN)
-
-#if (CONTAINER_FAMILY_LEVEL_CFG_B_TREE_EN)
-
-#include "b_tree.h"
-
-#endif // (CONTAINER_FAMILY_LEVEL_CFG_B_TREE_EN)
-
-#if (CONTAINER_FAMILY_LEVEL_CFG_ARRAY_EN)
-
-#include "array.h"
-
-#endif // (CONTAINER_FAMILY_LEVEL_CFG_ARRAY_EN)
-
-#if (CONTAINER_FAMILY_LEVEL_CFG_VECTOR_EN)
-
-#include "vector.h"
-
-#endif // (CONTAINER_FAMILY_LEVEL_CFG_VECTOR_EN)
-
-#if (CONTAINER_FAMILY_LEVEL_CFG_FORWARD_LIST_EN)
-
-#include "forward_list.h"
-
-#endif // (CONTAINER_FAMILY_LEVEL_CFG_FORWARD_LIST_EN)
-
-#if (CONTAINER_FAMILY_LEVEL_CFG_LIST_EN)
-
-#include "list.h"
-
-#endif // (CONTAINER_FAMILY_LEVEL_CFG_LIST_EN)
-
-#if (CONTAINER_GLOBAL_TYPE_CFG_STACK_EN)
-
-#include "stack.h"
-
-#endif // (CONTAINER_GLOBAL_TYPE_CFG_STACK_EN)
-
-#if (CONTAINER_GLOBAL_TYPE_CFG_QUEUE_EN)
-
-#include "queue.h"
-
-#include "priority_queue.h"
-
-#endif // (CONTAINER_GLOBAL_TYPE_CFG_QUEUE_EN)
 
 /*
 *********************************************************************************************************
-*									      CONFIG DEFINES
+*									            DEFINES
 *********************************************************************************************************
 */
+
+/* Configure    allocator global size type.																*/
+#define ALLOCATOR_GLOBAL_CFG_SIZE_TYPE															size_t
+
+/* Configure    allocator global memory pool size.                                                      */
+#define ALLOCATOR_GLOBAL_CFG_MEMORY_POOL_SIZE			                                        102400u
+
+/* Configure    if enable allocator global debug component.												*/
+#define ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN			                                        0u
+
+#pragma warning( disable : 4996)
+#pragma warning( disable : 26812)
 
 /*
 *********************************************************************************************************
@@ -88,7 +42,7 @@
 
 /*
 *********************************************************************************************************
-*								         FUNCTION PROTOTYPES
+*								            FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
 
@@ -104,4 +58,4 @@
 *********************************************************************************************************
 */
 
-#endif // !__CONTAINER_H
+#endif // !__ALLOCATOR_CONFIGURATION_H

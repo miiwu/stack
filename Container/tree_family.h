@@ -929,7 +929,7 @@ void tree_family_control_traversal_printer(struct tree_family_s *tree,
 * @return NONE
 */
 
-void tree_family_control_configration_exception_default_empty_callback(void);
+void tree_family_control_configuration_exception_default_empty_callback(void);
 
 /**
  * @brief This function will callback the handler that container has no elements when the container temp to erase.
@@ -939,7 +939,7 @@ void tree_family_control_configration_exception_default_empty_callback(void);
  * @return NONE
  */
 
-void tree_family_control_configration_exception_default_full_callback(void);
+void tree_family_control_configuration_exception_default_full_callback(void);
 
 /*
 *********************************************************************************************************

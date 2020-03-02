@@ -218,6 +218,12 @@ void vector_control_modifiers_resize(VECTOR_TYPEDEF_PPTR vector,
 *********************************************************************************************************
 */
 
+/**
+ * @brief This array will contain all the universal vector functions address.
+ */
+
+extern void *vector_function_address_tables[];
+
 #if (VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 /**

@@ -15,7 +15,7 @@
 
 #define MAIN_BINARY_SEARCH_TREE_EN	0u
 
-#define MAIN_RED_BLACK_TREE_EN		1u
+#define MAIN_RED_BLACK_TREE_EN		0u
 
 #define MAIN_ARRAY_EN				0u
 
@@ -23,13 +23,13 @@
 
 #define MAIN_DEQUE_EN				0u
 
-#define MAIN_FORWARD_LIST_EN		0u
+#define MAIN_FORWARD_LIST_EN		1u
 
 #define MAIN_LIST_EN				0u
 
 #define MAIN_STACK_EN				0u
 
-#define MAIN_QUEUE_EN				0u
+#define MAIN_QUEUE_EN				1u
 
 #define MAIN_PRIORITY_QUEUE_EN		0u
 

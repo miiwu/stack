@@ -62,11 +62,11 @@ struct queue_t {
 
 struct queue_control_t queue_ctrl =
 {
-	queue_control_configration_init,
+	queue_control_configuration_init,
 
-	queue_control_configration_attach,
+	queue_control_configuration_attach,
 
-	queue_control_configration_destroy,
+	queue_control_configuration_destroy,
 
 	queue_control_element_access_front,
 
@@ -114,7 +114,7 @@ struct queue_control_t queue_ctrl =
  * @return NONE
  */
 
-void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
+void queue_control_configuration_init(QUEUE_TYPEDEF_PPTR queue,
 									 enum container_type_e type,
 									 container_size_t element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
@@ -136,7 +136,7 @@ void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
 		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
 																									specified allocator type		*/
 
-	allocator_ctrl->configration.init(&allocator, NULL);										/* Initialize the allocator struct */
+	allocator_ctrl->configuration.init(&allocator, NULL);										/* Initialize the allocator struct */
 
 	struct queue_t
 		*queue_alloced = (struct queue_t *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
@@ -191,7 +191,7 @@ void queue_control_configration_init(QUEUE_TYPEDEF_PPTR queue,
  * @return NONE
  */
 
-void queue_control_configration_attach(QUEUE_TYPEDEF_PPTR queue,
+void queue_control_configuration_attach(QUEUE_TYPEDEF_PPTR queue,
 									   enum container_type_e type, void *container)
 {
 	assert(queue);
@@ -212,7 +212,7 @@ void queue_control_configration_attach(QUEUE_TYPEDEF_PPTR queue,
 		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
 																									specified allocator type		*/
 
-	allocator_ctrl->configration.init(&allocator, NULL);										/* Initialize the allocator struct */
+	allocator_ctrl->configuration.init(&allocator, NULL);										/* Initialize the allocator struct */
 
 	struct queue_t
 		*queue_alloced = (struct queue_t *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
@@ -254,7 +254,7 @@ void queue_control_configration_attach(QUEUE_TYPEDEF_PPTR queue,
  * @return NONE
  */
 
-void queue_control_configration_destroy(QUEUE_TYPEDEF_PPTR queue)
+void queue_control_configuration_destroy(QUEUE_TYPEDEF_PPTR queue)
 {
 	assert(queue);
 
@@ -285,7 +285,7 @@ void queue_control_configration_destroy(QUEUE_TYPEDEF_PPTR queue)
 	(*queue)->container_control = NULL;
 	(*queue)->allocator = NULL;
 
-	allocator_ctrl->configration.destroy(&allocator);
+	allocator_ctrl->configuration.destroy(&allocator);
 
 	*queue = NULL;
 }

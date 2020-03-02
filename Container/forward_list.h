@@ -74,6 +74,12 @@ void forward_list_control_configuration_init(FORWARD_LIST_TYPEDEF_PPTR forward_l
 *********************************************************************************************************
 */
 
+/**
+ * @brief This array will contain all the universal forward_list functions address.
+ */
+
+extern void *forward_list_function_address_tables[];
+
 #if (FORWARD_LIST_CFG_INTERGRATED_STRUCTURE_MODE_EN)
 
 /**

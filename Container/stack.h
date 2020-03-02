@@ -16,7 +16,7 @@
 *********************************************************************************************************
 */
 
-#include "container_def.h"
+#include "container_adaptor_family.h"
 
 /*
 *********************************************************************************************************
@@ -122,7 +122,7 @@ struct stack_control_s {
  * @return NONE
  */
 
-void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
+void stack_control_configuration_init(STACK_TYPEDEF_PPTR stack,
 									 enum container_type_e type,
 									 container_size_t element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst));
@@ -137,7 +137,7 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
  * @return NONE
  */
 
-void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
+void stack_control_configuration_attach(STACK_TYPEDEF_PPTR stack,
 									   enum container_type_e type, void *container);
 
 /**
@@ -148,7 +148,7 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
  * @return NONE
  */
 
-void stack_control_configration_destroy(STACK_TYPEDEF_PPTR stack);
+void stack_control_configuration_destroy(STACK_TYPEDEF_PPTR stack);
 
 /**
  * @brief This function will return reference to the top element in the stack.

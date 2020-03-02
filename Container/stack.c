@@ -62,11 +62,11 @@ struct stack_s {
 
 struct stack_control_s stack_ctrl =
 {
-	stack_control_configration_init,
+	stack_control_configuration_init,
 
-	stack_control_configration_attach,
+	stack_control_configuration_attach,
 
-	stack_control_configration_destroy,
+	stack_control_configuration_destroy,
 
 	stack_control_element_access_top,
 
@@ -112,7 +112,7 @@ struct stack_control_s stack_ctrl =
  * @return NONE
  */
 
-void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
+void stack_control_configuration_init(STACK_TYPEDEF_PPTR stack,
 									 enum container_type_e type,
 									 container_size_t element_size,
 									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
@@ -134,7 +134,7 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
 		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
 																									specified allocator type		*/
 
-	allocator_ctrl->configration.init(&allocator, NULL);										/* Initialize the allocator struct */
+	allocator_ctrl->configuration.init(&allocator, NULL);										/* Initialize the allocator struct */
 
 	struct stack_s
 		*stack_alloced = (struct stack_s *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
@@ -189,7 +189,7 @@ void stack_control_configration_init(STACK_TYPEDEF_PPTR stack,
  * @return NONE
  */
 
-void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
+void stack_control_configuration_attach(STACK_TYPEDEF_PPTR stack,
 									   enum container_type_e type, void *container)
 {
 	assert(stack);
@@ -210,7 +210,7 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
 		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
 																									specified allocator type		*/
 
-	allocator_ctrl->configration.init(&allocator, NULL);										/* Initialize the allocator struct */
+	allocator_ctrl->configuration.init(&allocator, NULL);										/* Initialize the allocator struct */
 
 	struct stack_s
 		*stack_alloced = (struct stack_s *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
@@ -252,7 +252,7 @@ void stack_control_configration_attach(STACK_TYPEDEF_PPTR stack,
  * @return NONE
  */
 
-void stack_control_configration_destroy(STACK_TYPEDEF_PPTR stack)
+void stack_control_configuration_destroy(STACK_TYPEDEF_PPTR stack)
 {
 	assert(stack);
 
@@ -283,7 +283,7 @@ void stack_control_configration_destroy(STACK_TYPEDEF_PPTR stack)
 	(*stack)->container_control = NULL;
 	(*stack)->allocator = NULL;
 
-	allocator_ctrl->configration.destroy(&allocator);
+	allocator_ctrl->configuration.destroy(&allocator);
 
 	*stack = NULL;
 }
