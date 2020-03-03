@@ -28,7 +28,7 @@
  * @brief This struct is the queue structure module
  */
 
-struct queue_t {
+struct queue_s {
 	/* @brief RESERVED This variables will record the identity code of container type.					*/
 	enum container_type_e	container_type_id;
 
@@ -59,6 +59,10 @@ struct queue_t {
 *                                       LOCAL GLOBAL VARIABLES
 *********************************************************************************************************
 */
+
+/**
+ * @brief This type will contain all the queue control functions.
+ */
 
 struct queue_control_t queue_ctrl =
 {
@@ -114,10 +118,11 @@ struct queue_control_t queue_ctrl =
  * @return NONE
  */
 
-void queue_control_configuration_init(QUEUE_TYPEDEF_PPTR queue,
-									 enum container_type_e type,
-									 container_size_t element_size,
-									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
+void queue_control_configuration_init(queue_stpp queue,
+									  enum container_type_e type,
+									  container_size_t element_size,
+									  generic_type_element_assign_t assign,
+									  generic_type_element_free_t free)
 {
 	assert(queue);
 	assert(element_size);
@@ -138,9 +143,9 @@ void queue_control_configuration_init(QUEUE_TYPEDEF_PPTR queue,
 
 	allocator_ctrl->configuration.init(&allocator, NULL);										/* Initialize the allocator struct */
 
-	struct queue_t
-		*queue_alloced = (struct queue_t *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
-																	1, sizeof(struct queue_t));
+	struct queue_s
+		*queue_alloced = (struct queue_s *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
+																	1, sizeof(struct queue_s));
 																								/* Variables pointer to	the queue struct which
 																									will be allocate and assign to the queue 	*/
 
@@ -191,8 +196,8 @@ void queue_control_configuration_init(QUEUE_TYPEDEF_PPTR queue,
  * @return NONE
  */
 
-void queue_control_configuration_attach(QUEUE_TYPEDEF_PPTR queue,
-									   enum container_type_e type, void *container)
+void queue_control_configuration_attach(queue_stpp queue,
+										enum container_type_e type, void *container)
 {
 	assert(queue);
 	assert(container);
@@ -214,9 +219,9 @@ void queue_control_configuration_attach(QUEUE_TYPEDEF_PPTR queue,
 
 	allocator_ctrl->configuration.init(&allocator, NULL);										/* Initialize the allocator struct */
 
-	struct queue_t
-		*queue_alloced = (struct queue_t *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
-																	1, sizeof(struct queue_t));
+	struct queue_s
+		*queue_alloced = (struct queue_s *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
+																	1, sizeof(struct queue_s));
 																								/* Variables pointer to	the queue struct which
 																									will be allocate and assign to the queue 	*/
 
@@ -254,7 +259,7 @@ void queue_control_configuration_attach(QUEUE_TYPEDEF_PPTR queue,
  * @return NONE
  */
 
-void queue_control_configuration_destroy(QUEUE_TYPEDEF_PPTR queue)
+void queue_control_configuration_destroy(queue_stpp queue)
 {
 	assert(queue);
 
@@ -298,7 +303,7 @@ void queue_control_configuration_destroy(QUEUE_TYPEDEF_PPTR queue)
  * @return NONE
  */
 
-void *queue_control_element_access_front(QUEUE_TYPEDEF_PTR queue)
+void *queue_control_element_access_front(queue_stp queue)
 {
 	assert(queue);
 
@@ -318,7 +323,7 @@ void *queue_control_element_access_front(QUEUE_TYPEDEF_PTR queue)
  * @return NONE
  */
 
-void *queue_control_element_access_back(QUEUE_TYPEDEF_PTR queue)
+void *queue_control_element_access_back(queue_stp queue)
 {
 	assert(queue);
 
@@ -338,7 +343,7 @@ void *queue_control_element_access_back(QUEUE_TYPEDEF_PTR queue)
  * @return NONE
  */
 
-bool queue_control_capacity_empty(QUEUE_TYPEDEF_PTR queue)
+bool queue_control_capacity_empty(queue_stp queue)
 {
 	assert(queue);
 
@@ -358,7 +363,7 @@ bool queue_control_capacity_empty(QUEUE_TYPEDEF_PTR queue)
  * @return NONE
  */
 
-container_size_t queue_control_capacity_size(QUEUE_TYPEDEF_PTR queue)
+container_size_t queue_control_capacity_size(queue_stp queue)
 {
 	assert(queue);
 
@@ -383,7 +388,7 @@ container_size_t queue_control_capacity_size(QUEUE_TYPEDEF_PTR queue)
  * @return NONE
  */
 
-container_size_t queue_control_capacity_max_size(QUEUE_TYPEDEF_PTR queue)
+container_size_t queue_control_capacity_max_size(queue_stp queue)
 {
 	assert(queue);
 
@@ -403,7 +408,7 @@ container_size_t queue_control_capacity_max_size(QUEUE_TYPEDEF_PTR queue)
  * @return NONE
  */
 
-void queue_control_modifiers_push(QUEUE_TYPEDEF_PTR queue, void *source)
+void queue_control_modifiers_push(queue_stp queue, void *source)
 {
 	assert(queue);
 
@@ -424,7 +429,7 @@ void queue_control_modifiers_push(QUEUE_TYPEDEF_PTR queue, void *source)
  * @return NONE
  */
 
-void queue_control_modifiers_emplace(QUEUE_TYPEDEF_PTR queue, void *destination)
+void queue_control_modifiers_emplace(queue_stp queue, void *destination)
 {
 	assert(queue);
 }
@@ -437,7 +442,7 @@ void queue_control_modifiers_emplace(QUEUE_TYPEDEF_PTR queue, void *destination)
  * @return NONE
  */
 
-void queue_control_modifiers_pop(QUEUE_TYPEDEF_PTR queue)
+void queue_control_modifiers_pop(queue_stp queue)
 {
 	assert(queue);
 
@@ -454,7 +459,7 @@ void queue_control_modifiers_pop(QUEUE_TYPEDEF_PTR queue)
  * @return NONE
  */
 
-void queue_control_modifiers_swap(QUEUE_TYPEDEF_PPTR queue, QUEUE_TYPEDEF_PPTR other)
+void queue_control_modifiers_swap(queue_stpp queue, queue_stpp other)
 {
 	assert(queue);
 
@@ -470,7 +475,7 @@ void queue_control_modifiers_swap(QUEUE_TYPEDEF_PPTR queue, QUEUE_TYPEDEF_PPTR o
  * @return NONE
  */
 
-void queue_control_modifiers_copy(QUEUE_TYPEDEF_PPTR destination, QUEUE_TYPEDEF_PTR source)
+void queue_control_modifiers_copy(queue_stpp destination, queue_stp source)
 {
 	assert(destination);
 	assert(source);

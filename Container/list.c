@@ -63,13 +63,13 @@ void *list_function_address_tables[] =
 	(void *)&list_family_control_modifiers_copy,								/* No.10 : copy */
 };
 
-#if (LIST_CFG_INTERGRATED_STRUCTURE_MODE_EN)
+#if (LIST_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 
 /**
  * @brief This struct will control all the list functions conveniently.
  */
 
-struct list_family_control_s list_ctrl = {
+struct list_control_s list_ctrl = {
 	{
 		list_control_configuration_init,
 		list_family_control_configuration_destroy,
@@ -144,7 +144,7 @@ void list_control_switch_control(void);
  * @return the node at the specified location in the container
  */
 
-void *list_control_get_node(LIST_TYPEDEF_PTR list,
+void *list_control_get_node(list_stp list,
 							container_size_t position);
 
 /**
@@ -157,7 +157,7 @@ void *list_control_get_node(LIST_TYPEDEF_PTR list,
  * @return NONE
  */
 
-void *list_control_set_node(LIST_TYPEDEF_PTR list,
+void *list_control_set_node(list_stp list,
 							container_size_t position, struct list_node_s *node);
 
 /**
@@ -169,7 +169,7 @@ void *list_control_set_node(LIST_TYPEDEF_PTR list,
  * @return NONE
  */
 
-void *list_control_del_node(LIST_TYPEDEF_PTR list,
+void *list_control_del_node(list_stp list,
 							container_size_t position);
 
 /**
@@ -182,7 +182,7 @@ void *list_control_del_node(LIST_TYPEDEF_PTR list,
  * @return NONE
  */
 
-void list_control_swap_node(LIST_TYPEDEF_PTR list,
+void list_control_swap_node(list_stp list,
 							container_size_t dst_pos,
 							container_size_t src_pos);
 
@@ -220,9 +220,10 @@ struct node_operator_s list_control_node_operator = {
  * @return NONE
  */
 
-void list_control_configuration_init(LIST_TYPEDEF_PPTR list,
+void list_control_configuration_init(list_stpp list,
 									 container_size_t element_size,
-									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
+									 generic_type_element_assign_t assign,
+									 generic_type_element_free_t free)
 {
 	assert(list);
 	assert(0 <= element_size);
@@ -253,7 +254,7 @@ void list_control_switch_control(void)
  * @return NONE
  */
 
-void *list_control_get_node(LIST_TYPEDEF_PTR list,
+void *list_control_get_node(list_stp list,
 							container_size_t position)
 {
 	assert(list);
@@ -295,7 +296,7 @@ LOOP:
  * @return NONE
  */
 
-void *list_control_set_node(LIST_TYPEDEF_PTR list,
+void *list_control_set_node(list_stp list,
 							container_size_t position, struct list_node_s *node)
 {
 	assert(list);
@@ -343,7 +344,7 @@ void *list_control_set_node(LIST_TYPEDEF_PTR list,
  * @return NONE
  */
 
-void *list_control_del_node(LIST_TYPEDEF_PTR list,
+void *list_control_del_node(list_stp list,
 							container_size_t position)
 {
 	assert(list);
@@ -385,7 +386,7 @@ void *list_control_del_node(LIST_TYPEDEF_PTR list,
  * @return NONE
  */
 
-void list_control_swap_node(LIST_TYPEDEF_PTR list,
+void list_control_swap_node(list_stp list,
 							container_size_t lhs_pos,
 							container_size_t rhs_pos)
 {

@@ -18,46 +18,64 @@ This package contains some simple data structures together.
 
   ```c
   
-  struct generic_type_demo_t {
+  /* Generic type element Assign and Free function prototypes	typedef			*/
+  typedef errno_t(*genric_type_element_assign_t)(void *gnc, void *src);
+  typedef errno_t(*genric_type_element_free_t)(void *gnc);
+  
+  /* Generic type element demo												*/
+  struct generic_type_demo_s {
   	char symbol;
   
   	char *string;
   
   	int number;
-  }generic_demo;
+  };
   
-  
-  void generic_type_demo_assign_method(void *gnc, void *src)					
-      /* function may preform like copy the pointer src to the pointer gnc */
+  /* Generic type element Assign function										*/
+  errno_t generic_type_element_assign(void *gnc, void *src)
+  	/* Function may preform like copy the pointer src to the pointer gnc	*/
   {
   	assert(gnc);
   	assert(src);
   
-  	struct generic_type_t
+  	/* The length of these data type below must be absolutely CERTAIN,
+  		because it may use the memcpy(), for safety,
+  		Or you need to allocate the memory for the type in advance,
+  		then Store the address of the memory to the container,
+  		when this element is useless, deallocate it yourself.				*/
+  
+  	struct generic_type_demo_s
   		*generic_type_gnc = gnc,
   		*generic_type_src = src;
   
-  	generic_type_gnc->string = calloc(1, sizeof("stack"));							/* those are pointer,so malloc it as count*sizeof("stack"),the sizeof("stack") 			will be the memory size of the type the pointer point to */
-  
-  	if (NULL == generic_type_gnc->string) {
-  		return;
+  	/* This are pointer,i want to store many "*tack",
+  		so malloc it as count * sizeof("stack")								*/
+  	if (NULL == (generic_type_gnc->string = calloc(1, sizeof("stack")))) {
+  		return -1;
   	}
   
-  	generic_type_gnc->symbol = generic_type_src->symbol;							/* both below are the not-pointer type handle method */
-  	memcpy(&generic_type_gnc->number, &generic_type_src->number, sizeof(int));
+  	/* Memcpy the content of the pointer point to							*/
+  	if (NULL == memcpy(generic_type_gnc->string, generic_type_src->string,
+  					   sizeof("stack"))) {
+  		return 1;
+  	}
   
-  	memcpy(generic_type_gnc->string, generic_type_src->string, sizeof("stack"));	/* memcpy the content of the pointer point to */
+  	/* Copy the value of src to the gnc.									*/
+  	generic_type_gnc->symbol = generic_type_src->symbol;
+  	generic_type_gnc->number = generic_type_src->number;
+  
+  	return 0;
   }
   
-  void generic_type_demo_free_method(void *gnc)
-      /* function may preform like free the pointer gnc */
+  /* Generic type element Free function										*/
+  errno_t generic_type_element_free(void *gnc)
   {
-  	struct generic_type_t
-  		*generic_type_gnc = gnc;
+  	assert(gnc);
   
-  	memset(generic_type_gnc->string, '0', sizeof("stack"));
+  	/* Free the memory space allocated at the assign().						*/
+  	free(((struct generic_type_demo_s *)gnc)->string);
   
-  	free(generic_type_gnc->string);													/* free the memory space the calloc on the assign function */
+  	return 0;
   }
   ```
 
@@ -65,7 +83,58 @@ This package contains some simple data structures together.
 
   I can only make sure it can `initialize multiple instance`, but `can't guarantee thread safety`, because i even have no experience at that place.
 
-- **Impact By Cppreference**
+- **Integrated  Control Structure**
+
+  You can use this `xxx_ctrl` to code more convenient in the IDE or Editor with `intelligense`.
+
+  If you don't like it, you can `Disable it` by `xxx_CFG_INTEGRATED_STRUCTURE_MODE_EN` at it's .h file.
+
+  Here is the template referenced From stack.h:
+
+  ```c
+  
+  /**
+   * @brief This type will contain all the stack control functions.
+   */
+  
+  struct stack_control_s {
+  	struct {
+  		/* @brief This function will initialize the stack struct and the specified container.           */
+  		errno_t (*init)(...);
+  
+  		/* @brief This function will destroy the stack struct.                                          */
+  		errno_t (*destroy)(...);
+          
+          ...
+  	}configuration;
+  
+  	struct {
+  		/* @brief This function will return reference to the top element in the stack.                  */
+  		void *(*top)(...);
+          
+          ...
+  	}element_access;
+  
+  	...
+  };
+  
+  ```
+
+  
+
+- **Divisible-To-Independent-Module**
+
+  If you want to use List, you need to include all those files.
+
+  ​If it is a member of any family, include the file of that family.
+
+  Common family files include:
+
+  1. x_cfg.h
+  2. x_def.h
+  3. x.c and x.h
+
+- **Influenced By Cppreference**
 
   Count in? I means it may be some where is familiar with the CPP? May just the name, but learn from it  is endless.
 
@@ -73,40 +142,42 @@ This package contains some simple data structures together.
 
 - Container
   - Container Adaptor
-    - Stack
-    - Queue
-    - ...
+    - [x] Stack
+    - [x] Queue
+    - [ ] ...
   - Sequence Container
     - Array Family
-      - Array
-      - Vector
+      - [x] Array
+      - [x] Vector
     - List Family
-      - Forward_list
-      - List
+      - [x] Forward_list
+      - [ ] List
     - ...
   - Tree
-    - Binary Search Tree
-    - Red Black Tree
-    - B Tree
-    - ...
+    - [x] Binary Search Tree
+    - [x] Red Black Tree
+    - [ ] AVL Tree
+    - [x] B Tree
+    - [ ] B+ Tree
+    - [ ] ...
 
 - Algorithm
 
   - Sort
-    - Bubble Sort
-    - ...
+    - [x] Bubble Sort
+    - [ ] ...
   - Compare
-    - Greater
-    - Lesser
-    - ...
+    - [x] Greater
+    - [x] Lesser
+    - [ ] ...
 
 - Allocator
 
-  - Allocator common
+  - [x] Allocator common
 
     It is simple add a shell for the malloc() and free().
 
-  - ...
+  - [ ] ...
 
 - Debug Component
 

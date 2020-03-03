@@ -28,7 +28,7 @@
 #define B_TREE_CFG_ALLOCATOR_TYPE								    ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
-#define B_TREE_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
+#define B_TREE_CFG_INTEGRATED_STRUCTURE_MODE_EN					1u
 
 /* Configure    if enable integrated structure.                                                         */
 #define B_TREE_CFG_DEBUG_EN					                        0u
@@ -38,6 +38,11 @@
 *									           DATA TYPES
 *********************************************************************************************************
 */
+
+/* Configure    list ptr type.                                                                          */
+typedef struct tree_family_s
+*b_tree_stp,
+**b_tree_stpp;
 
 /*
 *********************************************************************************************************
@@ -56,10 +61,11 @@
  * @return NONE
  */
 
-void b_tree_control_configuration_init(struct tree_family_s **tree,
+void b_tree_control_configuration_init(b_tree_stpp tree,
 									   container_size_t degree,
 									   container_size_t element_size,
-									   void (*assign)(void *dst, void *src), void (*free)(void *dst));
+									   generic_type_element_assign_t assign,
+									   generic_type_element_free_t free);
 
 /*
 *********************************************************************************************************

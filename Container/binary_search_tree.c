@@ -62,7 +62,7 @@ struct binary_search_tree_chain_node_link_s {
  * @return void
  */
 
-void binary_search_tree_control_switch_control(struct tree_family_s *tree);
+void binary_search_tree_control_switch_control(binary_search_tree_stp tree);
 
 /**
  * @brief This function will control the search()'s match rule.
@@ -73,7 +73,7 @@ void binary_search_tree_control_switch_control(struct tree_family_s *tree);
  */
 
 container_size_t
-binary_search_tree_control_search_match_rule(struct tree_family_s *tree,
+binary_search_tree_control_search_match_rule(binary_search_tree_stp tree,
 											 struct tree_family_chain_node_s *node,
 											 void *data);
 
@@ -86,7 +86,7 @@ binary_search_tree_control_search_match_rule(struct tree_family_s *tree,
  */
 
 container_size_t
-binary_search_tree_control_search_recursion_rule(struct tree_family_s *tree,
+binary_search_tree_control_search_recursion_rule(binary_search_tree_stp tree,
 												 struct tree_family_chain_node_s **node,
 												 void *data);
 
@@ -98,7 +98,7 @@ binary_search_tree_control_search_recursion_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *binary_search_tree_control_insert_rule(struct tree_family_s *tree,
+void *binary_search_tree_control_insert_rule(binary_search_tree_stp tree,
 											 struct tree_family_search_node_return_s search_return,
 											 void *data);
 
@@ -110,7 +110,7 @@ void *binary_search_tree_control_insert_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *binary_search_tree_control_delete_rule(struct tree_family_s *tree,
+void *binary_search_tree_control_delete_rule(binary_search_tree_stp tree,
 											 struct tree_family_search_node_return_s search_return,
 											 void *data);
 
@@ -163,10 +163,10 @@ struct tree_family_node_operator_s binary_search_tree_control_node_operator = {
  */
 
 extern inline void
-binary_search_tree_control_configuration_init(struct tree_family_s **tree,
+binary_search_tree_control_configuration_init(binary_search_tree_stpp tree,
 											  container_size_t element_size,
-											  void (*assign)(void *dst, void *src),
-											  void (*free)(void *dst))
+											  generic_type_element_assign_t assign,
+											  generic_type_element_free_t free)
 {
 	assert(tree);
 	assert(0 <= element_size);
@@ -185,7 +185,7 @@ binary_search_tree_control_configuration_init(struct tree_family_s **tree,
  * @return void
  */
 
-void binary_search_tree_control_switch_control(struct tree_family_s *tree)
+void binary_search_tree_control_switch_control(binary_search_tree_stp tree)
 {
 	tree_family_control_get_control(binary_search_tree_control_environment);
 }
@@ -199,7 +199,7 @@ void binary_search_tree_control_switch_control(struct tree_family_s *tree)
  */
 
 container_size_t
-binary_search_tree_control_search_match_rule(struct tree_family_s *tree,
+binary_search_tree_control_search_match_rule(binary_search_tree_stp tree,
 											 struct tree_family_chain_node_s *node,
 											 void *data)
 {
@@ -245,7 +245,7 @@ EXIT:
  */
 
 container_size_t
-binary_search_tree_control_search_recursion_rule(struct tree_family_s *tree,
+binary_search_tree_control_search_recursion_rule(binary_search_tree_stp tree,
 												 struct tree_family_chain_node_s **node,
 												 void *data)
 {
@@ -294,7 +294,7 @@ EXIT:
  * @return void
  */
 
-void *binary_search_tree_control_insert_rule(struct tree_family_s *tree,
+void *binary_search_tree_control_insert_rule(binary_search_tree_stp tree,
 											 struct tree_family_search_node_return_s search_return,
 											 void *data)
 {
@@ -326,7 +326,7 @@ void *binary_search_tree_control_insert_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *binary_search_tree_control_delete_rule(struct tree_family_s *tree,
+void *binary_search_tree_control_delete_rule(binary_search_tree_stp tree,
 											 struct tree_family_search_node_return_s search_return,
 											 void *data)
 {

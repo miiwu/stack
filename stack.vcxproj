@@ -48,6 +48,7 @@
     <ClCompile Include="Main\main_debug_component.c" />
     <ClCompile Include="Main\main_deque.c" />
     <ClCompile Include="Main\main_forward_list.c" />
+    <ClCompile Include="Main\main_generic_type.c" />
     <ClCompile Include="Main\main_list.c" />
     <ClCompile Include="Main\main_priority_queue.c" />
     <ClCompile Include="Main\main_queue.c" />
@@ -140,19 +141,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

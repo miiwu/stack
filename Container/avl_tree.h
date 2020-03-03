@@ -28,7 +28,7 @@
 #define AVL_TREE_CFG_ALLOCATOR_TYPE								    ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
-#define AVL_TREE_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
+#define AVL_TREE_CFG_INTEGRATED_STRUCTURE_MODE_EN					1u
 
 /*
 *********************************************************************************************************

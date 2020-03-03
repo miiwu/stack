@@ -76,144 +76,6 @@ struct array_family_element_operator_s {
 				 container_size_t rhs_pos);
 };
 
-/**
- * @brief This struct is the array_family structure module
- */
-
-struct array_family_s {
-	/* @brief RESERVED This variables will record the identity code of container type.					*/
-	enum container_type_e	container_type_id;
-
-	struct {
-		/* @brief This variables will record the maximum number of elements.							*/
-		container_size_t max_size;
-
-		/* @brief This variables will record the number of elements that
-				  the container has currently allocated space for.										*/
-		container_size_t size;
-
-		/* @brief This variables will record the size that each element will take up.					*/
-		container_size_t mem_size;
-	}info;
-
-	/* @brief This variables will point to the allocator.												*/
-	void *allocator;
-
-	/* @brief This variables will point to the allocator control.										*/
-	struct allocator_control_s *allocator_ctrl;
-
-	/* @brief This variables will point to the address of the array_family data memory block.					*/
-	void *data;
-
-	/* @brief This variables will record the element handler of the container.							*/
-	struct container_element_handler_s element_handler;
-
-	struct {
-		/* @brief This variables will point to the address of the array_family empty exception handler.		*/
-		void (*empty)(void);
-
-		/* @brief This variables will point to the address of the array_family full exception handler.			*/
-		void (*full)(void);
-	}exception;
-
-	/* @brief This variables will point to the address of the list-like shared-pack analysis.			*/
-	void (*switch_control)(void);
-};
-
-/**
- * @brief This struct is the array_family control structure module
- */
-
-struct array_family_control_s {
-	struct {
-		/* @brief This function will initialize the array_family struct.                                      */
-		void (*init)(struct array_family_s **array_family,
-					 container_size_t dst_size,
-					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
-
-		/* @brief This function will destroy the array_family struct and free the space.                      */
-		void (*destroy)(struct array_family_s **array_family);
-
-		/* @brief This function will configure the array_family element handler.                              */
-		void (*element_handler)(struct array_family_s *array_family,
-								void (*assign)(void *dst, void *src), void (*free)(void *dst));
-
-		/* @brief This function will configure the array_family exception callback.                           */
-		void (*exception)(struct array_family_s *array_family,
-						  void (*empty)(void), void (*full)(void));
-	}configuration;
-
-	struct {
-		/* @brief This function will initialize the array_family struct.                                      */
-		void (*begin)(struct array_family_s *array_family);
-
-		/* @brief This function will initialize the array_family struct.                                      */
-		void (*end)(struct array_family_s *array_family);
-	}iterators;
-
-	struct {
-		/* @brief This function will returns a reference to the element
-				  at specified location position, with bounds checking.                                 */
-		void *(*at)(struct array_family_s *array_family,
-					container_size_t position);
-
-		/* @brief This function will returns pointer to the underlying array
-				  serving as element storage.                                                           */
-		void *(*data)(struct array_family_s *array_family);
-
-		/* @brief This function will returns a reference to the first element in the container.         */
-		void *(*front)(struct array_family_s *array_family);
-
-		/* @brief This function will returns reference to the last element in the container.            */
-		void *(*back)(struct array_family_s *array_family);
-	}element_access;
-
-	struct {
-		/* @brief This function will checks if the container has no elements.                           */
-		bool (*empty)(struct array_family_s *array_family);
-
-		/* @brief This function will returns the number of elements in the container.                   */
-		container_size_t(*size)(struct array_family_s *array_family);
-
-		/* @brief This function will returns the maximum number of elements the container
-				  is able to hold due to system or library implementation limitations.                  */
-		container_size_t(*max_size)(struct array_family_s *array_family);
-
-		/* @brief This function will returns the number of elements
-				  that the container has currently allocated space for.                                 */
-		container_size_t(*capacity)(struct array_family_s *array_family);
-	}capacity;
-
-	struct {
-		/* @brief This function will erases all elements from the container.                            */
-		void (*clear)(struct array_family_s *array_family);
-
-		/* @brief This function will inserts elements at the specified location in the container.       */
-		void (*insert)(struct array_family_s *array_family,
-					   container_size_t position,
-					   container_size_t amount, void **source);
-
-	   /* @brief This function will erases the specified elements from the container.                  */
-		void (*erase)(struct array_family_s *array_family,
-					  container_size_t position);
-
-		/* @brief This function will appends the given element source to the end of the container.      */
-		void (*push_back)(struct array_family_s *array_family,
-						  void *source);
-
-		/* @brief This function will removes the last element of the container.                         */
-		void (*pop_back)(struct array_family_s *array_family);
-
-		/* @brief This function will copy the contents of the container to those of other.              */
-		void (*copy)(struct array_family_s **destination,
-					 struct array_family_s *source);
-
-		/* @brief This function will exchanges the contents of the container with those of other.       */
-		void (*swap)(struct array_family_s **array_family,
-					 struct array_family_s **other);
-	}modifiers;
-};
-
 /*
 *********************************************************************************************************
 *								            FUNCTION PROTOTYPES
@@ -246,8 +108,8 @@ void array_family_control_configuration_init(struct array_family_s **array_famil
 											 void (*switch_control)(void),
 											 enum allocator_type_e allocator_type,
 											 container_size_t element_size,
-											 void (*assign)(void *dst, void *src),
-											 void (*free)(void *dst));
+											 generic_type_element_assign_t assign,
+											 generic_type_element_free_t free);
 
 /**
  * @brief This function will destroy the array_family struct and free the space.
@@ -270,8 +132,8 @@ void array_family_control_configuration_destroy(struct array_family_s **array_fa
  */
 
 void array_family_control_configuration_element_handler(struct array_family_s *array_family,
-														void (*assign)(void *dst, void *src),
-														void (*free)(void *dst));
+														generic_type_element_assign_t assign,
+														generic_type_element_free_t free);
 
 /**
  * @brief This function will configure the array_family exception callback.
@@ -368,7 +230,8 @@ bool array_family_control_capacity_empty(struct array_family_s *array_family);
  *  the number of elements in the container
  */
 
-container_size_t array_family_control_capacity_size(struct array_family_s *array_family);
+container_size_t 
+array_family_control_capacity_size(struct array_family_s *array_family);
 
 /**
  * @brief This function will returns the maximum number of elements the container.
@@ -380,10 +243,12 @@ container_size_t array_family_control_capacity_size(struct array_family_s *array
  *  the maximum number of elements the container
  */
 
-container_size_t array_family_control_capacity_max_size(struct array_family_s *array_family);
+container_size_t 
+array_family_control_capacity_max_size(struct array_family_s *array_family);
 
 /**
- * @brief This function will returns the number of elements that the container has currently allocated space for.
+ * @brief This function will returns the number of elements that 
+ *          the container has currently allocated space for.
  *
  * @param array_family the pointer to the container struct
  *
@@ -391,7 +256,29 @@ container_size_t array_family_control_capacity_max_size(struct array_family_s *a
  *  the number of elements that the container has currently allocated space for
  */
 
-container_size_t array_family_control_capacity_capacity(struct array_family_s *array_family);
+container_size_t 
+array_family_control_capacity_capacity(struct array_family_s *array_family);
+
+/**
+ * @brief This function will increase the capacity of the vector to a size that's greater or equal to new_cap.
+ *
+ * @param array_family the pointer to the container struct
+ *
+ * @return NONE
+ */
+
+void array_family_control_capacity_reserve(struct array_family_s **array_family,
+                                           container_size_t size);
+
+/**
+ * @brief This function will requests the removal of unused capacity.
+ *
+ * @param array_family the pointer to the container struct
+ *
+ * @return NONE
+ */
+
+void array_family_control_capacity_shrink_to_fit(struct array_family_s **array_family);
 
 /**
  * @brief This function will erases all elements from the container.
@@ -456,16 +343,15 @@ void array_family_control_modifiers_push_back(struct array_family_s *array_famil
 void array_family_control_modifiers_pop_back(struct array_family_s *array_family);
 
 /**
- * @brief This function will copy the contents of the container to those of other.
+ * @brief This function will resizes the container to contain count elements.
  *
- * @param destination container struct
- * @param source container struct
+ * @param array_family the pointer to the container struct
  *
  * @return NONE
  */
 
-void array_family_control_modifiers_copy(struct array_family_s **destination,
-										 struct array_family_s *source);
+void array_family_control_modifiers_resize(struct array_family_s **array_family,
+                                           container_size_t count);
 
 /**
  * @brief This function will exchanges the contents of the container with those of other.
@@ -477,8 +363,20 @@ void array_family_control_modifiers_copy(struct array_family_s **destination,
  */
 
 void array_family_control_modifiers_swap(struct array_family_s **array_family,
-										 struct array_family_s **other);
+                                         struct array_family_s **other);
 
+
+/**
+ * @brief This function will copy the contents of the container to those of other.
+ *
+ * @param destination container struct
+ * @param source container struct
+ *
+ * @return NONE
+ */
+
+void array_family_control_modifiers_copy(struct array_family_s **destination,
+										 struct array_family_s *source);
 /*
 *********************************************************************************************************
 *                                       EXTERN GLOBAL VARIABLES

@@ -89,12 +89,13 @@ struct tree_family_node_operator_s avl_tree_control_node_operator = {
 
 void avl_tree_control_configuration_init(AVL_TREE_TYPEDEF_PPTR tree,
 										 container_size_t element_size,
-										 void (*assign)(void *dst, void *src), void (*free)(void *dst))
+										 generic_type_element_assign_t assign,
+										 generic_type_element_free_t free)
 {
 	assert(tree);
 	assert(0 <= element_size);
 
-	tree_family_control_configuration_init(tree, avl_tree_control_switch_control, 2,TREE_FAMILY_AVL_TREE,
+	tree_family_control_configuration_init(tree, avl_tree_control_switch_control, 2, TREE_FAMILY_AVL_TREE,
 										   AVL_TREE_CFG_ALLOCATOR_TYPE, element_size, assign, free);
 }
 

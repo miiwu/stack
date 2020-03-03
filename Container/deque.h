@@ -31,7 +31,7 @@
 #define DEQUE_CFG_ALLOCATOR_TYPE                                ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
-#define DEQUE_CFG_INTERGRATED_STRUCTURE_MODE_EN			        1u
+#define DEQUE_CFG_INTEGRATED_STRUCTURE_MODE_EN			        1u
 
 /* Configure    if enable stack debug.																    */
 #define DEQUE_CFG_DEBUG_EN										0u
@@ -42,9 +42,9 @@
 *********************************************************************************************************
 */
 
-typedef struct deque_s 
-*DEQUE_TYPEDEF_PTR,
-**DEQUE_TYPEDEF_PPTR;
+typedef struct deque_s
+*deque_stp,
+**deque_stpp;
 
 /**
  * @brief This struct is the deque element operator structure module
@@ -53,100 +53,102 @@ typedef struct deque_s
 struct deque_control_s {
 	struct {
 		/* @brief This function will initialize the deque struct.                                      */
-		void (*init)(DEQUE_TYPEDEF_PPTR deque,
+		void (*init)(deque_stpp deque,
 					 container_size_t dst_size,
-					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
+					 generic_type_element_assign_t assign,
+					 generic_type_element_free_t free);
 
 		/* @brief This function will destroy the deque struct and free the space.                      */
-		void (*destroy)(DEQUE_TYPEDEF_PPTR deque);
+		void (*destroy)(deque_stpp deque);
 
 		/* @brief This function will configure the deque element handler.                              */
-		void (*element_handler)(DEQUE_TYPEDEF_PTR deque,
-								void (*assign)(void *dst, void *src), void (*free)(void *dst));
+		void (*element_handler)(deque_stp deque,
+								generic_type_element_assign_t assign,
+								generic_type_element_free_t free);
 
 		/* @brief This function will configure the deque exception callback.                           */
-		void (*exception)(DEQUE_TYPEDEF_PTR deque,
+		void (*exception)(deque_stp deque,
 						  void (*empty)(void), void (*full)(void));
 	}configuration;
 
 	struct {
 		/* @brief This function will initialize the deque struct.                                      */
-		void (*begin)(DEQUE_TYPEDEF_PTR deque);
+		void (*begin)(deque_stp deque);
 
 		/* @brief This function will initialize the deque struct.                                      */
-		void (*end)(DEQUE_TYPEDEF_PTR deque);
+		void (*end)(deque_stp deque);
 	}iterators;
 
 	struct {
 		/* @brief This function will returns a reference to the element
 				  at specified location position, with bounds checking.                                 */
-		void *(*at)(DEQUE_TYPEDEF_PTR deque,
+		void *(*at)(deque_stp deque,
 					container_size_t position);
 
 		/* @brief This function will returns a reference to the first element in the container.         */
-		void *(*front)(DEQUE_TYPEDEF_PTR deque);
+		void *(*front)(deque_stp deque);
 
 		/* @brief This function will returns reference to the last element in the container.            */
-		void *(*back)(DEQUE_TYPEDEF_PTR deque);
+		void *(*back)(deque_stp deque);
 	}element_access;
 
 	struct {
 		/* @brief This function will checks if the container has no elements.                           */
-		bool (*empty)(DEQUE_TYPEDEF_PTR deque);
+		bool (*empty)(deque_stp deque);
 
 		/* @brief This function will returns the number of elements in the container.                   */
-		container_size_t(*size)(DEQUE_TYPEDEF_PTR deque);
+		container_size_t(*size)(deque_stp deque);
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		container_size_t(*max_size)(DEQUE_TYPEDEF_PTR deque);
+		container_size_t(*max_size)(deque_stp deque);
 
 		/* @brief This function will resizes the container to contain count elements.                   */
-		void (*resize)(DEQUE_TYPEDEF_PPTR deque,
+		void (*resize)(deque_stpp deque,
 					   container_size_t size);
 
 		/* @brief This function will requests the removal of unused capacity.                           */
-		void (*shrink_to_fit)(DEQUE_TYPEDEF_PPTR deque);
+		void (*shrink_to_fit)(deque_stpp deque);
 	}capacity;
 
 	struct {
 		/* @brief This function will erases all elements from the container.                            */
-		void (*clear)(DEQUE_TYPEDEF_PTR deque);
+		void (*clear)(deque_stp deque);
 
 		/* @brief This function will inserts elements at the specified location in the container.       */
-		void (*insert)(DEQUE_TYPEDEF_PTR deque,
-					   container_size_t position, 
+		void (*insert)(deque_stp deque,
+					   container_size_t position,
 					   container_size_t amount, void **source);
 
 	   /* @brief This function will erases the specified elements from the container.                  */
-		void (*erase)(DEQUE_TYPEDEF_PTR deque,
+		void (*erase)(deque_stp deque,
 					  container_size_t position);
 
 		/* @brief This function will prepends the given element value to the beginning of the container.*/
-		void (*push_front)(DEQUE_TYPEDEF_PTR deque,
+		void (*push_front)(deque_stp deque,
 						   void *source);
 
 		/* @brief This function will inserts a new element to the beginning of the container.           */
-		void (*emplace_front)(DEQUE_TYPEDEF_PTR deque,
+		void (*emplace_front)(deque_stp deque,
 							  void *source);
 
 		/* @brief This function will removes the first element of the container.                        */
-		void (*pop_front)(DEQUE_TYPEDEF_PTR deque);
+		void (*pop_front)(deque_stp deque);
 
 		/* @brief This function will appends the given element source to the end of the container.      */
-		void (*push_back)(DEQUE_TYPEDEF_PTR deque,
+		void (*push_back)(deque_stp deque,
 						  void *source);
 
 		/* @brief This function will removes the last element of the container.                         */
-		void (*pop_back)(DEQUE_TYPEDEF_PTR deque);
+		void (*pop_back)(deque_stp deque);
 
 		/* @brief This function will exchanges the contents of the container with those of other.       */
-		void (*swap)(DEQUE_TYPEDEF_PPTR deque,
-					 DEQUE_TYPEDEF_PPTR other);
+		void (*swap)(deque_stpp deque,
+					 deque_stpp other);
 
 		/* @brief This function will copy the contents of the container to those of other.              */
-		void (*copy)(DEQUE_TYPEDEF_PPTR destination,
-					 DEQUE_TYPEDEF_PTR source);
+		void (*copy)(deque_stpp destination,
+					 deque_stp source);
 	}modifiers;
 };
 
@@ -175,8 +177,9 @@ struct deque_control_s {
  */
 
 void deque_control_configuration_init(struct deque_s **deque,
-                                      container_size_t element_size,
-                                      void (*assign)(void *dst, void *src), void (*free)(void *dst));
+									  container_size_t element_size,
+									  generic_type_element_assign_t assign,
+									  generic_type_element_free_t free);
 
 /**
  * @brief This function will destroy the deque struct and free the space.
@@ -201,7 +204,8 @@ void deque_control_configuration_destroy(struct deque_s **deque);
  */
 
 void deque_control_configuration_element_handler(struct deque_s *deque,
-                                                 void (*assign)(void *dst, void *src), void (*free)(void *dst));
+												 generic_type_element_assign_t assign,
+												 generic_type_element_free_t free);
 
 /**
  * @brief This function will configure the deque exception callback.
@@ -214,7 +218,7 @@ void deque_control_configuration_element_handler(struct deque_s *deque,
  */
 
 void deque_control_configuration_exception(struct deque_s *deque,
-                                           void (*empty)(void), void (*full)(void));
+										   void (*empty)(void), void (*full)(void));
 
 /**
  * @brief This function will
@@ -246,7 +250,7 @@ void deque_control_iterators_back(struct deque_s *deque);
  */
 
 void *deque_control_element_access_at(struct deque_s *deque,
-                                      container_size_t position);
+									  container_size_t position);
 
 /**
  * @brief This function will returns a reference to the first element in the container.
@@ -446,7 +450,7 @@ void deque_control_modifiers_swap(struct deque_s **deque,
  */
 
 void deque_control_modifiers_copy(struct deque_s **destination,
-                                  struct deque_s *source);
+								  struct deque_s *source);
 
 /*
 *********************************************************************************************************

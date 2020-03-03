@@ -60,20 +60,9 @@ void *stack_container = NULL;
 
 #endif // !MAIN_STACK_CONTAINER
 
-void main_stack_generic_type_operator_assign(void *gnc, void *src);
-void main_stack_generic_type_operator_free(void *gnc);
-
-struct generic_type_t {
-	char symbol;
-
-	char *string;
-
-	int number;
-};
-
 void main_stack(void)
 {
-	STACK_TYPEDEF_PTR
+	stack_tp
 		stack = NULL,
 		stack_attach = NULL,
 		stack_copy = NULL;
@@ -83,20 +72,17 @@ void main_stack(void)
 		*string_start = "####",
 		string_modle[] = "stack";
 
-	struct generic_type_t demo = {
-		'1',
-		string_modle,
-		3
-	};
-
 	printf("\r\n ------------------------+ stack demo start +------------------------ \r\n");
 
 	printf("stack.init start\r\n");
-	stack_ctrl.configuration.init(&stack, MAIN_STACK_CONTAINER, sizeof(struct generic_type_t),
-								  main_stack_generic_type_operator_assign, main_stack_generic_type_operator_free);						/* Initialize stack,char[sizeof(string_moudle)] type */
-	MAIN_STACK_CONTAINER_CONTROL.configuration.init(&MAIN_STACK_CONTAINER_TYPE, sizeof(struct generic_type_t),
-													main_stack_generic_type_operator_assign, main_stack_generic_type_operator_free);	/* Initialize stack_container,char[sizeof(string_moudle)] type */
-	stack_ctrl.configuration.attach(&stack_attach, MAIN_STACK_CONTAINER, MAIN_STACK_CONTAINER_TYPE);
+	stack_ctrl.configuration.init(&stack, 											/* Initialize stack,char[sizeof(string_moudle)] type */
+								  MAIN_STACK_CONTAINER, sizeof(string_modle),
+								  NULL, NULL);
+	MAIN_STACK_CONTAINER_CONTROL.configuration.init(&MAIN_STACK_CONTAINER_TYPE, 	/* Initialize stack_container,char[sizeof(string_moudle)] type */
+													sizeof(string_modle),
+													NULL, NULL);
+	stack_ctrl.configuration.attach(&stack_attach, 									/* Attach stack adapt to the container */
+									MAIN_STACK_CONTAINER, MAIN_STACK_CONTAINER_TYPE);
 
 	printf("\r\nstack.max_size start\r\n");
 	printf("max size : %d \r\n    ", stack_ctrl.capacity.max_size(stack));
@@ -106,22 +92,22 @@ void main_stack(void)
 
 	printf("\r\nstack.push start\r\n");
 	for (size_t cnt = 0; cnt < 10; cnt++) {
-		printf("push no.%d : \"%s\" \r\n", cnt, demo.string);
+		printf("push no.%d : \"%s\" \r\n", cnt, string_modle);
 
-		stack_ctrl.modifiers.push(stack, &demo);
+		stack_ctrl.modifiers.push(stack, string_modle);
 
 		string_modle[0] += 1;
 	}
 
 	printf("\r\nstack .top start\r\n");
-	printf("top : \"%s\" \r\n", ((struct generic_type_t *)stack_ctrl.element_access.top(stack))->string);
+	printf("top : \"%s\" \r\n", (char *)stack_ctrl.element_access.top(stack));
 
 	printf("\r\nstack & stack_attach.copy stack start\r\n");
 	stack_ctrl.modifiers.copy(&stack_attach, stack);
 
 	printf("\r\nstack_attach.pop start\r\n");
 	for (size_t cnt = 0; cnt < 10; cnt++) {
-		printf("top no.%d : \"%s\" \r\n", cnt, ((struct generic_type_t *)stack_ctrl.element_access.top(stack_attach))->string);
+		printf("top no.%d : \"%s\" \r\n", cnt, (char *)stack_ctrl.element_access.top(stack_attach));
 		stack_ctrl.modifiers.pop(stack_attach);
 	}
 
@@ -134,36 +120,4 @@ void main_stack(void)
 	printf("\r\n ------------------------+ stack demo end +------------------------\r\n");
 
 	return;
-}
-
-void main_stack_generic_type_operator_assign(void *gnc, void *src)					/* function may preform like copy the pointer src to the pointer gnc */
-{
-	assert(gnc);
-	assert(src);
-
-	struct generic_type_t
-		*generic_type_gnc = gnc,
-		*generic_type_src = src;
-
-	generic_type_gnc->string = calloc(1, sizeof("stack"));							/* those are pointer,so malloc it as count*sizeof("stack"),
-																						the sizeof("stack") will be the memory size of the type the pointer point to */
-
-	if (NULL == generic_type_gnc->string) {
-		return;
-	}
-
-	generic_type_gnc->symbol = generic_type_src->symbol;							/* both below are the not-pointer type handle method */
-	memcpy(&generic_type_gnc->number, &generic_type_src->number, sizeof(int));
-
-	memcpy(generic_type_gnc->string, generic_type_src->string, sizeof("stack"));	/* memcpy the content of the pointer point to */
-}
-
-void main_stack_generic_type_operator_free(void *gnc)
-{
-	struct generic_type_t
-		*generic_type_gnc = gnc;
-
-	memset(generic_type_gnc->string, '0', sizeof("stack"));
-
-	free(generic_type_gnc->string);													/* free the memory space the calloc on the assign function */
 }

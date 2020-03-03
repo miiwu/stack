@@ -24,12 +24,6 @@
 *********************************************************************************************************
 */
 
-/**
- * @brief This struct is the array structure module
- */
-
-typedef struct array_family_s array_st;
-
 /*
 *********************************************************************************************************
 *                                            LOCAL TABLES
@@ -69,13 +63,13 @@ void *array_function_address_tables[] =
 	(void *)&array_family_control_modifiers_copy,							/* No.10 : copy */
 };
 
-#if (ARRAY_CFG_INTERGRATED_STRUCTURE_MODE_EN)
+#if (ARRAY_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 
 /**
  * @brief This struct will control all the array functions conveniently.
  */
 
-struct array_family_control_s array_ctrl = {
+struct array_control_s array_ctrl = {
 	{
 		array_control_configuration_init,
 
@@ -119,13 +113,13 @@ struct array_family_control_s array_ctrl = {
 
 		array_family_control_modifiers_pop_back,
 
-		array_family_control_modifiers_copy,
-
 		array_family_control_modifiers_swap,
+
+		array_family_control_modifiers_copy,
 	}
 };
 
-#endif // (ARRAY_CFG_INTERGRATED_STRUCTURE_MODE_EN)
+#endif // (ARRAY_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 
 /*
 *********************************************************************************************************
@@ -160,9 +154,10 @@ void array_control_switch_control(void);
  * @return NONE
  */
 
-void array_control_configuration_init(ARRAY_TYPEDEF_PPTR array,
+void array_control_configuration_init(array_stpp array,
 									  container_size_t element_size,
-									  void (*assign)(void *dst, void *src), void (*free)(void *dst))
+									  generic_type_element_assign_t assign,
+									  generic_type_element_free_t free)
 {
 	assert(array);
 

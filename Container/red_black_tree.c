@@ -240,9 +240,10 @@ struct tree_family_control_environment_s red_black_tree_control_environment = {
  * @return NONE
  */
 
-void red_black_tree_control_configuration_init(RED_BLACK_TREE_TYPEDEF_PPTR tree,
+void red_black_tree_control_configuration_init(red_black_tree_stpp tree,
 											   container_size_t element_size,
-											   void (*assign)(void *dst, void *src), void (*free)(void *dst))
+											   generic_type_element_assign_t assign,
+											   generic_type_element_free_t free)
 {
 	assert(tree);
 	assert(0 <= element_size);

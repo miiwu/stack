@@ -360,7 +360,8 @@ void tree_family_control_configuration_init(struct tree_family_s **tree,
 											enum tree_family_member_type_e member_type,
 											enum allocator_type_e allocator_type,
 											container_size_t element_size,
-											void (*assign)(void *dst, void *src), void (*free)(void *dst));
+											generic_type_element_assign_t assign,
+											generic_type_element_free_t free);
 
 /**
  * @brief This function will destroy the tree struct and free the space
@@ -383,8 +384,8 @@ void tree_family_control_configuration_destroy(struct tree_family_s **tree);
  */
 
 void tree_family_control_configuration_element_handler(struct tree_family_s *tree,
-													   void (*assign)(void *dst, void *src),
-													   void(*free)(void *dst));
+													   generic_type_element_assign_t assign,
+													   generic_type_element_free_t free);
 
 /**
  * @brief This function will configure the tree exception callback

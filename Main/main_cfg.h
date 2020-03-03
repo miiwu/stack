@@ -11,6 +11,8 @@
 
 #define MAIN_ALLOCATOR_EN			0u
 
+#define MAIN_GENERIC_TYPE_EN		1u
+
 #define MAIN_B_TREE_EN				0u
 
 #define MAIN_BINARY_SEARCH_TREE_EN	0u
@@ -27,7 +29,7 @@
 
 #define MAIN_LIST_EN				0u
 
-#define MAIN_STACK_EN				0u
+#define MAIN_STACK_EN				1u
 
 #define MAIN_QUEUE_EN				1u
 
@@ -42,6 +44,12 @@ void main_debug_component(void);
 #if	(MAIN_ALLOCATOR_EN)
 
 void main_allocator(void);
+
+#endif
+
+#if	(MAIN_GENERIC_TYPE_EN)
+
+void main_generic_type(void);
 
 #endif
 

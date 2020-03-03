@@ -98,15 +98,27 @@ struct container_common_information_s {
 };
 
 /**
+ * @brief This type is the assign method typedef of the generic type element.
+ */
+
+typedef errno_t(*generic_type_element_assign_t)(void *gnc, void *src);
+
+/**
+ * @brief This type is the free method typedef of the generic type element.
+ */
+
+typedef errno_t(*generic_type_element_free_t)(void *gnc);
+
+/**
  * @brief This struct is the container's generic element handler
  */
 
 struct container_element_handler_s {
 	/* @brief This variables will point to the address of the vector element assign handler.			*/
-	void (*assign)(void *dst, void *src);
+	generic_type_element_assign_t assign;
 
 	/* @brief This variables will point to the address of the vector element free handler.				*/
-	void (*free)(void *dst);
+	generic_type_element_free_t free;
 };
 
 /**
@@ -130,7 +142,8 @@ struct container_control_s {
 		/* @brief This function will initialize the container struct and the specified container.		*/
 		void (*init)(void **container,
 					 container_size_t element_size,
-					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
+					 generic_type_element_assign_t assign,
+					 generic_type_element_free_t free);
 
 		/* @brief This function will destroy the container struct. */
 		void (*destroy)(void **container);

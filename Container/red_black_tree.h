@@ -28,7 +28,7 @@
 #define RED_BLACK_TREE_CFG_ALLOCATOR_TYPE								    ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
-#define RED_BLACK_TREE_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
+#define RED_BLACK_TREE_CFG_INTEGRATED_STRUCTURE_MODE_EN					1u
 
 /* Configure    if enable debug mode.																	*/
 #define RED_BLACK_TREE_CFG_DEBUG_EN											1u
@@ -41,8 +41,8 @@
 
 /* Configure    red-black-tree type.																	*/
 typedef struct tree_family_s
-*RED_BLACK_TREE_TYPEDEF_PTR,
-**RED_BLACK_TREE_TYPEDEF_PPTR;;
+*red_black_tree_stp,
+**red_black_tree_stpp;;
 
 /*
 *********************************************************************************************************
@@ -61,9 +61,10 @@ typedef struct tree_family_s
  * @return NONE
  */
 
-void red_black_tree_control_configuration_init(RED_BLACK_TREE_TYPEDEF_PPTR tree,
+void red_black_tree_control_configuration_init(red_black_tree_stpp tree,
 											   container_size_t element_size,
-											   void (*assign)(void *dst, void *src), void (*free)(void *dst));
+											   generic_type_element_assign_t assign,
+											   generic_type_element_free_t free);
 
 /*
 *********************************************************************************************************

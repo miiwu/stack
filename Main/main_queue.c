@@ -10,7 +10,7 @@
 
 #define MAIN_QUEUE_CONTAINER_CONTROL	vector_ctrl
 
-VECTOR_TYPEDEF_PTR queue_container = NULL;
+vector_tp queue_container = NULL;
 
 #endif // (MAIN_QUEUE_CFG_ADAPT_VECTOR_EN)
 
@@ -20,13 +20,13 @@ VECTOR_TYPEDEF_PTR queue_container = NULL;
 
 #define MAIN_QUEUE_CONTAINER_CONTROL	forward_list_ctrl
 
-FORWARD_LIST_TYPEDEF_PTR queue_container = NULL;
+forward_list_stp queue_container = NULL;
 
 #endif // (MAIN_QUEUE_CFG_ADAPT_FORWARD_LIST_EN)
 
 void main_queue(void)
 {
-	QUEUE_TYPEDEF_PTR
+	queue_stp
 		queue = NULL,
 		queue_attach = NULL,
 		queue_copy = NULL;

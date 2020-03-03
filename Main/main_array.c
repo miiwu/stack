@@ -2,7 +2,7 @@
 
 void main_array(void)
 {
-	ARRAY_TYPEDEF_PTR
+	array_stp
 		array = NULL,
 		array_copy = NULL;
 

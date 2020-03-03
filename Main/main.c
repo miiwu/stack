@@ -14,6 +14,12 @@ void main(void)
 
 	#endif
 
+	#if	(MAIN_GENERIC_TYPE_EN)
+
+	main_generic_type();
+
+	#endif
+
 	#if	(MAIN_B_TREE_EN)
 
 	main_b_tree();

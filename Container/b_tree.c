@@ -92,7 +92,7 @@ struct b_tree_split_into_lesser_pack_s {
  * @return void
  */
 
-void b_tree_control_switch_control(struct tree_family_s *tree);
+void b_tree_control_switch_control(b_tree_stp tree);
 
 /**
  * @brief This function will control b_tree_control_search()'s match.
@@ -103,7 +103,7 @@ void b_tree_control_switch_control(struct tree_family_s *tree);
  */
 
 container_size_t
-b_tree_control_search_match_rule(struct tree_family_s *tree,
+b_tree_control_search_match_rule(b_tree_stp tree,
 								 struct tree_family_chain_node_s *node,
 								 void *data);
 
@@ -116,7 +116,7 @@ b_tree_control_search_match_rule(struct tree_family_s *tree,
  */
 
 container_size_t
-b_tree_control_search_recursion_rule(struct tree_family_s *tree,
+b_tree_control_search_recursion_rule(b_tree_stp tree,
 									 struct tree_family_chain_node_s **node,
 									 void *data);
 
@@ -128,7 +128,7 @@ b_tree_control_search_recursion_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *b_tree_control_insert_rule(struct tree_family_s *tree,
+void *b_tree_control_insert_rule(b_tree_stp tree,
 								 struct tree_family_search_node_return_s search_return,
 								 void *data);
 
@@ -140,7 +140,7 @@ void *b_tree_control_insert_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *b_tree_control_delete_rule(struct tree_family_s *tree,
+void *b_tree_control_delete_rule(b_tree_stp tree,
 								 struct tree_family_search_node_return_s search_return,
 								 void *data);
 
@@ -152,7 +152,7 @@ void *b_tree_control_delete_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *b_tree_node_control_partial_transformation(struct tree_family_s *tree,
+void *b_tree_node_control_partial_transformation(b_tree_stp tree,
 												 void *node,
 												 void *data);
 
@@ -165,7 +165,7 @@ void *b_tree_node_control_partial_transformation(struct tree_family_s *tree,
  */
 
 struct b_tree_insert_into_greater_pack_s
-	b_tree_control_insert_into_greater(struct tree_family_s *tree,
+	b_tree_control_insert_into_greater(b_tree_stp tree,
 									   struct b_tree_split_into_lesser_pack_s lesser_pack);
 
 /**
@@ -177,7 +177,7 @@ struct b_tree_insert_into_greater_pack_s
  */
 
 struct b_tree_split_into_lesser_pack_s
-	b_tree_control_split_into_lesser(struct tree_family_s *tree,
+	b_tree_control_split_into_lesser(b_tree_stp tree,
 									 struct b_tree_insert_into_greater_pack_s greater_pack);
 
 /**
@@ -188,7 +188,7 @@ struct b_tree_split_into_lesser_pack_s
  * @return void
  */
 
-void b_tree_control_split_greater_into_new_lesser(struct tree_family_s *tree,
+void b_tree_control_split_greater_into_new_lesser(b_tree_stp tree,
 												  struct tree_family_chain_node_s *node_lesser[2],
 												  struct tree_family_chain_node_s *node_greater,
 												  container_size_t id_data_split);
@@ -201,7 +201,7 @@ void b_tree_control_split_greater_into_new_lesser(struct tree_family_s *tree,
  * @return void
  */
 
-void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
+void *b_tree_control_delete_fix_rule(b_tree_stp tree,
 									 struct tree_family_chain_node_s *node,
 									 struct tree_family_chain_node_s *parent);
 
@@ -256,10 +256,11 @@ struct tree_family_control_environment_s b_tree_control_greater_environment = {
  * @return NONE
  */
 
-void b_tree_control_configuration_init(struct tree_family_s **tree,
+void b_tree_control_configuration_init(b_tree_stpp tree,
 									   container_size_t degree,
 									   container_size_t element_size,
-									   void (*assign)(void *dst, void *src), void (*free)(void *dst))
+									   generic_type_element_assign_t assign,
+									   generic_type_element_free_t free)
 {
 	assert(tree);
 	assert(0 <= element_size);
@@ -276,7 +277,7 @@ void b_tree_control_configuration_init(struct tree_family_s **tree,
  * @return void
  */
 
-static inline void b_tree_control_switch_control(struct tree_family_s *tree)
+static inline void b_tree_control_switch_control(b_tree_stp tree)
 {
 	enum tree_family_member_type_e member_type = tree->info.degree;
 
@@ -296,7 +297,7 @@ static inline void b_tree_control_switch_control(struct tree_family_s *tree)
  * @return void
  */
 
-container_size_t b_tree_control_search_match_rule(struct tree_family_s *tree,
+container_size_t b_tree_control_search_match_rule(b_tree_stp tree,
 												  struct tree_family_chain_node_s *node,
 												  void *data)
 {
@@ -341,7 +342,7 @@ EXIT:
  */
 
 container_size_t
-b_tree_control_search_recursion_rule(struct tree_family_s *tree,
+b_tree_control_search_recursion_rule(b_tree_stp tree,
 									 struct tree_family_chain_node_s **node,
 									 void *data)
 {
@@ -386,7 +387,7 @@ EXIT:
  * @return void
  */
 
-void *b_tree_control_insert_rule(struct tree_family_s *tree,
+void *b_tree_control_insert_rule(b_tree_stp tree,
 								 struct tree_family_search_node_return_s search_return,
 								 void *data)
 {
@@ -406,7 +407,7 @@ void *b_tree_control_insert_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *b_tree_control_delete_rule(struct tree_family_s *tree,
+void *b_tree_control_delete_rule(b_tree_stp tree,
 								 struct tree_family_search_node_return_s search_return,
 								 void *data)
 {
@@ -483,7 +484,7 @@ FAIL:
  * @return void
  */
 
-void *b_tree_node_control_partial_transformation(struct tree_family_s *tree,
+void *b_tree_node_control_partial_transformation(b_tree_stp tree,
 												 void *node,
 												 void *data)
 {
@@ -509,7 +510,7 @@ void *b_tree_node_control_partial_transformation(struct tree_family_s *tree,
  */
 
 struct b_tree_insert_into_greater_pack_s
-	b_tree_control_insert_into_greater(struct tree_family_s *tree,
+	b_tree_control_insert_into_greater(b_tree_stp tree,
 									   struct b_tree_split_into_lesser_pack_s lesser_pack)
 {
 	struct b_tree_chain_node_data_s
@@ -601,7 +602,7 @@ struct b_tree_insert_into_greater_pack_s
  */
 
 struct b_tree_split_into_lesser_pack_s
-	b_tree_control_split_into_lesser(struct tree_family_s *tree,
+	b_tree_control_split_into_lesser(b_tree_stp tree,
 									 struct b_tree_insert_into_greater_pack_s greater_pack)
 {
 	struct tree_family_chain_node_s *node_new_inited[2] = {
@@ -722,7 +723,7 @@ EXIT:
  * @return void
  */
 
-void b_tree_control_split_greater_into_new_lesser(struct tree_family_s *tree,
+void b_tree_control_split_greater_into_new_lesser(b_tree_stp tree,
 												  struct tree_family_chain_node_s *node_lesser[2],
 												  struct tree_family_chain_node_s *node_greater,
 												  container_size_t id_data_split)
@@ -797,7 +798,7 @@ void b_tree_control_split_greater_into_new_lesser(struct tree_family_s *tree,
  * @return void
  */
 
-void *b_tree_control_delete_fix_rule(struct tree_family_s *tree,
+void *b_tree_control_delete_fix_rule(b_tree_stp tree,
 									 struct tree_family_chain_node_s *node,
 									 struct tree_family_chain_node_s *parent)
 {

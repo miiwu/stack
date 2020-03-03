@@ -174,7 +174,8 @@ void deque_control_configuration_exception_default_full_callback(void);
 
 void deque_control_configuration_init(struct deque_s **deque,
 									  container_size_t element_size,
-									  void (*assign)(void *dst, void *src), void (*free)(void *dst))
+									  generic_type_element_assign_t assign,
+									  generic_type_element_free_t free)
 {
 	assert(deque);
 	assert(0 <= element_size);
@@ -257,7 +258,7 @@ void deque_control_configuration_destroy(struct deque_s **deque)
 
 	#endif // (ARRAY_FAMILY_CFG_DEBUG_EN)
 
-	ALLOCATOR_COMMON_TYPEDEF_PTR
+	allocator_common_stp
 		deque_allocator = (*deque)->allocator;
 	struct allocator_control_s
 		*deque_allocator_ctrl = (*deque)->allocator_ctrl;
@@ -296,7 +297,8 @@ void deque_control_configuration_destroy(struct deque_s **deque)
  */
 
 void deque_control_configuration_element_handler(struct deque_s *deque,
-												 void (*assign)(void *dst, void *src), void (*free)(void *dst))
+												 generic_type_element_assign_t assign,
+												 generic_type_element_free_t free)
 {
 	assert(deque);
 	assert(assign);
@@ -530,8 +532,8 @@ void deque_control_modifiers_clear(struct deque_s *deque)
  */
 
 void deque_control_modifiers_insert(struct deque_s *deque,
-									container_size_t position, 
-                                    container_size_t amount, void **source)
+									container_size_t position,
+									container_size_t amount, void **source)
 {
 	assert(deque);
 	assert(0 <= position);
@@ -664,7 +666,6 @@ void deque_control_modifiers_swap(struct deque_s **deque,
 {
 	assert(deque);
 	assert(other);
-
 }
 
 /**
@@ -678,15 +679,15 @@ void deque_control_modifiers_swap(struct deque_s **deque,
  */
 
 void *deque_element_control_get_data(struct deque_s *deque,
-                                     container_size_t position)
+									 container_size_t position)
 {
-    assert(deque);
-    assert(0 <= position);
+	assert(deque);
+	assert(0 <= position);
 
-    void
-        *source = (void *)((size_t)(deque->data) + position * deque->info.mem_size);							/* Point source to the address of the element which at the position location */
+	void
+		*source = (void *)((size_t)(deque->data) + position * deque->info.mem_size);        /* Point source to the address of the element which at the position location */
 
-    return source;
+	return source;
 }
 
 /**
@@ -707,12 +708,12 @@ void deque_element_control_set_data(struct deque_s *deque,
 	assert(source);
 
 	void
-		*destination = (void *)((size_t)(deque->data) + position * deque->info.mem_size);									/* Point destination to the address of the element which at the position location */
+		*destination = (void *)((size_t)(deque->data) + position * deque->info.mem_size);   /* Point destination to the address of the element which at the position location */
 
-	if (NULL != deque->element_handler.assign) {																		/* Check if assign point to NULL */
-		deque->element_handler.assign(destination, source);
+	if (NULL != deque->element_handler.assign) {										    /* Check if assign point to NULL */
+		//deque->element_handler.assign(destination, source);
 	} else {
-		memcpy(destination, source, deque->info.mem_size);															/* Memcpy source to destination */
+		memcpy(destination, source, deque->info.mem_size);								    /* Memcpy source to destination */
 	}
 }
 

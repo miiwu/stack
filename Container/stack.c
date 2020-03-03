@@ -60,6 +60,12 @@ struct stack_s {
 *********************************************************************************************************
 */
 
+#if (STACK_CFG_INTEGRATED_STRUCTURE_MODE_EN)
+
+/**
+ * @brief This type will contain all the stack control functions.
+ */
+
 struct stack_control_s stack_ctrl =
 {
 	stack_control_configuration_init,
@@ -87,6 +93,8 @@ struct stack_control_s stack_ctrl =
 	stack_control_modifiers_copy
 };
 
+#endif // (STACK_CFG_INTEGRATED_STRUCTURE_MODE_EN)
+
 /*
 *********************************************************************************************************
 *                                      LOCAL FUNCTION PROTOTYPES
@@ -112,10 +120,11 @@ struct stack_control_s stack_ctrl =
  * @return NONE
  */
 
-void stack_control_configuration_init(STACK_TYPEDEF_PPTR stack,
-									 enum container_type_e type,
-									 container_size_t element_size,
-									 void (*assign)(void *dst, void *src), void (*free)(void *dst))
+void stack_control_configuration_init(stack_tpp stack,
+									  enum container_type_e type,
+									  container_size_t element_size,
+									  generic_type_element_assign_t assign,
+									  generic_type_element_free_t free)
 {
 	assert(stack);
 	assert(element_size);
@@ -189,8 +198,8 @@ void stack_control_configuration_init(STACK_TYPEDEF_PPTR stack,
  * @return NONE
  */
 
-void stack_control_configuration_attach(STACK_TYPEDEF_PPTR stack,
-									   enum container_type_e type, void *container)
+void stack_control_configuration_attach(stack_tpp stack,
+										enum container_type_e type, void *container)
 {
 	assert(stack);
 	assert(container);
@@ -252,7 +261,7 @@ void stack_control_configuration_attach(STACK_TYPEDEF_PPTR stack,
  * @return NONE
  */
 
-void stack_control_configuration_destroy(STACK_TYPEDEF_PPTR stack)
+void stack_control_configuration_destroy(stack_tpp stack)
 {
 	assert(stack);
 
@@ -296,7 +305,7 @@ void stack_control_configuration_destroy(STACK_TYPEDEF_PPTR stack)
  * @return NONE
  */
 
-void *stack_control_element_access_top(STACK_TYPEDEF_PTR stack)
+void *stack_control_element_access_top(stack_tp stack)
 {
 	assert(stack);
 
@@ -316,7 +325,7 @@ void *stack_control_element_access_top(STACK_TYPEDEF_PTR stack)
  * @return NONE
  */
 
-bool stack_control_capacity_empty(STACK_TYPEDEF_PTR stack)
+bool stack_control_capacity_empty(stack_tp stack)
 {
 	assert(stack);
 
@@ -336,7 +345,7 @@ bool stack_control_capacity_empty(STACK_TYPEDEF_PTR stack)
  * @return NONE
  */
 
-container_size_t stack_control_capacity_size(STACK_TYPEDEF_PTR stack)
+container_size_t stack_control_capacity_size(stack_tp stack)
 {
 	assert(stack);
 
@@ -361,7 +370,7 @@ container_size_t stack_control_capacity_size(STACK_TYPEDEF_PTR stack)
  * @return NONE
  */
 
-container_size_t stack_control_capacity_max_size(STACK_TYPEDEF_PTR stack)
+container_size_t stack_control_capacity_max_size(stack_tp stack)
 {
 	assert(stack);
 
@@ -381,7 +390,7 @@ container_size_t stack_control_capacity_max_size(STACK_TYPEDEF_PTR stack)
  * @return NONE
  */
 
-void stack_control_modifiers_push(STACK_TYPEDEF_PTR stack, void *source)
+void stack_control_modifiers_push(stack_tp stack, void *source)
 {
 	assert(stack);
 
@@ -402,7 +411,7 @@ void stack_control_modifiers_push(STACK_TYPEDEF_PTR stack, void *source)
  * @return NONE
  */
 
-void stack_control_modifiers_emplace(STACK_TYPEDEF_PTR stack, void *destination)
+void stack_control_modifiers_emplace(stack_tp stack, void *destination)
 {
 	assert(stack);
 }
@@ -415,7 +424,7 @@ void stack_control_modifiers_emplace(STACK_TYPEDEF_PTR stack, void *destination)
  * @return NONE
  */
 
-void stack_control_modifiers_pop(STACK_TYPEDEF_PTR stack)
+void stack_control_modifiers_pop(stack_tp stack)
 {
 	assert(stack);
 
@@ -432,7 +441,7 @@ void stack_control_modifiers_pop(STACK_TYPEDEF_PTR stack)
  * @return NONE
  */
 
-void stack_control_modifiers_swap(STACK_TYPEDEF_PPTR stack, STACK_TYPEDEF_PPTR other)
+void stack_control_modifiers_swap(stack_tpp stack, stack_tpp other)
 {
 	assert(stack);
 
@@ -448,7 +457,7 @@ void stack_control_modifiers_swap(STACK_TYPEDEF_PPTR stack, STACK_TYPEDEF_PPTR o
  * @return NONE
  */
 
-void stack_control_modifiers_copy(STACK_TYPEDEF_PPTR destination, STACK_TYPEDEF_PTR source)
+void stack_control_modifiers_copy(stack_tpp destination, stack_tp source)
 {
 	assert(destination);
 	assert(source);

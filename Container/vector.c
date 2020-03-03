@@ -63,7 +63,7 @@ void *vector_function_address_tables[] =
 	(void *)&array_family_control_modifiers_copy,							/* No.10 : copy */
 };
 
-#if (VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
+#if (VECTOR_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 
 /**
  * @brief This struct will control all the vector functions conveniently.
@@ -102,9 +102,9 @@ struct vector_control_s vector_ctrl = {
 
 		array_family_control_capacity_capacity,
 
-		vector_control_capacity_reserve,
+		array_family_control_capacity_reserve,
 
-		vector_control_capacity_shrink_to_fit,
+		array_family_control_capacity_shrink_to_fit,
 	},
 	{
 		array_family_control_modifiers_clear,
@@ -117,7 +117,7 @@ struct vector_control_s vector_ctrl = {
 
 		array_family_control_modifiers_pop_back,
 
-		vector_control_modifiers_resize,
+		array_family_control_modifiers_resize,
 
 		array_family_control_modifiers_copy,
 
@@ -160,9 +160,10 @@ void vector_control_switch_control(void);
  * @return NONE
  */
 
-void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
+void vector_control_configuration_init(vector_tpp vector,
 									   container_size_t element_size,
-									   void (*assign)(void *dst, void *src), void (*free)(void *dst))
+									   generic_type_element_assign_t assign,
+									   generic_type_element_free_t free)
 {
 	assert(vector);
 
@@ -181,72 +182,4 @@ void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
 void vector_control_switch_control(void)
 {
 	array_family_control_get_control(ARRAY_FAMILY_VECTOR);
-}
-
-/**
- * @brief This function will increase the capacity of the vector to a size that's greater or equal to new_cap.
- *
- * @param vector the pointer to the container struct
- * @param position the position of element,it would be equal or greater than zero
- * @param size the size of elements
- *
- * @return NONE
- */
-
-void vector_control_capacity_reserve(VECTOR_TYPEDEF_PPTR vector,
-									 container_size_t size)
-{
-	assert(vector);
-	assert(0 <= size);
-
-	// TODO...
-}
-
-/**
- * @brief This function will requests the removal of unused capacity.
- *
- * @param vector the pointer to the container struct
- *
- * @return NONE
- */
-
-void vector_control_capacity_shrink_to_fit(VECTOR_TYPEDEF_PPTR vector)
-{
-	assert(vector);
-
-	// TODO...
-}
-
-/**
- * @brief This function will resizes the container to contain count elements.
- *
- * @param vector the pointer to the container struct
- * @param count the count of elements
- *
- * @return NONE
- */
-
-void vector_control_modifiers_resize(VECTOR_TYPEDEF_PPTR vector,
-									 container_size_t count)
-{
-	assert(vector);
-	assert(0 <= count);
-
-	if ((*vector)->info.max_size >= count) {
-		return;
-	}
-
-	(*vector)->allocator_ctrl->deallocate((*vector)->allocator, (*vector)->data, 1);									/* Deallocate #2.1 */
-
-	void
-		*data_pack_alloced = (*vector)->allocator_ctrl->allocate((*vector)->allocator,
-																 count,
-																 (*vector)->info.mem_size);								/* Malloc	vector malloc #2.1 */
-
-	if (NULL == data_pack_alloced) {
-		return;
-	}
-
-	(*vector)->info.max_size = count;
-	(*vector)->data = data_pack_alloced;
 }

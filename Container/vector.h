@@ -34,7 +34,7 @@
 #define VECTOR_CFG_ALLOCATOR_TYPE                           ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
-#define VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN			    1u
+#define VECTOR_CFG_INTEGRATED_STRUCTURE_MODE_EN			    1u
 
 /* Configure    if enable vector debug.																    */
 #define VECTOR_CFG_DEBUG_EN										0u
@@ -46,115 +46,116 @@
 */
 
 /* Configure    vector ptr type.                                                                        */
-typedef struct array_family_s *VECTOR_TYPEDEF_PTR;
+typedef struct array_family_s
+*vector_tp,
+**vector_tpp;
 
-/* Configure    vector pptr type.                                                                       */
-typedef struct array_family_s **VECTOR_TYPEDEF_PPTR;
-
-#if (VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
+#if (VECTOR_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 
 struct vector_control_s {
 	struct {
 		/* @brief This function will initialize the vector struct.                                      */
-		void (*init)(VECTOR_TYPEDEF_PPTR vector,
+		void (*init)(vector_tpp vector,
 					 container_size_t dst_size,
-					 void (*assign)(void *dst, void *src), void (*free)(void *dst));
+					 generic_type_element_assign_t assign,
+					 generic_type_element_free_t free);
 
 		/* @brief This function will destroy the vector struct and free the space.                      */
-		void (*destroy)(VECTOR_TYPEDEF_PPTR vector);
+		void (*destroy)(vector_tpp vector);
 
 		/* @brief This function will configure the vector element handler.                              */
-		void (*element_handler)(VECTOR_TYPEDEF_PTR vector,
-								void (*assign)(void *dst, void *src), void (*free)(void *dst));
+		void (*element_handler)(vector_tp vector,
+								generic_type_element_assign_t assign,
+								generic_type_element_free_t free);
 
 		/* @brief This function will configure the vector exception callback.                           */
-		void (*exception)(VECTOR_TYPEDEF_PTR vector,
+		void (*exception)(vector_tp vector,
 						  void (*empty)(void), void (*full)(void));
 	}configuration;
 
 	struct {
 		/* @brief This function will initialize the vector struct.                                      */
-		void (*begin)(VECTOR_TYPEDEF_PTR vector);
+		void (*begin)(vector_tp vector);
 
 		/* @brief This function will initialize the vector struct.                                      */
-		void (*end)(VECTOR_TYPEDEF_PTR vector);
+		void (*end)(vector_tp vector);
 	}iterators;
 
 	struct {
 		/* @brief This function will returns a reference to the element
 				  at specified location position, with bounds checking.                                 */
-		void *(*at)(VECTOR_TYPEDEF_PTR vector,
+		void *(*at)(vector_tp vector,
 					container_size_t position);
 
 		/* @brief This function will returns pointer to the underlying array
 				  serving as element storage.                                                           */
-		void *(*data)(VECTOR_TYPEDEF_PTR vector);
+		void *(*data)(vector_tp vector);
 
 		/* @brief This function will returns a reference to the first element in the container.         */
-		void *(*front)(VECTOR_TYPEDEF_PTR vector);
+		void *(*front)(vector_tp vector);
 
 		/* @brief This function will returns reference to the last element in the container.            */
-		void *(*back)(VECTOR_TYPEDEF_PTR vector);
+		void *(*back)(vector_tp vector);
 	}element_access;
 
 	struct {
 		/* @brief This function will checks if the container has no elements.                           */
-		bool (*empty)(VECTOR_TYPEDEF_PTR vector);
+		bool (*empty)(vector_tp vector);
 
 		/* @brief This function will returns the number of elements in the container.                   */
-		container_size_t(*size)(VECTOR_TYPEDEF_PTR vector);
+		container_size_t(*size)(vector_tp vector);
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		container_size_t(*max_size)(VECTOR_TYPEDEF_PTR vector);
+		container_size_t(*max_size)(vector_tp vector);
 
 		/* @brief This function will returns the number of elements
 				  that the container has currently allocated space for.                                 */
-		container_size_t(*capacity)(VECTOR_TYPEDEF_PTR vector);
+		container_size_t(*capacity)(vector_tp vector);
 
 		/* @brief This function will increase the capacity of the vector to a size
 				  that's greater or equal to new_cap. */
-		void (*reserve)(VECTOR_TYPEDEF_PPTR vector,
+		void (*reserve)(vector_tpp vector,
 						container_size_t size);
 
 		/* @brief This function will requests the removal of unused capacity.                           */
-		void (*shrink_to_fit)(VECTOR_TYPEDEF_PPTR vector);
+		void (*shrink_to_fit)(vector_tpp vector);
 	}capacity;
 
 	struct {
 		/* @brief This function will erases all elements from the container.                            */
-		void (*clear)(VECTOR_TYPEDEF_PTR vector);
+		void (*clear)(vector_tp vector);
 
 		/* @brief This function will inserts elements at the specified location in the container.       */
-		void (*insert)(VECTOR_TYPEDEF_PTR vector,
+		void (*insert)(vector_tp vector,
 					   container_size_t position, container_size_t amount, void **source);
 
 	   /* @brief This function will erases the specified elements from the container.                  */
-		void (*erase)(VECTOR_TYPEDEF_PTR vector,
+		void (*erase)(vector_tp vector,
 					  container_size_t position);
 
 		/* @brief This function will appends the given element source to the end of the container.      */
-		void (*push_back)(VECTOR_TYPEDEF_PTR vector,
+		void (*push_back)(vector_tp vector,
 						  void *source);
 
 		/* @brief This function will removes the last element of the container.                         */
-		void (*pop_back)(VECTOR_TYPEDEF_PTR vector);
+		void (*pop_back)(vector_tp vector);
 
 		/* @brief This function will resizes the container to contain count elements.                   */
-		void (*resize)(VECTOR_TYPEDEF_PPTR vector,
+		void (*resize)(vector_tpp vector,
 					   container_size_t size);
 
 		/* @brief This function will copy the contents of the container to those of other.              */
-		void (*copy)(VECTOR_TYPEDEF_PPTR destination,
-					 VECTOR_TYPEDEF_PTR source);
+		void (*copy)(vector_tpp destination,
+					 vector_tp source);
 
 		/* @brief This function will exchanges the contents of the container with those of other.       */
-		void (*swap)(VECTOR_TYPEDEF_PPTR vector,
-					 VECTOR_TYPEDEF_PPTR other);
+		void (*swap)(vector_tpp vector,
+					 vector_tpp other);
 	}modifiers;
 };
 
-#endif // (VECTOR_CONTROL_INTERGRATED_STRUCTURE_MODE_EN)
+#endif // (VECTOR_CONTROL_INTEGRATED_STRUCTURE_MODE_EN)
 
 /*
 *********************************************************************************************************
@@ -173,44 +174,10 @@ struct vector_control_s {
  * @return NONE
  */
 
-void vector_control_configuration_init(VECTOR_TYPEDEF_PPTR vector,
+void vector_control_configuration_init(vector_tpp vector,
 									   container_size_t element_size,
-									   void (*assign)(void *dst, void *src), void (*free)(void *dst));
-
-/**
- * @brief This function will increase the capacity of the vector to a size that's greater or equal to new_cap.
- *
- * @param vector the pointer to the container struct
- * @param position the position of element,it would be equal or greater than zero
- * @param size the size of elements
- *
- * @return NONE
- */
-
-void vector_control_capacity_reserve(VECTOR_TYPEDEF_PPTR vector,
-									 container_size_t size);
-
-/**
- * @brief This function will requests the removal of unused capacity.
- *
- * @param vector the pointer to the container struct
- *
- * @return NONE
- */
-
-void vector_control_capacity_shrink_to_fit(VECTOR_TYPEDEF_PPTR vector);
-
-/**
- * @brief This function will resizes the container to contain count elements.
- *
- * @param vector the pointer to the container struct
- * @param count the count of elements
- *
- * @return NONE
- */
-
-void vector_control_modifiers_resize(VECTOR_TYPEDEF_PPTR vector,
-									 container_size_t count);
+									   generic_type_element_assign_t assign,
+									   generic_type_element_free_t free);
 
 /*
 *********************************************************************************************************
@@ -224,7 +191,7 @@ void vector_control_modifiers_resize(VECTOR_TYPEDEF_PPTR vector,
 
 extern void *vector_function_address_tables[];
 
-#if (VECTOR_CFG_INTERGRATED_STRUCTURE_MODE_EN)
+#if (VECTOR_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 
 /**
  * @brief This struct will control all the vector functions conveniently.

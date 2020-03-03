@@ -10,7 +10,7 @@
 
 #define MAIN_PRIORITY_QUEUE_CONTAINER_CONTROL	vector_ctrl
 
-VECTOR_TYPEDEF_PTR priority_queue_container = NULL;
+vector_tp priority_queue_container = NULL;
 
 #endif // (MAIN_PRIORITY_QUEUE_CFG_ADAPT_VECTOR_EN)
 
@@ -20,13 +20,13 @@ VECTOR_TYPEDEF_PTR priority_queue_container = NULL;
 
 #define MAIN_PRIORITY_QUEUE_CONTAINER_CONTROL	forward_list_ctrl
 
-FORWARD_LIST_TYPEDEF_PTR priority_queue_container = NULL;
+forward_list_stp priority_queue_container = NULL;
 
 #endif // (MAIN_PRIORITY_QUEUE_CFG_ADAPT_FORWARD_LIST_EN)
 
 void main_priority_priority_queue(void)
 {
-	//PRIORITY_QUEUE_TYPEDEF_PTR
+	//priority_queue_stp
 	//	priority_queue = NULL,
 	//	priority_queue_attach = NULL,
 	//	priority_queue_copy = NULL;

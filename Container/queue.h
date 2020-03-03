@@ -31,7 +31,7 @@
 #define QUEUE_CFG_ALLOCATOR_TYPE                                ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
-#define QUEUE_CFG_INTERGRATED_STRUCTURE_MODE_EN			        1u
+#define QUEUE_CFG_INTEGRATED_STRUCTURE_MODE_EN			        1u
 
 /* Configure    if enable queue debug.																    */
 #define QUEUE_CFG_DEBUG_EN										0u
@@ -42,70 +42,73 @@
 *********************************************************************************************************
 */
 
-/* ------------------------------------------- VECTOR TYPE -------------------------------------------- */
 /* Configure    vector ptr type.                                                                        */
-typedef struct queue_t *QUEUE_TYPEDEF_PTR;
+typedef struct queue_s 
+*queue_stp,
+**queue_stpp;
 
-/* Configure    vector pptr type.                                                                       */
-typedef struct queue_t **QUEUE_TYPEDEF_PPTR;
+/**
+ * @brief This type will contain all the queue control functions.
+ */
 
 struct queue_control_t {
-    struct {
-        /* @brief This function will initialize the queue struct and the specified container.           */
-        void (*init)(QUEUE_TYPEDEF_PPTR queue,
-                     enum container_type_e type,
-                     container_size_t element_size,
-                     void (*assign)(void *dst, void *src), void (*free)(void *dst));
+	struct {
+		/* @brief This function will initialize the queue struct and the specified container.           */
+		void (*init)(queue_stpp queue,
+					 enum container_type_e type,
+					 container_size_t element_size,
+					 generic_type_element_assign_t assign,
+					 generic_type_element_free_t free);
 
-        /* @brief This function will initialize the queue struct and attach to the specified container. */
-        void (*attach)(QUEUE_TYPEDEF_PPTR queue,
-                       enum container_type_e type, void *container);
+		/* @brief This function will initialize the queue struct and attach to the specified container. */
+		void (*attach)(queue_stpp queue,
+					   enum container_type_e type, void *container);
 
-        /* @brief This function will destroy the queue struct.                                          */
-        void (*destroy)(QUEUE_TYPEDEF_PPTR queue);
-    }configuration;
+		/* @brief This function will destroy the queue struct.                                          */
+		void (*destroy)(queue_stpp queue);
+	}configuration;
 
-    struct {
-        /* @brief This function will return reference to the top element in the queue.                  */
-        void *(*front)(QUEUE_TYPEDEF_PTR queue);
+	struct {
+		/* @brief This function will return reference to the top element in the queue.                  */
+		void *(*front)(queue_stp queue);
 
 		/* @brief This function will return reference to the last element in the queue.                 */
-		void *(*back)(QUEUE_TYPEDEF_PTR queue);
-    }element_access;
+		void *(*back)(queue_stp queue);
+	}element_access;
 
-    struct {
-        /* @brief This function will check if the underlying container has no elements.                 */
-        bool(*empty)(QUEUE_TYPEDEF_PTR queue);
+	struct {
+		/* @brief This function will check if the underlying container has no elements.                 */
+		bool(*empty)(queue_stp queue);
 
-        /* @brief This function will returns the number of elements in the container.                   */
-        size_t(*size)(QUEUE_TYPEDEF_PTR queue);
+		/* @brief This function will returns the number of elements in the container.                   */
+		size_t(*size)(queue_stp queue);
 
-        /* @brief This function will returns the maximum number of elements
-                    the container is able to hold due to system or library implementation limitations.  */
-        size_t(*max_size)(QUEUE_TYPEDEF_PTR queue);
-    }capacity;
+		/* @brief This function will returns the maximum number of elements
+					the container is able to hold due to system or library implementation limitations.  */
+		size_t(*max_size)(queue_stp queue);
+	}capacity;
 
-    struct {
-        /* @brief This function will push the given element source to the top of the queue.             */
-        void (*push)(QUEUE_TYPEDEF_PTR queue,
-                     void *source);
+	struct {
+		/* @brief This function will push the given element source to the top of the queue.             */
+		void (*push)(queue_stp queue,
+					 void *source);
 
-        /* @brief This function will push a new element on top of the queue. 
-                    The element is constructed in-place.                                                */
-        void (*emplace)(QUEUE_TYPEDEF_PTR queue,
-                        void *destination);
+		/* @brief This function will push a new element on top of the queue.
+					The element is constructed in-place.                                                */
+		void (*emplace)(queue_stp queue,
+						void *destination);
 
-        /* @brief This function will remove the top element from the queue. */
-        void (*pop)(QUEUE_TYPEDEF_PTR queue);
+		/* @brief This function will remove the top element from the queue. */
+		void (*pop)(queue_stp queue);
 
-        /* @brief This function will exchange the contents of the container adaptor with those of other.*/
-        void (*swap)(QUEUE_TYPEDEF_PPTR queue,
-                     QUEUE_TYPEDEF_PPTR other);
+		/* @brief This function will exchange the contents of the container adaptor with those of other.*/
+		void (*swap)(queue_stpp queue,
+					 queue_stpp other);
 
-        /* @brief This function will erase the specified elements from the container. */
-        void (*copy)(QUEUE_TYPEDEF_PPTR destination,
-                     QUEUE_TYPEDEF_PTR source);
-    }modifiers;
+		/* @brief This function will erase the specified elements from the container. */
+		void (*copy)(queue_stpp destination,
+					 queue_stp source);
+	}modifiers;
 };
 
 /*
@@ -127,10 +130,11 @@ struct queue_control_t {
  * @return NONE
  */
 
-void queue_control_configuration_init(QUEUE_TYPEDEF_PPTR queue,
-                                     enum container_type_e type,
-                                     container_size_t element_size,
-                                     void (*assign)(void *dst, void *src), void (*free)(void *dst));
+void queue_control_configuration_init(queue_stpp queue,
+									  enum container_type_e type,
+									  container_size_t element_size,
+									  generic_type_element_assign_t assign,
+									  generic_type_element_free_t free);
 
 /**
  * @brief This function will initialize the queue struct and attach to the specified container.
@@ -142,8 +146,8 @@ void queue_control_configuration_init(QUEUE_TYPEDEF_PPTR queue,
  * @return NONE
  */
 
-void queue_control_configuration_attach(QUEUE_TYPEDEF_PPTR queue,
-                                       enum container_type_e type, void *container);
+void queue_control_configuration_attach(queue_stpp queue,
+										enum container_type_e type, void *container);
 
 /**
  * @brief This function will destroy the queue struct
@@ -153,7 +157,7 @@ void queue_control_configuration_attach(QUEUE_TYPEDEF_PPTR queue,
  * @return NONE
  */
 
-void queue_control_configuration_destroy(QUEUE_TYPEDEF_PPTR queue);
+void queue_control_configuration_destroy(queue_stpp queue);
 
 /**
  * @brief This function will return reference to the first element in the queue.
@@ -163,7 +167,7 @@ void queue_control_configuration_destroy(QUEUE_TYPEDEF_PPTR queue);
  * @return NONE
  */
 
-void *queue_control_element_access_front(QUEUE_TYPEDEF_PTR queue);
+void *queue_control_element_access_front(queue_stp queue);
 
 /**
  * @brief This function will return reference to the last element in the queue.
@@ -173,7 +177,7 @@ void *queue_control_element_access_front(QUEUE_TYPEDEF_PTR queue);
  * @return NONE
  */
 
-void *queue_control_element_access_back(QUEUE_TYPEDEF_PTR queue);
+void *queue_control_element_access_back(queue_stp queue);
 
 /**
  * @brief This function will check if the underlying container has no elements.
@@ -191,7 +195,7 @@ void *queue_control_element_access_back(QUEUE_TYPEDEF_PTR queue);
  * @return NONE
  */
 
-container_size_t queue_control_capacity_size(QUEUE_TYPEDEF_PTR queue);
+container_size_t queue_control_capacity_size(queue_stp queue);
 
 /**
  * @brief This function will push the given element source to the top of the queue.
@@ -202,7 +206,7 @@ container_size_t queue_control_capacity_size(QUEUE_TYPEDEF_PTR queue);
  * @return NONE
  */
 
-bool queue_control_capacity_empty(QUEUE_TYPEDEF_PTR queue);
+bool queue_control_capacity_empty(queue_stp queue);
 
 /**
  * @brief This function will return the number of elements in the underlying container.
@@ -212,9 +216,9 @@ bool queue_control_capacity_empty(QUEUE_TYPEDEF_PTR queue);
  * @return NONE
  */
 
-container_size_t queue_control_capacity_max_size(QUEUE_TYPEDEF_PTR queue);
+container_size_t queue_control_capacity_max_size(queue_stp queue);
 
-void queue_control_modifiers_push(QUEUE_TYPEDEF_PTR queue, void *source);
+void queue_control_modifiers_push(queue_stp queue, void *source);
 
 /**
  * @brief This function will push a new element on top of the queue. The element is constructed in-place.
@@ -225,7 +229,7 @@ void queue_control_modifiers_push(QUEUE_TYPEDEF_PTR queue, void *source);
  * @return NONE
  */
 
-void queue_control_modifiers_emplace(QUEUE_TYPEDEF_PTR queue, void *destination);
+void queue_control_modifiers_emplace(queue_stp queue, void *destination);
 
 /**
  * @brief This function will remove the top element from the queue.
@@ -235,7 +239,7 @@ void queue_control_modifiers_emplace(QUEUE_TYPEDEF_PTR queue, void *destination)
  * @return NONE
  */
 
-void queue_control_modifiers_pop(QUEUE_TYPEDEF_PTR queue);
+void queue_control_modifiers_pop(queue_stp queue);
 
 /**
  * @brief This function will exchange the contents of the container adaptor with those of other.
@@ -246,7 +250,7 @@ void queue_control_modifiers_pop(QUEUE_TYPEDEF_PTR queue);
  * @return NONE
  */
 
-void queue_control_modifiers_swap(QUEUE_TYPEDEF_PPTR queue, QUEUE_TYPEDEF_PPTR other);
+void queue_control_modifiers_swap(queue_stpp queue, queue_stpp other);
 
 /**
  * @brief This function will copy the contents of the container adaptor to those of other.
@@ -257,7 +261,7 @@ void queue_control_modifiers_swap(QUEUE_TYPEDEF_PPTR queue, QUEUE_TYPEDEF_PPTR o
  * @return NONE
  */
 
-void queue_control_modifiers_copy(QUEUE_TYPEDEF_PPTR destination, QUEUE_TYPEDEF_PTR source);
+void queue_control_modifiers_copy(queue_stpp destination, queue_stp source);
 
 /*
 *********************************************************************************************************
@@ -265,7 +269,15 @@ void queue_control_modifiers_copy(QUEUE_TYPEDEF_PPTR destination, QUEUE_TYPEDEF_
 *********************************************************************************************************
 */
 
+#if (QUEUE_CFG_INTEGRATED_STRUCTURE_MODE_EN)
+
+/**
+ * @brief This type will contain all the queue control functions.
+ */
+
 extern struct queue_control_t queue_ctrl;
+
+#endif // (QUEUE_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 
 /*
 *********************************************************************************************************

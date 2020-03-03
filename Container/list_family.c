@@ -175,7 +175,8 @@ void list_family_control_configuration_init(struct list_family_s **list,
 											void (*switch_control)(void),
 											enum allocator_type_e allocator_type,
 											container_size_t element_size,
-											void (*assign)(void *dst, void *src), void (*free)(void *dst))
+											generic_type_element_assign_t assign,
+											generic_type_element_free_t free)
 {
 	assert(list);
 	assert(0 <= element_size);
@@ -300,7 +301,8 @@ void list_family_control_configuration_destroy(struct list_family_s **list)
  */
 
 void list_family_control_configuration_element_handler(struct list_family_s *list,
-													   void (*assign)(void *dst, void *src), void(*free)(void *dst))
+													   generic_type_element_assign_t assign,
+													   generic_type_element_free_t free)
 {
 	assert(list);
 	assert(assign);

@@ -28,7 +28,7 @@
 #define BINARY_SEARCH_TREE_CFG_ALLOCATOR_TYPE								    ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
-#define BINARY_SEARCH_TREE_CFG_INTERGRATED_STRUCTURE_MODE_EN					1u
+#define BINARY_SEARCH_TREE_CFG_INTEGRATED_STRUCTURE_MODE_EN					1u
 
 /* Configure    if enable debug mode.																	*/
 #define BINARY_SEARCH_TREE_CFG_DEBUG_EN											1u
@@ -38,6 +38,11 @@
 *									           DATA TYPES
 *********************************************************************************************************
 */
+
+/* Configure    list ptr type.                                                                          */
+typedef struct tree_family_s
+*binary_search_tree_stp,
+**binary_search_tree_stpp;
 
 /*
 *********************************************************************************************************
@@ -56,10 +61,10 @@
  * @return NONE
  */
 
-void binary_search_tree_control_configuration_init(struct tree_family_s **tree,
+void binary_search_tree_control_configuration_init(binary_search_tree_stpp tree,
 												   container_size_t element_size,
-												   void (*assign)(void *dst, void *src),
-												   void (*free)(void *dst));
+												   generic_type_element_assign_t assign,
+												   generic_type_element_free_t free);
 
 /**
  * @brief This function will control b_tree_control_delete()'s delete.
@@ -78,11 +83,15 @@ struct tree_family_control_environment_s
 *********************************************************************************************************
 */
 
+#if (BINARY_SEARCH_TREE_CFG_INTEGRATED_STRUCTURE_MODE_EN)
+
 /**
  * @brief This struct will record the binary search tree's node operator.
  */
 
 struct tree_family_node_operator_s binary_search_tree_control_node_operator;
+
+#endif // (BINARY_SEARCH_TREE_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 
 /*
 *********************************************************************************************************

@@ -11,7 +11,7 @@ bool main_list_remove_if_rule(void *data)
 
 void main_list(void)
 {
-	LIST_TYPEDEF_PTR
+	list_stp
 		list = NULL,
 		list_list_operations = NULL;
 

@@ -144,6 +144,9 @@
     <ClCompile Include="Main\main_binary_search_tree.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
+    <ClCompile Include="Main\main_generic_type.c">
+      <Filter>源文件\main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\container.h">

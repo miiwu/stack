@@ -11,7 +11,7 @@ bool main_forward_list_remove_if_rule(void *data)
 
 void main_forward_list(void)
 {
-	FORWARD_LIST_TYPEDEF_PTR
+	forward_list_stp
 		forward_list = NULL,
 		forward_list_list_operations = NULL;
 
