@@ -81,7 +81,7 @@ This package contains some simple data structures together.
 
 - **Poly-Instantiation**
 
-  I can only make sure it can `initialize multiple instance`, but `can't guarantee thread safety`, because i even have no experience at that place.
+  I can only make sure it can `initialize multiple instances`, but `can't guarantee thread safety`, because i even have no experience at that place.
 
 - **Integrated  Control Structure**
 
@@ -208,9 +208,19 @@ This package contains some simple data structures together.
 
 All these `...` mean they may be ready to add.
 
+## Application
+
+[AT Instruction Set Suite](<https://github.com/Miao-Mico/at>): another repo of mine.
+
 ## Reference
 
-[cppreference.com](<http://en.cppreference.com/w/>)
+- [cppreference.com](<http://en.cppreference.com/w/>): 
+
+  A website can provide programmers with a complete online reference for the C and C++ languages and standard libraries.
+
+- [visualized data structures and algorithms](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html): 
+
+  A website have visualizations for much of the data structures and algorithms.
 
 ## Thanks
 

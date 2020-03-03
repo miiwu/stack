@@ -63,7 +63,7 @@ void main_generic_type(void)
 }
 
 errno_t main_generic_type_demo_assign(void *gnc, void *src)
-	/* Function may preform like copy the pointer src to the pointer gnc	*/
+	/* Function may preform like copy the pointer src to the pointer gnc.	*/
 {
 	assert(gnc);
 	assert(src);
@@ -79,7 +79,7 @@ errno_t main_generic_type_demo_assign(void *gnc, void *src)
 		*generic_type_src = src;
 
 	/* This are pointer,i want to store many "*tack",
-		so malloc it as count * sizeof("stack")								*/
+		so malloc it as count * sizeof("stack").							*/
 	if (NULL == (generic_type_gnc->string = calloc(1, sizeof("stack")))) {
 		return -1;
 	}
