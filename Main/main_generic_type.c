@@ -13,7 +13,7 @@ struct generic_type_s {
 
 void main_generic_type(void)
 {
-	stack_tp
+	stack_stp
 		stack = NULL;
 
 	char

@@ -106,7 +106,7 @@ struct list_control_s {
 
 		/* @brief This function will inserts a new element into a position
 					after the specified position in the container.                                      */
-		void (*emplace_after)(struct list_family_s *stack,
+		void (*emplace_after)(struct list_family_s *list,
 							  container_size_t position);
 
 		/* @brief This function will removes specified elements from the container.                     */
@@ -118,7 +118,7 @@ struct list_control_s {
 						   void *source);
 
 		/* @brief This function will inserts a new element to the beginning of the container.           */
-		void (*emplace_front)(struct list_family_s *stack,
+		void (*emplace_front)(struct list_family_s *list,
 							  void *destination);
 
 		/* @brief This function will removes the first element of the container.                        */

@@ -185,6 +185,12 @@ struct container_control_s {
 		void (*copy)(void **destination,
 					 void *source);
 	}modifiers;
+
+	struct {
+		/* @brief This function will sorts the elements of the container in ascending order.			*/
+		void (*sort)(void *container,
+					 compare_t *comp);
+	}list_operations;
 };
 
 /*

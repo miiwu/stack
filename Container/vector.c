@@ -160,7 +160,7 @@ void vector_control_switch_control(void);
  * @return NONE
  */
 
-void vector_control_configuration_init(vector_tpp vector,
+void vector_control_configuration_init(vector_stpp vector,
 									   container_size_t element_size,
 									   generic_type_element_assign_t assign,
 									   generic_type_element_free_t free)

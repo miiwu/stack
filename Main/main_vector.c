@@ -4,7 +4,7 @@
 
 void main_vector(void)
 {
-	vector_tp
+	vector_stp
 		vector = NULL,
 		vector_copy = NULL;
 

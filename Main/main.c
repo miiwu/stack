@@ -74,5 +74,11 @@ void main(void)
 
 	#endif
 
+	#if	(MAIN_PRIORITY_QUEUE_EN)
+
+	main_priority_queue();
+
+	#endif
+
 	return;
 }

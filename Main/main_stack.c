@@ -26,7 +26,7 @@ void *stack_container = NULL;
 
 #define MAIN_STACK_CONTAINER_CONTROL	vector_ctrl
 
-#define MAIN_STACK_CONTAINER_TYPE		(struct vector_s *)stack_container
+#define MAIN_STACK_CONTAINER_TYPE		(vector_stp)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_VECTOR_EN)
 
@@ -36,7 +36,7 @@ void *stack_container = NULL;
 
 #define MAIN_STACK_CONTAINER_CONTROL	forward_list_ctrl
 
-#define MAIN_STACK_CONTAINER_TYPE		(struct list_family_s *)stack_container
+#define MAIN_STACK_CONTAINER_TYPE		(forward_list_stp)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN)
 
@@ -46,23 +46,23 @@ void *stack_container = NULL;
 
 #define MAIN_STACK_CONTAINER_CONTROL	list_ctrl
 
-#define MAIN_STACK_CONTAINER_TYPE		(struct list_family_s *)stack_container
+#define MAIN_STACK_CONTAINER_TYPE		(list_stp)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN)
 
 #ifndef MAIN_STACK_CONTAINER
 
-#define MAIN_STACK_CONTAINER	ARRAY
+#define MAIN_STACK_CONTAINER			ARRAY
 
 #define MAIN_STACK_CONTAINER_CONTROL	array_ctrl
 
-#define MAIN_STACK_CONTAINER_TYPE		(struct array_s *)stack_container
+#define MAIN_STACK_CONTAINER_TYPE		(array_stp)stack_container
 
 #endif // !MAIN_STACK_CONTAINER
 
 void main_stack(void)
 {
-	stack_tp
+	stack_stp
 		stack = NULL,
 		stack_attach = NULL,
 		stack_copy = NULL;

@@ -42,25 +42,27 @@
 
 void *forward_list_function_address_tables[] =
 {
-	(void *)&forward_list_control_configuration_init,							/* No.0 : initialize */
+	(void *)&forward_list_control_configuration_init,										/* No.0 : initialize */
 
-	(void *)&list_family_control_configuration_destroy,							/* No.1 : destroy */
+	(void *)&list_family_control_configuration_destroy,										/* No.1 : destroy */
 
-	(void *)&list_family_control_element_access_at,								/* No.3 : at */
+	(void *)&list_family_control_element_access_at,											/* No.3 : at */
 
-	(void *)&list_family_control_capacity_empty,								/* No.4 : empty */
+	(void *)&list_family_control_capacity_empty,											/* No.4 : empty */
 
-	(void *)&list_family_control_capacity_size,									/* No.5 : size */
+	(void *)&list_family_control_capacity_size,												/* No.5 : size */
 
-	(void *)&list_family_control_capacity_max_size,								/* No.6 : max_size */
+	(void *)&list_family_control_capacity_max_size,											/* No.6 : max_size */
 
-	(void *)&list_family_control_modifiers_insert_after,						/* No.7 : insert */
+	(void *)&list_family_control_modifiers_insert_after,									/* No.7 : insert */
 
-	(void *)&list_family_control_modifiers_erase_after,							/* No.8 : erase */
+	(void *)&list_family_control_modifiers_erase_after,										/* No.8 : erase */
 
-	(void *)&list_family_control_modifiers_swap,								/* No.9 : swap */
+	(void *)&list_family_control_modifiers_swap,											/* No.9 : swap */
 
-	(void *)&list_family_control_modifiers_copy,								/* No.10 : copy */
+	(void *)&list_family_control_modifiers_copy,											/* No.10 : copy */
+
+	(void *)&list_family_control_list_operations_sort,										/* No.11 : sort */
 };
 
 #if (FORWARD_LIST_CFG_INTEGRATED_STRUCTURE_MODE_EN)

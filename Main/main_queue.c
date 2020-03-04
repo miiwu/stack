@@ -10,7 +10,7 @@
 
 #define MAIN_QUEUE_CONTAINER_CONTROL	vector_ctrl
 
-vector_tp queue_container = NULL;
+vector_stp queue_container = NULL;
 
 #endif // (MAIN_QUEUE_CFG_ADAPT_VECTOR_EN)
 

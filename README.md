@@ -31,9 +31,10 @@ This package contains some simple data structures together.
   	int number;
   };
   
-  /* Generic type element Assign function										*/
+  /* Generic type element Assign function,
+  	function may perform like copy the pointer src to the pointer gnc,
+  	it may allocate memory space for the pointer in the generic structure	*/
   errno_t generic_type_element_assign(void *gnc, void *src)
-  	/* Function may preform like copy the pointer src to the pointer gnc	*/
   {
   	assert(gnc);
   	assert(src);
@@ -60,19 +61,20 @@ This package contains some simple data structures together.
   		return 1;
   	}
   
-  	/* Copy the value of src to the gnc.									*/
+  	/* Copy the value of src to the gnc										*/
   	generic_type_gnc->symbol = generic_type_src->symbol;
   	generic_type_gnc->number = generic_type_src->number;
   
   	return 0;
   }
   
-  /* Generic type element Free function										*/
+  /* Generic type element Free function,
+  	function may perform like free the memory space the assign() allocated	*/
   errno_t generic_type_element_free(void *gnc)
   {
   	assert(gnc);
   
-  	/* Free the memory space allocated at the assign().						*/
+  	/* Free the memory space allocated at the assign()						*/
   	free(((struct generic_type_demo_s *)gnc)->string);
   
   	return 0;
@@ -99,17 +101,17 @@ This package contains some simple data structures together.
   
   struct stack_control_s {
   	struct {
-  		/* @brief This function will initialize the stack struct and the specified container.           */
+  		/* @brief This function will initialize the stack struct and the specified container.	*/
   		errno_t (*init)(...);
   
-  		/* @brief This function will destroy the stack struct.                                          */
+  		/* @brief This function will destroy the stack struct.									*/
   		errno_t (*destroy)(...);
           
           ...
   	}configuration;
   
   	struct {
-  		/* @brief This function will return reference to the top element in the stack.                  */
+  		/* @brief This function will return reference to the top element in the stack.			*/
   		void *(*top)(...);
           
           ...
@@ -117,6 +119,15 @@ This package contains some simple data structures together.
   
   	...
   };
+  
+  errno_t any_function(void *arg_list)
+  {
+      assert(arg_list);
+      
+  	/* Both two methods call the init function of the stack are correct							*/
+      stack_ctrl.configuration.init(...);
+      stack_control_configration_init(...);
+  }
   
   ```
 
@@ -126,13 +137,13 @@ This package contains some simple data structures together.
 
   If you want to use List, you need to include all those files.
 
-  ​If it is a member of any family, include the file of that family.
+  If it is a member of any family, include the file of that family.
 
   Common family files include:
 
-  1. x_cfg.h
-  2. x_def.h
-  3. x.c and x.h
+  1. x.c and x.h
+  2. x_cfg.h
+  3. x_def.h
 
 - **Influenced By Cppreference**
 
@@ -140,10 +151,18 @@ This package contains some simple data structures together.
 
 ## Include
 
+> Note: The `emplace()` of all these containers is not completed and it is ignored on this include list.
+
 - Container
   - Container Adaptor
     - [x] Stack
+
     - [x] Queue
+
+    - [ ] Priority Queue
+
+      Only the sort part of list-family container is completed.
+
     - [ ] ...
   - Sequence Container
     - Array Family
@@ -151,7 +170,10 @@ This package contains some simple data structures together.
       - [x] Vector
     - List Family
       - [x] Forward_list
+      
       - [ ] List
+      
+        The  push_back() and pop_back() is not completed.
     - ...
   - Tree
     - [x] Binary Search Tree
@@ -214,9 +236,11 @@ All these `...` mean they may be ready to add.
 
 ## Reference
 
-- [cppreference.com](<http://en.cppreference.com/w/>): 
+- [cppreference.com](<http://en.cppreference.com/w/>)/[zh.cppreference]([https://zh.cppreference.com/w/%E9%A6%96%E9%A1%B5](https://zh.cppreference.com/w/首页)): 
 
   A website can provide programmers with a complete online reference for the C and C++ languages and standard libraries.
+
+  You can `change language` to your mother language `at the bottom of the website`.
 
 - [visualized data structures and algorithms](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html): 
 

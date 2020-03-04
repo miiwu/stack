@@ -45,113 +45,113 @@
 *********************************************************************************************************
 */
 
-/* Configure    vector ptr type.                                                                        */
+/* Configure    vector type.																			*/
 typedef struct array_family_s
-*vector_tp,
-**vector_tpp;
+*vector_stp,
+**vector_stpp;
 
 #if (VECTOR_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 
 struct vector_control_s {
 	struct {
 		/* @brief This function will initialize the vector struct.                                      */
-		void (*init)(vector_tpp vector,
+		void (*init)(vector_stpp vector,
 					 container_size_t dst_size,
 					 generic_type_element_assign_t assign,
 					 generic_type_element_free_t free);
 
 		/* @brief This function will destroy the vector struct and free the space.                      */
-		void (*destroy)(vector_tpp vector);
+		void (*destroy)(vector_stpp vector);
 
 		/* @brief This function will configure the vector element handler.                              */
-		void (*element_handler)(vector_tp vector,
+		void (*element_handler)(vector_stp vector,
 								generic_type_element_assign_t assign,
 								generic_type_element_free_t free);
 
 		/* @brief This function will configure the vector exception callback.                           */
-		void (*exception)(vector_tp vector,
+		void (*exception)(vector_stp vector,
 						  void (*empty)(void), void (*full)(void));
 	}configuration;
 
 	struct {
 		/* @brief This function will initialize the vector struct.                                      */
-		void (*begin)(vector_tp vector);
+		void (*begin)(vector_stp vector);
 
 		/* @brief This function will initialize the vector struct.                                      */
-		void (*end)(vector_tp vector);
+		void (*end)(vector_stp vector);
 	}iterators;
 
 	struct {
 		/* @brief This function will returns a reference to the element
 				  at specified location position, with bounds checking.                                 */
-		void *(*at)(vector_tp vector,
+		void *(*at)(vector_stp vector,
 					container_size_t position);
 
 		/* @brief This function will returns pointer to the underlying array
 				  serving as element storage.                                                           */
-		void *(*data)(vector_tp vector);
+		void *(*data)(vector_stp vector);
 
 		/* @brief This function will returns a reference to the first element in the container.         */
-		void *(*front)(vector_tp vector);
+		void *(*front)(vector_stp vector);
 
 		/* @brief This function will returns reference to the last element in the container.            */
-		void *(*back)(vector_tp vector);
+		void *(*back)(vector_stp vector);
 	}element_access;
 
 	struct {
 		/* @brief This function will checks if the container has no elements.                           */
-		bool (*empty)(vector_tp vector);
+		bool (*empty)(vector_stp vector);
 
 		/* @brief This function will returns the number of elements in the container.                   */
-		container_size_t(*size)(vector_tp vector);
+		container_size_t(*size)(vector_stp vector);
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		container_size_t(*max_size)(vector_tp vector);
+		container_size_t(*max_size)(vector_stp vector);
 
 		/* @brief This function will returns the number of elements
 				  that the container has currently allocated space for.                                 */
-		container_size_t(*capacity)(vector_tp vector);
+		container_size_t(*capacity)(vector_stp vector);
 
 		/* @brief This function will increase the capacity of the vector to a size
 				  that's greater or equal to new_cap. */
-		void (*reserve)(vector_tpp vector,
+		void (*reserve)(vector_stpp vector,
 						container_size_t size);
 
 		/* @brief This function will requests the removal of unused capacity.                           */
-		void (*shrink_to_fit)(vector_tpp vector);
+		void (*shrink_to_fit)(vector_stpp vector);
 	}capacity;
 
 	struct {
 		/* @brief This function will erases all elements from the container.                            */
-		void (*clear)(vector_tp vector);
+		void (*clear)(vector_stp vector);
 
 		/* @brief This function will inserts elements at the specified location in the container.       */
-		void (*insert)(vector_tp vector,
+		void (*insert)(vector_stp vector,
 					   container_size_t position, container_size_t amount, void **source);
 
 	   /* @brief This function will erases the specified elements from the container.                  */
-		void (*erase)(vector_tp vector,
+		void (*erase)(vector_stp vector,
 					  container_size_t position);
 
 		/* @brief This function will appends the given element source to the end of the container.      */
-		void (*push_back)(vector_tp vector,
+		void (*push_back)(vector_stp vector,
 						  void *source);
 
 		/* @brief This function will removes the last element of the container.                         */
-		void (*pop_back)(vector_tp vector);
+		void (*pop_back)(vector_stp vector);
 
 		/* @brief This function will resizes the container to contain count elements.                   */
-		void (*resize)(vector_tpp vector,
+		void (*resize)(vector_stpp vector,
 					   container_size_t size);
 
 		/* @brief This function will copy the contents of the container to those of other.              */
-		void (*copy)(vector_tpp destination,
-					 vector_tp source);
+		void (*copy)(vector_stpp destination,
+					 vector_stp source);
 
 		/* @brief This function will exchanges the contents of the container with those of other.       */
-		void (*swap)(vector_tpp vector,
-					 vector_tpp other);
+		void (*swap)(vector_stpp vector,
+					 vector_stpp other);
 	}modifiers;
 };
 
@@ -174,7 +174,7 @@ struct vector_control_s {
  * @return NONE
  */
 
-void vector_control_configuration_init(vector_tpp vector,
+void vector_control_configuration_init(vector_stpp vector,
 									   container_size_t element_size,
 									   generic_type_element_assign_t assign,
 									   generic_type_element_free_t free);
