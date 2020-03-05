@@ -6,6 +6,8 @@
 
 #include "list.h"
 
+#include "container_pte_def.h"
+
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
@@ -135,7 +137,7 @@ void *list_control_list_operations_remove_value = NULL;
  * @return void
  */
 
-void list_control_switch_control(void);
+void list_control_switch_control(void *arg_list);
 
 /**
  * @brief This function will get the node at the specified location in the container.
@@ -242,7 +244,7 @@ void list_control_configuration_init(list_stpp list,
  * @return void
  */
 
-void list_control_switch_control(void)
+void list_control_switch_control(void *arg_list)
 {
 	list_family_control_get_control(LIST_FAMILY_LIST, list_control_node_operator);
 }
@@ -268,7 +270,7 @@ void *list_control_get_node(list_stp list,
 	}
 
 	struct list_node_s
-		**current_node = (struct list_node_s **) & list->node;
+		**current_node = (struct list_node_s **) & list->element_ptr;
 
 	container_size_t
 		currrent_position = 0;
@@ -321,7 +323,7 @@ void *list_control_set_node(list_stp list,
 	if (NULL != node_prev) {
 		node_prev->next = node;					/* Recover the previous node's link */
 	} else {
-		list->node = node;
+		list->element_ptr = node;
 	}
 
 	if (NULL != node_next) {
@@ -364,7 +366,7 @@ void *list_control_del_node(list_stp list,
 	if (NULL != node_del->prev) {
 		node_del->prev->next = node_del->next;			/* Recover the previous node's link */
 	} else {
-		list->node = node_del->next;
+		list->element_ptr = node_del->next;
 	}
 
 	if (NULL != node_del->next) {
@@ -417,7 +419,7 @@ void list_control_swap_node(list_stp list,
 	if (NULL != node_lhs_prev) {
 		node_lhs_prev->next = node_rhs;
 	} else {
-		list->node = node_rhs;
+		list->element_ptr = node_rhs;
 	}
 
 	if (NULL != node_rhs_next) {

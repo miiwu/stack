@@ -71,7 +71,7 @@ static inline bool sort_algorithm_control_get_value(struct sort_package_s sort_p
  */
 
 void sort_algorithm_control_quick_sort(struct sort_package_s sort_package,
-									   compare_t *compare);
+									   compare_t compare);
 
 /**
  * @brief This function will sort the object by the comp.
@@ -84,7 +84,7 @@ void sort_algorithm_control_quick_sort(struct sort_package_s sort_package,
  */
 
 void sort_algorithm_control_bubble_sort(struct sort_package_s sort_package,
-										compare_t *compare);
+										compare_t compare);
 
 /*
 *********************************************************************************************************
@@ -102,9 +102,9 @@ void sort_algorithm_control_bubble_sort(struct sort_package_s sort_package,
  */
 
 void sort_algorithm_control(void *sort_algorithm_addr,
-							struct sort_package_s sort_package, compare_t *comp)
+							struct sort_package_s sort_package, compare_t comp)
 {
-	void (*sort_algorithm)(struct sort_package_s, compare_t * comp) = sort_algorithm_addr;
+	void (*sort_algorithm)(struct sort_package_s, compare_t  comp) = sort_algorithm_addr;
 
 	sort_algorithm(sort_package, comp);
 }
@@ -179,7 +179,7 @@ static inline bool sort_algorithm_control_get_value(struct sort_package_s sort_p
  */
 
 void sort_algorithm_control_quick_sort(struct sort_package_s sort_package,
-									   compare_t *compare)
+									   compare_t compare)
 {
 }
 
@@ -193,7 +193,7 @@ void sort_algorithm_control_quick_sort(struct sort_package_s sort_package,
  */
 
 void sort_algorithm_control_bubble_sort(struct sort_package_s sort_package,
-										compare_t *compare)
+										compare_t compare)
 {
 	char
 		*value_lhs = NULL,

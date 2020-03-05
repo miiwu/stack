@@ -27,12 +27,12 @@
 */
 
 /**
- * @brief This struct is the priority_queue structure module
+ * @brief This struct is the priority queue addon structure
  */
 
 struct priority_queue_addon_s {
 	/* @brief This variables will point to the compare_ptr function.									*/
-	compare_t *compare_ptr;
+	compare_t compare_ptr;
 };
 
 /*
@@ -46,6 +46,10 @@ struct priority_queue_addon_s {
 *                                       LOCAL GLOBAL VARIABLES
 *********************************************************************************************************
 */
+
+/**
+ * @brief This struct is the priority queue control structure
+ */
 
 struct priority_queue_control_s priority_queue_ctrl =
 {
@@ -74,11 +78,19 @@ struct priority_queue_control_s priority_queue_ctrl =
 	priority_queue_control_modifiers_copy
 };
 
+/**
+ * @brief This struct is the priority queue allocate package
+ */
+
 struct container_allocte_package_s
-	priprity_queue_control_configuration_init_allocate_package = { 0 };
+	priprity_queue_contro_allocate_package = { 0 };
+
+/**
+ * @brief This struct is the priority queue adapt package
+ */
 
 struct container_adaptor_adapt_package_s
-	priprity_queue_control_configuration_init_adapt_package = { 0 };
+	priprity_queue_control_adapt_package = { 0 };
 
 /*
 *********************************************************************************************************
@@ -125,27 +137,27 @@ errno_t priority_queue_control_configuration_init(priority_queue_stpp priority_q
 		compare = &compare_control_greater;
 	}
 
-	priprity_queue_control_configuration_init_allocate_package
+	priprity_queue_contro_allocate_package
 		.allocator_type = PRIORITY_QUEUE_CFG_ALLOCATOR_TYPE;
-	priprity_queue_control_configuration_init_allocate_package
+	priprity_queue_contro_allocate_package
 		.container_mem_size
 		= sizeof(struct container_adaptor_s) + sizeof(struct priority_queue_addon_s);
-	priprity_queue_control_configuration_init_allocate_package
-		.arg_list = NULL;
+	priprity_queue_contro_allocate_package
+		.arg_list_ptr = NULL;
 
-	priprity_queue_control_configuration_init_adapt_package.container = NULL;
-	priprity_queue_control_configuration_init_adapt_package.container_type = container_type;
-	priprity_queue_control_configuration_init_adapt_package.element_size = element_size;
-	priprity_queue_control_configuration_init_adapt_package.assign = assign;
-	priprity_queue_control_configuration_init_adapt_package.free = free;
+	priprity_queue_control_adapt_package.container_ptr = NULL;
+	priprity_queue_control_adapt_package.container_type = container_type;
+	priprity_queue_control_adapt_package.element_size = element_size;
+	priprity_queue_control_adapt_package.assign_ptr = assign;
+	priprity_queue_control_adapt_package.free_ptr = free;
 
 	struct priority_queue_addon_s addon
 		= { compare };
 
 	if (err = container_adapotr_control_configuration_init(priority_queue,
 														   PRIORITY_QUEUE,
-														   priprity_queue_control_configuration_init_allocate_package,
-														   priprity_queue_control_configuration_init_adapt_package,
+														   priprity_queue_contro_allocate_package,
+														   priprity_queue_control_adapt_package,
 														   &addon,
 														   sizeof(struct priority_queue_addon_s))) {
 		goto EXIT;
@@ -179,27 +191,27 @@ errno_t priority_queue_control_configuration_adapt(priority_queue_stpp priority_
 		compare = &compare_control_greater;
 	}
 
-	priprity_queue_control_configuration_init_allocate_package
+	priprity_queue_contro_allocate_package
 		.allocator_type = PRIORITY_QUEUE_CFG_ALLOCATOR_TYPE;
-	priprity_queue_control_configuration_init_allocate_package
+	priprity_queue_contro_allocate_package
 		.container_mem_size
 		= sizeof(struct container_adaptor_s) + sizeof(struct priority_queue_addon_s);
-	priprity_queue_control_configuration_init_allocate_package
-		.arg_list = NULL;
+	priprity_queue_contro_allocate_package
+		.arg_list_ptr = NULL;
 
-	priprity_queue_control_configuration_init_adapt_package.container = container;
-	priprity_queue_control_configuration_init_adapt_package.container_type = 0u;
-	priprity_queue_control_configuration_init_adapt_package.element_size = 0u;
-	priprity_queue_control_configuration_init_adapt_package.assign = NULL;
-	priprity_queue_control_configuration_init_adapt_package.free = NULL;
+	priprity_queue_control_adapt_package.container_ptr = container;
+	priprity_queue_control_adapt_package.container_type = 0u;
+	priprity_queue_control_adapt_package.element_size = 0u;
+	priprity_queue_control_adapt_package.assign_ptr = NULL;
+	priprity_queue_control_adapt_package.free_ptr = NULL;
 
 	struct priority_queue_addon_s addon
 		= { compare };
 
 	if (err = container_adapotr_control_configuration_init(priority_queue,
 														   PRIORITY_QUEUE,
-														   priprity_queue_control_configuration_init_allocate_package,
-														   priprity_queue_control_configuration_init_adapt_package,
+														   priprity_queue_contro_allocate_package,
+														   priprity_queue_control_adapt_package,
 														   &addon,
 														   sizeof(struct priority_queue_addon_s))) {
 		return err;

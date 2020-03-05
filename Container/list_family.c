@@ -6,6 +6,8 @@
 
 #include "list_family.h"
 
+#include "container_pte_def.h"
+
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
@@ -54,6 +56,12 @@ struct node_operator_s list_family_control_node_operator = { NULL };
 
 void *list_family_control_list_operations_remove_value = NULL;
 
+/**
+ * @brief This variables will pack the information of list family memory allocation.
+ */
+
+struct container_allocte_package_s list_family_control_allocate_package = { 0 };
+
 /*
 *********************************************************************************************************
 *                                      LOCAL FUNCTION PROTOTYPES
@@ -80,7 +88,7 @@ static size_t list_family_control_get_node_len(enum list_family_member_type_e ty
 * @return NONE
 */
 
-static void list_node_control_set_data(struct list_family_s *list,
+static void list_node_control_set_data(list_family_stp list,
 									   container_size_t position, void *source);
 
 /**
@@ -93,7 +101,7 @@ static void list_node_control_set_data(struct list_family_s *list,
 * @return NONE
 */
 
-static void *list_node_control_get_data(struct list_family_s *list,
+static void *list_node_control_get_data(list_family_stp list,
 										container_size_t position);
 
 /**
@@ -105,7 +113,7 @@ static void *list_node_control_get_data(struct list_family_s *list,
 * @return NONE
 */
 
-static void list_node_control_del_data(struct list_family_s *list,
+static void list_node_control_del_data(list_family_stp list,
 									   container_size_t position);
 
 /**
@@ -171,59 +179,54 @@ inline void list_family_control_get_control(enum list_family_member_type_e type,
  * @return NONE
  */
 
-errno_t list_family_control_configuration_init(struct list_family_s **list,
-											void (*switch_control)(void),
-											enum allocator_type_e allocator_type,
-											container_size_t element_size,
-											generic_type_element_assign_t assign,
-											generic_type_element_free_t free)
+errno_t list_family_control_configuration_init(list_family_stpp list,
+											   container_family_switch_control switch_control,
+											   enum allocator_type_e allocator_type,
+											   container_size_t element_size,
+											   generic_type_element_assign_t assign,
+											   generic_type_element_free_t free)
 {
 	assert(list);
-	assert(0 <= element_size);
+	assert(switch_control);
+	assert(allocator_type);
+	assert(element_size);
 
-	void
-		*allocator = NULL;
+	struct container_control_configuration_allocate_return_s allocate_return = { 0 };
 
-	struct allocator_control_s
-		*allocator_ctrl = NULL;
+	list_family_control_allocate_package
+		.allocator_type = allocator_type;
+	list_family_control_allocate_package
+		.container_mem_size = sizeof(struct container_family_s);
+	list_family_control_allocate_package
+		.arg_list_ptr = NULL;
 
-	allocator_ctrl = allocator_control_convert_type_to_func_addr_table(allocator_type);	/* Variables pointer to	the function address table of
-																							specified container type		*/
-
-	allocator_ctrl->configuration.init(&allocator, NULL);
-
-	struct list_family_s
-		*list_alloced = allocator_ctrl->allocate(allocator,
-												 1, sizeof(struct list_family_s));	/* Allocate #1 */
-
-	if (NULL == list ||																	/* Check if list point to NULL			*/
-		NULL == list_alloced) {															/* Check if list_alloced point to NULL	*/
-		return 1;
+	if ((allocate_return							
+		 = container_control_configuration_allocate											/* Allocate the adaptor structure */
+		 (list, list_family_control_allocate_package))
+		.error) {
+		return allocate_return.error;
 	}
 
-	list_alloced->container_type_id = list_family_control_type_in_control;						/* Assign list structure					*/
+	(*list)->container_type_id = list_family_control_type_in_control;						/* Assign list structure */
 
-	list_alloced->info.max_size = LIST_FAMILY_CFG_DEFAULT_MAX_SIZE;
-	list_alloced->info.size = 0u;
-	list_alloced->info.mem_size = element_size;
+	(*list)->info.max_size = LIST_FAMILY_CFG_DEFAULT_MAX_SIZE;
+	(*list)->info.size = 0u;
+	(*list)->info.mem_size = element_size;
 
-	list_alloced->allocator = allocator;
-	list_alloced->allocator_ctrl = allocator_ctrl;
+	list_family_control_configuration_exception(
+		(*list)
+		, list_family_control_configuration_exception_default_empty_callback
+		, list_family_control_configuration_exception_default_full_callback);
 
-	list_alloced->node = NULL;
+	(*list)->element_handler.assign = assign;
+	(*list)->element_handler.free = free;
 
-	list_alloced->exception.empty = list_family_control_configuration_exception_default_empty_callback;
-	list_alloced->exception.full = list_family_control_configuration_exception_default_full_callback;
+	(*list)->allocator_control_ptr = allocate_return.allocator_control_ptr;
+	(*list)->allocator_ptr = allocate_return.allocator_ptr;
 
-	list_alloced->switch_control = switch_control;
+	(*list)->element_ptr = NULL;
 
-	if (NULL != assign &&																	/* Check if assign point to NULL			*/
-		NULL != free) {																		/* Check if free point to NULL				*/
-		list_alloced->element_handler.assign = assign;
-		list_alloced->element_handler.free = free;
-	}
-
-	*list = list_alloced;
+	(*list)->switch_control = switch_control;
 
 	return 0;
 }
@@ -236,23 +239,15 @@ errno_t list_family_control_configuration_init(struct list_family_s **list,
  * @return NONE
  */
 
-void list_family_control_configuration_destroy(struct list_family_s **list)
+void list_family_control_configuration_destroy(list_family_stpp list)
 {
 	assert(list);
 
-	(*list)->switch_control();
+	(*list)->switch_control((*list));
 
-	void *allocator = (*list)->allocator;
+	void *allocator_ptr = (*list)->allocator_ptr;
 
-	struct allocator_control_s *allocator_ctrl = (*list)->allocator_ctrl;
-
-	#if (VECTOR_CFG_DEBUG_EN)
-
-	printf("list.configuration.destroy:allocator : %p \r\n", allocator);
-	printf("list.configuration.destroy:list block : %p \r\n", (*list));
-	printf("list.configuration.destroy:list node block : %p \r\n", (*list)->node);
-
-	#endif // (VECTOR_CFG_DEBUG_EN)
+	struct allocator_control_s *allocator_control_ptr = (*list)->allocator_control_ptr;
 
 	if (0 < (*list)->info.size) {
 		struct list_node_s
@@ -265,22 +260,9 @@ void list_family_control_configuration_destroy(struct list_family_s **list)
 		}
 	}
 
-	(*list)->container_type_id = 0u;														/* Assign list structure					*/
+	allocator_control_ptr->deallocate(allocator_ptr, *list, 1);
 
-	(*list)->info.max_size = 0u;
-	(*list)->info.size = 0u;
-	(*list)->info.mem_size = 0u;
-
-	(*list)->allocator = NULL;
-
-	(*list)->node = NULL;
-
-	(*list)->exception.empty = NULL;
-	(*list)->exception.full = NULL;
-
-	allocator_ctrl->deallocate(allocator, *list, 1);																			/* deallocate #1 */
-
-	allocator_ctrl->configuration.destroy(&allocator);
+	allocator_control_ptr->configuration.destroy(&allocator_ptr);
 
 	*list = NULL;
 }
@@ -295,7 +277,7 @@ void list_family_control_configuration_destroy(struct list_family_s **list)
  * @return NONE
  */
 
-void list_family_control_configuration_element_handler(struct list_family_s *list,
+void list_family_control_configuration_element_handler(list_family_stp list,
 													   generic_type_element_assign_t assign,
 													   generic_type_element_free_t free)
 {
@@ -317,16 +299,16 @@ void list_family_control_configuration_element_handler(struct list_family_s *lis
  * @return NONE
  */
 
-void list_family_control_configuration_exception(struct list_family_s *list,
+void list_family_control_configuration_exception(list_family_stp list,
 												 void (*empty)(void), void (*full)(void))
 {
 	assert(list);
 
-	if (NULL == empty) {
+	if (NULL != empty) {
 		list->exception.empty = empty;
 	}
 
-	if (NULL == full) {
+	if (NULL != full) {
 		list->exception.full = full;
 	}
 }
@@ -339,7 +321,7 @@ void list_family_control_configuration_exception(struct list_family_s *list,
  * @return the reference to the first element in the container
  */
 
-void *list_family_control_element_access_front(struct list_family_s *list)
+void *list_family_control_element_access_front(list_family_stp list)
 {
 	assert(list);
 
@@ -355,7 +337,7 @@ void *list_family_control_element_access_front(struct list_family_s *list)
  * @return NONE
  */
 
-void *list_family_control_element_access_at(struct list_family_s *list,
+void *list_family_control_element_access_at(list_family_stp list,
 											container_size_t position)
 {
 	assert(list);
@@ -373,7 +355,7 @@ void *list_family_control_element_access_at(struct list_family_s *list,
 	- false,the container has elements
  */
 
-extern inline bool list_family_control_capacity_empty(struct list_family_s *list)
+extern inline bool list_family_control_capacity_empty(list_family_stp list)
 {
 	assert(list);
 
@@ -393,7 +375,7 @@ extern inline bool list_family_control_capacity_empty(struct list_family_s *list
  * @return the maximum number of elements
  */
 
-extern inline container_size_t list_family_control_capacity_max_size(struct list_family_s *list)
+extern inline container_size_t list_family_control_capacity_max_size(list_family_stp list)
 {
 	assert(list);
 
@@ -408,7 +390,7 @@ extern inline container_size_t list_family_control_capacity_max_size(struct list
  * @return the number of elements in the container
  */
 
-extern inline container_size_t list_family_control_capacity_size(struct list_family_s *list)
+extern inline container_size_t list_family_control_capacity_size(list_family_stp list)
 {
 	assert(list);
 
@@ -423,7 +405,7 @@ extern inline container_size_t list_family_control_capacity_size(struct list_fam
  * @return NONE
  */
 
-void list_family_control_modifiers_clear(struct list_family_s *list)
+void list_family_control_modifiers_clear(list_family_stp list)
 {
 	assert(list);
 
@@ -443,7 +425,7 @@ void list_family_control_modifiers_clear(struct list_family_s *list)
  * @return NONE
  */
 
-void list_family_control_modifiers_insert_after(struct list_family_s *list,
+void list_family_control_modifiers_insert_after(list_family_stp list,
 												container_size_t position,
 												container_size_t amount, void **source)
 {
@@ -453,7 +435,7 @@ void list_family_control_modifiers_insert_after(struct list_family_s *list,
 	assert(source);
 	assert(*source);
 
-	list->switch_control();
+	list->switch_control(list);
 
 	void
 		*source_addr = NULL;
@@ -499,7 +481,7 @@ ENSURE_THE_LIST_HAS_ENOUGH_NODE:
  * @return NONE
  */
 
-void list_family_control_modifiers_emplace_after(struct list_family_s *stack,
+void list_family_control_modifiers_emplace_after(list_family_stp stack,
 												 container_size_t position)
 {
 }
@@ -513,7 +495,7 @@ void list_family_control_modifiers_emplace_after(struct list_family_s *stack,
  * @return NONE
  */
 
-void list_family_control_modifiers_erase_after(struct list_family_s *list,
+void list_family_control_modifiers_erase_after(list_family_stp list,
 											   container_size_t position)
 {
 	assert(list);
@@ -538,7 +520,7 @@ void list_family_control_modifiers_erase_after(struct list_family_s *list,
  * @return NONE
  */
 
-void list_family_control_modifiers_push_front(struct list_family_s *list,
+void list_family_control_modifiers_push_front(list_family_stp list,
 											  void *source)
 {
 	assert(list);
@@ -562,7 +544,7 @@ void list_family_control_modifiers_push_front(struct list_family_s *list,
  * @return NONE
  */
 
-void list_family_control_modifiers_emplace_front(struct list_family_s *stack,
+void list_family_control_modifiers_emplace_front(list_family_stp stack,
 												 void *destination)
 {
 }
@@ -575,7 +557,7 @@ void list_family_control_modifiers_emplace_front(struct list_family_s *stack,
  * @return NONE
  */
 
-void list_family_control_modifiers_pop_front(struct list_family_s *list)
+void list_family_control_modifiers_pop_front(list_family_stp list)
 {
 	assert(list);
 
@@ -592,7 +574,7 @@ void list_family_control_modifiers_pop_front(struct list_family_s *list)
  * @return NONE
  */
 
-void list_family_control_modifiers_resize(struct list_family_s **list,
+void list_family_control_modifiers_resize(list_family_stpp list,
 										  container_size_t size)
 {
 }
@@ -606,14 +588,14 @@ void list_family_control_modifiers_resize(struct list_family_s **list,
  * @return NONE
  */
 
-void list_family_control_modifiers_swap(struct list_family_s **list,
-										struct list_family_s **other)
+void list_family_control_modifiers_swap(list_family_stpp list,
+										list_family_stpp other)
 {
 	assert(list);
 	assert(other);
 
-	struct list_family_s **
-		list_swap = (*list)->allocator_ctrl->allocate((*list)->allocator, 1, sizeof(void *));
+	list_family_stpp
+		list_swap = (*list)->allocator_control_ptr->allocate((*list)->allocator_ptr, 1, sizeof(void *));
 
 	*(list_swap) = *list;
 	*(list_swap + 1) = *other;
@@ -631,20 +613,20 @@ void list_family_control_modifiers_swap(struct list_family_s **list,
  * @return NONE
  */
 
-void list_family_control_modifiers_copy(struct list_family_s **destination,
-										struct list_family_s *source)
+void list_family_control_modifiers_copy(list_family_stpp destination,
+										list_family_stp source)
 {
 	assert(destination);
 	assert(source);
 
 	struct list_node_s
-		*node_source = (void *)(size_t)(source->node);
+		*node_source = (void *)(size_t)(source->element_ptr);
 
 	if (NULL == (*destination) ||										/* Check if destination have been initialized */
-		NULL == (*destination)->allocator ||							/* if not,then initialize it */
-		NULL == (*destination)->allocator_ctrl ||
-		NULL == (*destination)->node) {
-		enum allocator_type_e *allocator_type = source->allocator;
+		NULL == (*destination)->allocator_ptr ||							/* if not,then initialize it */
+		NULL == (*destination)->allocator_control_ptr ||
+		NULL == (*destination)->element_ptr) {
+		enum allocator_type_e *allocator_type = source->allocator_ptr;
 
 		list_family_control_configuration_init(destination,
 											   source->switch_control,
@@ -670,8 +652,8 @@ void list_family_control_modifiers_copy(struct list_family_s **destination,
  * @return NONE
  */
 
-void list_family_control_list_operations_merge(struct list_family_s *destination,
-											   struct list_family_s *other)
+void list_family_control_list_operations_merge(list_family_stp destination,
+											   list_family_stp other)
 {
 	assert(destination);
 	assert(other);
@@ -692,16 +674,16 @@ void list_family_control_list_operations_merge(struct list_family_s *destination
  * @return NONE
  */
 
-void list_family_control_list_operations_splice_after(struct list_family_s *list,
+void list_family_control_list_operations_splice_after(list_family_stp list,
 													  container_size_t position,
-													  struct list_family_s *other,
+													  list_family_stp other,
 													  container_size_t first,
 													  container_size_t last)
 {
 	assert(list);
 	assert(other);
 
-	list->switch_control();
+	list->switch_control(list);
 
 	struct list_node_s
 		*node_other = NULL;
@@ -736,7 +718,7 @@ void list_family_control_list_operations_splice_after(struct list_family_s *list
  * @return NONE
  */
 
-void list_family_control_list_operations_remove(struct list_family_s *list,
+void list_family_control_list_operations_remove(list_family_stp list,
 												void *value)
 {
 	assert(list);
@@ -756,14 +738,14 @@ void list_family_control_list_operations_remove(struct list_family_s *list,
  * @return NONE
  */
 
-void list_family_control_list_operations_remove_if(struct list_family_s *list, bool (*rule)(void *data))
+void list_family_control_list_operations_remove_if(list_family_stp list, bool (*rule)(void *data))
 {
 	assert(list);
 	assert(rule);
 
 	container_size_t
 		cnt_reomve = 0,
-		*pos_remove = list->allocator_ctrl->allocate(list->allocator, list->info.size, sizeof(container_size_t));
+		*pos_remove = list->allocator_control_ptr->allocate(list->allocator_ptr, list->info.size, sizeof(container_size_t));
 
 	for (container_size_t pos = 0; pos < list->info.size; pos++) {	/* Get which node's data is match */
 		if (rule(list_node_control_get_data(list, pos))) {
@@ -785,7 +767,7 @@ void list_family_control_list_operations_remove_if(struct list_family_s *list, b
 		list_node_control_del_data(list, *(pos_remove + cnt) - cnt);
 	}
 
-	list->allocator_ctrl->deallocate(list->allocator, pos_remove, list->info.size);
+	list->allocator_control_ptr->deallocate(list->allocator_ptr, pos_remove, list->info.size);
 }
 
 /**
@@ -796,11 +778,11 @@ void list_family_control_list_operations_remove_if(struct list_family_s *list, b
  * @return NONE
  */
 
-void list_family_control_list_operations_reverse(struct list_family_s *list)
+void list_family_control_list_operations_reverse(list_family_stp list)
 {
 	assert(list);
 
-	list->switch_control();
+	list->switch_control(list);
 
 	struct  list_node_t
 		*node_reverse = NULL;
@@ -822,11 +804,11 @@ void list_family_control_list_operations_reverse(struct list_family_s *list)
  * @return NONE
  */
 
-void list_family_control_list_operations_unique(struct list_family_s *list)
+void list_family_control_list_operations_unique(list_family_stp list)
 {
 	assert(list);
 
-	list->switch_control();
+	list->switch_control(list);
 
 	char
 		*data_prev = list_node_control_get_data(list, 0),
@@ -835,8 +817,8 @@ void list_family_control_list_operations_unique(struct list_family_s *list)
 	container_size_t
 		size_list = list->info.size,
 		cnt_pos_repetitive = 0,
-		(*pos_repetitive_store)[2] = list->allocator_ctrl->allocate(list->allocator,
-																	size_list, sizeof(container_size_t) * 2);
+		(*pos_repetitive_store)[2] = list->allocator_control_ptr->allocate(list->allocator_ptr,
+																		   size_list, sizeof(container_size_t) * 2);
 
 	for (container_size_t pos = 1; pos < size_list; pos++) {
 		if (compare_control_equal(data_prev, (data = list_node_control_get_data(list, pos)), list->info.mem_size)) {
@@ -872,8 +854,8 @@ void list_family_control_list_operations_unique(struct list_family_s *list)
 		}
 	}
 
-	list->allocator_ctrl->deallocate(list->allocator,
-									 pos_repetitive_store, size_list);
+	list->allocator_control_ptr->deallocate(list->allocator_ptr,
+											pos_repetitive_store, size_list);
 }
 
 /**
@@ -885,12 +867,12 @@ void list_family_control_list_operations_unique(struct list_family_s *list)
  * @return NONE
  */
 
-void list_family_control_list_operations_sort(struct list_family_s *list,
-											  compare_t *comp)
+void list_family_control_list_operations_sort(list_family_stp list,
+											  compare_t comp)
 {
 	assert(list);
 
-	list->switch_control();
+	list->switch_control(list);
 
 	if (NULL == comp) {
 		comp = compare_control_lesser;
@@ -944,15 +926,15 @@ size_t list_family_control_get_node_len(enum list_family_member_type_e type)
  * @return NONE
  */
 
-void *list_family_control_init_node(struct list_family_s *list)
+void *list_family_control_init_node(list_family_stp list)
 {
 	assert(list);
 
-	void *node_alloced = list->allocator_ctrl->allocate(list->allocator,
-														1, list_family_control_get_node_len(list_family_control_type_in_control));	/* Allocate #1 */
+	void *node_alloced = list->allocator_control_ptr->allocate(list->allocator_ptr,
+															   1, list_family_control_get_node_len(list_family_control_type_in_control));	/* Allocate #1 */
 
-	void *data_pack_allocated = list->allocator_ctrl->allocate(list->allocator,
-															   1, list->info.mem_size);			/* Allocate #2 */
+	void *data_pack_allocated = list->allocator_control_ptr->allocate(list->allocator_ptr,
+																	  1, list->info.mem_size);			/* Allocate #2 */
 
 	void **data_ptr = (void *)node_alloced;
 
@@ -976,7 +958,7 @@ void *list_family_control_init_node(struct list_family_s *list)
  * @return NONE
  */
 
-void list_family_control_destroy_node(struct list_family_s *list,
+void list_family_control_destroy_node(list_family_stp list,
 									  void *node)
 {
 	assert(list);
@@ -987,9 +969,9 @@ void list_family_control_destroy_node(struct list_family_s *list,
 
 	void **data_ptr = node;
 
-	list->allocator_ctrl->deallocate(list->allocator, *data_ptr, 1);				/* Deallocate #2 */
+	list->allocator_control_ptr->deallocate(list->allocator_ptr, *data_ptr, 1);				/* Deallocate #2 */
 
-	list->allocator_ctrl->deallocate(list->allocator, node, 1);					/* Deallocate #1 */
+	list->allocator_control_ptr->deallocate(list->allocator_ptr, node, 1);					/* Deallocate #1 */
 
 	node = NULL;
 }
@@ -1005,14 +987,14 @@ void list_family_control_destroy_node(struct list_family_s *list,
  * @return NONE
  */
 
-void list_node_control_set_data(struct list_family_s *list,
+void list_node_control_set_data(list_family_stp list,
 								container_size_t position, void *source)
 {
 	assert(list);
 	assert(0 <= position);
 	assert(source);
 
-	list->switch_control();
+	list->switch_control(list);
 
 	void *node = list_family_control_node_operator.get(list, position);
 
@@ -1027,7 +1009,7 @@ void list_node_control_set_data(struct list_family_s *list,
 	void **data_ptr = (void *)node;
 
 	if (NULL == *data_ptr &&
-		NULL == (*data_ptr = list->allocator_ctrl->allocate(list->allocator, 1, list->info.mem_size))) {
+		NULL == (*data_ptr = list->allocator_control_ptr->allocate(list->allocator_ptr, 1, list->info.mem_size))) {
 		return;
 	}
 
@@ -1049,13 +1031,13 @@ void list_node_control_set_data(struct list_family_s *list,
 * @return NONE
 */
 
-void *list_node_control_get_data(struct list_family_s *list,
+void *list_node_control_get_data(list_family_stp list,
 								 container_size_t position)
 {
 	assert(list);
 	assert(0 <= position);
 
-	list->switch_control();
+	list->switch_control(list);
 
 	void *node = list_family_control_node_operator.get(list, position);
 
@@ -1078,13 +1060,13 @@ void *list_node_control_get_data(struct list_family_s *list,
 * @return NONE
 */
 
-void list_node_control_del_data(struct list_family_s *list,
+void list_node_control_del_data(list_family_stp list,
 								container_size_t position)
 {
 	assert(list);
 	assert(0 <= position);
 
-	list->switch_control();
+	list->switch_control(list);
 
 	void *data_ptr = list_node_control_get_data(list, position);
 

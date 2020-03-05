@@ -56,10 +56,10 @@ enum allocator_type_e {
 struct allocator_control_s {
 	struct {
 		/* @brief This function will initialize the allocator struct.									*/
-		errno_t (*init)(void **allocator,
-					 void (*lack_of_memory)(void));
+		errno_t(*init)(void **allocator,
+					   void (*lack_of_memory)(void));
 
-		/* @brief This function will destroy the allocator struct.										*/
+		  /* @brief This function will destroy the allocator struct.										*/
 		void (*destroy)(void **allocator);
 
 		/* @brief This function will configure the exceptions of allocator struct.					    */

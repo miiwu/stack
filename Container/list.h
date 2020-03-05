@@ -36,10 +36,13 @@
 *********************************************************************************************************
 */
 
-/* Configure    list ptr type.                                                                          */
-typedef struct list_family_s
-*list_stp,
-**list_stpp;
+/**
+ * @brief This type is the list structure typedef
+ */
+
+typedef list_family_stp
+list_stp,
+*list_stpp;
 
 /**
  * @brief This struct will contain all the forward list function.
@@ -48,121 +51,121 @@ typedef struct list_family_s
 struct list_control_s {
 	struct {
 		/* @brief This function will initialize the list struct.                                        */
-		void (*init)(struct list_family_s **list,
+		void (*init)(list_family_stpp list,
 					 container_size_t element_size,
 					 generic_type_element_assign_t assign,
 					 generic_type_element_free_t free);
 
 		/* @brief This function will destroy the list struct and free the space.                        */
-		void (*destroy)(struct list_family_s **list);
+		void (*destroy)(list_family_stpp list);
 
 		/* @brief This function will configure the list element handler.                                */
-		void (*element_handler)(struct list_family_s *list,
+		void (*element_handler)(list_family_stp list,
 								generic_type_element_assign_t assign,
 								generic_type_element_free_t free);
 
 		/* @brief This function will configure the list exception callback.                             */
-		void (*exception)(struct list_family_s *list,
+		void (*exception)(list_family_stp list,
 						  void (*empty)(void), void (*full)(void));
 	}configuration;
 
 	struct {
 		/* @brief This function will initialize the list struct.                                        */
-		void (*begin)(struct list_family_s *list);
+		void (*begin)(list_family_stp list);
 
 		/* @brief This function will initialize the list struct.                                        */
-		void (*end)(struct list_family_s *list);
+		void (*end)(list_family_stp list);
 	}iterators;
 
 	struct {
 		/* @brief This function will returns a reference to the first element in the container.         */
-		void *(*front)(struct list_family_s *list);
+		void *(*front)(list_family_stp list);
 
 		/* @brief This function will returns a reference to the specified element in the container.     */
-		void *(*at)(struct list_family_s *list,
+		void *(*at)(list_family_stp list,
 					container_size_t position);
 	}element_access;
 
 	struct {
 		/* @brief This function will checks if the container has no elements.                           */
-		bool (*empty)(struct list_family_s *list);
+		bool (*empty)(list_family_stp list);
 
 		/* @brief This function will returns the maximum number of elements the container
 				  is able to hold due to system or library implementation limitations.                  */
-		container_size_t(*max_size)(struct list_family_s *list);
+		container_size_t(*max_size)(list_family_stp list);
 
 	   /* @brief This function will returns the number of elements in the container.                    */
-		container_size_t(*size)(struct list_family_s *list);
+		container_size_t(*size)(list_family_stp list);
 	}capacity;
 
 	struct {
 		/* @brief This function will erases all elements from the container.                            */
-		void (*clear)(struct list_family_s *list);
+		void (*clear)(list_family_stp list);
 
 		/* @brief This function will inserts elements after the specified position in the container.    */
-		void (*insert_after)(struct list_family_s *list,
+		void (*insert_after)(list_family_stp list,
 							 container_size_t position,
 							 container_size_t amount, void **source);
 
 		/* @brief This function will inserts a new element into a position
 					after the specified position in the container.                                      */
-		void (*emplace_after)(struct list_family_s *list,
+		void (*emplace_after)(list_family_stp list,
 							  container_size_t position);
 
 		/* @brief This function will removes specified elements from the container.                     */
-		void (*erase_after)(struct list_family_s *list,
+		void (*erase_after)(list_family_stp list,
 							container_size_t position);
 
 		/* @brief This function will prepends the given element value to the beginning of the container.*/
-		void (*push_front)(struct list_family_s *list,
+		void (*push_front)(list_family_stp list,
 						   void *source);
 
 		/* @brief This function will inserts a new element to the beginning of the container.           */
-		void (*emplace_front)(struct list_family_s *list,
+		void (*emplace_front)(list_family_stp list,
 							  void *destination);
 
 		/* @brief This function will removes the first element of the container.                        */
-		void (*pop_front)(struct list_family_s *list);
+		void (*pop_front)(list_family_stp list);
 
 		/* @brief This function will resizes the container to contain count elements. */
-		void (*resize)(struct list_family_s **list,
+		void (*resize)(list_family_stpp list,
 					   container_size_t size);
 
 		/* @brief This function will exchanges the contents of the container with those of other.       */
-		void (*swap)(struct list_family_s **list,
-					 struct list_family_s **other);
+		void (*swap)(list_family_stpp list,
+					 list_family_stpp other);
 
 		/* @brief This function will copy the contents of the container to those of other.              */
-		void (*copy)(struct list_family_s **destination,
-					 struct list_family_s *source);
+		void (*copy)(list_family_stpp destination,
+					 list_family_stp source);
 	}modifiers;
 
 	struct {
 		/* @brief This function will merges two sorted lists into one.                                  */
-		void (*merge)(struct list_family_s *destination,
-					  struct list_family_s *other);
+		void (*merge)(list_family_stp destination,
+					  list_family_stp other);
 
 		/* @brief This function will moves elements from another list to list.                          */
-		void (*splice_after)(struct list_family_s *list,
-							 container_size_t position, struct list_family_s *other,
+		void (*splice_after)(list_family_stp list,
+							 container_size_t position, list_family_stp other,
 							 container_size_t first, container_size_t last);
 
 		/* @brief This function will removes all elements satisfying specific criteria.                 */
-		void (*remove)(struct list_family_s *list,
+		void (*remove)(list_family_stp list,
 					   void *data);
 
 		/* @brief This function will              */
-		void (*remove_if)(struct list_family_s *list,
+		void (*remove_if)(list_family_stp list,
 						  bool (*rule)(void *data));
 
 		/* @brief This function will reverses the order of the elements in the container.               */
-		void (*reverse)(struct list_family_s *list);
+		void (*reverse)(list_family_stp list);
 
 		/* @brief This function will removes all consecutive duplicate elements from the container.     */
-		void (*unique)(struct list_family_s *list);
+		void (*unique)(list_family_stp list);
 
 		/* @brief This function will sorts the elements in ascending order.                             */
-		void (*sort)(struct list_family_s *list,
+		void (*sort)(list_family_stp list,
 					 bool (*comp)(void *dst, void *src, size_t len));
 	}list_operations;
 };

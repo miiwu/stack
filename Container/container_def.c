@@ -83,7 +83,7 @@ struct container_control_configuration_allocate_return_s
 	}
 
 	if (init_return.allocator_control_ptr->configuration
-		.init(&init_return.allocator_ptr, package.arg_list)) {								/* Initialize the allocator_ptr struct */
+		.init(&init_return.allocator_ptr, package.arg_list_ptr)) {							/* Initialize the allocator_ptr struct */
 		return (struct container_control_configuration_allocate_return_s) { err_code[1] };
 	}
 

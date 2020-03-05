@@ -41,12 +41,12 @@ struct container_adaptor_s;
  */
 
 struct container_adaptor_adapt_package_s {
-	void *container;
+	void *container_ptr;
 
 	enum container_type_e container_type;
 	container_size_t element_size;
-	generic_type_element_assign_t assign;
-	generic_type_element_free_t free;
+	generic_type_element_assign_t assign_ptr;
+	generic_type_element_free_t free_ptr;
 };
 
 /*

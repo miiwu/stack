@@ -88,7 +88,7 @@ errno_t container_adapotr_control_configuration_init(struct container_adaptor_s 
 	assert(adaptor_type);
 	assert(allocate_package.allocator_type &&
 		   allocate_package.container_mem_size);
-	assert(adapt_package.container
+	assert(adapt_package.container_ptr
 		   || (adapt_package.container_type
 			   && adapt_package.element_size));
 
@@ -129,7 +129,7 @@ container_adaptor_control_configuration_adapt(struct container_adaptor_s *adapto
 											  struct container_adaptor_adapt_package_s package)
 {
 	assert(adaptor);
-	assert(package.container
+	assert(package.container_ptr
 		   || (package.container_type
 			   && package.element_size));
 
@@ -137,7 +137,7 @@ container_adaptor_control_configuration_adapt(struct container_adaptor_s *adapto
 		= { 4,5 };
 
 	if (!package.container_type) {
-		package.container_type = *(enum container_type_e *)package.container;				/* Get the container type from the id of the container */
+		package.container_type = *(enum container_type_e *)package.container_ptr;			/* Get the container type from the id of the container */
 	}
 
 	if (NULL
@@ -146,10 +146,10 @@ container_adaptor_control_configuration_adapt(struct container_adaptor_s *adapto
 		return err_code[0];
 	}
 
-	if (NULL == (adaptor->container_ptr = package.container)) {
+	if (NULL == (adaptor->container_ptr = package.container_ptr)) {
 		if (adaptor->container_control_ptr->configuration
 			.init(&adaptor																	/* Initialize the specified container_ptr struct */
-				  ->container_ptr, package.element_size, package.assign, package.free)) {
+				  ->container_ptr, package.element_size, package.assign_ptr, package.free_ptr)) {
 			return err_code[1];
 		}
 	}

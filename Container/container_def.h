@@ -45,6 +45,12 @@
 typedef CONTAINER_GLOBAL_CFG_SIZE_TYPE container_size_t;
 
 /**
+ * @brief This type is the container family switch control function prototype typedef
+ */
+
+typedef void (*container_family_switch_control)(void *arg_list);
+
+/**
  * @brief This enum is the container's category enums
  */
 
@@ -157,7 +163,7 @@ struct container_control_configuration_allocate_return_s {
 struct container_allocte_package_s {
 	enum allocator_type_e allocator_type;
 	container_size_t container_mem_size;
-	void *arg_list;
+	void *arg_list_ptr;
 };
 
 /**
@@ -216,7 +222,7 @@ struct container_control_s {
 	struct {
 		/* @brief This function will sorts the elements of the container in ascending order.			*/
 		void (*sort)(void *container,
-					 compare_t *comp);
+					 compare_t comp);
 	}list_operations;
 };
 

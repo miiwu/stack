@@ -6,6 +6,8 @@
 
 #include "forward_list.h"
 
+#include "container_pte_def.h"
+
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
@@ -130,7 +132,7 @@ void *forward_list_control_list_operations_remove_value = NULL;
  * @return void
  */
 
-void forward_list_control_switch_control(void);
+void forward_list_control_switch_control(void *arg_list);
 
 /**
 * @brief This function will get the node at the specified location in the container.
@@ -214,7 +216,7 @@ struct node_operator_s forward_list_control_node_operator = {
  * @return void
  */
 
-void forward_list_control_switch_control(void)
+void forward_list_control_switch_control(void *arg_list)
 {
 	list_family_control_get_control(LIST_FAMILY_LIST, forward_list_control_node_operator);
 }
@@ -263,7 +265,7 @@ void *forward_list_control_get_node(forward_list_stp forward_list,
 	}
 
 	struct forward_list_node_s
-		**current_node = (struct forward_list_node_s **) & forward_list->node;
+		**current_node = (struct forward_list_node_s **) & forward_list->element_ptr;
 
 	container_size_t
 		currrent_position = 0;
@@ -320,7 +322,7 @@ void *forward_list_control_set_node(forward_list_stp forward_list,
 	node_prev = forward_list_control_get_node(forward_list, position - 1);
 
 	if (NULL == node_prev) {														/* If the previous node is NULL,the node must be the head. */
-		forward_list->node = node;
+		forward_list->element_ptr = node;
 	} else {
 		node_prev->next = node;
 	}
@@ -361,7 +363,7 @@ void *forward_list_control_del_node(forward_list_stp forward_list,
 	if (NULL != node_prev) {
 		node_prev->next = node_del->next;
 	} else {
-		forward_list->node = node_del->next;
+		forward_list->element_ptr = node_del->next;
 	}
 
 	forward_list->info.size--;
@@ -412,7 +414,7 @@ void forward_list_control_swap_node(forward_list_stp forward_list,
 	if (NULL != node_dst_prev) {
 		node_dst_prev->next = node_src;
 	} else {
-		forward_list->node = node_src;
+		forward_list->element_ptr = node_src;
 	}
 
 	if ((size_t)node_dst != (size_t)node_src_prev) {

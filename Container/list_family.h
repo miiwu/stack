@@ -43,6 +43,14 @@
 */
 
 /**
+ * @brief This type is the list family typedef
+ */
+
+typedef struct container_family_s
+*list_family_stp,
+**list_family_stpp;
+
+/**
  * @brief This struct is the forward list structure module
  */
 
@@ -80,71 +88,27 @@ struct list_node_s {
 };
 
 /**
- * @brief This struct is the list structure module
- */
-
-struct list_family_s {
-    /* @brief RESERVED This variables will record the identity code of container type.					*/
-    enum container_type_e	container_type_id;
-
-    struct {
-        /* @brief This variables will record the maximum number of elements.							*/
-        container_size_t max_size;
-
-        /* @brief This variables will record the number of elements that
-                    the container has currently allocated space for.								    */
-        container_size_t size;
-
-        /* @brief This variables will record the size that each element will take up.					*/
-        container_size_t mem_size;
-    }info;
-
-    /* @brief This variables will point to the allocator.												*/
-    void *allocator;
-
-    /* @brief This variables will point to the allocator control.										*/
-    struct allocator_control_s *allocator_ctrl;
-
-    /* @brief This variables will pointer to the first list node.										*/
-    void *node;
-
-    /* @brief This variables will record the element handler of the container.							*/
-    struct container_generic_type_element_handler_s element_handler;
-
-    struct {
-        /* @brief This variables will point to the address of the list empty exception handler.		    */
-        void (*empty)(void);
-
-        /* @brief This variables will point to the address of the list full exception handler.			*/
-        void (*full)(void);
-    }exception;
-
-    /* @brief This variables will point to the address of the list-like shared-pack analysis.			*/
-    void (*switch_control)(void);
-};
-
-/**
  * @brief This type will contain all the universal node operators.
  */
 
 struct node_operator_s {
-    /* @brief This function will return the node at the specified location in the container.			*/
-    void *(*get)(struct list_family_s *list,
-                 container_size_t pos);
+	/* @brief This function will return the node at the specified location in the container.			*/
+	void *(*get)(list_family_stp list,
+				 container_size_t pos);
 
-    /* @brief This variables will set the node at the specified location in the container and
-                return the node.			                                                            */
-    void *(*set)(struct list_family_s *list,
-                 container_size_t pos, void *node);
+	/* @brief This variables will set the node at the specified location in the container and
+				return the node.			                                                            */
+	void *(*set)(list_family_stp list,
+				 container_size_t pos, void *node);
 
-    /* @brief This variables will delete the node at the specified location in the container.			*/
-    void *(*del)(struct list_family_s *list,
-                 container_size_t pos);
+	/* @brief This variables will delete the node at the specified location in the container.			*/
+	void *(*del)(list_family_stp list,
+				 container_size_t pos);
 
-    /* @brief This variables will swap the nodes at the specified location in the container.			*/
-    void (*swap)(struct list_family_s *list,
-                 container_size_t lhs_pos,
-                 container_size_t rhs_pos);
+	/* @brief This variables will swap the nodes at the specified location in the container.			*/
+	void (*swap)(list_family_stp list,
+				 container_size_t lhs_pos,
+				 container_size_t rhs_pos);
 };
 
 /*
@@ -181,22 +145,22 @@ extern inline void list_family_control_get_control(enum list_family_member_type_
  * @return NONE
  */
 
-errno_t  list_family_control_configuration_init(struct list_family_s **list,
-											void (*switch_control)(void),
-											enum allocator_type_e allocator_type,
-											container_size_t element_size,
-											generic_type_element_assign_t assign,
-											generic_type_element_free_t free);
+errno_t list_family_control_configuration_init(list_family_stpp list,
+											   container_family_switch_control switch_control,
+											   enum allocator_type_e allocator_type,
+											   container_size_t element_size,
+											   generic_type_element_assign_t assign,
+											   generic_type_element_free_t free);
 
-/**
- * @brief This function will destroy the list struct and free the space
- *
- * @param list the pointer to the forward list struct pointer
- *
- * @return NONE
- */
+	/**
+	 * @brief This function will destroy the list struct and free the space
+	 *
+	 * @param list the pointer to the forward list struct pointer
+	 *
+	 * @return NONE
+	 */
 
-void list_family_control_configuration_destroy(struct list_family_s **list);
+void list_family_control_configuration_destroy(list_family_stpp list);
 
 /**
  * @brief This function will configure the list element handler
@@ -208,7 +172,7 @@ void list_family_control_configuration_destroy(struct list_family_s **list);
  * @return NONE
  */
 
-void list_family_control_configuration_element_handler(struct list_family_s *list,
+void list_family_control_configuration_element_handler(list_family_stp list,
 													   generic_type_element_assign_t assign,
 													   generic_type_element_free_t free);
 
@@ -222,7 +186,7 @@ void list_family_control_configuration_element_handler(struct list_family_s *lis
    * @return NONE
    */
 
-void list_family_control_configuration_exception(struct list_family_s *list,
+void list_family_control_configuration_exception(list_family_stp list,
 												 void (*empty)(void), void (*full)(void));
 
   /**
@@ -233,7 +197,7 @@ void list_family_control_configuration_exception(struct list_family_s *list,
    * @return the reference to the first element in the container
    */
 
-void *list_family_control_element_access_front(struct list_family_s *list);
+void *list_family_control_element_access_front(list_family_stp list);
 
 /**
  * @brief This function will returns a reference to the specified element in the container.
@@ -244,7 +208,7 @@ void *list_family_control_element_access_front(struct list_family_s *list);
  * @return NONE
  */
 
-void *list_family_control_element_access_at(struct list_family_s *list,
+void *list_family_control_element_access_at(list_family_stp list,
 											container_size_t position);
 
   /**
@@ -257,7 +221,7 @@ void *list_family_control_element_access_at(struct list_family_s *list,
 	  - false,the container has elements
    */
 
-bool list_family_control_capacity_empty(struct list_family_s *list);
+bool list_family_control_capacity_empty(list_family_stp list);
 
 /**
  * @brief This function will returns the maximum number of elements the container
@@ -268,7 +232,7 @@ bool list_family_control_capacity_empty(struct list_family_s *list);
  * @return the maximum number of elements
  */
 
-container_size_t list_family_control_capacity_max_size(struct list_family_s *list);
+container_size_t list_family_control_capacity_max_size(list_family_stp list);
 
 /**
  * @brief This function will returns the number of elements in the container
@@ -278,7 +242,7 @@ container_size_t list_family_control_capacity_max_size(struct list_family_s *lis
  * @return the number of elements in the container
  */
 
-container_size_t list_family_control_capacity_size(struct list_family_s *list);
+container_size_t list_family_control_capacity_size(list_family_stp list);
 
 /**
  * @brief This function will returns the number of elements in the container
@@ -288,7 +252,7 @@ container_size_t list_family_control_capacity_size(struct list_family_s *list);
  * @return NONE
  */
 
-container_size_t list_family_control_capacity_size(struct list_family_s *list);
+container_size_t list_family_control_capacity_size(list_family_stp list);
 
 /**
  * @brief This function will erases all elements from the container
@@ -298,7 +262,7 @@ container_size_t list_family_control_capacity_size(struct list_family_s *list);
  * @return NONE
  */
 
-void list_family_control_modifiers_clear(struct list_family_s *list);
+void list_family_control_modifiers_clear(list_family_stp list);
 
 /**
  * @brief This function will inserts elements after the specified position in the container
@@ -311,7 +275,7 @@ void list_family_control_modifiers_clear(struct list_family_s *list);
  * @return NONE
  */
 
-void list_family_control_modifiers_insert_after(struct list_family_s *list,
+void list_family_control_modifiers_insert_after(list_family_stp list,
 												container_size_t position,
 												container_size_t amount, void **source);
 
@@ -324,7 +288,7 @@ void list_family_control_modifiers_insert_after(struct list_family_s *list,
    * @return NONE
    */
 
-void list_family_control_modifiers_emplace_after(struct list_family_s *stack,
+void list_family_control_modifiers_emplace_after(list_family_stp stack,
 												 container_size_t position);
 
   /**
@@ -336,7 +300,7 @@ void list_family_control_modifiers_emplace_after(struct list_family_s *stack,
    * @return NONE
    */
 
-void list_family_control_modifiers_erase_after(struct list_family_s *list,
+void list_family_control_modifiers_erase_after(list_family_stp list,
 											   container_size_t position);
 
   /**
@@ -348,7 +312,7 @@ void list_family_control_modifiers_erase_after(struct list_family_s *list,
    * @return NONE
    */
 
-void list_family_control_modifiers_push_front(struct list_family_s *list,
+void list_family_control_modifiers_push_front(list_family_stp list,
 											  void *source);
 
   /**
@@ -364,7 +328,7 @@ void list_family_control_modifiers_push_front(struct list_family_s *list,
    * @return NONE
    */
 
-void list_family_control_modifiers_emplace_front(struct list_family_s *stack,
+void list_family_control_modifiers_emplace_front(list_family_stp stack,
 												 void *destination);
 
   /**
@@ -376,7 +340,7 @@ void list_family_control_modifiers_emplace_front(struct list_family_s *stack,
    * @return NONE
    */
 
-void list_family_control_modifiers_pop_front(struct list_family_s *list);
+void list_family_control_modifiers_pop_front(list_family_stp list);
 
 /**
  * @brief This function will increase the capacity of the list to a size
@@ -388,7 +352,7 @@ void list_family_control_modifiers_pop_front(struct list_family_s *list);
  * @return NONE
  */
 
-void list_family_control_modifiers_resize(struct list_family_s **list,
+void list_family_control_modifiers_resize(list_family_stpp list,
 										  container_size_t size);
 
   /**
@@ -400,8 +364,8 @@ void list_family_control_modifiers_resize(struct list_family_s **list,
    * @return NONE
    */
 
-void list_family_control_modifiers_swap(struct list_family_s **list,
-										struct list_family_s **other);
+void list_family_control_modifiers_swap(list_family_stpp list,
+										list_family_stpp other);
 
   /**
    * @brief This function will copy the contents of the container to those of other
@@ -412,8 +376,8 @@ void list_family_control_modifiers_swap(struct list_family_s **list,
    * @return NONE
    */
 
-void list_family_control_modifiers_copy(struct list_family_s **destination,
-										struct list_family_s *source);
+void list_family_control_modifiers_copy(list_family_stpp destination,
+										list_family_stp source);
 
   /**
    * @brief This function will merges two sorted lists into one
@@ -424,8 +388,8 @@ void list_family_control_modifiers_copy(struct list_family_s **destination,
    * @return NONE
    */
 
-void list_family_control_list_operations_merge(struct list_family_s *destination,
-											   struct list_family_s *other);
+void list_family_control_list_operations_merge(list_family_stp destination,
+											   list_family_stp other);
 
   /**
    * @brief This function will moves elements from another list to list
@@ -437,8 +401,8 @@ void list_family_control_list_operations_merge(struct list_family_s *destination
    * @return NONE
    */
 
-void list_family_control_list_operations_splice_after(struct list_family_s *list,
-													  container_size_t position, struct list_family_s *other,
+void list_family_control_list_operations_splice_after(list_family_stp list,
+													  container_size_t position, list_family_stp other,
 													  container_size_t first, container_size_t last);
 
   /**
@@ -450,7 +414,7 @@ void list_family_control_list_operations_splice_after(struct list_family_s *list
    * @return NONE
    */
 
-void list_family_control_list_operations_remove(struct list_family_s *list,
+void list_family_control_list_operations_remove(list_family_stp list,
 												void *data);
 
   /**
@@ -462,7 +426,7 @@ void list_family_control_list_operations_remove(struct list_family_s *list,
    * @return NONE
    */
 
-void list_family_control_list_operations_remove_if(struct list_family_s *list,
+void list_family_control_list_operations_remove_if(list_family_stp list,
 												   bool (*rule)(void *data));
 
   /**
@@ -473,7 +437,7 @@ void list_family_control_list_operations_remove_if(struct list_family_s *list,
    * @return NONE
    */
 
-void list_family_control_list_operations_reverse(struct list_family_s *list);
+void list_family_control_list_operations_reverse(list_family_stp list);
 
 /**
  * @brief This function will removes all consecutive duplicate elements from the container
@@ -483,7 +447,7 @@ void list_family_control_list_operations_reverse(struct list_family_s *list);
  * @return NONE
  */
 
-void list_family_control_list_operations_unique(struct list_family_s *list);
+void list_family_control_list_operations_unique(list_family_stp list);
 
 /**
  * @brief This function will sorts the elements in ascending order
@@ -494,8 +458,8 @@ void list_family_control_list_operations_unique(struct list_family_s *list);
  * @return NONE
  */
 
-void list_family_control_list_operations_sort(struct list_family_s *list,
-                                              compare_t *comp);
+void list_family_control_list_operations_sort(list_family_stp list,
+											  compare_t comp);
 
 /**
  * @brief This function will initialize the list node struct.
@@ -505,7 +469,7 @@ void list_family_control_list_operations_sort(struct list_family_s *list,
  * @return NONE
  */
 
-void *list_family_control_init_node(struct list_family_s *list);
+void *list_family_control_init_node(list_family_stp list);
 
 /**
  * @brief This function will destroy list node struct and free the space.
@@ -516,7 +480,7 @@ void *list_family_control_init_node(struct list_family_s *list);
  * @return NONE
  */
 
-void list_family_control_destroy_node(struct list_family_s *list,
+void list_family_control_destroy_node(list_family_stp list,
 									  void *node);
 
   /*

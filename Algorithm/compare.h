@@ -31,10 +31,10 @@
 */
 
 /**
- * @brief This struct is the compare structure module
+ * @brief This type is the compare function prototype typedef
  */
 
-typedef bool compare_t(void *lhs, void *rhs, size_t len);
+typedef bool (*compare_t)(void *lhs, void *rhs, size_t len);
 
 /*
 *********************************************************************************************************

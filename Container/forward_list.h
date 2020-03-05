@@ -36,10 +36,13 @@
 *********************************************************************************************************
 */
 
-/* Configure    forward_list ptr type.                                                                  */
-typedef struct list_family_s
-*forward_list_stp,
-**forward_list_stpp;
+/**
+ * @brief This type is the forward list structure typedef
+ */
+
+typedef list_family_stp
+forward_list_stp,
+*forward_list_stpp;
 
 /**
  * @brief This struct will contain all the forward list function.
@@ -49,11 +52,11 @@ struct forward_list_control_s {
 	struct {
 		/* @brief This function will initialize the list struct.                                        */
 		errno_t(*init)(forward_list_stpp list,
-					 container_size_t element_size,
-					 generic_type_element_assign_t assign,
-					 generic_type_element_free_t free);
+					   container_size_t element_size,
+					   generic_type_element_assign_t assign,
+					   generic_type_element_free_t free);
 
-		/* @brief This function will destroy the list struct and free the space.                        */
+		  /* @brief This function will destroy the list struct and free the space.                        */
 		void (*destroy)(forward_list_stpp list);
 
 		/* @brief This function will configure the list element handler.                                */
@@ -191,19 +194,19 @@ struct forward_list_control_s {
  */
 
 errno_t forward_list_control_configuration_init(forward_list_stpp forward_list,
-											 container_size_t element_size,
-											 generic_type_element_assign_t assign,
-											 generic_type_element_free_t free);
+												container_size_t element_size,
+												generic_type_element_assign_t assign,
+												generic_type_element_free_t free);
 
-/*
-*********************************************************************************************************
-*                                   VECTOR EXTERN GLOBAL VARIABLES
-*********************************************************************************************************
-*/
+   /*
+   *********************************************************************************************************
+   *                                   VECTOR EXTERN GLOBAL VARIABLES
+   *********************************************************************************************************
+   */
 
-/**
- * @brief This array will contain all the universal forward_list functions address.
- */
+   /**
+	* @brief This array will contain all the universal forward_list functions address.
+	*/
 
 extern void *forward_list_function_address_tables[];
 

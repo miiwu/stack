@@ -48,7 +48,7 @@ struct sort_package_s {
 
 	void (*swap_method)(void *object, size_t lhs, size_t rhs);
 
-	compare_t *compare_method;
+	compare_t compare_method;
 };
 
 /*
@@ -77,7 +77,7 @@ void *sort_algorithm_control_convert_type_to_func_addr(enum sort_algorithm_type 
 */
 
 void sort_algorithm_control(void *sort_algorithm_addr,
-							struct sort_package_s sort_package, compare_t *comp);
+							struct sort_package_s sort_package, compare_t comp);
 
 /*
 *********************************************************************************************************
