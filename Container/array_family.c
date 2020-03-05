@@ -54,7 +54,7 @@ struct array_family_s {
 	void *data;
 
 	/* @brief This variables will record the element handler of the container.							*/
-	struct container_element_handler_s element_handler;
+	struct container_generic_type_element_handler_s element_handler;
 
 	struct {
 		/* @brief This variables will point to the address of the array_family empty exception handler.		*/

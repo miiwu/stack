@@ -16,7 +16,8 @@
 *********************************************************************************************************
 */
 
-#include "container_adaptor_family.h"
+#include "container_def.h"
+#include "container_adaptor_def.h"
 
 /*
 *********************************************************************************************************
@@ -31,7 +32,10 @@
 #define PRIORITY_QUEUE_CFG_ALLOCATOR_TYPE									ALLOCATOR_COMMON
 
 /* Configure    the type of sort algorithm.                                                             */
-#define PRIORITY_QUEUE_CFGSORT_ALGORITHM_TYPE								BUBBLE_SORT
+#define PRIORITY_QUEUE_CFG_SORT_ALGORITHM_TYPE								BUBBLE_SORT
+
+/* Configure    the type of sort algorithm.                                                             */
+#define PRIORITY_QUEUE_CFG_COMPARE_ALGORITHM_TYPE							compare_control_greater
 
 /* Configure    if enable integrated structure.                                                         */
 #define PRIORITY_QUEUE_CFG_INTEGRATED_STRUCTURE_MODE_EN						1u
@@ -46,26 +50,28 @@
 */
 
 /* Configure    priority queue type.																	*/
-typedef struct priority_queue_s 
+typedef struct container_adaptor_s
 *priority_queue_stp,
 **priority_queue_stpp;
 
 struct priority_queue_control_s {
 	struct {
 		/* @brief This function will initialize the priority_queue struct and the specified container.	*/
-		void (*init)(priority_queue_stpp priority_queue,
-					 enum container_type_e type,
-					 container_size_t element_size,
-					 generic_type_element_assign_t assign,
-					 generic_type_element_free_t free);
+		errno_t(*init)(priority_queue_stpp priority_queue,
+					   enum container_type_e type,
+					   container_size_t element_size,
+					   compare_t compare,
+					   generic_type_element_assign_t assign,
+					   generic_type_element_free_t free);
 
-		/* @brief This function will initialize the priority_queue struct and 
-					attach to the specified container.													*/
-		void (*attach)(priority_queue_stpp priority_queue,
-					   enum container_type_e type, void *container);
+		  /* @brief This function will initialize the priority_queue struct and
+					  attach to the specified container.													*/
+		errno_t(*adapt)(priority_queue_stpp priority_queue,
+						void *container,
+						compare_t compare);
 
-		/* @brief This function will destroy the priority_queue struct.									*/
-		void (*destroy)(priority_queue_stpp priority_queue);
+	   /* @brief This function will destroy the priority_queue struct.									*/
+		errno_t(*destroy)(priority_queue_stpp priority_queue);
 	}configuration;
 
 	struct {
@@ -127,11 +133,12 @@ struct priority_queue_control_s {
  * @return NONE
  */
 
-void priority_queue_control_configuration_init(priority_queue_stpp priority_queue,
-                                               enum container_type_e type,
-                                               container_size_t element_size,
-                                               generic_type_element_assign_t assign,
-                                               generic_type_element_free_t free);
+errno_t priority_queue_control_configuration_init(priority_queue_stpp priority_queue,
+												  enum container_type_e type,
+												  container_size_t element_size,
+												  compare_t compare,
+												  generic_type_element_assign_t assign,
+												  generic_type_element_free_t free);
 
 /**
  * @brief This function will initialize the priority_queue struct and attach to the specified container.
@@ -143,8 +150,9 @@ void priority_queue_control_configuration_init(priority_queue_stpp priority_queu
  * @return NONE
  */
 
-void priority_queue_control_configuration_attach(priority_queue_stpp priority_queue,
-												 enum container_type_e type, void *container);
+errno_t priority_queue_control_configuration_adapt(priority_queue_stpp priority_queue,
+												   void *container,
+												   compare_t compare);
 
 /**
  * @brief This function will destroy the priority_queue struct.
@@ -154,7 +162,7 @@ void priority_queue_control_configuration_attach(priority_queue_stpp priority_qu
  * @return NONE
  */
 
-void priority_queue_control_configuration_destroy(priority_queue_stpp priority_queue);
+errno_t priority_queue_control_configuration_destroy(priority_queue_stpp priority_queue);
 
 /**
  * @brief This function will return reference to the top element in the priority_queue.

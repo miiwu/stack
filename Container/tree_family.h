@@ -298,7 +298,7 @@ struct tree_family_s {
 	void *root;
 
 	/* @brief This variables will record the element handler of the container.							*/
-	struct container_element_handler_s element_handler;
+	struct container_generic_type_element_handler_s element_handler;
 
 	/* @brief This variables will record the exception handler of the container.						*/
 	struct container_common_exception_s exception;

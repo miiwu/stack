@@ -46,7 +46,7 @@
 
 /* Configure the enum type of allocator.																*/
 enum allocator_type_e {
-	ALLOCATOR_COMMON,
+	ALLOCATOR_COMMON = 1u,
 };
 
 /**

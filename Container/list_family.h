@@ -109,7 +109,7 @@ struct list_family_s {
     void *node;
 
     /* @brief This variables will record the element handler of the container.							*/
-    struct container_element_handler_s element_handler;
+    struct container_generic_type_element_handler_s element_handler;
 
     struct {
         /* @brief This variables will point to the address of the list empty exception handler.		    */
@@ -181,7 +181,7 @@ extern inline void list_family_control_get_control(enum list_family_member_type_
  * @return NONE
  */
 
-void list_family_control_configuration_init(struct list_family_s **list,
+errno_t  list_family_control_configuration_init(struct list_family_s **list,
 											void (*switch_control)(void),
 											enum allocator_type_e allocator_type,
 											container_size_t element_size,

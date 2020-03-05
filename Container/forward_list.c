@@ -230,16 +230,16 @@ void forward_list_control_switch_control(void)
  * @return NONE
  */
 
-void forward_list_control_configuration_init(forward_list_stpp forward_list,
-											 container_size_t element_size,
-											 generic_type_element_assign_t assign,
-											 generic_type_element_free_t free)
+errno_t  forward_list_control_configuration_init(forward_list_stpp forward_list,
+												 container_size_t element_size,
+												 generic_type_element_assign_t assign,
+												 generic_type_element_free_t free)
 {
 	assert(forward_list);
 	assert(0 <= element_size);
 
-	list_family_control_configuration_init(forward_list, forward_list_control_switch_control,
-										   FORWARD_LIST_CFG_ALLOCATOR_TYPE, element_size, assign, free);
+	return list_family_control_configuration_init(forward_list, forward_list_control_switch_control,
+												  FORWARD_LIST_CFG_ALLOCATOR_TYPE, element_size, assign, free);
 }
 
 /**

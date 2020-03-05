@@ -39,9 +39,14 @@ void main_priority_queue(void)
 	printf("\r\n ------------------------+ priority_queue demo start +------------------------ \r\n");
 
 	printf("priority_queue.init start\r\n");
-	priority_queue_ctrl.configuration.init(&priority_queue, MAIN_PRIORITY_QUEUE_CONTAINER, sizeof(string_moudle), NULL, NULL);		/* Initialize priority_queue,char[sizeof(string_moudle)] type */
-	MAIN_PRIORITY_QUEUE_CONTAINER_CONTROL.configuration.init(&priority_queue_container, sizeof(string_moudle), NULL, NULL);		/* Initialize priority_queue_container,char[sizeof(string_moudle)] type */
-	priority_queue_ctrl.configuration.attach(&priority_queue_attach, MAIN_PRIORITY_QUEUE_CONTAINER, priority_queue_container);
+	priority_queue_ctrl.configuration
+		.init(&priority_queue, MAIN_PRIORITY_QUEUE_CONTAINER, sizeof(string_moudle), NULL, NULL, NULL);
+
+	printf("priority_queue.adapt start\r\n");
+	MAIN_PRIORITY_QUEUE_CONTAINER_CONTROL.configuration
+		.init(&priority_queue_container, sizeof(string_moudle), NULL, NULL);
+	priority_queue_ctrl.configuration
+		.adapt(&priority_queue_attach, priority_queue_container, NULL);
 
 	printf("\r\npriority_queue.max_size start\r\n");
 	printf("max size : %d \r\n    ", priority_queue_ctrl.capacity.max_size(priority_queue));

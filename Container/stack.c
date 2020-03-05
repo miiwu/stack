@@ -158,7 +158,7 @@ void stack_control_configuration_init(stack_stpp stack,
 		*container = NULL;																		/* Variables pointer to	the specified container struct */
 
 	void
-		*func_addr_table = container_control_convert_type_to_func_addr_table(adapt_container_type);
+		*func_addr_table = container_adaptor_control_get_container_func_addr_table(adapt_container_type);
 																								/* Variables pointer to	the function address table of
 																									specified container type		*/
 
@@ -228,7 +228,7 @@ void stack_control_configuration_attach(stack_stpp stack,
 																									will be allocate and assign to the stack 	*/
 
 	void
-		*func_addr_table = container_control_convert_type_to_func_addr_table(adapt_container_type);
+		*func_addr_table = container_adaptor_control_get_container_func_addr_table(adapt_container_type);
 																								/* Variables pointer to	the function address table of
 																									specified container type		*/
 	if (NULL == stack ||																	/* Check if stack point to NULL			*/

@@ -171,7 +171,7 @@ inline void list_family_control_get_control(enum list_family_member_type_e type,
  * @return NONE
  */
 
-void list_family_control_configuration_init(struct list_family_s **list,
+errno_t list_family_control_configuration_init(struct list_family_s **list,
 											void (*switch_control)(void),
 											enum allocator_type_e allocator_type,
 											container_size_t element_size,
@@ -198,7 +198,7 @@ void list_family_control_configuration_init(struct list_family_s **list,
 
 	if (NULL == list ||																	/* Check if list point to NULL			*/
 		NULL == list_alloced) {															/* Check if list_alloced point to NULL	*/
-		return;
+		return 1;
 	}
 
 	list_alloced->container_type_id = list_family_control_type_in_control;						/* Assign list structure					*/
@@ -225,12 +225,7 @@ void list_family_control_configuration_init(struct list_family_s **list,
 
 	*list = list_alloced;
 
-	#if (VECTOR_CFG_DEBUG_EN)												/* Debug only								*/
-
-	printf("list.configuration.init:allocator : %p \r\n", allocator);
-	printf("list.configuration.init:list block : %p \r\n", list_alloced);
-
-	#endif // (VECTOR_CFG_DEBUG_EN)
+	return 0;
 }
 
 /**

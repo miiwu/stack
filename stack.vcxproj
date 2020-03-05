@@ -29,6 +29,8 @@
     </ClCompile>
     <ClCompile Include="Container\binary_search_tree.c" />
     <ClCompile Include="Container\b_tree.c" />
+    <ClCompile Include="Container\container_adaptor_def.c" />
+    <ClCompile Include="Container\container_def.c" />
     <ClCompile Include="Container\tree_family.c" />
     <ClCompile Include="Container\deque.c" />
     <ClCompile Include="Container\forward_list.c" />
@@ -65,13 +67,15 @@
     <ClInclude Include="Allocator\allocator_cfg.h" />
     <ClInclude Include="Allocator\allocator_common.h" />
     <ClInclude Include="Allocator\allocator_def.h" />
-    <ClInclude Include="Container\container_adaptor_family.h" />
+    <ClInclude Include="Container\container_adaptor_def.h" />
     <ClInclude Include="Container\array.h" />
     <ClInclude Include="Container\array_family.h" />
     <ClInclude Include="Container\avl_tree.h" />
     <ClInclude Include="Container\binary_search_tree.h" />
     <ClInclude Include="Container\b_tree.h" />
+    <ClInclude Include="Container\container_adatpor_pte_def.h" />
     <ClInclude Include="Container\container_cfg.h" />
+    <ClInclude Include="Container\container_pte_def.h" />
     <ClInclude Include="Container\tree_family.h" />
     <ClInclude Include="Container\container.h" />
     <ClInclude Include="Container\container_def.h" />

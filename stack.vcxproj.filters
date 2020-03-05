@@ -147,6 +147,12 @@
     <ClCompile Include="Main\main_generic_type.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
+    <ClCompile Include="Container\container_def.c">
+      <Filter>源文件\container</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\container_adaptor_def.c">
+      <Filter>源文件\container</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\container.h">
@@ -236,11 +242,17 @@
     <ClInclude Include="Container\container_cfg.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
-    <ClInclude Include="Container\container_adaptor_family.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
     <ClInclude Include="Allocator\allocator_cfg.h">
       <Filter>头文件\allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\container_adaptor_def.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\container_adatpor_pte_def.h">
+      <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\container_pte_def.h">
+      <Filter>头文件\container</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

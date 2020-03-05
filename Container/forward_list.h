@@ -48,7 +48,7 @@ typedef struct list_family_s
 struct forward_list_control_s {
 	struct {
 		/* @brief This function will initialize the list struct.                                        */
-		void (*init)(forward_list_stpp list,
+		errno_t(*init)(forward_list_stpp list,
 					 container_size_t element_size,
 					 generic_type_element_assign_t assign,
 					 generic_type_element_free_t free);
@@ -190,7 +190,7 @@ struct forward_list_control_s {
  * @return NONE
  */
 
-void forward_list_control_configuration_init(forward_list_stpp forward_list,
+errno_t forward_list_control_configuration_init(forward_list_stpp forward_list,
 											 container_size_t element_size,
 											 generic_type_element_assign_t assign,
 											 generic_type_element_free_t free);

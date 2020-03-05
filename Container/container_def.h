@@ -113,7 +113,7 @@ typedef errno_t(*generic_type_element_free_t)(void *gnc);
  * @brief This struct is the container's generic element handler
  */
 
-struct container_element_handler_s {
+struct container_generic_type_element_handler_s {
 	/* @brief This variables will point to the address of the vector element assign handler.			*/
 	generic_type_element_assign_t assign;
 
@@ -134,19 +134,46 @@ struct container_common_exception_s {
 };
 
 /**
+ * @brief This struct is the init return package of _configration_init().
+ */
+
+struct container_control_configuration_allocate_return_s {
+	errno_t error;
+
+	/* @brief This variables will point to the allocator_ptr control.										*/
+	struct allocator_control_s *allocator_control_ptr;
+
+	/* @brief This variables will point to the allocator_ptr.												*/
+	void *allocator_ptr;
+
+	/* @brief This variables will be a external addon, validity only depends on memory allocation.		*/
+	char addon[0];
+};
+
+/**
+ * @brief This struct is the adapt return package of configuration_adapt().
+ */
+
+struct container_allocte_package_s {
+	enum allocator_type_e allocator_type;
+	container_size_t container_mem_size;
+	void *arg_list;
+};
+
+/**
  * @brief This struct is the container's common control
  */
 
 struct container_control_s {
 	struct {
 		/* @brief This function will initialize the container struct and the specified container.		*/
-		void (*init)(void **container,
-					 container_size_t element_size,
-					 generic_type_element_assign_t assign,
-					 generic_type_element_free_t free);
+		errno_t(*init)(void **container,
+					   container_size_t element_size,
+					   generic_type_element_assign_t assign,
+					   generic_type_element_free_t free);
 
 		/* @brief This function will destroy the container struct. */
-		void (*destroy)(void **container);
+		errno_t(*destroy)(void **container);
 	}configuration;
 
 	struct {
@@ -198,6 +225,18 @@ struct container_control_s {
 *								        FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
+
+/**
+ * @brief This function will initialize the container.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+struct container_control_configuration_allocate_return_s
+	container_control_configuration_allocate(void **container,
+											 struct container_allocte_package_s package);
 
 /*
 *********************************************************************************************************

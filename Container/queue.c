@@ -156,7 +156,7 @@ void queue_control_configuration_init(queue_stpp queue,
 		*container = NULL;																		/* Variables pointer to	the specified container struct */
 
 	void
-		*func_addr_table = container_control_convert_type_to_func_addr_table(adapt_container_type);
+		*func_addr_table = container_adaptor_control_get_container_func_addr_table(adapt_container_type);
 																								/* Variables pointer to	the function address table of
 																									specified container type		*/
 
@@ -226,7 +226,7 @@ void queue_control_configuration_attach(queue_stpp queue,
 																									will be allocate and assign to the queue 	*/
 
 	void
-		*func_addr_table = container_control_convert_type_to_func_addr_table(adapt_container_type);
+		*func_addr_table = container_adaptor_control_get_container_func_addr_table(adapt_container_type);
 																								/* Variables pointer to	the function address table of
 																									specified container type		*/
 	if (NULL == queue ||																	/* Check if queue point to NULL			*/

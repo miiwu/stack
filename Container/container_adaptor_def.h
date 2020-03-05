@@ -30,11 +30,45 @@
 *********************************************************************************************************
 */
 
+/**
+ * @brief This struct is the container adaptor structure.
+ */
+
+struct container_adaptor_s;
+
+/**
+ * @brief This struct is the container adaptor structure.
+ */
+
+struct container_adaptor_adapt_package_s {
+	void *container;
+
+	enum container_type_e container_type;
+	container_size_t element_size;
+	generic_type_element_assign_t assign;
+	generic_type_element_free_t free;
+};
+
 /*
 *********************************************************************************************************
 *								            FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
+
+/**
+ * @brief This function will initialize the container adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+errno_t container_adapotr_control_configuration_init(struct container_adaptor_s **adaptor,
+                                                     enum container_type_e adaptor_type,
+                                                     struct container_allocte_package_s allocate_package,
+                                                     struct container_adaptor_adapt_package_s adapt_package,
+                                                     void *addon,
+                                                     size_t addon_size);
 
 /**
  * @brief This function will initialize the container struct and attach to the specified container.
@@ -44,7 +78,7 @@
  * @return the pointer to the specified container function address table.
  */
 
-void *container_control_convert_type_to_func_addr_table(enum container_type_e type);
+extern void *container_adaptor_control_get_container_func_addr_table(enum container_type_e type);
 
 /*
 *********************************************************************************************************
@@ -57,71 +91,6 @@ void *container_control_convert_type_to_func_addr_table(enum container_type_e ty
 *                                            FUNCTIONS
 *********************************************************************************************************
 */
-
-/**
- * @brief This function will initialize the container struct and attach to the specified container.
- *
- * @param container the container adapter struct
- *
- * @return the pointer to the specified container function address table.
- */
-
-extern inline void *container_control_convert_type_to_func_addr_table(enum container_type_e type)
-{
-	void
-		*func_addr_table = NULL;
-
-	switch (type) {
-		#if (CONTAINER_FAMILY_LEVEL_CFG_BINARY_TREE_EN)
-
-		#endif // (CONTAINER_FAMILY_LEVEL_CFG_BINARY_TREE_EN)
-
-		#if (CONTAINER_FAMILY_LEVEL_CFG_RED_BLACK_TREE_EN)
-
-		#endif // (CONTAINER_FAMILY_LEVEL_CFG_RED_BLACK_TREE_EN)
-
-		#if (CONTAINER_FAMILY_LEVEL_CFG_B_TREE_EN)
-
-		#endif // (CONTAINER_FAMILY_LEVEL_CFG_B_TREE_EN)
-
-		#if (CONTAINER_FAMILY_LEVEL_CFG_ARRAY_EN)
-
-		case ARRAY:
-			func_addr_table = &array_function_address_tables;
-			break;
-
-			#endif // (CONTAINER_FAMILY_LEVEL_CFG_ARRAY_EN)
-
-			#if (CONTAINER_FAMILY_LEVEL_CFG_VECTOR_EN)
-
-		case VECTOR:
-			func_addr_table = &vector_function_address_tables;
-			break;
-
-			#endif // (CONTAINER_FAMILY_LEVEL_CFG_VECTOR_EN)
-
-			#if (CONTAINER_FAMILY_LEVEL_CFG_FORWARD_LIST_EN)
-
-		case FORWARD_LIST:
-			func_addr_table = &forward_list_function_address_tables;
-			break;
-
-			#endif // (CONTAINER_FAMILY_LEVEL_CFG_FORWARD_LIST_EN)
-
-			#if (CONTAINER_FAMILY_LEVEL_CFG_LIST_EN)
-
-		case LIST:
-			func_addr_table = &list_function_address_tables;
-			break;
-
-			#endif // (CONTAINER_FAMILY_LEVEL_CFG_LIST_EN)
-			break;
-		default:
-			break;
-	}
-
-	return func_addr_table;
-}
 
 /*
 *********************************************************************************************************
