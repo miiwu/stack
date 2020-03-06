@@ -22,25 +22,23 @@
     <ClCompile Include="Algorithm\compare.c" />
     <ClCompile Include="Algorithm\sort.c" />
     <ClCompile Include="Allocator\allocator_common.c" />
-    <ClCompile Include="Container\array.c" />
-    <ClCompile Include="Container\array_family.c" />
-    <ClCompile Include="Container\avl_tree.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\binary_search_tree.c" />
-    <ClCompile Include="Container\b_tree.c" />
-    <ClCompile Include="Container\container_adaptor_def.c" />
+    <ClCompile Include="Container\Container adaptors\container_adaptor_def.c" />
+    <ClCompile Include="Container\Container adaptors\priority_queue.c" />
+    <ClCompile Include="Container\Container adaptors\queue.c" />
+    <ClCompile Include="Container\Container adaptors\stack.c" />
     <ClCompile Include="Container\container_def.c" />
-    <ClCompile Include="Container\tree_family.c" />
-    <ClCompile Include="Container\deque.c" />
-    <ClCompile Include="Container\forward_list.c" />
-    <ClCompile Include="Container\list.c" />
-    <ClCompile Include="Container\list_family.c" />
-    <ClCompile Include="Container\priority_queue.c" />
-    <ClCompile Include="Container\queue.c" />
-    <ClCompile Include="Container\red_black_tree.c" />
-    <ClCompile Include="Container\stack.c" />
-    <ClCompile Include="Container\vector.c" />
+    <ClCompile Include="Container\Squence container\array.c" />
+    <ClCompile Include="Container\Squence container\array_family.c" />
+    <ClCompile Include="Container\Squence container\deque.c" />
+    <ClCompile Include="Container\Squence container\forward_list.c" />
+    <ClCompile Include="Container\Squence container\list.c" />
+    <ClCompile Include="Container\Squence container\list_family.c" />
+    <ClCompile Include="Container\Squence container\vector.c" />
+    <ClCompile Include="Container\Tree\avl_tree.c" />
+    <ClCompile Include="Container\Tree\binary_search_tree.c" />
+    <ClCompile Include="Container\Tree\b_tree.c" />
+    <ClCompile Include="Container\Tree\red_black_tree.c" />
+    <ClCompile Include="Container\Tree\tree_family.c" />
     <ClCompile Include="Debug Component\debug_stack_back_trace.c" />
     <ClCompile Include="Main\main.c" />
     <ClCompile Include="Main\main_allocator.c" />
@@ -67,27 +65,27 @@
     <ClInclude Include="Allocator\allocator_cfg.h" />
     <ClInclude Include="Allocator\allocator_common.h" />
     <ClInclude Include="Allocator\allocator_def.h" />
-    <ClInclude Include="Container\container_adaptor_def.h" />
-    <ClInclude Include="Container\array.h" />
-    <ClInclude Include="Container\array_family.h" />
-    <ClInclude Include="Container\avl_tree.h" />
-    <ClInclude Include="Container\binary_search_tree.h" />
-    <ClInclude Include="Container\b_tree.h" />
-    <ClInclude Include="Container\container_adatpor_pte_def.h" />
+    <ClInclude Include="Container\Container adaptors\container_adaptor_def.h" />
+    <ClInclude Include="Container\Container adaptors\container_adatpor_pte_def.h" />
+    <ClInclude Include="Container\Container adaptors\priority_queue.h" />
+    <ClInclude Include="Container\Container adaptors\queue.h" />
+    <ClInclude Include="Container\Container adaptors\stack.h" />
     <ClInclude Include="Container\container_cfg.h" />
     <ClInclude Include="Container\container_pte_def.h" />
-    <ClInclude Include="Container\tree_family.h" />
+    <ClInclude Include="Container\Squence container\array.h" />
+    <ClInclude Include="Container\Squence container\array_family.h" />
+    <ClInclude Include="Container\Squence container\deque.h" />
+    <ClInclude Include="Container\Squence container\forward_list.h" />
+    <ClInclude Include="Container\Squence container\list.h" />
+    <ClInclude Include="Container\Squence container\list_family.h" />
+    <ClInclude Include="Container\Squence container\vector.h" />
     <ClInclude Include="Container\container.h" />
     <ClInclude Include="Container\container_def.h" />
-    <ClInclude Include="Container\deque.h" />
-    <ClInclude Include="Container\forward_list.h" />
-    <ClInclude Include="Container\list.h" />
-    <ClInclude Include="Container\list_family.h" />
-    <ClInclude Include="Container\priority_queue.h" />
-    <ClInclude Include="Container\queue.h" />
-    <ClInclude Include="Container\red_black_tree.h" />
-    <ClInclude Include="Container\stack.h" />
-    <ClInclude Include="Container\vector.h" />
+    <ClInclude Include="Container\Tree\avl_tree.h" />
+    <ClInclude Include="Container\Tree\binary_search_tree.h" />
+    <ClInclude Include="Container\Tree\b_tree.h" />
+    <ClInclude Include="Container\Tree\red_black_tree.h" />
+    <ClInclude Include="Container\Tree\tree_family.h" />
     <ClInclude Include="Debug Component\debug_component.h" />
     <ClInclude Include="Debug Component\debug_component_def.h" />
     <ClInclude Include="Debug Component\debug_stack_back_trace.h" />
@@ -145,16 +143,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Unordered associative containers;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Tree;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Squence container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Container adaptors;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Associative containers;C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Unordered associative containers;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Tree;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Squence container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Container adaptors;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Associative containers;C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Unordered associative containers;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Tree;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Squence container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Container adaptors;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Associative containers;C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Unordered associative containers;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Tree;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Squence container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Container adaptors;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container\Associative containers;C:\Storage\Project\Microsoft-Visual-Studio\stack\Main;C:\Storage\Project\Microsoft-Visual-Studio\stack\Debug Component;C:\Storage\Project\Microsoft-Visual-Studio\stack\Container;C:\Storage\Project\Microsoft-Visual-Studio\stack\Algorithm;C:\Storage\Project\Microsoft-Visual-Studio\stack\Allocator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

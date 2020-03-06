@@ -43,6 +43,30 @@
     <Filter Include="源文件\algorithm">
       <UniqueIdentifier>{e29e2ad9-85f3-4839-9946-79bf08e96db5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\container\associative containers">
+      <UniqueIdentifier>{8af3ad61-da9a-47af-9ccd-59b2dd53deb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\container\container adaptors">
+      <UniqueIdentifier>{b136b759-6be1-4d7f-bfb3-07f5913d4e05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\container\tree">
+      <UniqueIdentifier>{69ad0780-74b9-411b-9591-17cbd909c6fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\container\associative containers">
+      <UniqueIdentifier>{9e32c8c5-b88a-4e1e-afc7-f119ab57d3c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\container\container adaptors">
+      <UniqueIdentifier>{ba12c24c-8ed4-4f4d-b175-572e061cf6e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\container\tree">
+      <UniqueIdentifier>{d3e54075-9ee9-4d0a-b551-e2ddf89822f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\container\sequence containers">
+      <UniqueIdentifier>{510e7014-adf2-4d2e-a0e9-4f169b68ab4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\container\sequence containers">
+      <UniqueIdentifier>{45e70572-9bbb-4fb0-a3d4-77701b42f542}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -60,18 +84,6 @@
     <ClCompile Include="Main\main_vector.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
-    <ClCompile Include="Container\queue.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\stack.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\vector.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\forward_list.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
     <ClCompile Include="Main\main_forward_list.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
@@ -87,15 +99,6 @@
     <ClCompile Include="Allocator\allocator_common.c">
       <Filter>源文件\allocator</Filter>
     </ClCompile>
-    <ClCompile Include="Container\priority_queue.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\list.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\deque.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
     <ClCompile Include="Main\main_deque.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
@@ -105,38 +108,14 @@
     <ClCompile Include="Algorithm\sort.c">
       <Filter>源文件\algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="Container\array.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\array_family.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
     <ClCompile Include="Main\main_array.c">
       <Filter>源文件\main</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\list_family.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\red_black_tree.c">
-      <Filter>源文件\container</Filter>
     </ClCompile>
     <ClCompile Include="Algorithm\compare.c">
       <Filter>源文件\algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="Container\avl_tree.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
     <ClCompile Include="Main\main_red_black_tree.c">
       <Filter>源文件\main</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\tree_family.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\b_tree.c">
-      <Filter>源文件\container</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\binary_search_tree.c">
-      <Filter>源文件\container</Filter>
     </ClCompile>
     <ClCompile Include="Main\main_b_tree.c">
       <Filter>源文件\main</Filter>
@@ -150,8 +129,53 @@
     <ClCompile Include="Container\container_def.c">
       <Filter>源文件\container</Filter>
     </ClCompile>
-    <ClCompile Include="Container\container_adaptor_def.c">
-      <Filter>源文件\container</Filter>
+    <ClCompile Include="Container\Tree\avl_tree.c">
+      <Filter>源文件\container\tree</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Tree\b_tree.c">
+      <Filter>源文件\container\tree</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Tree\binary_search_tree.c">
+      <Filter>源文件\container\tree</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Tree\red_black_tree.c">
+      <Filter>源文件\container\tree</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Tree\tree_family.c">
+      <Filter>源文件\container\tree</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Container adaptors\container_adaptor_def.c">
+      <Filter>源文件\container\container adaptors</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Container adaptors\priority_queue.c">
+      <Filter>源文件\container\container adaptors</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Container adaptors\queue.c">
+      <Filter>源文件\container\container adaptors</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Container adaptors\stack.c">
+      <Filter>源文件\container\container adaptors</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\array.c">
+      <Filter>源文件\container\sequence containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\array_family.c">
+      <Filter>源文件\container\sequence containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\deque.c">
+      <Filter>源文件\container\sequence containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\forward_list.c">
+      <Filter>源文件\container\sequence containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\list.c">
+      <Filter>源文件\container\sequence containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\list_family.c">
+      <Filter>源文件\container\sequence containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\vector.c">
+      <Filter>源文件\container\sequence containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -161,20 +185,8 @@
     <ClInclude Include="Container\container_def.h">
       <Filter>头文件\container</Filter>
     </ClInclude>
-    <ClInclude Include="Container\queue.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\stack.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\vector.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
     <ClInclude Include="Main\main_cfg.h">
       <Filter>头文件\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\forward_list.h">
-      <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="Debug Component\debug_stack_back_trace.h">
       <Filter>头文件\debug</Filter>
@@ -194,15 +206,6 @@
     <ClInclude Include="Debug Component\debug_component_def.h">
       <Filter>头文件\debug</Filter>
     </ClInclude>
-    <ClInclude Include="Container\priority_queue.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\list.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\deque.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
     <ClInclude Include="Algorithm\algorithm.h">
       <Filter>头文件\algorithm</Filter>
     </ClInclude>
@@ -212,32 +215,8 @@
     <ClInclude Include="Algorithm\sort.h">
       <Filter>头文件\algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="Container\array.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\array_family.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\list_family.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\red_black_tree.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
     <ClInclude Include="Algorithm\compare.h">
       <Filter>头文件\algorithm</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\avl_tree.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\tree_family.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\b_tree.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\binary_search_tree.h">
-      <Filter>头文件\container</Filter>
     </ClInclude>
     <ClInclude Include="Container\container_cfg.h">
       <Filter>头文件\container</Filter>
@@ -245,14 +224,59 @@
     <ClInclude Include="Allocator\allocator_cfg.h">
       <Filter>头文件\allocator</Filter>
     </ClInclude>
-    <ClInclude Include="Container\container_adaptor_def.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\container_adatpor_pte_def.h">
-      <Filter>头文件\container</Filter>
-    </ClInclude>
     <ClInclude Include="Container\container_pte_def.h">
       <Filter>头文件\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Container adaptors\container_adaptor_def.h">
+      <Filter>头文件\container\container adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Container adaptors\container_adatpor_pte_def.h">
+      <Filter>头文件\container\container adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Container adaptors\priority_queue.h">
+      <Filter>头文件\container\container adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Container adaptors\queue.h">
+      <Filter>头文件\container\container adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Container adaptors\stack.h">
+      <Filter>头文件\container\container adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Squence container\array.h">
+      <Filter>头文件\container\sequence containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Squence container\array_family.h">
+      <Filter>头文件\container\sequence containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Squence container\deque.h">
+      <Filter>头文件\container\sequence containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Squence container\forward_list.h">
+      <Filter>头文件\container\sequence containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Squence container\list.h">
+      <Filter>头文件\container\sequence containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Squence container\list_family.h">
+      <Filter>头文件\container\sequence containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Squence container\vector.h">
+      <Filter>头文件\container\sequence containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Tree\avl_tree.h">
+      <Filter>头文件\container\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Tree\b_tree.h">
+      <Filter>头文件\container\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Tree\binary_search_tree.h">
+      <Filter>头文件\container\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Tree\red_black_tree.h">
+      <Filter>头文件\container\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Tree\tree_family.h">
+      <Filter>头文件\container\tree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
