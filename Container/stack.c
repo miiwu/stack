@@ -6,6 +6,8 @@
 
 #include "stack.h"
 
+#include "container_adatpor_pte_def.h"
+
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
@@ -23,30 +25,6 @@
 *                                          LOCAL DATA TYPES
 *********************************************************************************************************
 */
-
-/**
- * @brief This struct is the stack structure module
- */
-
-struct stack_s {
-	/* @brief RESERVED This variables will record the identity code of container type.					*/
-	enum container_type_e	container_type_id;
-
-	/* @brief This variables will record if the stack attach to other container instead of initialize.	*/
-	bool attach;
-
-	/* @brief This variables will point to the container.												*/
-	void *container;
-
-	/* @brief This variables will point to the function address table of front container type.			*/
-	struct container_control_s *container_control;
-
-	/* @brief This variables will point to the allocator.												*/
-	void *allocator;
-
-	/* @brief This variables will point to the allocator control.										*/
-	struct allocator_control_s *allocator_ctrl;
-};
 
 /*
 *********************************************************************************************************
@@ -68,32 +46,41 @@ struct stack_s {
 
 struct stack_control_s stack_ctrl =
 {
-	stack_control_configuration_init,
+	.configuration.init = stack_control_configuration_init,
+	.configuration.adapt = stack_control_configuration_adapt,
+	.configuration.destroy = stack_control_configuration_destroy,
 
-	stack_control_configuration_attach,
+	.element_access.top = stack_control_element_access_top,
 
-	stack_control_configuration_destroy,
+	.capacity.empty = stack_control_capacity_empty,
+	.capacity.size = stack_control_capacity_size,
+	.capacity.max_size = stack_control_capacity_max_size,
 
-	stack_control_element_access_top,
-
-	stack_control_capacity_empty,
-
-	stack_control_capacity_size,
-
-	stack_control_capacity_max_size,
-
-	stack_control_modifiers_push,
-
-	stack_control_modifiers_emplace,
-
-	stack_control_modifiers_pop,
-
-	stack_control_modifiers_swap,
-
-	stack_control_modifiers_copy
+	.modifiers.push = stack_control_modifiers_push,
+	.modifiers.emplace = stack_control_modifiers_emplace,
+	.modifiers.pop = stack_control_modifiers_pop,
+	.modifiers.swap = stack_control_modifiers_swap,
+	.modifiers.copy = stack_control_modifiers_copy
 };
 
 #endif // (STACK_CFG_INTEGRATED_STRUCTURE_MODE_EN)
+
+/**
+ * @brief This struct is the stack allocate package
+ */
+
+struct container_allocte_package_s
+	stack_control_allocate_package = {
+.allocator_type = STACK_CFG_ALLOCATOR_TYPE ,
+.container_mem_size = sizeof(struct container_adaptor_s)
+};
+
+/**
+ * @brief This struct is the stack adapt package
+ */
+
+struct container_adaptor_adapt_package_s
+	stack_control_adapt_package = { 0 };
 
 /*
 *********************************************************************************************************
@@ -108,199 +95,100 @@ struct stack_control_s stack_ctrl =
 */
 
 /**
- * @brief This function will initialize the stack struct and the specified container.
+ * @brief This function will initialize the stack struct and the specified container_ptr.
  *
- * @param stack the pointer to container adapter struct pointer
- * @param type the type of the container
- * @param element_size the pointer to container
- * @param string_type the pointer to container
+ * @param stack the pointer to container_ptr adapter struct pointer
+ * @param type the type of the container_ptr
+ * @param element_size the pointer to container_ptr
+ * @param string_type the pointer to container_ptr
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-void stack_control_configuration_init(stack_stpp stack,
-									  enum container_type_e type,
-									  container_size_t element_size,
-									  generic_type_element_assign_t assign,
-									  generic_type_element_free_t free)
+errno_t stack_control_configuration_init(stack_stpp stack,
+										 enum container_type_e container_type,
+										 container_size_t element_size,
+										 generic_type_element_assign_t assign,
+										 generic_type_element_free_t free)
 {
 	assert(stack);
 	assert(element_size);
 
-	enum container_type_e
-		adapt_container_type = STACK_CFG_DEFAULT_ADAPT_CONTAINER_TYPE;
-
-	if (type) {
-		adapt_container_type = type;
+	if (container_type) {
+		container_type = PRIORITY_QUEUE_CFG_DEFAULT_ADAPT_CONTAINER_TYPE;
 	}
 
-	void
-		*allocator = NULL;																		/* Variables pointer to	the allocator struct */
+	stack_control_allocate_package.arg_list_ptr = NULL;										/* Set the allocate package */
 
-	struct allocator_control_s
-		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
-																									specified allocator type		*/
+	stack_control_adapt_package.container_ptr = NULL;										/* Set the adapt package */
+	stack_control_adapt_package.container_type = container_type;
+	stack_control_adapt_package.element_size = element_size;
+	stack_control_adapt_package.assign_ptr = assign;
+	stack_control_adapt_package.free_ptr = free;
 
-	allocator_ctrl->configuration.init(&allocator, NULL);										/* Initialize the allocator struct */
-
-	struct stack_s
-		*stack_alloced = (struct stack_s *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
-																	1, sizeof(struct stack_s));
-																								/* Variables pointer to	the stack struct which
-																									will be allocate and assign to the stack 	*/
-
-	struct container_control_s
-		*container_ctrl = NULL;
-
-	void
-		*container = NULL;																		/* Variables pointer to	the specified container struct */
-
-	void
-		*func_addr_table = container_adaptor_control_get_container_func_addr_table(adapt_container_type);
-																								/* Variables pointer to	the function address table of
-																									specified container type		*/
-
-	container_ctrl = func_addr_table;
-
-	if (NULL == stack ||																		/* Check if stack point to NULL			*/
-		NULL == stack_alloced) {																/* Check if data_pack_alloced point to NULL	*/
-		return;
+	if (container_adaptor_control_configuration_init(stack,									/* Initialize the container adaptor */
+													 STACK,
+													 stack_control_allocate_package,
+													 stack_control_adapt_package)) {
+		return 1;
 	}
 
-	container_ctrl->configuration.init(&container, element_size, assign, free);					/* Initialize the specified container struct */
-
-	stack_alloced->container_type_id = STACK;													/* Assign stack structure					*/
-	stack_alloced->attach = false;
-	stack_alloced->container = container;
-	stack_alloced->container_control = container_ctrl;
-	stack_alloced->allocator = allocator;
-	stack_alloced->allocator_ctrl = allocator_ctrl;
-
-	*stack = stack_alloced;
-
-	#if (STACK_CFG_DEBUG_EN)
-
-	printf("init.stack allocator : %p \r\n", allocator);										/* Debug only								*/
-	printf("init.stack block : %p \r\n", stack_alloced);
-
-	#endif // (STACK_CFG_DEBUG_EN)
+	return 0;
 }
 
 /**
- * @brief This function will initialize the stack struct and attach to the specified container.
+ * @brief This function will initialize the stack struct and attach to the specified container_ptr.
  *
- * @param stack the pointer to container adapter struct pointer
- * @param container the pointer to container pointer
- * @param func_addr_table the pointer to the function address table of the specified container
+ * @param stack the pointer to container_ptr adapter struct pointer
+ * @param container_ptr the pointer to container_ptr pointer
+ * @param func_addr_table the pointer to the function address table of the specified container_ptr
  *
  * @return NONE
  */
 
-void stack_control_configuration_attach(stack_stpp stack,
-										enum container_type_e type, void *container)
+errno_t stack_control_configuration_adapt(stack_stpp stack,
+										  void *container)
 {
 	assert(stack);
 	assert(container);
-	assert(type);
 
-	enum container_type_e
-		adapt_container_type = STACK_CFG_DEFAULT_ADAPT_CONTAINER_TYPE;
+	stack_control_allocate_package.arg_list_ptr = NULL;										/* Set the allocate package */
 
-	if (type) {
-		adapt_container_type = type;
+	stack_control_adapt_package.container_ptr = container;									/* Set the adapt package */
+
+	if (container_adaptor_control_configuration_init(stack,									/* Initialize the container adaptor */
+													 STACK,
+													 stack_control_allocate_package,
+													 stack_control_adapt_package)) {
+		return 1;
 	}
 
-	void
-		*allocator = NULL;																		/* Variables pointer to	the allocator struct */
-
-	struct allocator_control_s
-		*allocator_ctrl = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON);	/* Variables pointer to	the function address table of
-																									specified allocator type		*/
-
-	allocator_ctrl->configuration.init(&allocator, NULL);										/* Initialize the allocator struct */
-
-	struct stack_s
-		*stack_alloced = (struct stack_s *)allocator_ctrl->allocate(allocator,					/* Allocate #1 */
-																	1, sizeof(struct stack_s));
-																								/* Variables pointer to	the stack struct which
-																									will be allocate and assign to the stack 	*/
-
-	void
-		*func_addr_table = container_adaptor_control_get_container_func_addr_table(adapt_container_type);
-																								/* Variables pointer to	the function address table of
-																									specified container type		*/
-	if (NULL == stack ||																	/* Check if stack point to NULL			*/
-		NULL == func_addr_table ||															/* Check if stack point to NULL			*/
-		NULL == stack_alloced) {															/* Check if data_pack_alloced point to NULL	*/
-		return;
-	}
-
-	stack_alloced->container_type_id = STACK;												/* Assign stack structure					*/
-	stack_alloced->attach = true;
-	stack_alloced->container = container;
-	stack_alloced->container_control = func_addr_table;
-	stack_alloced->allocator = allocator;
-	stack_alloced->allocator_ctrl = allocator_ctrl;
-
-	*stack = stack_alloced;
-
-	#if (STACK_CFG_DEBUG_EN)
-
-	printf("init.stack block : %p \r\n", stack_alloced);									/* Debug only								*/
-
-	#endif // (STACK_CFG_DEBUG_EN)
+	return 0;
 }
 
 /**
  * @brief This function will destroy the stack struct.
  *
- * @param stack the pointer to container adapter struct pointer
+ * @param stack the pointer to container_ptr adapter struct pointer
  *
  * @return NONE
  */
 
-void stack_control_configuration_destroy(stack_stpp stack)
+extern inline errno_t
+stack_control_configuration_destroy(stack_stpp stack)
 {
 	assert(stack);
+	assert(*stack);
 
-	#if (STACK_CFG_DEBUG_EN)
-
-	printf("destroy.stack container : %p \r\n", (*stack)->container);
-	printf("destroy.stack allocator : %p \r\n", (*stack)->allocator);
-	printf("destroy.stack block : %p \r\n", (*stack));
-
-	#endif // (STACK_CFG_DEBUG_EN)
-
-	void
-		*container = NULL;																	/* Variables pointer to	the specified container struct */
-
-	void
-		*allocator = (*stack)->allocator;;																	/* Variables pointer to	the allocator struct */
-
-	struct allocator_control_s
-		*allocator_ctrl = (*stack)->allocator_ctrl;
-
-	(*stack)->container_control->configuration.destroy(&(*stack)->container);				/* Destroy the container */
-
-	allocator_ctrl->deallocate(allocator, (*stack), 1);										/* Deallocate #2 */
-
-	(*stack)->container_type_id = 0u;
-	(*stack)->attach = false;
-	(*stack)->container = NULL;
-	(*stack)->container_control = NULL;
-	(*stack)->allocator = NULL;
-
-	allocator_ctrl->configuration.destroy(&allocator);
-
-	*stack = NULL;
+	return container_adaptor_control_configuration_destroy(stack);						    /* Destroy the container adaptor */
 }
 
 /**
  * @brief This function will return reference to the top element in the stack.
  *
- * @param stack the pointer to container adapter struct
+ * @param stack the pointer to container_ptr adapter struct
  *
  * @return NONE
  */
@@ -309,18 +197,15 @@ void *stack_control_element_access_top(stack_stp stack)
 {
 	assert(stack);
 
-	void
-		*container = NULL;																	/* Variables pointer to	the specified container struct */
-
-	return stack->container_control->element_access.at(stack->container,
-													   stack->container_control->capacity.size(stack->container) - 1);
-																							/* Get the top element of the container */
+	return stack->container_control_ptr->element_access
+		.at(stack->container_ptr,															/* Access the specified element of the stack */
+			stack->container_control_ptr->capacity.size(stack->container_ptr) - 1);
 }
 
 /**
- * @brief This function will check if the underlying container has no elements.
+ * @brief This function will check if the underlying container_ptr has no elements.
  *
- * @param stack the pointer to container adapter struct
+ * @param stack the pointer to container_ptr adapter struct
  *
  * @return NONE
  */
@@ -338,9 +223,9 @@ bool stack_control_capacity_empty(stack_stp stack)
 }
 
 /**
- * @brief This function will returns the number of elements in the container.
+ * @brief This function will returns the number of elements in the container_ptr.
  *
- * @param stack the pointer to container adapter struct
+ * @param stack the pointer to container_ptr adapter struct
  *
  * @return NONE
  */
@@ -349,23 +234,20 @@ container_size_t stack_control_capacity_size(stack_stp stack)
 {
 	assert(stack);
 
-	void
-		*container = NULL;																	/* Variables pointer to	the specified container struct */
-
 	#if (STACK_CFG_DEBUG_EN)
 
-	printf("stack.size : %d \r\n", stack->container_control->capacity.size(stack->container));
+	printf("stack.size : %d \r\n", stack->container_control_ptr->capacity.size(stack->container_ptr));
 
 	#endif // (STACK_CFG_DEBUG_EN)
 
-	return stack->container_control->capacity.size(stack->container);						/* Get the number of elements in the container */
+	return stack->container_control_ptr->capacity.size(stack->container_ptr);				/* Get the number of elements in the container_ptr */
 }
 
 /**
  * @brief This function will returns the maximum number of elements
- *			the container is able to hold due to system or library implementation limitations.
+ *			the container_ptr is able to hold due to system or library implementation limitations.
  *
- * @param stack the pointer to container adapter struct
+ * @param stack the pointer to container_ptr adapter struct
  *
  * @return NONE
  */
@@ -374,93 +256,100 @@ container_size_t stack_control_capacity_max_size(stack_stp stack)
 {
 	assert(stack);
 
-	void
-		*container = NULL;																	/* Variables pointer to	the specified container struct */
-
-	return stack->container_control->capacity.max_size(stack->container);					/* Get the maximum number of elements the container
+	return stack->container_control_ptr->capacity.max_size(stack->container_ptr);			/* Get the maximum number of elements the container_ptr
 																								is able to hold due to system or library implementation limitations */
 }
 
 /**
  * @brief This function will push the given element source to the top of the stack.
  *
- * @param stack the pointer to container adapter struct
+ * @param stack the pointer to container_ptr adapter struct
  * @param source the pointer to source
  *
  * @return NONE
  */
 
-void stack_control_modifiers_push(stack_stp stack, void *source)
+errno_t stack_control_modifiers_push(stack_stp stack, void *source)
 {
 	assert(stack);
 
-	void
-		*container = NULL;																	/* Variables pointer to	the specified container struct */
+	stack->container_control_ptr->modifiers
+		.insert(stack->container_ptr,														/* Insert the given element source to the top of the stack */
+				stack->container_control_ptr->capacity.size(stack->container_ptr), 1, &source);
 
-	stack->container_control->modifiers.insert(stack->container,
-											   stack->container_control->capacity.size(stack->container), 1, &source);
-																							/* push the given element source to the top of the stack */
+	return 0;
 }
 
 /**
  * @brief This function will push a new element on top of the stack. The element is constructed in-place.
  *
- * @param stack the pointer to container adapter struct
+ * @param stack the pointer to container_ptr adapter struct
  * @param destination the pointer to destination
  *
  * @return NONE
  */
 
-void stack_control_modifiers_emplace(stack_stp stack, void *destination)
+errno_t stack_control_modifiers_emplace(stack_stp stack, void *destination)
 {
 	assert(stack);
+
+	return 0;
 }
 
 /**
  * @brief This function will remove the top element from the stack.
  *
- * @param stack the pointer to container adapter struct
+ * @param stack the pointer to container_ptr adapter struct
  *
  * @return NONE
  */
 
-void stack_control_modifiers_pop(stack_stp stack)
+errno_t stack_control_modifiers_pop(stack_stp stack)
 {
 	assert(stack);
 
-	stack->container_control->modifiers.earse(stack->container,
-											  stack_control_capacity_size(stack) - 1); /* push the given element source to the top of the stack */
+	stack->container_control_ptr->modifiers
+		.earse(stack->container_ptr,
+			   stack_control_capacity_size(stack) - 1);										/* Earse the top element of the stack */
+
+	return 0;
 }
 
 /**
- * @brief This function will exchange the contents of the container adaptor with those of other.
+ * @brief This function will exchange the contents of the container_ptr adaptor with those of other.
  *
- * @param stack the pointer to container adapter struct
- * @param other the pointer to other container adapter struct
+ * @param stack the pointer to container_ptr adapter struct
+ * @param other the pointer to other container_ptr adapter struct
  *
  * @return NONE
  */
 
-void stack_control_modifiers_swap(stack_stpp stack, stack_stpp other)
+errno_t stack_control_modifiers_swap(stack_stpp stack, stack_stpp other)
 {
 	assert(stack);
 
-	(*stack)->container_control->modifiers.swap(&(*stack)->container, &(*other)->container);/* exchange the contents of the container adaptor with those of other */
+	(*stack)->container_control_ptr->modifiers
+		.swap(&(*stack)->container_ptr, &(*other)->container_ptr);							/* exchange the contents of the container_ptr adaptor with those of other */
+
+	return 0;
 }
 
 /**
- * @brief This function will copy the contents of the container adaptor to those of other.
+ * @brief This function will copy the contents of the container_ptr adaptor to those of other.
  *
- * @param destination the pointer to destination container adapter struct
- * @param source the pointer to source container adapter struct
+ * @param destination the pointer to destination container_ptr adapter struct
+ * @param source the pointer to source container_ptr adapter struct
  *
  * @return NONE
  */
 
-void stack_control_modifiers_copy(stack_stpp destination, stack_stp source)
+errno_t stack_control_modifiers_copy(stack_stpp destination, stack_stp source)
 {
 	assert(destination);
 	assert(source);
 
-	(*destination)->container_control->modifiers.copy(&(*destination)->container, source->container);		/* copy the contents of the container adaptor to those of other */
+	(*destination)->container_control_ptr->modifiers
+		.copy(&(*destination)->container_ptr, source->container_ptr);						/* copy the contents of the container_ptr adaptor to those of other */
+
+	return 0;
 }

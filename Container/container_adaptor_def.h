@@ -63,12 +63,20 @@ struct container_adaptor_adapt_package_s {
  * @return void
  */
 
-errno_t container_adapotr_control_configuration_init(struct container_adaptor_s **adaptor,
-                                                     enum container_type_e adaptor_type,
-                                                     struct container_allocte_package_s allocate_package,
-                                                     struct container_adaptor_adapt_package_s adapt_package,
-                                                     void *addon,
-                                                     size_t addon_size);
+errno_t container_adaptor_control_configuration_init(struct container_adaptor_s **adaptor,
+													 enum container_type_e adaptor_type,
+													 struct container_allocte_package_s allocate_package,
+													 struct container_adaptor_adapt_package_s adapt_package);
+
+/**
+ * @brief This function will destroy the container adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+errno_t container_adaptor_control_configuration_destroy(struct container_adaptor_s **adaptor);
 
 /**
  * @brief This function will initialize the container struct and attach to the specified container.

@@ -42,8 +42,11 @@
 *********************************************************************************************************
 */
 
-/* Configure    vector ptr type.                                                                        */
-typedef struct queue_s 
+/**
+ * @brief This type is the queue structure typedef.
+ */
+
+typedef struct container_adaptor_s
 *queue_stp,
 **queue_stpp;
 
@@ -54,18 +57,18 @@ typedef struct queue_s
 struct queue_control_t {
 	struct {
 		/* @brief This function will initialize the queue struct and the specified container.           */
-		void (*init)(queue_stpp queue,
-					 enum container_type_e type,
-					 container_size_t element_size,
-					 generic_type_element_assign_t assign,
-					 generic_type_element_free_t free);
+		errno_t(*init)(queue_stpp queue,
+					   enum container_type_e container_type,
+					   container_size_t element_size,
+					   generic_type_element_assign_t assign,
+					   generic_type_element_free_t free);
 
-		/* @brief This function will initialize the queue struct and attach to the specified container. */
-		void (*attach)(queue_stpp queue,
-					   enum container_type_e type, void *container);
+	    /* @brief This function will initialize the queue struct and attach to the specified container. */
+		errno_t(*adapt)(queue_stpp queue,
+						void *container);
 
-		/* @brief This function will destroy the queue struct.                                          */
-		void (*destroy)(queue_stpp queue);
+	   /* @brief This function will destroy the queue struct.                                           */
+		errno_t(*destroy)(queue_stpp queue);
 	}configuration;
 
 	struct {
@@ -90,24 +93,24 @@ struct queue_control_t {
 
 	struct {
 		/* @brief This function will push the given element source to the top of the queue.             */
-		void (*push)(queue_stp queue,
-					 void *source);
+		errno_t(*push)(queue_stp queue,
+					   void *source);
 
-		/* @brief This function will push a new element on top of the queue.
-					The element is constructed in-place.                                                */
-		void (*emplace)(queue_stp queue,
-						void *destination);
+	    /* @brief This function will push a new element on top of the queue.
+					  The element is constructed in-place.                                              */
+		errno_t(*emplace)(queue_stp queue,
+						  void *destination);
 
-		/* @brief This function will remove the top element from the queue. */
-		void (*pop)(queue_stp queue);
+        /* @brief This function will remove the top element from the queue.                             */
+		errno_t(*pop)(queue_stp queue);
 
 		/* @brief This function will exchange the contents of the container adaptor with those of other.*/
-		void (*swap)(queue_stpp queue,
-					 queue_stpp other);
+		errno_t(*swap)(queue_stpp queue,
+					   queue_stpp other);
 
-		/* @brief This function will erase the specified elements from the container. */
-		void (*copy)(queue_stpp destination,
-					 queue_stp source);
+	    /* @brief This function will erase the specified elements from the container.                   */
+		errno_t(*copy)(queue_stpp destination,
+					   queue_stp source);
 	}modifiers;
 };
 
@@ -130,11 +133,11 @@ struct queue_control_t {
  * @return NONE
  */
 
-void queue_control_configuration_init(queue_stpp queue,
-									  enum container_type_e type,
-									  container_size_t element_size,
-									  generic_type_element_assign_t assign,
-									  generic_type_element_free_t free);
+errno_t queue_control_configuration_init(queue_stpp queue,
+										 enum container_type_e container_type,
+										 container_size_t element_size,
+										 generic_type_element_assign_t assign,
+										 generic_type_element_free_t free);
 
 /**
  * @brief This function will initialize the queue struct and attach to the specified container.
@@ -146,8 +149,8 @@ void queue_control_configuration_init(queue_stpp queue,
  * @return NONE
  */
 
-void queue_control_configuration_attach(queue_stpp queue,
-										enum container_type_e type, void *container);
+errno_t queue_control_configuration_adapt(queue_stpp queue,
+										  void *container);
 
 /**
  * @brief This function will destroy the queue struct
@@ -157,7 +160,7 @@ void queue_control_configuration_attach(queue_stpp queue,
  * @return NONE
  */
 
-void queue_control_configuration_destroy(queue_stpp queue);
+errno_t queue_control_configuration_destroy(queue_stpp queue);
 
 /**
  * @brief This function will return reference to the first element in the queue.
@@ -187,6 +190,8 @@ void *queue_control_element_access_back(queue_stp queue);
  * @return NONE
  */
 
+bool queue_control_capacity_empty(queue_stp queue);
+
 /**
  * @brief This function will returns the number of elements in the container.
  *
@@ -198,17 +203,6 @@ void *queue_control_element_access_back(queue_stp queue);
 container_size_t queue_control_capacity_size(queue_stp queue);
 
 /**
- * @brief This function will push the given element source to the top of the queue.
- *
- * @param queue the pointer to container adapter struct
- * @param source the pointer to source
- *
- * @return NONE
- */
-
-bool queue_control_capacity_empty(queue_stp queue);
-
-/**
  * @brief This function will return the number of elements in the underlying container.
  *
  * @param queue the pointer to container adapter struct
@@ -218,7 +212,16 @@ bool queue_control_capacity_empty(queue_stp queue);
 
 container_size_t queue_control_capacity_max_size(queue_stp queue);
 
-void queue_control_modifiers_push(queue_stp queue, void *source);
+/**
+ * @brief This function will push the given element source to the top of the queue.
+ *
+ * @param queue the pointer to container adapter struct
+ * @param source the pointer to source
+ *
+ * @return NONE
+ */
+
+errno_t queue_control_modifiers_push(queue_stp queue, void *source);
 
 /**
  * @brief This function will push a new element on top of the queue. The element is constructed in-place.
@@ -229,7 +232,7 @@ void queue_control_modifiers_push(queue_stp queue, void *source);
  * @return NONE
  */
 
-void queue_control_modifiers_emplace(queue_stp queue, void *destination);
+errno_t queue_control_modifiers_emplace(queue_stp queue, void *destination);
 
 /**
  * @brief This function will remove the top element from the queue.
@@ -239,7 +242,7 @@ void queue_control_modifiers_emplace(queue_stp queue, void *destination);
  * @return NONE
  */
 
-void queue_control_modifiers_pop(queue_stp queue);
+errno_t queue_control_modifiers_pop(queue_stp queue);
 
 /**
  * @brief This function will exchange the contents of the container adaptor with those of other.
@@ -250,7 +253,7 @@ void queue_control_modifiers_pop(queue_stp queue);
  * @return NONE
  */
 
-void queue_control_modifiers_swap(queue_stpp queue, queue_stpp other);
+errno_t queue_control_modifiers_swap(queue_stpp queue, queue_stpp other);
 
 /**
  * @brief This function will copy the contents of the container adaptor to those of other.
@@ -261,7 +264,7 @@ void queue_control_modifiers_swap(queue_stpp queue, queue_stpp other);
  * @return NONE
  */
 
-void queue_control_modifiers_copy(queue_stpp destination, queue_stp source);
+errno_t queue_control_modifiers_copy(queue_stpp destination, queue_stp source);
 
 /*
 *********************************************************************************************************

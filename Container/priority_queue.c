@@ -53,29 +53,21 @@ struct priority_queue_addon_s {
 
 struct priority_queue_control_s priority_queue_ctrl =
 {
-	priority_queue_control_configuration_init,
+	.configuration.init = priority_queue_control_configuration_init,
+	.configuration.adapt = priority_queue_control_configuration_adapt,
+	.configuration.destroy = priority_queue_control_configuration_destroy,
 
-	priority_queue_control_configuration_adapt,
+	.element_access.top = priority_queue_control_element_access_top,
 
-	priority_queue_control_configuration_destroy,
+	.capacity.empty = priority_queue_control_capacity_empty,
+	.capacity.size = priority_queue_control_capacity_size,
+	.capacity.max_size = priority_queue_control_capacity_max_size,
 
-	priority_queue_control_element_access_top,
-
-	priority_queue_control_capacity_empty,
-
-	priority_queue_control_capacity_size,
-
-	priority_queue_control_capacity_max_size,
-
-	priority_queue_control_modifiers_push,
-
-	priority_queue_control_modifiers_emplace,
-
-	priority_queue_control_modifiers_pop,
-
-	priority_queue_control_modifiers_swap,
-
-	priority_queue_control_modifiers_copy
+	.modifiers.push = priority_queue_control_modifiers_push,
+	.modifiers.emplace = priority_queue_control_modifiers_emplace,
+	.modifiers.pop = priority_queue_control_modifiers_pop,
+	.modifiers.swap = priority_queue_control_modifiers_swap,
+	.modifiers.copy = priority_queue_control_modifiers_copy
 };
 
 /**
@@ -83,14 +75,17 @@ struct priority_queue_control_s priority_queue_ctrl =
  */
 
 struct container_allocte_package_s
-	priprity_queue_contro_allocate_package = { 0 };
+	priority_queue_contro_allocate_package = {
+	.allocator_type = PRIORITY_QUEUE_CFG_ALLOCATOR_TYPE ,
+	.container_mem_size = sizeof(struct container_adaptor_s) + sizeof(struct priority_queue_addon_s)
+};
 
 /**
  * @brief This struct is the priority queue adapt package
  */
 
 struct container_adaptor_adapt_package_s
-	priprity_queue_control_adapt_package = { 0 };
+	priority_queue_control_adapt_package = { 0 };
 
 /*
 *********************************************************************************************************
@@ -105,7 +100,7 @@ struct container_adaptor_adapt_package_s
 */
 
 /**
- * @brief This function will initialize the priority_queue struct and the specified container_ptr.
+ * @brief This function will initialize the priority_queue struct and the specified container.
  *
  * @param priority_queue the pointer to container_ptr adapter struct pointer
  * @param type the type of the container_ptr
@@ -127,49 +122,35 @@ errno_t priority_queue_control_configuration_init(priority_queue_stpp priority_q
 	assert(priority_queue);
 	assert(element_size);
 
-	errno_t err = 0;
-
 	if (container_type) {
 		container_type = PRIORITY_QUEUE_CFG_DEFAULT_ADAPT_CONTAINER_TYPE;
 	}
 
-	if (NULL == compare) {
-		compare = &compare_control_greater;
+	priority_queue_contro_allocate_package.arg_list_ptr = NULL;								/* Set the allocate package */
+
+	priority_queue_control_adapt_package.container_ptr = NULL;								/* Set the adapt package */
+	priority_queue_control_adapt_package.container_type = container_type;
+	priority_queue_control_adapt_package.element_size = element_size;
+	priority_queue_control_adapt_package.assign_ptr = assign;
+	priority_queue_control_adapt_package.free_ptr = free;
+
+	if (container_adaptor_control_configuration_init(priority_queue,						/* Initialize the container adaptor */
+													 PRIORITY_QUEUE,
+													 priority_queue_contro_allocate_package,
+													 priority_queue_control_adapt_package)) {
+		return 1;
 	}
 
-	priprity_queue_contro_allocate_package
-		.allocator_type = PRIORITY_QUEUE_CFG_ALLOCATOR_TYPE;
-	priprity_queue_contro_allocate_package
-		.container_mem_size
-		= sizeof(struct container_adaptor_s) + sizeof(struct priority_queue_addon_s);
-	priprity_queue_contro_allocate_package
-		.arg_list_ptr = NULL;
-
-	priprity_queue_control_adapt_package.container_ptr = NULL;
-	priprity_queue_control_adapt_package.container_type = container_type;
-	priprity_queue_control_adapt_package.element_size = element_size;
-	priprity_queue_control_adapt_package.assign_ptr = assign;
-	priprity_queue_control_adapt_package.free_ptr = free;
-
-	struct priority_queue_addon_s addon
-		= { compare };
-
-	if (err = container_adapotr_control_configuration_init(priority_queue,
-														   PRIORITY_QUEUE,
-														   priprity_queue_contro_allocate_package,
-														   priprity_queue_control_adapt_package,
-														   &addon,
-														   sizeof(struct priority_queue_addon_s))) {
-		goto EXIT;
+	if (priority_queue_control_configuration_change_compare(*priority_queue,				/* Set the addon */
+															compare)) {
+		return 2;
 	}
 
-EXIT:
-
-	return err;
+	return 0;
 }
 
 /**
- * @brief This function will initialize the priority_queue struct and attach to the specified container_ptr.
+ * @brief This function will initialize the priority_queue struct and attach to the specified container.
  *
  * @param priority_queue the pointer to container_ptr adapter struct pointer
  * @param container_ptr the pointer to container_ptr pointer
@@ -185,79 +166,58 @@ errno_t priority_queue_control_configuration_adapt(priority_queue_stpp priority_
 	assert(priority_queue);
 	assert(container);
 
-	errno_t err = 0;
+	priority_queue_contro_allocate_package.arg_list_ptr = NULL;								/* Set the allocate package */
 
-	if (NULL == compare) {
-		compare = &compare_control_greater;
+	priority_queue_control_adapt_package.container_ptr = container;							/* Set the adapt package */
+
+	if (container_adaptor_control_configuration_init(priority_queue,						/* Initialize the container adaptor */
+													 PRIORITY_QUEUE,
+													 priority_queue_contro_allocate_package,
+													 priority_queue_control_adapt_package)) {
+		return 1;
 	}
 
-	priprity_queue_contro_allocate_package
-		.allocator_type = PRIORITY_QUEUE_CFG_ALLOCATOR_TYPE;
-	priprity_queue_contro_allocate_package
-		.container_mem_size
-		= sizeof(struct container_adaptor_s) + sizeof(struct priority_queue_addon_s);
-	priprity_queue_contro_allocate_package
-		.arg_list_ptr = NULL;
+	if (priority_queue_control_configuration_change_compare(*priority_queue,				/* Set the addon */
+															compare)) {
+		return 2;
+	}
 
-	priprity_queue_control_adapt_package.container_ptr = container;
-	priprity_queue_control_adapt_package.container_type = 0u;
-	priprity_queue_control_adapt_package.element_size = 0u;
-	priprity_queue_control_adapt_package.assign_ptr = NULL;
-	priprity_queue_control_adapt_package.free_ptr = NULL;
+	return 0;
+}
+
+/**
+ * @brief This function will initialize the priority_queue struct and attach to the specified container.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+errno_t priority_queue_control_configuration_change_compare(priority_queue_stp priority_queue,
+															compare_t compare)
+{
+	assert(priority_queue);
+
+	if (NULL == compare) {
+		struct priority_queue_addon_s *priority_queue_addon = (void *)priority_queue->addon;
+
+		if (NULL != priority_queue_addon->compare_ptr) {
+			goto EXIT;
+		}
+
+		compare = &compare_control_greater;
+	}
 
 	struct priority_queue_addon_s addon
 		= { compare };
 
-	if (err = container_adapotr_control_configuration_init(priority_queue,
-														   PRIORITY_QUEUE,
-														   priprity_queue_contro_allocate_package,
-														   priprity_queue_control_adapt_package,
-														   &addon,
-														   sizeof(struct priority_queue_addon_s))) {
-		return err;
+	if (NULL == memcpy(priority_queue->addon, &addon, sizeof(struct priority_queue_addon_s))) {
+		return -1;
 	}
 
+EXIT:
+
 	return 0;
-
-	//if (NULL == compare) {
-	//	compare = &PRIORITY_QUEUE_CFG_COMPARE_ALGORITHM_TYPE;
-	//}
-
-	//struct priority_queue_addon_s addon
-	//	= { compare };
-
-	//struct container_control_configuration_allocate_return_s init_return
-	//	= container_control_configuration_allocate(priority_queue,
-	//											   sizeof(struct container_adaptor_s)
-	//											   + sizeof(struct priority_queue_addon_s),
-	//											   NULL);
-
-	//struct container_control_configuration_adapt_return_s adapt_return
-	//	= container_adaptor_control_configuration_adapt(priority_queue,
-	//													container,
-	//													0,
-	//													0,
-	//													NULL,
-	//													NULL);
-
-	//if (init_return.error) {
-	//	return init_return.error;
-	//}
-
-	//if (adapt_return.error) {
-	//	return adapt_return.error;
-	//}
-
-	//(*priority_queue)->container_type_id = PRIORITY_QUEUE;									/* Assign priority_queue structure					*/
-
-	//(*priority_queue)->allocator_control_ptr = init_return.allocator_control_ptr;
-	//(*priority_queue)->allocator_ptr = init_return.allocator_ptr;
-	//(*priority_queue)->container_control_ptr = adapt_return.container_control_ptr;
-	//(*priority_queue)->container_ptr = adapt_return.container_ptr;
-
-	//memcpy((*priority_queue)->addon, &addon, sizeof(struct priority_queue_addon_s));
-
-	//return 0;
 }
 
 /**
@@ -268,37 +228,13 @@ errno_t priority_queue_control_configuration_adapt(priority_queue_stpp priority_
  * @return NONE
  */
 
-errno_t priority_queue_control_configuration_destroy(priority_queue_stpp priority_queue)
+extern inline errno_t
+priority_queue_control_configuration_destroy(priority_queue_stpp priority_queue)
 {
 	assert(priority_queue);
+	assert(*priority_queue);
 
-	#if (STACK_CFG_DEBUG_EN)
-
-	printf("destroy.priority_queue container_ptr : %p \r\n", (*priority_queue)->container_ptr);
-	printf("destroy.priority_queue allocator_ptr : %p \r\n", (*priority_queue)->allocator_ptr);
-	printf("destroy.priority_queue block : %p \r\n", (*priority_queue));
-
-	#endif // (STACK_CFG_DEBUG_EN)
-
-	void
-		*container_ptr = NULL;																	/* Variables pointer to	the specified container_ptr struct */
-
-	void
-		*allocator_ptr = (*priority_queue)->allocator_ptr;;											/* Variables pointer to	the allocator_ptr struct */
-
-	struct allocator_control_s
-		*allocator_control_ptr = (*priority_queue)->allocator_control_ptr;
-
-	(*priority_queue)->container_control_ptr->configuration.
-		destroy(&(*priority_queue)->container_ptr);												/* Destroy the container_ptr */
-
-	allocator_control_ptr->deallocate(allocator_ptr, (*priority_queue), 1);							/* Deallocate #2 */
-
-	allocator_control_ptr->configuration.destroy(&allocator_ptr);
-
-	*priority_queue = NULL;
-
-	return 0;
+	return container_adaptor_control_configuration_destroy(priority_queue);
 }
 
 /**
@@ -314,9 +250,9 @@ void *priority_queue_control_element_access_top(priority_queue_stp priority_queu
 	assert(priority_queue);
 
 	void
-		*container_ptr = NULL;																	/* Variables pointer to	the specified container_ptr struct */
+		*container_ptr = NULL;																/* Variables pointer to	the specified container_ptr struct */
 
-	return priority_queue->container_control_ptr->element_access.								/* Get the back element of the container_ptr */
+	return priority_queue->container_control_ptr->element_access.							/* Get the back element of the container_ptr */
 		at(priority_queue->container_ptr,
 		   priority_queue->container_control_ptr->capacity.
 		   size(priority_queue->container_ptr) - 1);
@@ -354,13 +290,8 @@ container_size_t priority_queue_control_capacity_size(priority_queue_stp priorit
 {
 	assert(priority_queue);
 
-	#if (STACK_CFG_DEBUG_EN)
-
-	printf("priority_queue.size : %d \r\n", priority_queue->container_control_ptr->capacity.size(priority_queue->container_ptr));
-
-	#endif // (STACK_CFG_DEBUG_EN)
-
-	return priority_queue->container_control_ptr->capacity.size(priority_queue->container_ptr);		/* Get the number of elements in the container_ptr */
+	return priority_queue->container_control_ptr->capacity
+		.size(priority_queue->container_ptr);												/* Get the number of elements in the container_ptr */
 }
 
 /**
@@ -376,7 +307,8 @@ container_size_t priority_queue_control_capacity_max_size(priority_queue_stp pri
 {
 	assert(priority_queue);
 
-	return priority_queue->container_control_ptr->capacity.max_size(priority_queue->container_ptr);	/* Get the maximum number of elements the container_ptr
+	return priority_queue->container_control_ptr->capacity
+		.max_size(priority_queue->container_ptr);											/* Get the maximum number of elements the container_ptr
 																								is able to hold due to system or library implementation limitations */
 }
 
@@ -389,23 +321,27 @@ container_size_t priority_queue_control_capacity_max_size(priority_queue_stp pri
  * @return NONE
  */
 
-void priority_queue_control_modifiers_push(priority_queue_stp priority_queue, void *source)
+errno_t priority_queue_control_modifiers_push(priority_queue_stp priority_queue, void *source)
 {
 	assert(priority_queue);
 
 	struct priority_queue_addon_s *priority_queue_addon = (void *)priority_queue->addon;
 
-	priority_queue->container_control_ptr->modifiers.insert(priority_queue->container_ptr,			/* Insert the given element source to the back of the container_ptr */
-															priority_queue->container_control_ptr->capacity.size(priority_queue->container_ptr), 1, &source);
+	priority_queue->container_control_ptr->modifiers
+		.insert(priority_queue->container_ptr,												/* Insert the given element source to the back of the container_ptr */
+				priority_queue->container_control_ptr->capacity
+				.size(priority_queue->container_ptr), 1, &source);
 
-	if (NULL != priority_queue->container_control_ptr->list_operations.sort) {					/* If the container_ptr have sort prototype */
-		priority_queue->container_control_ptr->list_operations.sort(priority_queue->container_ptr,
-																	priority_queue_addon->compare_ptr);
+	if (NULL != priority_queue->container_control_ptr->list_operations.sort) {				/* If the container_ptr have sort prototype */
+		priority_queue->container_control_ptr->list_operations
+			.sort(priority_queue->container_ptr, priority_queue_addon->compare_ptr);
 	} else {
 		while (true) {
 		// TODO ...,if enter here please wait further update, or you can fix it, thanks.
 		}
 	}
+
+	return 0;
 }
 
 /**
@@ -417,9 +353,11 @@ void priority_queue_control_modifiers_push(priority_queue_stp priority_queue, vo
  * @return NONE
  */
 
-void priority_queue_control_modifiers_emplace(priority_queue_stp priority_queue, void *destination)
+errno_t priority_queue_control_modifiers_emplace(priority_queue_stp priority_queue, void *destination)
 {
 	assert(priority_queue);
+
+	return 0;
 }
 
 /**
@@ -430,13 +368,16 @@ void priority_queue_control_modifiers_emplace(priority_queue_stp priority_queue,
  * @return NONE
  */
 
-void priority_queue_control_modifiers_pop(priority_queue_stp priority_queue)
+errno_t priority_queue_control_modifiers_pop(priority_queue_stp priority_queue)
 {
 	assert(priority_queue);
 
-	priority_queue->container_control_ptr->modifiers.earse(priority_queue->container_ptr,			/* Earse back element of the container_ptr. */
-														   priority_queue->container_control_ptr->capacity.
-														   size(priority_queue->container_ptr) - 1);
+	priority_queue->container_control_ptr->modifiers
+		.earse(priority_queue->container_ptr,												/* Earse back element of the container_ptr. */
+			   priority_queue->container_control_ptr->capacity.
+			   size(priority_queue->container_ptr) - 1);
+
+	return 0;
 }
 
 /**
@@ -448,11 +389,14 @@ void priority_queue_control_modifiers_pop(priority_queue_stp priority_queue)
  * @return NONE
  */
 
-void priority_queue_control_modifiers_swap(priority_queue_stpp priority_queue, priority_queue_stpp other)
+errno_t priority_queue_control_modifiers_swap(priority_queue_stpp priority_queue, priority_queue_stpp other)
 {
 	assert(priority_queue);
 
-	(*priority_queue)->container_control_ptr->modifiers.swap(&(*priority_queue)->container_ptr, &(*other)->container_ptr);/* exchange the contents of the container_ptr adaptor with those of other */
+	(*priority_queue)->container_control_ptr->modifiers
+		.swap(&(*priority_queue)->container_ptr, &(*other)->container_ptr);					/* exchange the contents of the container_ptr adaptor with those of other */
+
+	return 0;
 }
 
 /**
@@ -464,10 +408,13 @@ void priority_queue_control_modifiers_swap(priority_queue_stpp priority_queue, p
  * @return NONE
  */
 
-void priority_queue_control_modifiers_copy(priority_queue_stpp destination, priority_queue_stp source)
+errno_t priority_queue_control_modifiers_copy(priority_queue_stpp destination, priority_queue_stp source)
 {
 	assert(destination);
 	assert(source);
 
-	(*destination)->container_control_ptr->modifiers.copy(&(*destination)->container_ptr, source->container_ptr);		/* copy the contents of the container_ptr adaptor to those of other */
+	(*destination)->container_control_ptr->modifiers
+		.copy(&(*destination)->container_ptr, source->container_ptr);						/* copy the contents of the container_ptr adaptor to those of other */
+
+	return 0;
 }

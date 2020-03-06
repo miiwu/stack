@@ -8,6 +8,8 @@ This package contains some simple data structures together.
 
 ![Constructing](<https://github.com/Miao-Mico/stack/blob/master/constructing.png>)
 
+I am confused that if it is necessary for unified structure? 
+
 ## Feature
 
 - **Generic Type Element**

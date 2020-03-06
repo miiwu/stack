@@ -45,6 +45,18 @@
 */
 
 /**
+ * @brief This function will initialize the container adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+errno_t container_adaptor_control_configuration_allocate(struct container_adaptor_s **adaptor,
+														 enum container_type_e adaptor_type,
+														 struct container_allocte_package_s package);
+
+/**
  * @brief This function will let container adaptor adapt the container
  *			that introduced or initialized by parameters.
  *
@@ -77,40 +89,70 @@ container_adaptor_control_configuration_adapt(struct container_adaptor_s *adapto
  * @return void
  */
 
-errno_t container_adapotr_control_configuration_init(struct container_adaptor_s **adaptor,
+errno_t container_adaptor_control_configuration_init(struct container_adaptor_s **adaptor,
 													 enum container_type_e adaptor_type,
 													 struct container_allocte_package_s allocate_package,
-													 struct container_adaptor_adapt_package_s adapt_package,
-													 void *addon,
-													 size_t addon_size)
+													 struct container_adaptor_adapt_package_s adapt_package)
 {
 	assert(adaptor);
 	assert(adaptor_type);
-	assert(allocate_package.allocator_type &&
-		   allocate_package.container_mem_size);
+	assert(allocate_package.allocator_type
+		   && allocate_package.container_mem_size);
 	assert(adapt_package.container_ptr
 		   || (adapt_package.container_type
 			   && adapt_package.element_size));
 
+	errno_t err = 0;
+
+	if (NULL == (*adaptor)) {
+		if (err
+			= container_adaptor_control_configuration_allocate(adaptor,					/* Allocate the container adaptor */
+															   PRIORITY_QUEUE,
+															   allocate_package)) {
+			goto EXIT;
+		}
+	}
+
+	if (err
+		= container_adaptor_control_configuration_adapt((*adaptor),					/* Adapt the package to the container adaptor */
+														adapt_package)) {
+		goto EXIT;
+	}
+
+EXIT:
+
+	return 0;
+}
+
+/**
+ * @brief This function will allocate the container adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+errno_t container_adaptor_control_configuration_allocate(struct container_adaptor_s **adaptor,
+														 enum container_type_e adaptor_type,
+														 struct container_allocte_package_s package)
+{
+	assert(adaptor);
+	assert(adaptor_type);
+	assert(package.allocator_type &&
+		   package.container_mem_size);
+
 	struct container_control_configuration_allocate_return_s allocate_return = { 0 };
 
 	if ((allocate_return
-		 = container_control_configuration_allocate(adaptor, allocate_package))		/* Allocate the adaptor structure */
+		 = container_control_configuration_allocate(adaptor, package))						/* Allocate the adaptor structure */
 		.error) {
 		return allocate_return.error;
 	}
 
-	if (allocate_return.error
-		= container_adaptor_control_configuration_adapt(*adaptor, adapt_package)) {	/* Adapt the container structure */
-		return allocate_return.error;
-	}
-
-	(*adaptor)->container_type_id = adaptor_type;									/* Assign priority_queue structure */
+	(*adaptor)->container_type_id = adaptor_type;											/* Assign priority_queue structure */
 
 	(*adaptor)->allocator_control_ptr = allocate_return.allocator_control_ptr;
 	(*adaptor)->allocator_ptr = allocate_return.allocator_ptr;
-
-	memcpy((*adaptor)->addon, addon, addon_size);									/* Assign the addon memory space */
 
 	return 0;
 }
@@ -153,6 +195,42 @@ container_adaptor_control_configuration_adapt(struct container_adaptor_s *adapto
 			return err_code[1];
 		}
 	}
+
+	return 0;
+}
+
+/**
+ * @brief This function will destroy the container adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+errno_t container_adaptor_control_configuration_destroy(struct container_adaptor_s **adaptor)
+{
+	assert(adaptor);
+	assert(*adaptor);
+
+	void *allocator_ptr = (*adaptor)->allocator_ptr;										/* Store the allocator_ptr of the container adaptor */
+
+	struct allocator_control_s
+		*allocator_control_ptr = (*adaptor)->allocator_control_ptr;							/* Store the allocator_control_ptr of the container adaptor */
+
+	if ((*adaptor)->container_control_ptr->configuration.
+		destroy(&(*adaptor)->container_ptr)) {												/* Destroy the container the container_ptr points to */
+		return 1;
+	}
+
+	if (allocator_control_ptr->deallocate(allocator_ptr, (*adaptor), 1)) {					/* Deallocate the container adaptor */
+		return 2;
+	}
+
+	if (allocator_control_ptr->configuration.destroy(&allocator_ptr)) {						/* Destroy the allocator that the allocator_ptr itself */
+		return 3;
+	}
+
+	*adaptor = NULL;
 
 	return 0;
 }

@@ -40,7 +40,7 @@
 typedef ALLOCATOR_GLOBAL_CFG_SIZE_TYPE ALLOCATOR_SIZE_TYPEDEF;
 
 /* TODO .                                                                                               */
-typedef struct allocator_s 
+typedef struct allocator_s
 *allocator_common_stp,
 **allocator_common_stpp;
 
@@ -70,7 +70,7 @@ errno_t allocator_control_configuration_init(allocator_common_stpp allocator,
  * @return NONE
  */
 
-void allocator_control_configuration_destroy(allocator_common_stpp allocator);
+errno_t allocator_control_configuration_destroy(allocator_common_stpp allocator);
 
 /**
  * @brief This function will destroy and clean the allocator struct.
@@ -109,8 +109,8 @@ void *allocator_control_allocate(allocator_common_stp allocator,
  * @return NONE
  */
 
-void allocator_control_deallocate(allocator_common_stp allocator,
-								  void *block, ALLOCATOR_SIZE_TYPEDEF count);
+errno_t allocator_control_deallocate(allocator_common_stp allocator,
+									 void *block, ALLOCATOR_SIZE_TYPEDEF count);
 
 /*
 *********************************************************************************************************

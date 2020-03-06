@@ -115,7 +115,7 @@ void *allocator_common_function_address_tables[] =
  */
 
 errno_t allocator_control_configuration_init(allocator_common_stpp allocator,
-										 void (*lack_of_memory)(void *))
+											 void (*lack_of_memory)(void *))
 {
 	assert(allocator);
 
@@ -149,7 +149,7 @@ errno_t allocator_control_configuration_init(allocator_common_stpp allocator,
  * @return NONE
  */
 
-void allocator_control_configuration_destroy(allocator_common_stpp allocator)
+errno_t allocator_control_configuration_destroy(allocator_common_stpp allocator)
 {
 	assert(allocator);
 
@@ -182,6 +182,8 @@ void allocator_control_configuration_destroy(allocator_common_stpp allocator)
 	free((*allocator));																	            /* Free #1 */
 
 	(*allocator) = NULL;
+
+	return 0;
 }
 
 /**
@@ -194,7 +196,7 @@ void allocator_control_configuration_destroy(allocator_common_stpp allocator)
  */
 
 void allocator_control_configuration_exception(allocator_common_stp allocator,
-											  void (*lack_of_memory)(void *))
+											   void (*lack_of_memory)(void *))
 {
 	assert(allocator);
 
@@ -252,8 +254,8 @@ void *allocator_control_allocate(allocator_common_stp allocator,
  * @return NONE
  */
 
-void allocator_control_deallocate(allocator_common_stp allocator,
-								  void *block, ALLOCATOR_SIZE_TYPEDEF count)
+errno_t allocator_control_deallocate(allocator_common_stp allocator,
+									 void *block, ALLOCATOR_SIZE_TYPEDEF count)
 {
 	assert(allocator);
 
@@ -266,6 +268,8 @@ void allocator_control_deallocate(allocator_common_stp allocator,
 	debug_capture_stack_back_trace_link_link(allocator->capture_stack_back_trace_link, 1);
 
 	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+	return 0;
 }
 
 /**

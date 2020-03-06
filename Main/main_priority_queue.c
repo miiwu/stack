@@ -28,7 +28,7 @@ void main_priority_queue(void)
 {
 	priority_queue_stp
 		priority_queue = NULL,
-		priority_queue_attach = NULL,
+		priority_queue_adapt = NULL,
 		priority_queue_copy = NULL;
 
 	char
@@ -46,13 +46,13 @@ void main_priority_queue(void)
 	MAIN_PRIORITY_QUEUE_CONTAINER_CONTROL.configuration
 		.init(&priority_queue_container, sizeof(string_moudle), NULL, NULL);
 	priority_queue_ctrl.configuration
-		.adapt(&priority_queue_attach, priority_queue_container, NULL);
+		.adapt(&priority_queue_adapt, priority_queue_container, NULL);
 
 	printf("\r\npriority_queue.max_size start\r\n");
 	printf("max size : %d \r\n    ", priority_queue_ctrl.capacity.max_size(priority_queue));
 
 	printf("\r\npriority_queue_attach.max_size start\r\n");
-	printf("max size : %d \r\n    ", priority_queue_ctrl.capacity.max_size(priority_queue_attach));
+	printf("max size : %d \r\n    ", priority_queue_ctrl.capacity.max_size(priority_queue_adapt));
 
 	printf("\r\npriority_queue.push start\r\n");
 	for (size_t cnt = 0; cnt < 10; cnt++) {
@@ -60,26 +60,30 @@ void main_priority_queue(void)
 
 		priority_queue_ctrl.modifiers.push(priority_queue, string_moudle);
 
-		string_moudle[0] -= 1;
+		if (cnt % 2) {
+			string_moudle[0] -= 1;
+		} else {
+			string_moudle[0] = 'a' + 3 * (char)cnt;
+		}
 	}
 
 	printf("\r\npriority_queue.top start\r\n");
 	printf("front : \"%s\" \r\n", (char *)priority_queue_ctrl.element_access.top(priority_queue));
 
-	printf("\r\npriority_queue & priority_queue_attach.copy priority_queue start\r\n");
-	priority_queue_ctrl.modifiers.copy(&priority_queue_attach, priority_queue);
+	printf("\r\npriority_queue & priority_queue_adapt.copy priority_queue start\r\n");
+	priority_queue_ctrl.modifiers.copy(&priority_queue_adapt, priority_queue);
 
 	printf("\r\npriority_queue_attach.pop start\r\n");
 	for (size_t cnt = 0; cnt < 10; cnt++) {
-		printf("front no.%d : \"%s\" \r\n", cnt, (char *)priority_queue_ctrl.element_access.top(priority_queue_attach));
-		priority_queue_ctrl.modifiers.pop(priority_queue_attach);
+		printf("front no.%d : \"%s\" \r\n", cnt, (char *)priority_queue_ctrl.element_access.top(priority_queue_adapt));
+		priority_queue_ctrl.modifiers.pop(priority_queue_adapt);
 	}
 
 	printf("\r\npriority_queue.destroy start\r\n");
 	priority_queue_ctrl.configuration.destroy(&priority_queue);
 
 	printf("\r\npriority_queue_attach.destroy start\r\n");
-	priority_queue_ctrl.configuration.destroy(&priority_queue_attach);
+	priority_queue_ctrl.configuration.destroy(&priority_queue_adapt);
 
 	printf("\r\n ------------------------+ priority_queue demo end +------------------------\r\n");
 

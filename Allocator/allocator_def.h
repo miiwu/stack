@@ -60,7 +60,7 @@ struct allocator_control_s {
 					   void (*lack_of_memory)(void));
 
 		  /* @brief This function will destroy the allocator struct.										*/
-		void (*destroy)(void **allocator);
+		errno_t(*destroy)(void **allocator);
 
 		/* @brief This function will configure the exceptions of allocator struct.					    */
 		void (*exception)(void **allocator,
@@ -74,8 +74,8 @@ struct allocator_control_s {
 
 	/* @brief This function will deallocates the storage referenced by the pointer block,
 			  which must be a pointer obtained by an earlier call to allocate().						*/
-	void (*deallocate)(void *allocator,
-					   void *block, ALLOCATOR_GLOBAL_CFG_SIZE_TYPE count);
+	errno_t(*deallocate)(void *allocator,
+						 void *block, ALLOCATOR_GLOBAL_CFG_SIZE_TYPE count);
 };
 
 /*

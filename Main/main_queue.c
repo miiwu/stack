@@ -28,7 +28,7 @@ void main_queue(void)
 {
 	queue_stp
 		queue = NULL,
-		queue_attach = NULL,
+		queue_adapt = NULL,
 		queue_copy = NULL;
 
 	char
@@ -41,13 +41,13 @@ void main_queue(void)
 	printf("queue.init start\r\n");
 	queue_ctrl.configuration.init(&queue, MAIN_QUEUE_CONTAINER, sizeof(string_moudle), NULL, NULL);		/* Initialize queue,char[sizeof(string_moudle)] type */
 	MAIN_QUEUE_CONTAINER_CONTROL.configuration.init(&queue_container, sizeof(string_moudle), NULL, NULL);		/* Initialize queue_container,char[sizeof(string_moudle)] type */
-	queue_ctrl.configuration.attach(&queue_attach, MAIN_QUEUE_CONTAINER, queue_container);
+	queue_ctrl.configuration.adapt(&queue_adapt, queue_container);
 
 	printf("\r\nqueue.max_size start\r\n");
 	printf("max size : %d \r\n    ", queue_ctrl.capacity.max_size(queue));
 
-	printf("\r\nqueue_attach.max_size start\r\n");
-	printf("max size : %d \r\n    ", queue_ctrl.capacity.max_size(queue_attach));
+	printf("\r\nqueue_adapt.max_size start\r\n");
+	printf("max size : %d \r\n    ", queue_ctrl.capacity.max_size(queue_adapt));
 
 	printf("\r\nqueue.push start\r\n");
 	for (size_t cnt = 0; cnt < 10; cnt++) {
@@ -64,20 +64,20 @@ void main_queue(void)
 	printf("\r\nqueue.back start\r\n");
 	printf("back : \"%s\" \r\n", (char *)queue_ctrl.element_access.back(queue));
 
-	printf("\r\nqueue & queue_attach.copy queue start\r\n");
-	queue_ctrl.modifiers.copy(&queue_attach, queue);
+	printf("\r\nqueue & queue_adapt.copy queue start\r\n");
+	queue_ctrl.modifiers.copy(&queue_adapt, queue);
 
-	printf("\r\nqueue_attach.pop start\r\n");
+	printf("\r\nqueue_adapt.pop start\r\n");
 	for (size_t cnt = 0; cnt < 10; cnt++) {
-		printf("front no.%d : \"%s\" \r\n", cnt, (char *)queue_ctrl.element_access.front(queue_attach));
-		queue_ctrl.modifiers.pop(queue_attach);
+		printf("front no.%d : \"%s\" \r\n", cnt, (char *)queue_ctrl.element_access.front(queue_adapt));
+		queue_ctrl.modifiers.pop(queue_adapt);
 	}
 
 	printf("\r\nqueue.destroy start\r\n");
 	queue_ctrl.configuration.destroy(&queue);
 
-	printf("\r\nqueue_attach.destroy start\r\n");
-	queue_ctrl.configuration.destroy(&queue_attach);
+	printf("\r\nqueue_adapt.destroy start\r\n");
+	queue_ctrl.configuration.destroy(&queue_adapt);
 
 	printf("\r\n ------------------------+ queue demo end +------------------------\r\n");
 

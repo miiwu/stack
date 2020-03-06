@@ -49,23 +49,30 @@
 *********************************************************************************************************
 */
 
-/* Configure    priority queue type.																	*/
+/**
+ * @brief This type is the priority queue structure typedef.
+ */
+
 typedef struct container_adaptor_s
 *priority_queue_stp,
 **priority_queue_stpp;
+
+/**
+ * @brief This type will contain all the priority queue control functions.
+ */
 
 struct priority_queue_control_s {
 	struct {
 		/* @brief This function will initialize the priority_queue struct and the specified container.	*/
 		errno_t(*init)(priority_queue_stpp priority_queue,
-					   enum container_type_e type,
+					   enum container_type_e container_type,
 					   container_size_t element_size,
 					   compare_t compare,
 					   generic_type_element_assign_t assign,
 					   generic_type_element_free_t free);
 
-		  /* @brief This function will initialize the priority_queue struct and
-					  attach to the specified container.													*/
+		/* @brief This function will initialize the priority_queue struct and
+					attach to the specified container.													*/
 		errno_t(*adapt)(priority_queue_stpp priority_queue,
 						void *container,
 						compare_t compare);
@@ -93,24 +100,24 @@ struct priority_queue_control_s {
 
 	struct {
 		/* @brief This function will push the given element source to the top of the priority_queue.	*/
-		void (*push)(priority_queue_stp priority_queue,
-					 void *source);
+		errno_t(*push)(priority_queue_stp priority_queue,
+					   void *source);
 
-		/* @brief This function will push a new element on top of the priority_queue.
-					The element is constructed in-place.                                                */
-		void (*emplace)(priority_queue_stp priority_queue,
-						void *destination);
+		  /* @brief This function will push a new element on top of the priority_queue.
+					  The element is constructed in-place.                                                */
+		errno_t(*emplace)(priority_queue_stp priority_queue,
+						  void *destination);
 
-		/* @brief This function will remove the top element from the priority_queue.					*/
-		void (*pop)(priority_queue_stp priority_queue);
+		  /* @brief This function will remove the top element from the priority_queue.					*/
+		errno_t(*pop)(priority_queue_stp priority_queue);
 
 		/* @brief This function will exchange the contents of the container adaptor with those of other.*/
-		void (*swap)(priority_queue_stpp priority_queue,
-					 priority_queue_stpp other);
+		errno_t(*swap)(priority_queue_stpp priority_queue,
+					   priority_queue_stpp other);
 
-		/* @brief This function will erase the specified elements from the container.					*/
-		void (*copy)(priority_queue_stpp destination,
-					 priority_queue_stp source);
+		  /* @brief This function will erase the specified elements from the container.					*/
+		errno_t(*copy)(priority_queue_stpp destination,
+					   priority_queue_stp source);
 	}modifiers;
 };
 
@@ -134,7 +141,7 @@ struct priority_queue_control_s {
  */
 
 errno_t priority_queue_control_configuration_init(priority_queue_stpp priority_queue,
-												  enum container_type_e type,
+												  enum container_type_e container_type,
 												  container_size_t element_size,
 												  compare_t compare,
 												  generic_type_element_assign_t assign,
@@ -153,6 +160,17 @@ errno_t priority_queue_control_configuration_init(priority_queue_stpp priority_q
 errno_t priority_queue_control_configuration_adapt(priority_queue_stpp priority_queue,
 												   void *container,
 												   compare_t compare);
+
+/**
+ * @brief This function will initialize the priority_queue struct and attach to the specified container.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+errno_t priority_queue_control_configuration_change_compare(priority_queue_stp priority_queue,
+															compare_t compare);
 
 /**
  * @brief This function will destroy the priority_queue struct.
@@ -214,7 +232,7 @@ container_size_t priority_queue_control_capacity_max_size(priority_queue_stp pri
  * @return NONE
  */
 
-void priority_queue_control_modifiers_push(priority_queue_stp priority_queue, void *source);
+errno_t priority_queue_control_modifiers_push(priority_queue_stp priority_queue, void *source);
 
 /**
  * @brief This function will push a new element on top of the priority_queue. The element is constructed in-place.
@@ -225,7 +243,7 @@ void priority_queue_control_modifiers_push(priority_queue_stp priority_queue, vo
  * @return NONE
  */
 
-void priority_queue_control_modifiers_emplace(priority_queue_stp priority_queue, void *destination);
+errno_t priority_queue_control_modifiers_emplace(priority_queue_stp priority_queue, void *destination);
 
 /**
  * @brief This function will remove the top element from the priority_queue.
@@ -235,7 +253,7 @@ void priority_queue_control_modifiers_emplace(priority_queue_stp priority_queue,
  * @return NONE
  */
 
-void priority_queue_control_modifiers_pop(priority_queue_stp priority_queue);
+errno_t priority_queue_control_modifiers_pop(priority_queue_stp priority_queue);
 
 /**
  * @brief This function will exchange the contents of the container adaptor with those of other.
@@ -246,7 +264,7 @@ void priority_queue_control_modifiers_pop(priority_queue_stp priority_queue);
  * @return NONE
  */
 
-void priority_queue_control_modifiers_swap(priority_queue_stpp priority_queue, priority_queue_stpp other);
+errno_t priority_queue_control_modifiers_swap(priority_queue_stpp priority_queue, priority_queue_stpp other);
 
 /**
  * @brief This function will copy the contents of the container adaptor to those of other.
@@ -257,7 +275,7 @@ void priority_queue_control_modifiers_swap(priority_queue_stpp priority_queue, p
  * @return NONE
  */
 
-void priority_queue_control_modifiers_copy(priority_queue_stpp destination, priority_queue_stp source);
+errno_t priority_queue_control_modifiers_copy(priority_queue_stpp destination, priority_queue_stp source);
 
 /*
 *********************************************************************************************************
