@@ -49,6 +49,18 @@ struct container_adaptor_adapt_package_s {
 	generic_type_element_free_t free_ptr;
 };
 
+/**
+ * @brief This struct is the container adaptor structure.
+ */
+
+struct container_adaptor_container_package_s {
+    /* @brief This variables will point to the function address table of front container_ptr type.		*/
+    struct container_control_s *container_control_ptr;
+
+    /* @brief This variables will point to the container_ptr.											*/
+    void *container_ptr;
+};
+
 /*
 *********************************************************************************************************
 *								            FUNCTION PROTOTYPES
@@ -86,7 +98,18 @@ errno_t container_adaptor_control_configuration_destroy(struct container_adaptor
  * @return the pointer to the specified container function address table.
  */
 
-extern void *container_adaptor_control_get_container_func_addr_table(enum container_type_e type);
+void *container_adaptor_control_get_container_func_addr_table(enum container_type_e type);
+
+/**
+ * @brief This function will get and return the container of the adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+struct container_adaptor_container_package_s
+    container_adaptor_control_get_container(struct container_adaptor_s *adaptor);
 
 /*
 *********************************************************************************************************

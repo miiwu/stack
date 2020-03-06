@@ -48,6 +48,11 @@ void main_priority_queue(void)
 	priority_queue_ctrl.configuration
 		.adapt(&priority_queue_adapt, priority_queue_container, NULL);
 
+	printf("priority_queue.adapt start\r\n");
+	printf("container:%p container_control:%p \r\n",
+		   priority_queue_ctrl.get_container(priority_queue_adapt).container_ptr,
+		   priority_queue_ctrl.get_container(priority_queue_adapt).container_control_ptr);
+
 	printf("\r\npriority_queue.max_size start\r\n");
 	printf("max size : %d \r\n    ", priority_queue_ctrl.capacity.max_size(priority_queue));
 

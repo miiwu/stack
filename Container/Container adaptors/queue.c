@@ -59,7 +59,9 @@ struct queue_control_t queue_ctrl =
 	.modifiers.emplace = queue_control_modifiers_emplace,
 	.modifiers.pop = queue_control_modifiers_pop,
 	.modifiers.swap = queue_control_modifiers_swap,
-	.modifiers.copy = queue_control_modifiers_copy
+	.modifiers.copy = queue_control_modifiers_copy,
+
+	.get_container = container_adaptor_control_get_container,
 };
 
 /**

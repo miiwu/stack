@@ -60,7 +60,9 @@ struct stack_control_s stack_ctrl =
 	.modifiers.emplace = stack_control_modifiers_emplace,
 	.modifiers.pop = stack_control_modifiers_pop,
 	.modifiers.swap = stack_control_modifiers_swap,
-	.modifiers.copy = stack_control_modifiers_copy
+	.modifiers.copy = stack_control_modifiers_copy,
+
+	.get_container = container_adaptor_control_get_container,
 };
 
 #endif // (STACK_CFG_INTEGRATED_STRUCTURE_MODE_EN)

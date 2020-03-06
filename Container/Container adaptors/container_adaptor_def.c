@@ -236,6 +236,27 @@ errno_t container_adaptor_control_configuration_destroy(struct container_adaptor
 }
 
 /**
+ * @brief This function will get and return the container of the adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+extern inline struct container_adaptor_container_package_s
+container_adaptor_control_get_container(struct container_adaptor_s *adaptor)
+{
+	assert(adaptor);
+
+	struct container_adaptor_container_package_s container_package = {
+		.container_control_ptr = adaptor->container_control_ptr,
+		.container_ptr = adaptor->container_ptr,
+	};
+
+	return container_package;
+}
+
+/**
  * @brief This function will convert and return the function address table
  *			that is related to the specified container type.
  *

@@ -63,11 +63,11 @@ struct stack_control_s {
 					   generic_type_element_assign_t assign,
 					   generic_type_element_free_t free);
 
-		  /* @brief This function will initialize the stack struct and attach to the specified container. */
+	    /* @brief This function will initialize the stack struct and attach to the specified container. */
 		errno_t(*adapt)(stack_stpp stack,
 						void *container);
 
-		 /* @brief This function will destroy the stack struct.                                          */
+		 /* @brief This function will destroy the stack struct.                                         */
 		errno_t(*destroy)(stack_stpp stack);
 	}configuration;
 
@@ -93,22 +93,25 @@ struct stack_control_s {
 		errno_t(*push)(stack_stp stack,
 					   void *source);
 
-		  /* @brief This function will push a new element on top of the stack.
-					  The element is constructed in-place.                                                */
+	    /* @brief This function will push a new element on top of the stack.
+					  The element is constructed in-place.                                              */
 		errno_t(*emplace)(stack_stp stack,
 						  void *destination);
 
-		  /* @brief This function will remove the top element from the stack.                             */
+	    /* @brief This function will remove the top element from the stack.                             */
 		errno_t(*pop)(stack_stp stack);
 
 		/* @brief This function will exchange the contents of the container adaptor with those of other.*/
 		errno_t(*swap)(stack_stpp stack,
 					   stack_stpp other);
 
-		  /* @brief This function will erase the specified elements from the container.                   */
+	    /* @brief This function will erase the specified elements from the container.                   */
 		errno_t(*copy)(stack_stpp destination,
 					   stack_stp source);
 	}modifiers;
+
+	/* @brief This function will get the bottom container of this adaptor.					            */
+	struct container_adaptor_container_package_s(*get_container)(struct container_adaptor_s *adaptor);
 };
 
 /*
@@ -136,26 +139,26 @@ errno_t stack_control_configuration_init(stack_stpp stack,
 										 generic_type_element_assign_t assign,
 										 generic_type_element_free_t free);
 
-   /**
-	* @brief This function will initialize the stack struct and attach to the specified container.
-	*
-	* @param stack the pointer to container adapter struct pointer
-	* @param container the pointer to container pointer
-	* @param func_addr_table the pointer to the function address table of the specified container
-	*
-	* @return NONE
-	*/
+/**
+ * @brief This function will initialize the stack struct and attach to the specified container.
+ *
+ * @param stack the pointer to container adapter struct pointer
+ * @param container the pointer to container pointer
+ * @param func_addr_table the pointer to the function address table of the specified container
+ *
+ * @return NONE
+ */
 
 errno_t stack_control_configuration_adapt(stack_stpp stack,
 										  void *container);
 
-  /**
-   * @brief This function will destroy the stack struct
-   *
-   * @param stack the pointer to container adapter struct pointer
-   *
-   * @return NONE
-   */
+/**
+ * @brief This function will destroy the stack struct
+ *
+ * @param stack the pointer to container adapter struct pointer
+ *
+ * @return NONE
+ */
 
 errno_t stack_control_configuration_destroy(stack_stpp stack);
 

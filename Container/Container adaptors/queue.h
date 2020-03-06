@@ -112,6 +112,9 @@ struct queue_control_t {
 		errno_t(*copy)(queue_stpp destination,
 					   queue_stp source);
 	}modifiers;
+
+	/* @brief This function will get the bottom container of this adaptor.					            */
+	struct container_adaptor_container_package_s(*get_container)(struct container_adaptor_s *adaptor);
 };
 
 /*

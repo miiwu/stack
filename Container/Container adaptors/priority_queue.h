@@ -7,8 +7,8 @@
 *********************************************************************************************************
 */
 
-#ifndef __PRIORITY_PRIORITY_QUEUE_H
-#define __PRIORITY_PRIORITY_QUEUE_H
+#ifndef __PRIORITY_QUEUE_H
+#define __PRIORITY_QUEUE_H
 
 /*
 *********************************************************************************************************
@@ -103,22 +103,25 @@ struct priority_queue_control_s {
 		errno_t(*push)(priority_queue_stp priority_queue,
 					   void *source);
 
-		  /* @brief This function will push a new element on top of the priority_queue.
-					  The element is constructed in-place.                                                */
+	    /* @brief This function will push a new element on top of the priority_queue.
+                    The element is constructed in-place.                                                */
 		errno_t(*emplace)(priority_queue_stp priority_queue,
 						  void *destination);
 
-		  /* @brief This function will remove the top element from the priority_queue.					*/
+	    /* @brief This function will remove the top element from the priority_queue.					*/
 		errno_t(*pop)(priority_queue_stp priority_queue);
 
 		/* @brief This function will exchange the contents of the container adaptor with those of other.*/
 		errno_t(*swap)(priority_queue_stpp priority_queue,
 					   priority_queue_stpp other);
 
-		  /* @brief This function will erase the specified elements from the container.					*/
+	    /* @brief This function will erase the specified elements from the container.					*/
 		errno_t(*copy)(priority_queue_stpp destination,
 					   priority_queue_stp source);
 	}modifiers;
+
+    /* @brief This function will get the bottom container of this adaptor.					            */
+    struct container_adaptor_container_package_s (*get_container)(struct container_adaptor_s *adaptor);
 };
 
 /*
@@ -291,4 +294,4 @@ extern struct priority_queue_control_s priority_queue_ctrl;
 *********************************************************************************************************
 */
 
-#endif // !__PRIORITY_PRIORITY_QUEUE_H
+#endif // !__PRIORITY_QUEUE_H

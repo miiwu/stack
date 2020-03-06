@@ -193,12 +193,9 @@ errno_t list_family_control_configuration_init(list_family_stpp list,
 
 	struct container_control_configuration_allocate_return_s allocate_return = { 0 };
 
-	list_family_control_allocate_package
-		.allocator_type = allocator_type;
-	list_family_control_allocate_package
-		.container_mem_size = sizeof(struct container_family_s);
-	list_family_control_allocate_package
-		.arg_list_ptr = NULL;
+	list_family_control_allocate_package.allocator_type = allocator_type;
+	list_family_control_allocate_package.container_mem_size = sizeof(struct container_family_s);
+	list_family_control_allocate_package.arg_list_ptr = NULL;
 
 	if ((allocate_return							
 		 = container_control_configuration_allocate											/* Allocate the adaptor structure */

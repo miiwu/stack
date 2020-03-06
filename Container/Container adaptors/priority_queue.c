@@ -67,7 +67,9 @@ struct priority_queue_control_s priority_queue_ctrl =
 	.modifiers.emplace = priority_queue_control_modifiers_emplace,
 	.modifiers.pop = priority_queue_control_modifiers_pop,
 	.modifiers.swap = priority_queue_control_modifiers_swap,
-	.modifiers.copy = priority_queue_control_modifiers_copy
+	.modifiers.copy = priority_queue_control_modifiers_copy,
+
+	.get_container = container_adaptor_control_get_container,
 };
 
 /**
