@@ -42,10 +42,13 @@
 *********************************************************************************************************
 */
 
-/* Configure    array struct type.                                                                      */
-typedef struct array_family_s
-*array_stp,
-**array_stpp;
+/**
+ * @brief This type is the array typedef
+ */
+
+typedef array_family_stp
+array_stp,
+*array_stpp;
 
 /**
  * @brief This struct is the array_family control structure module

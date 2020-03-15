@@ -43,6 +43,14 @@
 */
 
 /**
+ * @brief This type is the list family typedef
+ */
+
+typedef struct container_family_s
+*array_family_stp,
+**array_family_stpp;
+
+/**
  * @brief This struct is the array_family member type enum structure module
  */
 
@@ -58,20 +66,20 @@ enum array_family_member_type_e {
 
 struct array_family_element_operator_s {
 	/* @brief This function will return the node at the specified location in the container.			*/
-	void *(*get)(struct array_family_s *array_family,
+	void *(*get)(array_family_stp array_family,
 				 container_size_t pos);
 
 	/* @brief This variables will set the node at the specified location in the container and
 				return the node.			                                                            */
-	void *(*set)(struct array_family_s *array_family,
+	void *(*set)(array_family_stp array_family,
 				 container_size_t pos, void *node);
 
 	/* @brief This variables will delete the node at the specified location in the container.			*/
-	void *(*del)(struct array_family_s *array_family,
+	void *(*del)(array_family_stp array_family,
 				 container_size_t pos);
 
 	/* @brief This variables will swap the nodes at the specified location in the container.			*/
-	void (*swap)(struct array_family_s *array_family,
+	void (*swap)(array_family_stp array_family,
 				 container_size_t lhs_pos,
 				 container_size_t rhs_pos);
 };
@@ -104,12 +112,12 @@ void array_family_control_get_control(enum list_family_member_type_e type);
  * @return NONE
  */
 
-void array_family_control_configuration_init(struct array_family_s **array_family,
-											 void (*switch_control)(void),
-											 enum allocator_type_e allocator_type,
-											 container_size_t element_size,
-											 generic_type_element_assign_t assign,
-											 generic_type_element_free_t free);
+errno_t array_family_control_configuration_init(array_family_stpp array_family,
+												container_family_switch_control switch_control,
+												enum allocator_type_e allocator_type,
+												container_size_t element_size,
+												generic_type_element_assign_t assign,
+												generic_type_element_free_t free);
 
 /**
  * @brief This function will destroy the array_family struct and free the space.
@@ -119,7 +127,7 @@ void array_family_control_configuration_init(struct array_family_s **array_famil
  * @return NONE
  */
 
-void array_family_control_configuration_destroy(struct array_family_s **array_family);
+errno_t array_family_control_configuration_destroy(array_family_stpp array_family);
 
 /**
  * @brief This function will configure the array_family element handler.
@@ -131,9 +139,9 @@ void array_family_control_configuration_destroy(struct array_family_s **array_fa
  * @return NONE
  */
 
-void array_family_control_configuration_element_handler(struct array_family_s *array_family,
-														generic_type_element_assign_t assign,
-														generic_type_element_free_t free);
+errno_t array_family_control_configuration_element_handler(array_family_stp array_family,
+														   generic_type_element_assign_t assign,
+														   generic_type_element_free_t free);
 
 /**
  * @brief This function will configure the array_family exception callback.
@@ -145,8 +153,8 @@ void array_family_control_configuration_element_handler(struct array_family_s *a
  * @return NONE
  */
 
-void array_family_control_configuration_exception(struct array_family_s *array_family,
-												  void (*empty)(void), void (*full)(void));
+errno_t array_family_control_configuration_exception(array_family_stp array_family,
+													 void (*empty)(void), void (*full)(void));
 
 /**
  * @brief This function will
@@ -156,7 +164,7 @@ void array_family_control_configuration_exception(struct array_family_s *array_f
  * @return NONE
  */
 
-void array_family_control_iterators_front(struct array_family_s *array_family);
+void array_family_control_iterators_front(array_family_stp array_family);
 
 /**
  * @brief This function will
@@ -166,7 +174,7 @@ void array_family_control_iterators_front(struct array_family_s *array_family);
  * @return NONE
  */
 
-void array_family_control_iterators_back(struct array_family_s *array_family);
+void array_family_control_iterators_back(array_family_stp array_family);
 
 /**
  * @brief This function will returns a reference to the element at specified location position, with bounds checking.
@@ -177,7 +185,7 @@ void array_family_control_iterators_back(struct array_family_s *array_family);
  * @return NONE
  */
 
-void *array_family_control_element_access_at(struct array_family_s *array_family,
+void *array_family_control_element_access_at(array_family_stp array_family,
 											 container_size_t position);
 
 /**
@@ -188,7 +196,7 @@ void *array_family_control_element_access_at(struct array_family_s *array_family
  * @return NONE
  */
 
-void *array_family_control_element_access_front(struct array_family_s *array_family);
+void *array_family_control_element_access_front(array_family_stp array_family);
 
 /**
  * @brief This function will returns reference to the last element in the container.
@@ -198,7 +206,7 @@ void *array_family_control_element_access_front(struct array_family_s *array_fam
  * @return NONE
  */
 
-void *array_family_control_element_access_back(struct array_family_s *array_family);
+void *array_family_control_element_access_back(array_family_stp array_family);
 
 /**
  * @brief This function will returns pointer to the underlying array serving as element storage.
@@ -208,7 +216,7 @@ void *array_family_control_element_access_back(struct array_family_s *array_fami
  * @return pointer to the underlying array serving as element storage
  */
 
-void *array_family_control_element_access_data(struct array_family_s *array_family);
+void *array_family_control_element_access_data(array_family_stp array_family);
 
 /**
  * @brief This function will checks if the container has no elements.
@@ -219,7 +227,7 @@ void *array_family_control_element_access_data(struct array_family_s *array_fami
  *  if the container has no elements
  */
 
-bool array_family_control_capacity_empty(struct array_family_s *array_family);
+bool array_family_control_capacity_empty(array_family_stp array_family);
 
 /**
  * @brief This function will returns the number of elements in the container.
@@ -230,8 +238,8 @@ bool array_family_control_capacity_empty(struct array_family_s *array_family);
  *  the number of elements in the container
  */
 
-container_size_t 
-array_family_control_capacity_size(struct array_family_s *array_family);
+container_size_t
+array_family_control_capacity_size(array_family_stp array_family);
 
 /**
  * @brief This function will returns the maximum number of elements the container.
@@ -243,11 +251,11 @@ array_family_control_capacity_size(struct array_family_s *array_family);
  *  the maximum number of elements the container
  */
 
-container_size_t 
-array_family_control_capacity_max_size(struct array_family_s *array_family);
+container_size_t
+array_family_control_capacity_max_size(array_family_stp array_family);
 
 /**
- * @brief This function will returns the number of elements that 
+ * @brief This function will returns the number of elements that
  *          the container has currently allocated space for.
  *
  * @param array_family the pointer to the container struct
@@ -256,8 +264,8 @@ array_family_control_capacity_max_size(struct array_family_s *array_family);
  *  the number of elements that the container has currently allocated space for
  */
 
-container_size_t 
-array_family_control_capacity_capacity(struct array_family_s *array_family);
+container_size_t
+array_family_control_capacity_capacity(array_family_stp array_family);
 
 /**
  * @brief This function will increase the capacity of the vector to a size that's greater or equal to new_cap.
@@ -267,8 +275,8 @@ array_family_control_capacity_capacity(struct array_family_s *array_family);
  * @return NONE
  */
 
-void array_family_control_capacity_reserve(struct array_family_s **array_family,
-                                           container_size_t size);
+errno_t array_family_control_capacity_reserve(array_family_stpp array_family,
+											  container_size_t size);
 
 /**
  * @brief This function will requests the removal of unused capacity.
@@ -278,7 +286,7 @@ void array_family_control_capacity_reserve(struct array_family_s **array_family,
  * @return NONE
  */
 
-void array_family_control_capacity_shrink_to_fit(struct array_family_s **array_family);
+errno_t array_family_control_capacity_shrink_to_fit(array_family_stpp array_family);
 
 /**
  * @brief This function will erases all elements from the container.
@@ -288,7 +296,7 @@ void array_family_control_capacity_shrink_to_fit(struct array_family_s **array_f
  * @return NONE
  */
 
-void array_family_control_modifiers_clear(struct array_family_s *array_family);
+errno_t array_family_control_modifiers_clear(array_family_stp array_family);
 
 /**
  * @brief This function will inserts elements at the specified location in the container.
@@ -302,9 +310,9 @@ void array_family_control_modifiers_clear(struct array_family_s *array_family);
  *  the address of element the asserted
  */
 
-void array_family_control_modifiers_insert(struct array_family_s *array_family,
-										   container_size_t position,
-										   container_size_t amount, void **source);
+errno_t array_family_control_modifiers_insert(array_family_stp array_family,
+											  container_size_t position,
+											  container_size_t amount, void **source);
 
 /**
  * @brief This function will erases the specified elements from the container.
@@ -316,8 +324,8 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
  * @return NONE
  */
 
-void array_family_control_modifiers_erase(struct array_family_s *array_family,
-										  container_size_t position);
+errno_t array_family_control_modifiers_erase(array_family_stp array_family,
+											 container_size_t position);
 
 /**
  * @brief This function will appends the given element source to the end of the container.
@@ -328,8 +336,8 @@ void array_family_control_modifiers_erase(struct array_family_s *array_family,
  * @return NONE
  */
 
-void array_family_control_modifiers_push_back(struct array_family_s *array_family,
-											  void *source);
+errno_t array_family_control_modifiers_push_back(array_family_stp array_family,
+												 void *source);
 
 /**
  * @brief This function will removes the last element of the container.
@@ -340,7 +348,7 @@ void array_family_control_modifiers_push_back(struct array_family_s *array_famil
  * @return NONE
  */
 
-void array_family_control_modifiers_pop_back(struct array_family_s *array_family);
+errno_t array_family_control_modifiers_pop_back(array_family_stp array_family);
 
 /**
  * @brief This function will resizes the container to contain count elements.
@@ -350,8 +358,8 @@ void array_family_control_modifiers_pop_back(struct array_family_s *array_family
  * @return NONE
  */
 
-void array_family_control_modifiers_resize(struct array_family_s **array_family,
-                                           container_size_t count);
+errno_t array_family_control_modifiers_resize(array_family_stpp array_family,
+											  container_size_t count);
 
 /**
  * @brief This function will exchanges the contents of the container with those of other.
@@ -362,9 +370,8 @@ void array_family_control_modifiers_resize(struct array_family_s **array_family,
  * @return NONE
  */
 
-void array_family_control_modifiers_swap(struct array_family_s **array_family,
-                                         struct array_family_s **other);
-
+errno_t array_family_control_modifiers_swap(array_family_stpp array_family,
+											array_family_stpp other);
 
 /**
  * @brief This function will copy the contents of the container to those of other.
@@ -375,8 +382,9 @@ void array_family_control_modifiers_swap(struct array_family_s **array_family,
  * @return NONE
  */
 
-void array_family_control_modifiers_copy(struct array_family_s **destination,
-										 struct array_family_s *source);
+errno_t array_family_control_modifiers_copy(array_family_stpp destination,
+											array_family_stp source);
+
 /*
 *********************************************************************************************************
 *                                       EXTERN GLOBAL VARIABLES

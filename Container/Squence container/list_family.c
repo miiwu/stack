@@ -56,12 +56,6 @@ struct node_operator_s list_family_control_node_operator = { NULL };
 
 void *list_family_control_list_operations_remove_value = NULL;
 
-/**
- * @brief This variables will pack the information of list family memory allocation.
- */
-
-struct container_allocte_package_s list_family_control_allocate_package = { 0 };
-
 /*
 *********************************************************************************************************
 *                                      LOCAL FUNCTION PROTOTYPES
@@ -69,9 +63,9 @@ struct container_allocte_package_s list_family_control_allocate_package = { 0 };
 */
 
 /**
- * @brief This function will return the memory size of the specified list type node.
+ * @brief This function will return the memory size of the specified list_family type node.
  *
- * @param type the specified list type
+ * @param type the specified list_family type
  *
  * @return the memory size of the specified node
  */
@@ -81,45 +75,45 @@ static size_t list_family_control_get_node_len(enum list_family_member_type_e ty
 /**
 * @brief This function will set elements at the specified location in the container.
 *
-* @param list the pointer to the list struct pointer
+* @param list_family the pointer to the list_family struct pointer
 * @param position the position of element,it would be equal or greater than zero
 * @param source pointer to the source
 *
 * @return NONE
 */
 
-static void list_node_control_set_data(list_family_stp list,
+static void list_node_control_set_data(list_family_stp list_family,
 									   container_size_t position, void *source);
 
 /**
 * @brief This function will get elements at the specified location node in the container.
 *
-* @param list the pointer to the list struct pointer
+* @param list_family the pointer to the list_family struct pointer
 * @param position the position of element,it would be equal or greater than zero
 * @param destination pointer to the destination
 *
 * @return NONE
 */
 
-static void *list_node_control_get_data(list_family_stp list,
+static void *list_node_control_get_data(list_family_stp list_family,
 										container_size_t position);
 
 /**
 * @brief This function will delete elements at the specified location node in the container.
 *
-* @param list the pointer to the list struct pointer
+* @param list_family the pointer to the list_family struct pointer
 * @param position the position of element,it would be equal or greater than zero
 *
 * @return NONE
 */
 
-static void list_node_control_del_data(list_family_stp list,
+static void list_node_control_del_data(list_family_stp list_family,
 									   container_size_t position);
 
 /**
 * @brief This function will control the remove run under the rule of remove_if.
 *
-* @param data the pointer to the data list will give
+* @param data the pointer to the data list_family will give
 *
 * @return if the data match the rule
 *	- true	yes
@@ -155,7 +149,7 @@ void list_family_control_configuration_exception_default_full_callback(void);
 */
 
 /**
- * @brief This function will get control of the list-family controller.
+ * @brief This function will get control of the list_family-family controller.
  *
  * @param node_operator the node's operator
  *
@@ -169,194 +163,197 @@ inline void list_family_control_get_control(enum list_family_member_type_e type,
 }
 
 /**
- * @brief This function will initialize the list struct
+ * @brief This function will initialize the list_family struct
  *
- * @param list the pointer to the list struct pointer
- * @param element_size the element memory size of the list struct
+ * @param list_family the pointer to the list_family struct pointer
+ * @param element_size the element memory size of the list_family struct
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-errno_t list_family_control_configuration_init(list_family_stpp list,
+errno_t list_family_control_configuration_init(list_family_stpp list_family,
 											   container_family_switch_control switch_control,
 											   enum allocator_type_e allocator_type,
 											   container_size_t element_size,
 											   generic_type_element_assign_t assign,
 											   generic_type_element_free_t free)
 {
-	assert(list);
+	assert(list_family);
 	assert(switch_control);
 	assert(allocator_type);
 	assert(element_size);
 
-	struct container_control_configuration_allocate_return_s allocate_return = { 0 };
+	static struct container_allocte_package_s 
+		allocate_package = { 0 };
+	static struct container_control_configuration_allocate_return_s 
+		allocate_return = { 0 };
 
-	list_family_control_allocate_package.allocator_type = allocator_type;
-	list_family_control_allocate_package.container_mem_size = sizeof(struct container_family_s);
-	list_family_control_allocate_package.arg_list_ptr = NULL;
+	allocate_package.allocator_type = allocator_type;
+	allocate_package.container_mem_size = sizeof(struct container_family_s);
+	allocate_package.arg_list_ptr = NULL;
 
-	if ((allocate_return							
+	if ((allocate_return
 		 = container_control_configuration_allocate											/* Allocate the adaptor structure */
-		 (list, list_family_control_allocate_package))
+		 (list_family, allocate_package))
 		.error) {
 		return allocate_return.error;
 	}
 
-	(*list)->container_type_id = list_family_control_type_in_control;						/* Assign list structure */
+	(*list_family)->container_type_id = list_family_control_type_in_control;						/* Assign list_family structure */
 
-	(*list)->info.max_size = LIST_FAMILY_CFG_DEFAULT_MAX_SIZE;
-	(*list)->info.size = 0u;
-	(*list)->info.mem_size = element_size;
+	(*list_family)->info.max_size = LIST_FAMILY_CFG_DEFAULT_MAX_SIZE;
+	(*list_family)->info.size = 0u;
+	(*list_family)->info.mem_size = element_size;
+
+	(*list_family)->element_handler.assign = assign;
+	(*list_family)->element_handler.free = free;
+
+	(*list_family)->allocator_control_ptr = allocate_return.allocator_control_ptr;
+	(*list_family)->allocator_ptr = allocate_return.allocator_ptr;
+
+	(*list_family)->element_ptr = NULL;
+
+	(*list_family)->switch_control = switch_control;
 
 	list_family_control_configuration_exception(
-		(*list)
+		(*list_family)
 		, list_family_control_configuration_exception_default_empty_callback
 		, list_family_control_configuration_exception_default_full_callback);
-
-	(*list)->element_handler.assign = assign;
-	(*list)->element_handler.free = free;
-
-	(*list)->allocator_control_ptr = allocate_return.allocator_control_ptr;
-	(*list)->allocator_ptr = allocate_return.allocator_ptr;
-
-	(*list)->element_ptr = NULL;
-
-	(*list)->switch_control = switch_control;
 
 	return 0;
 }
 
 /**
- * @brief This function will destroy the list struct and free the space
+ * @brief This function will destroy the list_family struct and free the space
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  *
  * @return NONE
  */
 
-void list_family_control_configuration_destroy(list_family_stpp list)
+void list_family_control_configuration_destroy(list_family_stpp list_family)
 {
-	assert(list);
+	assert(list_family);
 
-	(*list)->switch_control((*list));
+	(*list_family)->switch_control((*list_family));
 
-	void *allocator_ptr = (*list)->allocator_ptr;
+	void *allocator_ptr = (*list_family)->allocator_ptr;
 
-	struct allocator_control_s *allocator_control_ptr = (*list)->allocator_control_ptr;
+	struct allocator_control_s *allocator_control_ptr = (*list_family)->allocator_control_ptr;
 
-	if (0 < (*list)->info.size) {
+	if (0 < (*list_family)->info.size) {
 		struct list_node_s
 			*node = NULL;
 
-		for (size_t cnt = 0; cnt < (*list)->info.size; cnt++) {
-			node = list_family_control_node_operator.del((*list), 0);
+		for (size_t cnt = 0; cnt < (*list_family)->info.size; cnt++) {
+			node = list_family_control_node_operator.del((*list_family), 0);
 
-			list_family_control_destroy_node((*list), node);
+			list_family_control_destroy_node((*list_family), node);
 		}
 	}
 
-	allocator_control_ptr->deallocate(allocator_ptr, *list, 1);
+	allocator_control_ptr->deallocate(allocator_ptr, *list_family, 1);
 
 	allocator_control_ptr->configuration.destroy(&allocator_ptr);
 
-	*list = NULL;
+	*list_family = NULL;
 }
 
 /**
- * @brief This function will configure the list element handler
+ * @brief This function will configure the list_family element handler
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-void list_family_control_configuration_element_handler(list_family_stp list,
+void list_family_control_configuration_element_handler(list_family_stp list_family,
 													   generic_type_element_assign_t assign,
 													   generic_type_element_free_t free)
 {
-	assert(list);
+	assert(list_family);
 	assert(assign);
 	assert(free);
 
-	list->element_handler.assign = assign;
-	list->element_handler.free = free;
+	list_family->element_handler.assign = assign;
+	list_family->element_handler.free = free;
 }
 
 /**
- * @brief This function will configure the list exception callback
+ * @brief This function will configure the list_family exception callback
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-void list_family_control_configuration_exception(list_family_stp list,
+void list_family_control_configuration_exception(list_family_stp list_family,
 												 void (*empty)(void), void (*full)(void))
 {
-	assert(list);
+	assert(list_family);
 
 	if (NULL != empty) {
-		list->exception.empty = empty;
+		list_family->exception.empty = empty;
 	}
 
 	if (NULL != full) {
-		list->exception.full = full;
+		list_family->exception.full = full;
 	}
 }
 
 /**
  * @brief This function will returns a reference to the first element in the container
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  *
  * @return the reference to the first element in the container
  */
 
-void *list_family_control_element_access_front(list_family_stp list)
+void *list_family_control_element_access_front(list_family_stp list_family)
 {
-	assert(list);
+	assert(list_family);
 
-	return list_node_control_get_data(list, 0);
+	return list_node_control_get_data(list_family, 0);
 }
 
 /**
  * @brief This function will returns a reference to the specified element in the container.
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  * @param position the position of node,it would be equal or greater than zero
  *
  * @return NONE
  */
 
-void *list_family_control_element_access_at(list_family_stp list,
+void *list_family_control_element_access_at(list_family_stp list_family,
 											container_size_t position)
 {
-	assert(list);
+	assert(list_family);
 
-	return list_node_control_get_data(list, position);
+	return list_node_control_get_data(list_family, position);
 }
 
 /**
  * @brief This function will checks if the container has no elements
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  *
  * @return
 	- true,the container has no elements
 	- false,the container has elements
  */
 
-extern inline bool list_family_control_capacity_empty(list_family_stp list)
+extern inline bool list_family_control_capacity_empty(list_family_stp list_family)
 {
-	assert(list);
+	assert(list_family);
 
-	if (list->info.max_size <= list->info.size) {
+	if (list_family->info.max_size <= list_family->info.size) {
 		return true;
 	} else {
 		return false;
@@ -367,54 +364,54 @@ extern inline bool list_family_control_capacity_empty(list_family_stp list)
  * @brief This function will returns the maximum number of elements the container
 			is able to hold due to system or library implementation limitations
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  *
  * @return the maximum number of elements
  */
 
-extern inline container_size_t list_family_control_capacity_max_size(list_family_stp list)
+extern inline container_size_t list_family_control_capacity_max_size(list_family_stp list_family)
 {
-	assert(list);
+	assert(list_family);
 
-	return list->info.max_size;
+	return list_family->info.max_size;
 }
 
 /**
  * @brief This function will returns the number of elements in the container
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  *
  * @return the number of elements in the container
  */
 
-extern inline container_size_t list_family_control_capacity_size(list_family_stp list)
+extern inline container_size_t list_family_control_capacity_size(list_family_stp list_family)
 {
-	assert(list);
+	assert(list_family);
 
-	return list->info.size;
+	return list_family->info.size;
 }
 
 /**
  * @brief This function will erases all elements from the container
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  *
  * @return NONE
  */
 
-void list_family_control_modifiers_clear(list_family_stp list)
+void list_family_control_modifiers_clear(list_family_stp list_family)
 {
-	assert(list);
+	assert(list_family);
 
-	for (size_t cnt = list->info.size; cnt > 0; cnt--) {
-		list_family_control_modifiers_erase_after(list, 0);
+	for (size_t cnt = list_family->info.size; cnt > 0; cnt--) {
+		list_family_control_modifiers_erase_after(list_family, 0);
 	}
 }
 
 /**
  * @brief This function will inserts elements after the specified position in the container
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  * @param position the position of element,it would be equal or greater than zero
  * @param amount the amount of the source
  * @param source pointer to the source
@@ -422,37 +419,37 @@ void list_family_control_modifiers_clear(list_family_stp list)
  * @return NONE
  */
 
-void list_family_control_modifiers_insert_after(list_family_stp list,
+void list_family_control_modifiers_insert_after(list_family_stp list_family,
 												container_size_t position,
 												container_size_t amount, void **source)
 {
-	assert(list);
+	assert(list_family);
 	assert(0 <= position);
 	assert(0 < amount);
 	assert(source);
 	assert(*source);
 
-	list->switch_control(list);
+	list_family->switch_control(list_family);
 
 	void
 		*source_addr = NULL;
 
 	container_size_t
-		pos_insert_head = list->info.size,
+		pos_insert_head = list_family->info.size,
 		pos_insert_tail = position + amount;
 
 ENSURE_THE_LIST_HAS_ENOUGH_NODE:
 
-	if (pos_insert_tail > pos_insert_head) {												/* Ensure the list has enough node */
+	if (pos_insert_tail > pos_insert_head) {												/* Ensure the list_family has enough node */
 		for (container_size_t pos = pos_insert_head; pos < pos_insert_tail; pos++) {
-			list_family_control_node_operator.set(list, pos_insert_head, NULL);
+			list_family_control_node_operator.set(list_family, pos_insert_head, NULL);
 		}
 	}
 
-	for (container_size_t pos = position; pos < pos_insert_tail; pos++) {		/* Set the data to the list node */
-		source_addr = (void *)((size_t)*source + (pos - position) * list->info.mem_size);
+	for (container_size_t pos = position; pos < pos_insert_tail; pos++) {		/* Set the data to the list_family node */
+		source_addr = (void *)((size_t)*source + (pos - position) * list_family->info.mem_size);
 
-		if ('\0' != *(char *)list_node_control_get_data(list, pos)) {			/* Ensure the list node has no data */
+		if ('\0' != *(char *)list_node_control_get_data(list_family, pos)) {			/* Ensure the list_family node has no data */
 			pos_insert_head = position;
 
 			goto ENSURE_THE_LIST_HAS_ENOUGH_NODE;
@@ -460,18 +457,18 @@ ENSURE_THE_LIST_HAS_ENOUGH_NODE:
 
 		#if (LIST_FAMILY_CFG_DEBUG_EN)
 
-		printf("list.modifiers.insert_after:No.%d:\"%s\" \r\n", pos, (char *)source_addr);
+		printf("list_family.modifiers.insert_after:No.%d:\"%s\" \r\n", pos, (char *)source_addr);
 
 		#endif // (VECTOR_CFG_DEBUG_EN)
 
-		list_node_control_set_data(list, pos, source_addr);
+		list_node_control_set_data(list_family, pos, source_addr);
 	}
 }
 
 /**
  * @brief This function will push a new element on top of the stack, and the element is constructed in-place
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  * @param position the position of element,it would be equal or greater than zero
  * @param destination pointer to the destination
  *
@@ -486,46 +483,46 @@ void list_family_control_modifiers_emplace_after(list_family_stp stack,
 /**
  * @brief This function will erases the specified elements from the container
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  * @param position the position of element,it would be equal or greater than zero
  *
  * @return NONE
  */
 
-void list_family_control_modifiers_erase_after(list_family_stp list,
+void list_family_control_modifiers_erase_after(list_family_stp list_family,
 											   container_size_t position)
 {
-	assert(list);
+	assert(list_family);
 	assert(0 <= position);
 
 	#if (LIST_FAMILY_CFG_DEBUG_EN)
 
-	printf("list.modifiers.earse_after no.%d: \"%s\" \r\n",
-		   position, (char *)list_node_control_get_data(list, position));
+	printf("list_family.modifiers.earse_after no.%d: \"%s\" \r\n",
+		   position, (char *)list_node_control_get_data(list_family, position));
 
 	#endif // (LIST_FAMILY_CFG_DEBUG_EN)
 
-	list_node_control_del_data(list, position);
+	list_node_control_del_data(list_family, position);
 }
 
 /**
  * @brief This function will prepends the given element value to the beginning of the container
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  * @param source pointer to the source
  *
  * @return NONE
  */
 
-void list_family_control_modifiers_push_front(list_family_stp list,
+void list_family_control_modifiers_push_front(list_family_stp list_family,
 											  void *source)
 {
-	assert(list);
+	assert(list_family);
 	assert(source);
 
-	list_family_control_modifiers_insert_after(list, 0, 1, &source);
+	list_family_control_modifiers_insert_after(list_family, 0, 1, &source);
 
-	list_node_control_set_data(list, 0, source);
+	list_node_control_set_data(list_family, 0, source);
 }
 
 /**
@@ -535,7 +532,7 @@ void list_family_control_modifiers_push_front(list_family_stp list,
 			at the location provided by the container.
 			The arguments args... are forwarded to the constructor as std::forward<Args>(args)....
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  * @param destination pointer to the destination
  *
  * @return NONE
@@ -549,29 +546,29 @@ void list_family_control_modifiers_emplace_front(list_family_stp stack,
 /**
  * @brief This function will removes the first element of the container
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  *
  * @return NONE
  */
 
-void list_family_control_modifiers_pop_front(list_family_stp list)
+void list_family_control_modifiers_pop_front(list_family_stp list_family)
 {
-	assert(list);
+	assert(list_family);
 
-	list_node_control_del_data(list, 0);
+	list_node_control_del_data(list_family, 0);
 }
 
 /**
- * @brief This function will increase the capacity of the list to a size
+ * @brief This function will increase the capacity of the list_family to a size
 			that's greater or equal to new_cap
  *
- * @param list the pointer to the list struct pointer
- * @param size the size of the list struct
+ * @param list_family the pointer to the list_family struct pointer
+ * @param size the size of the list_family struct
  *
  * @return NONE
  */
 
-void list_family_control_modifiers_resize(list_family_stpp list,
+void list_family_control_modifiers_resize(list_family_stpp list_family,
 										  container_size_t size)
 {
 }
@@ -579,33 +576,33 @@ void list_family_control_modifiers_resize(list_family_stpp list,
 /**
  * @brief This function will exchanges the contents of the container with those of other
  *
- * @param list the pointer to the list struct pointer
- * @param other the pointer to the other list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
+ * @param other the pointer to the other list_family struct pointer
  *
  * @return NONE
  */
 
-void list_family_control_modifiers_swap(list_family_stpp list,
+void list_family_control_modifiers_swap(list_family_stpp list_family,
 										list_family_stpp other)
 {
-	assert(list);
+	assert(list_family);
 	assert(other);
 
 	list_family_stpp
-		list_swap = (*list)->allocator_control_ptr->allocate((*list)->allocator_ptr, 1, sizeof(void *));
+		list_swap = (*list_family)->allocator_control_ptr->allocate((*list_family)->allocator_ptr, 1, sizeof(void *));
 
-	*(list_swap) = *list;
+	*(list_swap) = *list_family;
 	*(list_swap + 1) = *other;
 
-	*list = *(list_swap + 1);
+	*list_family = *(list_swap + 1);
 	*other = *list_swap;
 }
 
 /**
  * @brief This function will copy the contents of the container to those of other
  *
- * @param destination the pointer to the destination list struct pointer
- * @param source the pointer to the source list struct
+ * @param destination the pointer to the destination list_family struct pointer
+ * @param source the pointer to the source list_family struct
  *
  * @return NONE
  */
@@ -643,8 +640,8 @@ void list_family_control_modifiers_copy(list_family_stpp destination,
 /**
  * @brief This function will merges two sorted lists into one
  *
- * @param destination the pointer to the destination list struct pointer
- * @param source the pointer to the source list struct
+ * @param destination the pointer to the destination list_family struct pointer
+ * @param source the pointer to the source list_family struct
  *
  * @return NONE
  */
@@ -662,25 +659,25 @@ void list_family_control_list_operations_merge(list_family_stp destination,
 }
 
 /**
- * @brief This function will moves elements from another list to list
+ * @brief This function will moves elements from another list_family to list_family
  *
- * @param destination the pointer to the destination list struct pointer
+ * @param destination the pointer to the destination list_family struct pointer
  * @param position the position of element,it would be equal or greater than zero
- * @param other the pointer to the other list struct
+ * @param other the pointer to the other list_family struct
  *
  * @return NONE
  */
 
-void list_family_control_list_operations_splice_after(list_family_stp list,
+void list_family_control_list_operations_splice_after(list_family_stp list_family,
 													  container_size_t position,
 													  list_family_stp other,
 													  container_size_t first,
 													  container_size_t last)
 {
-	assert(list);
+	assert(list_family);
 	assert(other);
 
-	list->switch_control(list);
+	list_family->switch_control(list_family);
 
 	struct list_node_s
 		*node_other = NULL;
@@ -691,7 +688,7 @@ void list_family_control_list_operations_splice_after(list_family_stp list,
 	for (container_size_t pos = position; pos < pos_tail_splice; pos++) {
 		#if (LIST_FAMILY_CFG_DEBUG_EN)
 
-		printf("list.list_operatons.splice_after.source data no.%d:\"%s\" \r\n",
+		printf("list_family.list_operatons.splice_after.source data no.%d:\"%s\" \r\n",
 			   pos, (char *)list_node_control_get_data(other, first));
 
 		#endif // (LIST_FAMILY_CFG_DEBUG_EN)
@@ -702,123 +699,123 @@ void list_family_control_list_operations_splice_after(list_family_stp list,
 			return;
 		}
 
-		list_family_control_node_operator.set(list, pos, node_other);
+		list_family_control_node_operator.set(list_family, pos, node_other);
 	}
 }
 
 /**
  * @brief This function will removes all elements satisfying specific criteria
  *
- * @param destination the pointer to the destination list struct pointer
+ * @param destination the pointer to the destination list_family struct pointer
  * @param data the pointer of data
  *
  * @return NONE
  */
 
-void list_family_control_list_operations_remove(list_family_stp list,
+void list_family_control_list_operations_remove(list_family_stp list_family,
 												void *value)
 {
-	assert(list);
+	assert(list_family);
 	assert(value);
 
 	list_family_control_list_operations_remove_value = value;
 
-	list_family_control_list_operations_remove_if(list, list_family_control_remove_rule);
+	list_family_control_list_operations_remove_if(list_family, list_family_control_remove_rule);
 }
 
 /**
  * @brief This function will
  *
- * @param destination the pointer to the destination list struct pointer
+ * @param destination the pointer to the destination list_family struct pointer
  * @param rule the pointer to the rule-making function
  *
  * @return NONE
  */
 
-void list_family_control_list_operations_remove_if(list_family_stp list, bool (*rule)(void *data))
+void list_family_control_list_operations_remove_if(list_family_stp list_family, bool (*rule)(void *data))
 {
-	assert(list);
+	assert(list_family);
 	assert(rule);
 
 	container_size_t
 		cnt_reomve = 0,
-		*pos_remove = list->allocator_control_ptr->allocate(list->allocator_ptr, list->info.size, sizeof(container_size_t));
+		*pos_remove = list_family->allocator_control_ptr->allocate(list_family->allocator_ptr, list_family->info.size, sizeof(container_size_t));
 
-	for (container_size_t pos = 0; pos < list->info.size; pos++) {	/* Get which node's data is match */
-		if (rule(list_node_control_get_data(list, pos))) {
+	for (container_size_t pos = 0; pos < list_family->info.size; pos++) {	/* Get which node's data is match */
+		if (rule(list_node_control_get_data(list_family, pos))) {
 			*(pos_remove + cnt_reomve++) = pos;
 		}
 	}
 
-	struct  list_node_t
+	struct list_node_s
 		*node_del = NULL;
 
 	for (container_size_t cnt = 0; cnt < cnt_reomve; cnt++) {					/* Delete nodes matched */
 		#if (LIST_FAMILY_CFG_DEBUG_EN)
 
-		printf("list.list_operatons.remove_if.no.%d: \"%s\" \r\n",
-			   *(pos_remove + cnt), (char *)list_node_control_get_data(list, *(pos_remove + cnt) - cnt));
+		printf("list_family.list_operatons.remove_if.no.%d: \"%s\" \r\n",
+			   *(pos_remove + cnt), (char *)list_node_control_get_data(list_family, *(pos_remove + cnt) - cnt));
 
 		#endif // (LIST_FAMILY_CFG_DEBUG_EN)
 
-		list_node_control_del_data(list, *(pos_remove + cnt) - cnt);
+		list_node_control_del_data(list_family, *(pos_remove + cnt) - cnt);
 	}
 
-	list->allocator_control_ptr->deallocate(list->allocator_ptr, pos_remove, list->info.size);
+	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr, pos_remove, list_family->info.size);
 }
 
 /**
  * @brief This function will reverses the order of the elements in the container
  *
- * @param destination the pointer to the destination list struct pointer
+ * @param destination the pointer to the destination list_family struct pointer
  *
  * @return NONE
  */
 
-void list_family_control_list_operations_reverse(list_family_stp list)
+void list_family_control_list_operations_reverse(list_family_stp list_family)
 {
-	assert(list);
+	assert(list_family);
 
-	list->switch_control(list);
+	list_family->switch_control(list_family);
 
-	struct  list_node_t
+	struct  list_node_s
 		*node_reverse = NULL;
 
-	container_size_t pos_last_list_node_valid = list->info.size - 1;
+	container_size_t pos_last_list_node_valid = list_family->info.size - 1;
 
 	for (container_size_t pos = 0; pos <= pos_last_list_node_valid; pos++) {
-		node_reverse = list_family_control_node_operator.del(list, pos_last_list_node_valid);
+		node_reverse = list_family_control_node_operator.del(list_family, pos_last_list_node_valid);
 
-		list_family_control_node_operator.set(list, pos, node_reverse);
+		list_family_control_node_operator.set(list_family, pos, node_reverse);
 	}
 }
 
 /**
  * @brief This function will removes all consecutive duplicate elements from the container
  *
- * @param destination the pointer to the destination list struct pointer
+ * @param destination the pointer to the destination list_family struct pointer
  *
  * @return NONE
  */
 
-void list_family_control_list_operations_unique(list_family_stp list)
+void list_family_control_list_operations_unique(list_family_stp list_family)
 {
-	assert(list);
+	assert(list_family);
 
-	list->switch_control(list);
+	list_family->switch_control(list_family);
 
 	char
-		*data_prev = list_node_control_get_data(list, 0),
+		*data_prev = list_node_control_get_data(list_family, 0),
 		*data = NULL;
 
 	container_size_t
-		size_list = list->info.size,
+		size_list = list_family->info.size,
 		cnt_pos_repetitive = 0,
-		(*pos_repetitive_store)[2] = list->allocator_control_ptr->allocate(list->allocator_ptr,
+		(*pos_repetitive_store)[2] = list_family->allocator_control_ptr->allocate(list_family->allocator_ptr,
 																		   size_list, sizeof(container_size_t) * 2);
 
 	for (container_size_t pos = 1; pos < size_list; pos++) {
-		if (compare_control_equal(data_prev, (data = list_node_control_get_data(list, pos)), list->info.mem_size)) {
+		if (compare_control_equal(data_prev, (data = list_node_control_get_data(list_family, pos)), list_family->info.mem_size)) {
 			*(*(pos_repetitive_store + cnt_pos_repetitive) + 0) = pos;
 		} else {
 			if (*(*(pos_repetitive_store + cnt_pos_repetitive) + 0) != *(*(pos_repetitive_store + cnt_pos_repetitive) + 1)) {
@@ -834,51 +831,51 @@ void list_family_control_list_operations_unique(list_family_stp list)
 	#if (LIST_FAMILY_CFG_DEBUG_EN)
 
 	for (container_size_t cnt = 0; cnt < cnt_pos_repetitive; cnt++) {
-		printf("list.list_operatons.unique:no.%d from %d to %d is \"%s\" \r\n",
+		printf("list_family.list_operatons.unique:no.%d from %d to %d is \"%s\" \r\n",
 			   cnt, *(*(pos_repetitive_store + cnt) + 0),
 			   *(*(pos_repetitive_store + cnt) + 1),
-			   (char *)list_node_control_get_data(list, *(*(pos_repetitive_store + cnt) + 0)));
+			   (char *)list_node_control_get_data(list_family, *(*(pos_repetitive_store + cnt) + 0)));
 	}
 
 	#endif // (LIST_FAMILY_CFG_DEBUG_EN)
 
-	struct  list_node_t
+	struct  list_node_s
 		*node_del = NULL;
 
 	for (container_size_t cnt = 0; cnt < cnt_pos_repetitive; cnt++) {
 		for (container_size_t pos = *(*(pos_repetitive_store + cnt) + 0); pos <= *(*(pos_repetitive_store + cnt) + 1); pos++) {
-			list_family_control_destroy_node(list, list_family_control_node_operator.del(list, *(*(pos_repetitive_store + cnt) + 0)));
+			list_family_control_destroy_node(list_family, list_family_control_node_operator.del(list_family, *(*(pos_repetitive_store + cnt) + 0)));
 		}
 	}
 
-	list->allocator_control_ptr->deallocate(list->allocator_ptr,
+	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr,
 											pos_repetitive_store, size_list);
 }
 
 /**
  * @brief This function will sorts the elements in ascending order
  *
- * @param destination the pointer to the destination list struct pointer
+ * @param destination the pointer to the destination list_family struct pointer
  * @param comp the pointer to the compare function that you wish
  *
  * @return NONE
  */
 
-void list_family_control_list_operations_sort(list_family_stp list,
+void list_family_control_list_operations_sort(list_family_stp list_family,
 											  compare_t comp)
 {
-	assert(list);
+	assert(list_family);
 
-	list->switch_control(list);
+	list_family->switch_control(list_family);
 
 	if (NULL == comp) {
 		comp = compare_control_lesser;
 	}
 
 	struct sort_package_s list_sort_pack = {
-		.object = list,
-		.len = list->info.size,
-		.mem_len = list->info.mem_size,
+		.object = list_family,
+		.len = list_family->info.size,
+		.mem_len = list_family->info.mem_size,
 		.get_value_method = list_node_control_get_data,
 		.swap_method = list_family_control_node_operator.swap,
 	};
@@ -888,9 +885,9 @@ void list_family_control_list_operations_sort(list_family_stp list,
 }
 
 /**
- * @brief This function will return the memory size of the specified list type node.
+ * @brief This function will return the memory size of the specified list_family type node.
  *
- * @param type the specified list type
+ * @param type the specified list_family type
  *
  * @return the memory size of the specified node
  */
@@ -916,27 +913,27 @@ size_t list_family_control_get_node_len(enum list_family_member_type_e type)
 }
 
 /**
- * @brief This function will initialize the list node struct.
+ * @brief This function will initialize the list_family node struct.
  *
- * @param list the pointer to the list struct pointer
+ * @param list_family the pointer to the list_family struct pointer
  *
  * @return NONE
  */
 
-void *list_family_control_init_node(list_family_stp list)
+void *list_family_control_init_node(list_family_stp list_family)
 {
-	assert(list);
+	assert(list_family);
 
-	void *node_alloced = list->allocator_control_ptr->allocate(list->allocator_ptr,
+	void *node_alloced = list_family->allocator_control_ptr->allocate(list_family->allocator_ptr,
 															   1, list_family_control_get_node_len(list_family_control_type_in_control));	/* Allocate #1 */
 
-	void *data_pack_allocated = list->allocator_control_ptr->allocate(list->allocator_ptr,
-																	  1, list->info.mem_size);			/* Allocate #2 */
+	void *data_pack_allocated = list_family->allocator_control_ptr->allocate(list_family->allocator_ptr,
+																	  1, list_family->info.mem_size);			/* Allocate #2 */
 
 	void **data_ptr = (void *)node_alloced;
 
-	if (NULL == list ||																			/* Check if list point to NULL			*/
-		NULL == node_alloced ||																	/* Check if list node point to NULL			*/
+	if (NULL == list_family ||																			/* Check if list_family point to NULL			*/
+		NULL == node_alloced ||																	/* Check if list_family node point to NULL			*/
 		NULL == data_pack_allocated) {															/* Check if data_pack_alloced point to NULL	*/
 		return NULL;
 	}
@@ -947,18 +944,18 @@ void *list_family_control_init_node(list_family_stp list)
 }
 
 /**
- * @brief This function will destroy list node struct and free the space.
+ * @brief This function will destroy list_family node struct and free the space.
  *
- * @param list the pointer to the list struct pointer
- * @param node the pointer to the list node struct pointer
+ * @param list_family the pointer to the list_family struct pointer
+ * @param node the pointer to the list_family node struct pointer
  *
  * @return NONE
  */
 
-void list_family_control_destroy_node(list_family_stp list,
+void list_family_control_destroy_node(list_family_stp list_family,
 									  void *node)
 {
-	assert(list);
+	assert(list_family);
 
 	if (NULL == node) {
 		return;
@@ -966,9 +963,9 @@ void list_family_control_destroy_node(list_family_stp list,
 
 	void **data_ptr = node;
 
-	list->allocator_control_ptr->deallocate(list->allocator_ptr, *data_ptr, 1);				/* Deallocate #2 */
+	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr, *data_ptr, 1);				/* Deallocate #2 */
 
-	list->allocator_control_ptr->deallocate(list->allocator_ptr, node, 1);					/* Deallocate #1 */
+	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr, node, 1);					/* Deallocate #1 */
 
 	node = NULL;
 }
@@ -976,27 +973,27 @@ void list_family_control_destroy_node(list_family_stp list,
 /**
  * @brief This function will set elements at the specified location in the container.
  *
- * @param list the pointer to the list struct pointer
- * @param node the pointer to the list node struct pointer
+ * @param list_family the pointer to the list_family struct pointer
+ * @param node the pointer to the list_family node struct pointer
  * @param position the position of element,it would be equal or greater than zero
  * @param source pointer to the source
  *
  * @return NONE
  */
 
-void list_node_control_set_data(list_family_stp list,
+void list_node_control_set_data(list_family_stp list_family,
 								container_size_t position, void *source)
 {
-	assert(list);
+	assert(list_family);
 	assert(0 <= position);
 	assert(source);
 
-	list->switch_control(list);
+	list_family->switch_control(list_family);
 
-	void *node = list_family_control_node_operator.get(list, position);
+	void *node = list_family_control_node_operator.get(list_family, position);
 
 	if (NULL == node) {
-		node = list_family_control_node_operator.set(list, position, NULL);
+		node = list_family_control_node_operator.set(list_family, position, NULL);
 
 		if (NULL == node) {
 			return;
@@ -1006,37 +1003,37 @@ void list_node_control_set_data(list_family_stp list,
 	void **data_ptr = (void *)node;
 
 	if (NULL == *data_ptr &&
-		NULL == (*data_ptr = list->allocator_control_ptr->allocate(list->allocator_ptr, 1, list->info.mem_size))) {
+		NULL == (*data_ptr = list_family->allocator_control_ptr->allocate(list_family->allocator_ptr, 1, list_family->info.mem_size))) {
 		return;
 	}
 
-	if (NULL != list->element_handler.assign) {																	/* Check if assign point to NULL */
-		list->element_handler.assign(*data_ptr, source);
+	if (NULL != list_family->element_handler.assign) {																	/* Check if assign point to NULL */
+		list_family->element_handler.assign(*data_ptr, source);
 	} else {
-		memcpy(*data_ptr, source, list->info.mem_size);															/* Memcpy source to destination */
+		memcpy(*data_ptr, source, list_family->info.mem_size);															/* Memcpy source to destination */
 	}
 }
 
 /**
 * @brief This function will get elements at the specified location in the container.
 *
-* @param list the pointer to the list struct pointer
-* @param node the pointer to the list node struct pointer
+* @param list_family the pointer to the list_family struct pointer
+* @param node the pointer to the list_family node struct pointer
 * @param position the position of element,it would be equal or greater than zero
 * @param destination pointer to the destination
 *
 * @return NONE
 */
 
-void *list_node_control_get_data(list_family_stp list,
+void *list_node_control_get_data(list_family_stp list_family,
 								 container_size_t position)
 {
-	assert(list);
+	assert(list_family);
 	assert(0 <= position);
 
-	list->switch_control(list);
+	list_family->switch_control(list_family);
 
-	void *node = list_family_control_node_operator.get(list, position);
+	void *node = list_family_control_node_operator.get(list_family, position);
 
 	if (NULL == node) {
 		return NULL;
@@ -1050,37 +1047,37 @@ void *list_node_control_get_data(list_family_stp list,
 /**
 * @brief This function will delete elements at the specified location in the container.
 *
-* @param list the pointer to the list struct pointer
-* @param node the pointer to the list node struct pointer
+* @param list_family the pointer to the list_family struct pointer
+* @param node the pointer to the list_family node struct pointer
 * @param position the position of element,it would be equal or greater than zero
 *
 * @return NONE
 */
 
-void list_node_control_del_data(list_family_stp list,
+void list_node_control_del_data(list_family_stp list_family,
 								container_size_t position)
 {
-	assert(list);
+	assert(list_family);
 	assert(0 <= position);
 
-	list->switch_control(list);
+	list_family->switch_control(list_family);
 
-	void *data_ptr = list_node_control_get_data(list, position);
+	void *data_ptr = list_node_control_get_data(list_family, position);
 
-	if (NULL != list->element_handler.free) {																	/* Check if assign point to NULL */
-		list->element_handler.free(data_ptr);
+	if (NULL != list_family->element_handler.free) {																	/* Check if assign point to NULL */
+		list_family->element_handler.free(data_ptr);
 	} else {
-		memset(data_ptr, '0', list->info.mem_size);															/* Memcpy source to destination */
+		memset(data_ptr, '0', list_family->info.mem_size);															/* Memcpy source to destination */
 	}
 
 	#if (LIST_FAMILY_CFG_DELETE_ELEMENT_EQUAL_DESTROY_NODE_EN)
 
-	list_family_control_destroy_node(list, list_family_control_node_operator.del(list, position));
+	list_family_control_destroy_node(list_family, list_family_control_node_operator.del(list_family, position));
 
 	#endif // (LIST_CFG_DELETE_ELEMENT_EQUAL_DESTROY_NODE_EN)
 
-	if (0 >= list->info.size) {
-		list->exception.empty();
+	if (0 >= list_family->info.size) {
+		list_family->exception.empty();
 
 		return;
 	}
@@ -1089,7 +1086,7 @@ void list_node_control_del_data(list_family_stp list,
 /**
 * @brief This function will control the remove run under the rule of remove_if.
 *
-* @param data the pointer to the data list will give
+* @param data the pointer to the data list_family will give
 *
 * @return if the data match the rule
 *	- true	yes
@@ -1108,7 +1105,7 @@ bool list_family_control_remove_rule(void *data)
 /**
 * @brief This function will sort the object by the comp.
 *
-* @param data the pointer to the data list will give
+* @param data the pointer to the data list_family will give
 *
 * @return if the data match the rule
 *	- true	yes

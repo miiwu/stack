@@ -135,7 +135,7 @@ struct array_control_s array_ctrl = {
  * @return void
  */
 
-void array_control_switch_control(void);
+void array_control_switch_control(void *array);
 
 /*
 *********************************************************************************************************
@@ -173,7 +173,7 @@ void array_control_configuration_init(array_stpp array,
  * @return void
  */
 
-void array_control_switch_control(void)
+void array_control_switch_control(void* array)
 {
 	array_family_control_get_control(ARRAY_FAMILY_ARRAY);
 }

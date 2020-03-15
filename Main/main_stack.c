@@ -1,12 +1,12 @@
 #include "main_cfg.h"
 
-#define MAIN_STACK_CFG_ADAPT_ARRAY_EN				MAIN_ARRAY_EN
+#define MAIN_STACK_CFG_ADAPT_ARRAY_EN				0
 
-#define MAIN_STACK_CFG_ADAPT_VECTOR_EN				MAIN_VECTOR_EN
+#define MAIN_STACK_CFG_ADAPT_VECTOR_EN				0
 
-#define MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN		MAIN_FORWARD_LIST_EN
+#define MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN		0
 
-#define MAIN_STACK_CFG_ADAPT_LIST_EN				MAIN_LIST_EN
+#define MAIN_STACK_CFG_ADAPT_LIST_EN				0
 
 void *stack_container = NULL;
 
@@ -16,37 +16,37 @@ void *stack_container = NULL;
 
 #define MAIN_STACK_CONTAINER_CONTROL	array_ctrl
 
-#define MAIN_STACK_CONTAINER_TYPE		(struct array_s *)stack_container
+#define MAIN_STACK_CONTAINER_TYPE		(array_stp)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_ARRAY_EN)
 
 #if (MAIN_STACK_CFG_ADAPT_VECTOR_EN)
 
-#define MAIN_STACK_CONTAINER	VECTOR
+#define MAIN_STACK_CONTAINER_TYPE	VECTOR
 
 #define MAIN_STACK_CONTAINER_CONTROL	vector_ctrl
 
-#define MAIN_STACK_CONTAINER_TYPE		(vector_stp)stack_container
+#define MAIN_STACK_CONTAINER		(vector_stp)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_VECTOR_EN)
 
 #if (MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN)
 
-#define MAIN_STACK_CONTAINER	FORWARD_LIST
+#define MAIN_STACK_CONTAINER_TYPE	FORWARD_LIST
 
 #define MAIN_STACK_CONTAINER_CONTROL	forward_list_ctrl
 
-#define MAIN_STACK_CONTAINER_TYPE		(forward_list_stp)stack_container
+#define MAIN_STACK_CONTAINER		(forward_list_stp)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN)
 
 #if (MAIN_STACK_CFG_ADAPT_LIST_EN)
 
-#define MAIN_STACK_CONTAINER	LIST
+#define MAIN_STACK_CONTAINER_TYPE	LIST
 
 #define MAIN_STACK_CONTAINER_CONTROL	list_ctrl
 
-#define MAIN_STACK_CONTAINER_TYPE		(list_stp)stack_container
+#define MAIN_STACK_CONTAINER		(list_stp)stack_container
 
 #endif // (MAIN_STACK_CFG_ADAPT_FORWARD_LIST_EN)
 

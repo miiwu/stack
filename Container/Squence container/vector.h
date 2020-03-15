@@ -45,10 +45,13 @@
 *********************************************************************************************************
 */
 
-/* Configure    vector type.																			*/
-typedef struct array_family_s
-*vector_stp,
-**vector_stpp;
+/**
+ * @brief This type is the vector typedef
+ */
+
+typedef array_family_stp
+vector_stp,
+*vector_stpp;
 
 #if (VECTOR_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 

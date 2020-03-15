@@ -6,6 +6,8 @@
 
 #include "array_family.h"
 
+#include "container_pte_def.h"
+
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
@@ -23,50 +25,6 @@
 *                                          LOCAL DATA TYPES
 *********************************************************************************************************
 */
-
-/**
- * @brief This struct is the array_family structure module
- */
-
-struct array_family_s {
-	/* @brief RESERVED This variables will record the identity code of container type.					*/
-	enum container_type_e	container_type_id;
-
-	struct {
-		/* @brief This variables will record the maximum number of elements.							*/
-		container_size_t max_size;
-
-		/* @brief This variables will record the number of elements that
-				  the container has currently allocated space for.										*/
-		container_size_t size;
-
-		/* @brief This variables will record the size that each element will take up.					*/
-		container_size_t mem_size;
-	}info;
-
-	/* @brief This variables will point to the allocator.												*/
-	void *allocator;
-
-	/* @brief This variables will point to the allocator control.										*/
-	struct allocator_control_s *allocator_ctrl;
-
-	/* @brief This variables will point to the address of the array_family data memory block.					*/
-	void *data;
-
-	/* @brief This variables will record the element handler of the container.							*/
-	struct container_generic_type_element_handler_s element_handler;
-
-	struct {
-		/* @brief This variables will point to the address of the array_family empty exception handler.		*/
-		void (*empty)(void);
-
-		/* @brief This variables will point to the address of the array_family full exception handler.			*/
-		void (*full)(void);
-	}exception;
-
-	/* @brief This variables will point to the address of the list-like shared-pack analysis.			*/
-	void (*switch_control)(void);
-};
 
 /*
 *********************************************************************************************************
@@ -102,8 +60,8 @@ enum array_family_member_type_e array_family_control_type_in_control = ARRAY_FAM
  * @return NONE
  */
 
-void array_family_element_control_set_data(struct array_family_s *array_family,
-										   container_size_t position, void *source);
+errno_t array_family_element_control_set_data(array_family_stp array_family,
+											  container_size_t position, void *source);
 
 /**
  * @brief This function will get elements at the specified location in the container.
@@ -115,20 +73,20 @@ void array_family_element_control_set_data(struct array_family_s *array_family,
  * @return NONE
  */
 
-void *array_family_element_control_get_data(struct array_family_s *array_family,
+void *array_family_element_control_get_data(array_family_stp array_family,
 											container_size_t position);
 
- /**
-  * @brief This function will delete elements at the specified location in the container.
-  *
-  * @param array_family the pointer to the container struct
-  * @param position the position of element,it would be equal or greater than zero
-  *
-  * @return NONE
-  */
+/**
+ * @brief This function will delete elements at the specified location in the container.
+ *
+ * @param array_family the pointer to the container struct
+ * @param position the position of element,it would be equal or greater than zero
+ *
+ * @return NONE
+ */
 
-void array_family_element_control_del_data(struct array_family_s *array_family,
-										   container_size_t position);
+errno_t array_family_element_control_del_data(array_family_stp array_family,
+											  container_size_t position);
 
 /**
  * @brief This function will callback the handler that container has no elements when the container temp to insert.
@@ -177,83 +135,67 @@ extern inline void array_family_control_get_control(enum list_family_member_type
  * @param array_family the pointer to the container struct pointer
  * @param element_size the pointer to container
  * @param string_type the pointer to container
- * @param assign the pointer to the assign element handler of the specified data type
- * @param free the pointer to the free element handler of the specified data type
+ * @param assign the pointer to the assign element handler of the specified element_ptr type
+ * @param free the pointer to the free element handler of the specified element_ptr type
  *
  * @return NONE
  */
 
-void array_family_control_configuration_init(struct array_family_s **array_family,
-											 void (*switch_control)(void),
-											 enum allocator_type_e allocator_type,
-											 container_size_t element_size,
-											 generic_type_element_assign_t assign,
-											 generic_type_element_free_t free)
+errno_t array_family_control_configuration_init(array_family_stpp array_family,
+												container_family_switch_control switch_control,
+												enum allocator_type_e allocator_type,
+												container_size_t element_size,
+												generic_type_element_assign_t assign,
+												generic_type_element_free_t free)
 {
 	assert(array_family);
-	assert(0 <= element_size);
+	assert(switch_control);
+	assert(allocator_type);
+	assert(element_size);
 
-	void
-		*allocator = NULL;
+	static struct container_allocte_package_s
+		allocate_package = { 0 };
+	static struct container_control_configuration_allocate_return_s
+		allocate_return = { 0 };
 
-	struct allocator_control_s
-		*allocator_ctrl = NULL;
+	allocate_package.allocator_type = allocator_type;
+	allocate_package.container_mem_size = sizeof(struct container_family_s);
+	allocate_package.arg_list_ptr = NULL;
 
-	allocator_ctrl = allocator_control_convert_type_to_func_addr_table(allocator_type);	/* Variables pointer to	the function address table of
-																							specified allocator type		*/
-
-	allocator_ctrl->configuration.init(&allocator, NULL);
-
-	struct array_family_s
-		*array_family_alloced = (struct array_family_s *)allocator_ctrl->allocate(allocator,
-																				  1, sizeof(struct array_family_s));	/* Allocate #1 */
-
-	void
-		*data_pack_alloced = allocator_ctrl->allocate(allocator,
-													  ARRAY_FAMILY_CFG_DEFAULT_MAX_SIZE, element_size);	/* Allocate #2 */
-
-	if (NULL == array_family ||																	/* Check if array_family point to NULL			*/
-		NULL == array_family_alloced ||															/* Check if array_family_alloced point to NULL	*/
-		NULL == data_pack_alloced) {															/* Check if data_pack_alloced point to NULL		*/
-		return;
+	if ((allocate_return
+		 = container_control_configuration_allocate											/* Allocate the adaptor structure */
+		 (array_family, allocate_package))
+		.error) {
+		return 1;
 	}
 
-	array_family_alloced->container_type_id = array_family_control_type_in_control;				/* Assign array_family structure					*/
-
-	array_family_alloced->info.max_size = ARRAY_FAMILY_CFG_DEFAULT_MAX_SIZE;
-	array_family_alloced->info.size = 0u;
-	array_family_alloced->info.mem_size = element_size;
-
-	array_family_alloced->allocator = allocator;
-	array_family_alloced->allocator_ctrl = allocator_ctrl;
-
-	array_family_alloced->data = data_pack_alloced;
-
-	array_family_alloced->element_handler.assign = NULL;
-	array_family_alloced->element_handler.free = NULL;
-
-	array_family_alloced->exception.empty = array_family_control_configuration_exception_default_empty_callback;
-	array_family_alloced->exception.full = array_family_control_configuration_exception_default_full_callback;
-
-	array_family_alloced->switch_control = switch_control;
-
-	if (NULL != assign &&																	/* Check if assign point to NULL			*/
-		NULL != free) {																		/* Check if free point to NULL				*/
-		array_family_alloced->element_handler.assign = assign;
-		array_family_alloced->element_handler.free = free;
+	if (NULL == ((*array_family)->element_ptr
+				 = allocate_return.allocator_control_ptr
+				 ->allocate(allocate_return.allocator_ptr,
+							ARRAY_FAMILY_CFG_DEFAULT_MAX_SIZE, element_size))) {
+		return 2;
 	}
 
-	// TODO : array_family callbacks
+	(*array_family)->container_type_id = array_family_control_type_in_control;				/* Assign array_family structure */
 
-	*array_family = array_family_alloced;
+	(*array_family)->info.max_size = ARRAY_FAMILY_CFG_DEFAULT_MAX_SIZE;
+	(*array_family)->info.size = 0u;
+	(*array_family)->info.mem_size = element_size;
 
-	#if (ARRAY_FAMILY_CFG_DEBUG_EN)
+	(*array_family)->element_handler.assign = assign;
+	(*array_family)->element_handler.free = free;
 
-	printf("init.array_family allocator : %p \r\n", allocator);									/* Debug only								*/
-	printf("init.array_family block : %p \r\n", array_family_alloced);
-	printf("init.array_family data block : %p \r\n", data_pack_alloced);
+	(*array_family)->allocator_control_ptr = allocate_return.allocator_control_ptr;
+	(*array_family)->allocator_ptr = allocate_return.allocator_ptr;
 
-	#endif // (ARRAY_FAMILY_CFG_DEBUG_EN)
+	(*array_family)->switch_control = switch_control;
+
+	array_family_control_configuration_exception(
+		(*array_family)
+		, array_family_control_configuration_exception_default_empty_callback
+		, array_family_control_configuration_exception_default_full_callback);
+
+	return 0;
 }
 
 /**
@@ -266,46 +208,29 @@ void array_family_control_configuration_init(struct array_family_s **array_famil
  *  - else : fail
  */
 
-void array_family_control_configuration_destroy(struct array_family_s **array_family)
+errno_t array_family_control_configuration_destroy(array_family_stpp array_family)
 {
 	assert(array_family);
 
-	#if (ARRAY_FAMILY_CFG_DEBUG_EN)
-
-	printf("destroy.array_family data block : %p \r\n", (*array_family)->data);
-
-	printf("destroy.array_family block : %p \r\n", (*array_family));
-
-	printf("destroy.array_family allocator : %p \r\n", (*array_family)->allocator);
-
-	#endif // (ARRAY_FAMILY_CFG_DEBUG_EN)
-
 	allocator_common_stp
-		array_family_allocator = (*array_family)->allocator;
+		array_family_allocator = (*array_family)->allocator_ptr;
 	struct allocator_control_s
-		*array_family_allocator_ctrl = (*array_family)->allocator_ctrl;
+		*array_family_allocator_ctrl = (*array_family)->allocator_control_ptr;
 
-	array_family_allocator_ctrl->deallocate(array_family_allocator, (*array_family)->data, (*array_family)->info.max_size);	/* Deallocate #2 */
+	array_family_allocator_ctrl
+		->deallocate(array_family_allocator,
+		(*array_family)->element_ptr,
+					 (*array_family)->info.max_size);										/* Deallocate the element */
 
-	(*array_family)->container_type_id = 0u;													/* Assign array_family structure					*/
+	array_family_allocator_ctrl
+		->deallocate(array_family_allocator, *array_family, 1);								/* Deallocate the array family */
 
-	(*array_family)->info.max_size = 0u;
-	(*array_family)->info.size = 0u;
-	(*array_family)->info.mem_size = 0u;
-
-	(*array_family)->allocator = NULL;
-	(*array_family)->allocator_ctrl = NULL;
-
-	(*array_family)->data = NULL;
-
-	(*array_family)->exception.empty = NULL;
-	(*array_family)->exception.full = NULL;
-
-	array_family_allocator_ctrl->deallocate(array_family_allocator, *array_family, 1);																			/* deallocate #1 */
-
-	array_family_allocator_ctrl->configuration.destroy(&array_family_allocator);
+	array_family_allocator_ctrl
+		->configuration.destroy(&array_family_allocator);									/* Destroy the allocator */
 
 	*array_family = NULL;
+
+	return 0;
 }
 
 /**
@@ -318,9 +243,9 @@ void array_family_control_configuration_destroy(struct array_family_s **array_fa
  * @return NONE
  */
 
-void array_family_control_configuration_element_handler(struct array_family_s *array_family,
-														generic_type_element_assign_t assign,
-														generic_type_element_free_t free)
+errno_t array_family_control_configuration_element_handler(array_family_stp array_family,
+														   generic_type_element_assign_t assign,
+														   generic_type_element_free_t free)
 {
 	assert(array_family);
 	assert(assign);
@@ -328,6 +253,8 @@ void array_family_control_configuration_element_handler(struct array_family_s *a
 
 	array_family->element_handler.assign = assign;
 	array_family->element_handler.free = free;
+
+	return 0;
 }
 
 /**
@@ -340,8 +267,8 @@ void array_family_control_configuration_element_handler(struct array_family_s *a
  * @return NONE
  */
 
-void array_family_control_configuration_exception(struct array_family_s *array_family,
-												  void (*empty)(void), void (*full)(void))
+errno_t array_family_control_configuration_exception(array_family_stp array_family,
+													 void (*empty)(void), void (*full)(void))
 {
 	assert(array_family);
 
@@ -352,6 +279,8 @@ void array_family_control_configuration_exception(struct array_family_s *array_f
 	if (NULL == full) {
 		array_family->exception.full = full;
 	}
+
+	return 0;
 }
 
 /**
@@ -362,7 +291,7 @@ void array_family_control_configuration_exception(struct array_family_s *array_f
  * @return NONE
  */
 
-void array_family_control_iterators_front(struct array_family_s *array_family)
+void array_family_control_iterators_front(array_family_stp array_family)
 {
 	assert(array_family);
 
@@ -377,7 +306,7 @@ void array_family_control_iterators_front(struct array_family_s *array_family)
  * @return NONE
  */
 
-void array_family_control_iterators_back(struct array_family_s *array_family)
+void array_family_control_iterators_back(array_family_stp array_family)
 {
 	assert(array_family);
 
@@ -385,7 +314,8 @@ void array_family_control_iterators_back(struct array_family_s *array_family)
 }
 
 /**
- * @brief This function will returns a reference to the element at specified location position, with bounds checking.
+ * @brief This function will returns a reference to the element
+ *			at specified location position, with bounds checking.
  *
  * @param array_family the pointer to the container struct
  * @param position the position of element,it would be equal or greater than zero,it would be equal or greater than zero
@@ -393,18 +323,21 @@ void array_family_control_iterators_back(struct array_family_s *array_family)
  * @return NONE
  */
 
-void *array_family_control_element_access_at(struct array_family_s *array_family,
+void *array_family_control_element_access_at(array_family_stp array_family,
 											 container_size_t position)
 {
 	assert(array_family);
 	assert(0 <= position);
 
 	void
-		*element = (void *)((size_t)(array_family->data) + position * array_family->info.mem_size);									/* Point destination to the address of the element which at the position location */
+		*element = (void *)((size_t)(array_family->element_ptr) +
+							position * array_family->info.mem_size);						/* Point destination to the address of the element which at the position location */
 
 	#if (ARRAY_FAMILY_CFG_DEBUG_EN)
 
-	printf("array_family.at -> data block : %p | element : %p \r\n", array_family->data, element);
+	printf("array family control.element access.at:element_ptr block : \
+			%p | element : %p \r\n",
+		   array_family->element_ptr, element);
 
 	#endif // (ARRAY_FAMILY_CFG_DEBUG_EN)
 
@@ -419,7 +352,8 @@ void *array_family_control_element_access_at(struct array_family_s *array_family
  * @return NONE
  */
 
-extern inline void *array_family_control_element_access_front(struct array_family_s *array_family)
+extern inline void
+*array_family_control_element_access_front(array_family_stp array_family)
 {
 	assert(array_family);
 
@@ -434,7 +368,8 @@ extern inline void *array_family_control_element_access_front(struct array_famil
  * @return NONE
  */
 
-extern inline void *array_family_control_element_access_back(struct array_family_s *array_family)
+extern inline void
+*array_family_control_element_access_back(array_family_stp array_family)
 {
 	assert(array_family);
 
@@ -449,11 +384,12 @@ extern inline void *array_family_control_element_access_back(struct array_family
  * @return pointer to the underlying array serving as element storage
  */
 
-extern inline void *array_family_control_element_access_data(struct array_family_s *array_family)
+extern inline void
+*array_family_control_element_access_data(array_family_stp array_family)
 {
 	assert(array_family);
 
-	return array_family->data;
+	return array_family->element_ptr;
 }
 
 /**
@@ -465,11 +401,12 @@ extern inline void *array_family_control_element_access_data(struct array_family
  *  if the container has no elements
  */
 
-extern inline bool array_family_control_capacity_empty(struct array_family_s *array_family)
+extern inline bool
+array_family_control_capacity_empty(array_family_stp array_family)
 {
 	assert(array_family);
 
-	if (array_family->info.max_size <= array_family->info.size) {
+	if (0 < array_family->info.size) {
 		return true;
 	} else {
 		return false;
@@ -485,7 +422,8 @@ extern inline bool array_family_control_capacity_empty(struct array_family_s *ar
  *  the number of elements in the container
  */
 
-extern inline container_size_t array_family_control_capacity_size(struct array_family_s *array_family)
+extern inline container_size_t
+array_family_control_capacity_size(array_family_stp array_family)
 {
 	assert(array_family);
 
@@ -494,7 +432,7 @@ extern inline container_size_t array_family_control_capacity_size(struct array_f
 
 /**
  * @brief This function will returns the maximum number of elements the container.
- * is able to hold due to system or library implementation limitations.
+ *			is able to hold due to system or library implementation limitations.
  *
  * @param array_family the pointer to the container struct
  *
@@ -502,15 +440,18 @@ extern inline container_size_t array_family_control_capacity_size(struct array_f
  *  the maximum number of elements the container
  */
 
-extern inline container_size_t array_family_control_capacity_max_size(struct array_family_s *array_family)
+extern inline container_size_t
+array_family_control_capacity_max_size(array_family_stp array_family)
 {
 	assert(array_family);
 
-	return ARRAY_FAMILY_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE / array_family->info.mem_size;
+	return ARRAY_FAMILY_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE
+		/ array_family->info.mem_size;
 }
 
 /**
- * @brief This function will returns the number of elements that the container has currently allocated space for.
+ * @brief This function will returns the number of elements that
+ *			the container has currently allocated space for.
  *
  * @param array_family the pointer to the container struct
  *
@@ -518,7 +459,8 @@ extern inline container_size_t array_family_control_capacity_max_size(struct arr
  *  the number of elements that the container has currently allocated space for
  */
 
-extern inline container_size_t array_family_control_capacity_capacity(struct array_family_s *array_family)
+extern inline container_size_t
+array_family_control_capacity_capacity(array_family_stp array_family)
 {
 	assert(array_family);
 
@@ -526,20 +468,23 @@ extern inline container_size_t array_family_control_capacity_capacity(struct arr
 }
 
 /**
- * @brief This function will increase the capacity of the vector to a size that's greater or equal to new_cap.
+ * @brief This function will increase the capacity of the vector to a size
+ *			that's greater or equal to new_cap.
  *
  * @param array_family the pointer to the container struct
  *
  * @return NONE
  */
 
-void array_family_control_capacity_reserve(struct array_family_s **array_family,
-										   container_size_t size)
+errno_t array_family_control_capacity_reserve(array_family_stpp array_family,
+											  container_size_t size)
 {
 	assert(array_family);
 	assert(0 <= size);
 
 	// TODO...
+
+	return 0;
 }
 
 /**
@@ -550,11 +495,13 @@ void array_family_control_capacity_reserve(struct array_family_s **array_family,
  * @return NONE
  */
 
-void array_family_control_capacity_shrink_to_fit(struct array_family_s **array_family)
+errno_t array_family_control_capacity_shrink_to_fit(array_family_stpp array_family)
 {
 	assert(array_family);
 
 	// TODO...
+
+	return 0;
 }
 
 /**
@@ -565,7 +512,7 @@ void array_family_control_capacity_shrink_to_fit(struct array_family_s **array_f
  * @return NONE
  */
 
-void array_family_control_modifiers_clear(struct array_family_s *array_family)
+errno_t array_family_control_modifiers_clear(array_family_stp array_family)
 {
 	assert(array_family);
 
@@ -574,7 +521,7 @@ void array_family_control_modifiers_clear(struct array_family_s *array_family)
 			array_family->exception.empty();
 		}
 
-		return;
+		return 1;
 	}
 
 	for (container_size_t element_pos = 0; element_pos < array_family->info.size; element_pos++) {
@@ -582,6 +529,8 @@ void array_family_control_modifiers_clear(struct array_family_s *array_family)
 	}
 
 	array_family->info.size = 0;
+
+	return 0;
 }
 
 /**
@@ -596,8 +545,10 @@ void array_family_control_modifiers_clear(struct array_family_s *array_family)
  *  the address of element the asserted
  */
 
-void array_family_control_modifiers_insert(struct array_family_s *array_family,
-										   container_size_t position, container_size_t amount, void **source)
+errno_t array_family_control_modifiers_insert(array_family_stp array_family,
+											  container_size_t position,
+											  container_size_t amount,
+											  void **source)
 {
 	assert(array_family);
 	assert(0 <= position);
@@ -610,7 +561,7 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
 			array_family->exception.full();
 		}
 
-		return;
+		return 1;
 	}
 
 	container_size_t
@@ -618,13 +569,15 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
 		back_element_pos = position + amount;
 
 	void
-		*element_block = array_family->allocator_ctrl->allocate(array_family->allocator,
-																element_amount, array_family->info.mem_size),								/* Allocate	array_family malloc #3 */
-		**element = array_family->allocator_ctrl->allocate(array_family->allocator,
-														   1, sizeof(void **));												/* Allocate array_family malloc #4 */
+		*element_block = array_family->allocator_control_ptr
+		->allocate(array_family->allocator_ptr,							/* Allocate	array_family malloc #3 */
+				   element_amount, array_family->info.mem_size),	
+		**element = array_family->allocator_control_ptr
+		->allocate(array_family->allocator_ptr,							/* Allocate	array_family malloc #4 */
+				   1, sizeof(void **));							
 
 	if (NULL == element) {																						/* Check if the element point to NULL */
-		return;
+		return 2;
 	}
 
 	*element = element_block;
@@ -668,14 +621,14 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
 		array_family_element_control_set_data(array_family, element_pos, (void *)element_plus_insert_addr);
 	}
 
-	array_family->allocator_ctrl->deallocate(array_family->allocator, element_block, element_amount);								/* Deallocate #3 */
-	array_family->allocator_ctrl->deallocate(array_family->allocator, element, 1);													/* Deallocate #4 */
+	array_family->allocator_control_ptr->deallocate(array_family->allocator_ptr, element_block, element_amount);								/* Deallocate #3 */
+	array_family->allocator_control_ptr->deallocate(array_family->allocator_ptr, element, 1);													/* Deallocate #4 */
 	element_block = NULL;
 	element = NULL;																								/* Assign the element to NULL */
 
 	array_family->info.size += amount;																				/* Change the capacity of array_family */
 
-	return;
+	return 0;
 }
 
 /**
@@ -688,8 +641,8 @@ void array_family_control_modifiers_insert(struct array_family_s *array_family,
  * @return NONE
  */
 
-void array_family_control_modifiers_erase(struct array_family_s *array_family,
-										  container_size_t position)
+errno_t array_family_control_modifiers_erase(array_family_stp array_family,
+											 container_size_t position)
 {
 	assert(array_family);
 	assert(0 <= position);
@@ -699,16 +652,19 @@ void array_family_control_modifiers_erase(struct array_family_s *array_family,
 			array_family->exception.empty();
 		}
 
-		return;
+		return 1;
 	}
 
 	#if (ARRAY_FAMILY_CFG_DEBUG_EN)
 
-	printf("array_family.erase -> source: %s \r\n", (char *)array_family_element_control_get_data(array_family, position));
+	printf("array family control.modifiers.erase:source: %s \r\n", 
+		(char *)array_family_element_control_get_data(array_family, position));
 
 	#endif // (ARRAY_FAMILY_CFG_DEBUG_EN)
 
 	array_family_element_control_del_data(array_family, position);
+
+	return 0;
 }
 
 /**
@@ -720,8 +676,8 @@ void array_family_control_modifiers_erase(struct array_family_s *array_family,
  * @return NONE
  */
 
-void array_family_control_modifiers_push_back(struct array_family_s *array_family,
-											  void *source)
+errno_t array_family_control_modifiers_push_back(array_family_stp array_family,
+												 void *source)
 {
 	assert(array_family);
 	assert(source);
@@ -731,12 +687,14 @@ void array_family_control_modifiers_push_back(struct array_family_s *array_famil
 			array_family->exception.full();
 		}
 
-		return;
+		return 1;
 	}
 
 	array_family_element_control_set_data(array_family, (array_family->info.size), source);
 
 	array_family->info.size++;
+
+	return 0;
 }
 
 /**
@@ -748,7 +706,7 @@ void array_family_control_modifiers_push_back(struct array_family_s *array_famil
  * @return NONE
  */
 
-void array_family_control_modifiers_pop_back(struct array_family_s *array_family)
+errno_t array_family_control_modifiers_pop_back(array_family_stp array_family)
 {
 	assert(array_family);
 
@@ -757,12 +715,14 @@ void array_family_control_modifiers_pop_back(struct array_family_s *array_family
 			array_family->exception.empty();
 		}
 
-		return;
+		return 1;
 	}
 
 	array_family_element_control_del_data(array_family, (array_family->info.size) ? array_family->info.size - 1 : 0);
 
 	array_family->info.size--;
+
+	return 0;
 }
 
 /**
@@ -773,31 +733,33 @@ void array_family_control_modifiers_pop_back(struct array_family_s *array_family
  * @return NONE
  */
 
-void array_family_control_modifiers_resize(struct array_family_s **array_family,
-										   container_size_t count)
+errno_t array_family_control_modifiers_resize(array_family_stpp array_family,
+											  container_size_t count)
 {
 	assert(array_family);
 	assert(0 <= count);
 
 	if ((*array_family)->info.max_size >= count) {
-		return;
+		return 1;
 	}
 
-	(*array_family)->allocator_ctrl->
-		deallocate((*array_family)->allocator, (*array_family)->data, 1);					/* Deallocate #2.1 */
+	(*array_family)->allocator_control_ptr->
+		deallocate((*array_family)->allocator_ptr, (*array_family)->element_ptr, 1);					/* Deallocate #2.1 */
 
 	void
 		*data_pack_alloced =
-		(*array_family)->allocator_ctrl->allocate((*array_family)->allocator,
-												  count,
-												  (*array_family)->info.mem_size);			/* Malloc	vector malloc #2.1 */
+		(*array_family)->allocator_control_ptr->allocate((*array_family)->allocator_ptr,
+														 count,
+														 (*array_family)->info.mem_size);			/* Malloc	vector malloc #2.1 */
 
 	if (NULL == data_pack_alloced) {
-		return;
+		return 2;
 	}
 
 	(*array_family)->info.max_size = count;
-	(*array_family)->data = data_pack_alloced;
+	(*array_family)->element_ptr = data_pack_alloced;
+
+	return 0;
 }
 
 /**
@@ -809,20 +771,20 @@ void array_family_control_modifiers_resize(struct array_family_s **array_family,
  * @return NONE
  */
 
-void array_family_control_modifiers_copy(struct array_family_s **destination,
-										 struct array_family_s *source)
+errno_t array_family_control_modifiers_copy(array_family_stpp destination,
+											array_family_stp source)
 {
 	assert(destination);
 	assert(source);
 
 	void
-		*source_data = (void *)(size_t)(source->data);
+		*source_data = (void *)(size_t)(source->element_ptr);
 
 	if (NULL == (*destination) ||
-		NULL == (*destination)->allocator ||
-		NULL == (*destination)->allocator_ctrl ||														/* Check if destination have been initialized */
-		NULL == (*destination)->data) {																	/* if not,then initialize it */
-		enum allocator_type_e *allocator_type = source->allocator;
+		NULL == (*destination)->allocator_ptr ||
+		NULL == (*destination)->allocator_control_ptr ||														/* Check if destination have been initialized */
+		NULL == (*destination)->element_ptr) {																	/* if not,then initialize it */
+		enum allocator_type_e *allocator_type = source->allocator_ptr;
 
 		array_family_control_configuration_init(destination,
 												source->switch_control, *allocator_type,
@@ -840,6 +802,8 @@ void array_family_control_modifiers_copy(struct array_family_s **destination,
 											  element_amt,
 											  (void *)((size_t)source_data + element_amt * source->info.mem_size));/* Copy the destination to source */
 	}
+
+	return 0;
 }
 
 /**
@@ -851,13 +815,13 @@ void array_family_control_modifiers_copy(struct array_family_s **destination,
  * @return NONE
  */
 
-void array_family_control_modifiers_swap(struct array_family_s **array_family,
-										 struct array_family_s **other)
+errno_t array_family_control_modifiers_swap(array_family_stpp array_family,
+											array_family_stpp other)
 {
 	assert(array_family);
 	assert(other);
 
-	struct array_family_s *
+	array_family_stp
 		array_family_swap = NULL;
 
 	array_family_control_modifiers_copy(&array_family_swap, *other);
@@ -865,6 +829,8 @@ void array_family_control_modifiers_swap(struct array_family_s **array_family,
 	array_family_control_modifiers_copy(other, *array_family);
 
 	array_family_control_modifiers_copy(array_family, array_family_swap);
+
+	return 0;
 }
 
 /**
@@ -877,8 +843,8 @@ void array_family_control_modifiers_swap(struct array_family_s **array_family,
  * @return NONE
  */
 
-void array_family_element_control_set_data(struct array_family_s *array_family,
-										   container_size_t position, void *source)
+errno_t array_family_element_control_set_data(array_family_stp array_family,
+											  container_size_t position, void *source)
 {
 	assert(array_family);
 	assert(0 <= position);
@@ -886,13 +852,15 @@ void array_family_element_control_set_data(struct array_family_s *array_family,
 
 	void
 		*destination =
-		(void *)((size_t)(array_family->data) + position * array_family->info.mem_size);	/* Point destination to the address of the element which at the position location */
+		(void *)((size_t)(array_family->element_ptr) + position * array_family->info.mem_size);	/* Point destination to the address of the element which at the position location */
 
 	if (NULL != array_family->element_handler.assign) {										/* Check if assign point to NULL */
 		array_family->element_handler.assign(destination, source);
 	} else {
 		memcpy(destination, source, array_family->info.mem_size);							/* Memcpy source to destination */
 	}
+
+	return 0;
 }
 
 /**
@@ -906,14 +874,14 @@ void array_family_element_control_set_data(struct array_family_s *array_family,
  */
 
 static inline void
-*array_family_element_control_get_data(struct array_family_s *array_family,
+*array_family_element_control_get_data(array_family_stp array_family,
 									   container_size_t position)
 {
 	assert(array_family);
 	assert(0 <= position);
 
 	void
-		*source = (void *)((size_t)(array_family->data) +									/* Point source to the address of the element which at the position location */
+		*source = (void *)((size_t)(array_family->element_ptr) +									/* Point source to the address of the element which at the position location */
 						   position * array_family->info.mem_size);
 
 	return source;
@@ -928,8 +896,8 @@ static inline void
  * @return NONE
  */
 
-void array_family_element_control_del_data(struct array_family_s *array_family,
-										   container_size_t position)
+errno_t array_family_element_control_del_data(array_family_stp array_family,
+											  container_size_t position)
 {
 	assert(array_family);
 	assert(0 <= position);
@@ -943,6 +911,8 @@ void array_family_element_control_del_data(struct array_family_s *array_family,
 	}
 
 	array_family->info.size--;
+
+	return 0;
 }
 
 /**

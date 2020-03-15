@@ -141,7 +141,7 @@ struct vector_control_s vector_ctrl = {
  * @return void
  */
 
-void vector_control_switch_control(void);
+void vector_control_switch_control(void *vector);
 
 /*
 *********************************************************************************************************
@@ -179,7 +179,7 @@ void vector_control_configuration_init(vector_stpp vector,
  * @return void
  */
 
-void vector_control_switch_control(void)
+void vector_control_switch_control(void *vector)
 {
 	array_family_control_get_control(ARRAY_FAMILY_VECTOR);
 }
