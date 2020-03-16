@@ -57,7 +57,7 @@ struct container_s {
 	void *element_ptr;
 
 	/* @brief This variables will point to the address of the list-like shared-pack analysis.			*/
-	char *addon[0];
+	char addon[0];
 };
 
 /**
@@ -90,7 +90,7 @@ struct container_family_s {
 	container_family_switch_control switch_control;
 
 	/* @brief This variables will point to the address of the list-like shared-pack analysis.			*/
-	char *addon[0];
+	char addon[0];
 };
 
 /*

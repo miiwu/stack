@@ -32,6 +32,9 @@
 #define TREE_FAMILY_CFG_SORT_ALGORITHM_TYPE								BUBBLE_SORT
 
 /* Configure    the type of sort algorithm.                                                             */
+#define TREE_FAMILY_CFG_NODE_COUNT_MAX								    100
+
+/* Configure    the type of sort algorithm.                                                             */
 #define TREE_FAMILY_CFG_DEBUG_EN								        1u
 
 /**
@@ -63,7 +66,15 @@
 */
 
 /**
- * @brief This struct is the binary tree structure module
+ * @brief This type is the array family typedef
+ */
+
+typedef struct container_family_s
+*tree_family_stp,
+**tree_family_stpp;
+
+/**
+ * @brief This struct is the binary tree_family structure module
  */
 
 enum tree_family_member_type_e {
@@ -85,7 +96,7 @@ enum tree_family_member_type_e {
 };
 
 /**
- * @brief This struct is the binary tree structure module
+ * @brief This struct is the binary tree_family structure module
  */
 
 enum tree_family_node_type_e {
@@ -103,7 +114,7 @@ enum tree_family_node_type_e {
 };
 
 /**
- * @brief This struct is the binary tree structure module
+ * @brief This struct is the binary tree_family structure module
  */
 
 enum tree_family_search_code_type_e {
@@ -111,7 +122,7 @@ enum tree_family_search_code_type_e {
 };
 
 /**
- * @brief This struct is the binary tree structure module
+ * @brief This struct is the binary tree_family structure module
  */
 
 enum tree_family_link_operator_code_type_e {
@@ -123,7 +134,7 @@ enum tree_family_link_operator_code_type_e {
 };
 
 /**
- * @brief This struct is the binary tree structure module
+ * @brief This struct is the binary tree_family structure module
  */
 
 enum tree_family_data_operator_code_type_e {
@@ -133,7 +144,7 @@ enum tree_family_data_operator_code_type_e {
 };
 
 /**
- * @brief This struct is the binary tree link node structure module.
+ * @brief This struct is the binary tree_family link node structure module.
  */
 
 struct tree_family_chain_node_s {
@@ -143,17 +154,17 @@ struct tree_family_chain_node_s {
 };
 
 /**
- * @brief This struct is the binary tree link node structure module.
+ * @brief This struct is the binary tree_family link node structure module.
  */
 
 struct tree_family_chain_node_data_content_s {
-	int key;
+	int key;                                                                                /* TODO:Make the key is limited by the mem_size_key,may save some memory */
 
 	char content[0];
 };
 
 /**
- * @brief This struct is the binary tree link node structure module.
+ * @brief This struct is the binary tree_family link node structure module.
  */
 
 typedef struct tree_family_search_node_return_s {
@@ -169,7 +180,7 @@ typedef struct tree_family_search_node_return_s {
 }tree_family_search_node_return_st;
 
 /**
- * @brief This struct is the binary tree link node structure module.
+ * @brief This struct is the binary tree_family link node structure module.
  */
 
 typedef struct tree_family_get_precursor_and_successor_return_s {
@@ -181,34 +192,34 @@ typedef struct tree_family_get_precursor_and_successor_return_s {
 }tree_family_get_precursor_and_successor_return_st;
 
 /**
- * @brief This struct is the binary tree link node structure module.
+ * @brief This struct is the binary tree_family link node structure module.
  */
 
-typedef container_size_t tree_family_search_match_rule_t(struct tree_family_s *tree,
+typedef container_size_t tree_family_search_match_rule_t(tree_family_stp tree_family,
 														 struct tree_family_chain_node_s *node,
 														 void *data);
 
 /**
- * @brief This struct is the binary tree link node structure module.
+ * @brief This struct is the binary tree_family link node structure module.
  */
 
-typedef container_size_t tree_family_search_recursion_rule_t(struct tree_family_s *tree,
+typedef container_size_t tree_family_search_recursion_rule_t(tree_family_stp tree_family,
 															 struct tree_family_chain_node_s **node,
 															 void *data);
 
 /**
- * @brief This struct is the binary tree link node structure module.
+ * @brief This struct is the binary tree_family link node structure module.
  */
 
-typedef void *tree_family_insert_and_delete_rule_t(struct tree_family_s *tree,
+typedef void *tree_family_insert_and_delete_rule_t(tree_family_stp tree_family,
 												   struct tree_family_search_node_return_s search_return,
 												   void *data);
 
 /**
- * @brief This struct is the binary tree link node structure module.
+ * @brief This struct is the binary tree_family link node structure module.
  */
 
-typedef void tree_family_traversal_operator_t(struct tree_family_s *tree,
+typedef void tree_family_traversal_operator_t(tree_family_stp tree_family,
 											  struct tree_family_chain_node_s *node,
 											  container_size_t data_element_count);
 
@@ -247,64 +258,30 @@ struct tree_family_node_operator_s {
 };
 
 /**
- * @brief This struct will contain the tree-family environment.
+ * @brief This struct will contain the extra information of tree_family-family.
+ */
+
+struct tree_family_extra_infomation_s {
+	/* @brief This variables will record the size that each element will take up.						*/
+	container_size_t mem_size_key;
+
+	/* @brief This variables will record the degree of the tree_family											*/
+	container_size_t degree;
+
+	/* @brief This variables will record the degree of the tree_family											*/
+	container_size_t minimum_amt_key;
+};
+
+/**
+ * @brief This struct will contain the tree_family-family environment.
  */
 
 struct tree_family_control_environment_s {
 	enum tree_family_member_type_e member_type;
 
 	struct tree_family_node_operator_s node_operator;
-};
 
-struct tree_family_information_s {
-	/* @brief This variables will record the size that each element will take up.						*/
-	container_size_t mem_size;
-
-	/* @brief This variables will record the maximum number of elements.								*/
-	container_size_t max_size;
-
-	/* @brief This variables will record the number of elements that
-			  the container has currently allocated space for.											*/
-	container_size_t size;
-
-	/* @brief This variables will record the degree of the tree											*/
-	container_size_t degree;
-
-	/* @brief This variables will record the degree of the tree											*/
-	container_size_t minimum_key;
-
-	/* @brief This variables will record the size that each element will take up.						*/
-	container_size_t mem_size_key;
-};
-
-/**
- * @brief This struct is the binary tree structure module
- */
-
-struct tree_family_s {
-	/* @brief RESERVED This variables will record the identity code of container type.					*/
-	enum container_type_e container_type_id;
-
-	/* @brief This variables will record the information of container type.								*/
-	struct tree_family_information_s info;
-
-	/* @brief This variables will point to the allocator.												*/
-	void *allocator;
-
-	/* @brief This variables will point to the allocator control.										*/
-	struct allocator_control_s *allocator_ctrl;
-
-	/* @brief This variables will point to the address of the deque data memory block.					*/
-	void *root;
-
-	/* @brief This variables will record the element handler of the container.							*/
-	struct container_generic_type_element_handler_s element_handler;
-
-	/* @brief This variables will record the exception handler of the container.						*/
-	struct container_common_exception_s exception;
-
-	/* @brief This variables will point to the address of the list-like shared-pack analysis.			*/
-	void (*switch_control)(struct tree_family_s *tree);
+    struct tree_family_extra_infomation_s extra_info;
 };
 
 /*
@@ -320,7 +297,7 @@ struct tree_family_s {
 */
 
 /**
- * @brief This function will get control of the tree-family controller.
+ * @brief This function will get control of the tree_family-family controller.
  *
  * @param node_operator the node's operator
  *
@@ -330,33 +307,34 @@ struct tree_family_s {
 void tree_family_control_get_control(struct tree_family_control_environment_s environment);
 
 /**
- * @brief This function will get control of the tree-family controller.
+ * @brief This function will get control of the tree_family-family controller.
  *
  * @param node_operator the node's operator
  *
  * @return NONE
  */
 
-void tree_family_control_get_control_in_sandbox(struct tree_family_s *tree,
+void tree_family_control_get_control_in_sandbox(tree_family_stp tree_family,
 												struct tree_family_control_environment_s environment,
 												void (*func_addr)(void *, ...),
 												size_t count_param,
 												...);
 
 /**
- * @brief This function will initialize the tree struct
+ * @brief This function will initialize the tree_family struct
  *
- * @param tree the pointer to the tree struct pointer
- * @param element_size the element memory size of the tree struct
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param element_size the element memory size of the tree_family struct
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-void tree_family_control_configuration_init(struct tree_family_s **tree,
-											void (*switch_control)(struct tree_family_s *tree),
+errno_t tree_family_control_configuration_init(tree_family_stpp tree_family,
+											container_family_switch_control switch_control,
 											container_size_t degree,
+											container_size_t key_size,
 											enum tree_family_member_type_e member_type,
 											enum allocator_type_e allocator_type,
 											container_size_t element_size,
@@ -364,125 +342,125 @@ void tree_family_control_configuration_init(struct tree_family_s **tree,
 											generic_type_element_free_t free);
 
 /**
- * @brief This function will destroy the tree struct and free the space
+ * @brief This function will destroy the tree_family struct and free the space
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  *
  * @return NONE
  */
 
-void tree_family_control_configuration_destroy(struct tree_family_s **tree);
+errno_t tree_family_control_configuration_destroy(tree_family_stpp tree_family);
 
 /**
- * @brief This function will configure the tree element handler
+ * @brief This function will configure the tree_family element handler
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-void tree_family_control_configuration_element_handler(struct tree_family_s *tree,
+void tree_family_control_configuration_element_handler(tree_family_stp tree_family,
 													   generic_type_element_assign_t assign,
 													   generic_type_element_free_t free);
 
 /**
- * @brief This function will configure the tree exception callback
+ * @brief This function will configure the tree_family exception callback
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-void tree_family_control_configuration_exception(struct tree_family_s *tree,
+void tree_family_control_configuration_exception(tree_family_stp tree_family,
 												 void (*empty)(void), void (*full)(void));
 
 /**
  * @brief This function will returns a reference to the specified element in the container.
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param position the position of node,it would be equal or greater than zero
  *
  * @return NONE
  */
 
-void *tree_family_control_element_access_at(struct tree_family_s *tree,
+void *tree_family_control_element_access_at(tree_family_stp tree_family,
 											void *data);
 
 /**
  * @brief This function will checks if the container has no elements
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  *
  * @return
 	- true,the container has no elements
 	- false,the container has elements
  */
 
-extern inline bool tree_family_control_capacity_empty(struct tree_family_s *tree);
+extern inline bool tree_family_control_capacity_empty(tree_family_stp tree_family);
 
 /**
  * @brief This function will returns the maximum number of elements the container
 			is able to hold due to system or library implementation limitations
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  *
  * @return the maximum number of elements
  */
 
-extern inline container_size_t tree_family_control_capacity_max_size(struct tree_family_s *tree);
+extern inline container_size_t tree_family_control_capacity_max_size(tree_family_stp tree_family);
 
 /**
  * @brief This function will returns the number of elements in the container
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  *
  * @return the number of elements in the container
  */
 
-extern inline container_size_t tree_family_control_capacity_size(struct tree_family_s *tree);
+extern inline container_size_t tree_family_control_capacity_size(tree_family_stp tree_family);
 
 /**
  * @brief This function will set the node at the specified location in the container.
  *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param node the pointer to the tree_family node struct pointer
  * @param position the position of node
  *
  * @return NONE
  */
 
-void tree_family_control_insert(struct tree_family_s *tree, void *data);
+void tree_family_control_insert(tree_family_stp tree_family, void *data);
 
 /**
  * @brief This function will delete the node at the specified location in the container.
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param position the position of node,it would be equal or greater than zero
  *
  * @return NONE
  */
 
-void tree_family_control_delete(struct tree_family_s *tree,
+void tree_family_control_delete(tree_family_stp tree_family,
 								void *data);
 
 /**
  * @brief This function will erases all elements from the container
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  *
  * @return NONE
  */
 
-void tree_family_control_modifiers_clear(struct tree_family_s *tree);
+void tree_family_control_modifiers_clear(tree_family_stp tree_family);
 
 /**
  * @brief This function will inserts elements after the specified position in the container
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param position the position of element,it would be equal or greater than zero
  * @param amount the amount of the source
  * @param source pointer to the source
@@ -490,7 +468,7 @@ void tree_family_control_modifiers_clear(struct tree_family_s *tree);
  * @return NONE
  */
 
-void tree_family_control_modifiers_insert_after(struct tree_family_s *tree,
+void tree_family_control_modifiers_insert_after(tree_family_stp tree_family,
 												container_size_t position,
 												container_size_t amount,
 												void **source);
@@ -498,38 +476,38 @@ void tree_family_control_modifiers_insert_after(struct tree_family_s *tree,
 /**
  * @brief This function will push a new element on top of the stack, and the element is constructed in-place
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param position the position of element,it would be equal or greater than zero
  * @param destination pointer to the destination
  *
  * @return NONE
  */
 
-void tree_family_control_modifiers_emplace_after(struct tree_family_s *stack,
+void tree_family_control_modifiers_emplace_after(tree_family_stp stack,
 												 container_size_t position);
 
 /**
  * @brief This function will erases the specified elements from the container
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param position the position of element,it would be equal or greater than zero
  *
  * @return NONE
  */
 
-void tree_family_control_modifiers_erase_after(struct tree_family_s *tree,
+void tree_family_control_modifiers_erase_after(tree_family_stp tree_family,
 											   container_size_t position);
 
 /**
  * @brief This function will prepends the given element value to the beginning of the container
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param source pointer to the source
  *
  * @return NONE
  */
 
-void tree_family_control_modifiers_push_front(struct tree_family_s *tree,
+void tree_family_control_modifiers_push_front(tree_family_stp tree_family,
 											  void *source);
 
 /**
@@ -539,106 +517,106 @@ void tree_family_control_modifiers_push_front(struct tree_family_s *tree,
 			at the location provided by the container.
 			The arguments args... are forwarded to the constructor as std::forward<Args>(args)....
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param destination pointer to the destination
  *
  * @return NONE
  */
 
-void tree_family_control_modifiers_emplace_front(struct tree_family_s *stack,
+void tree_family_control_modifiers_emplace_front(tree_family_stp stack,
 												 void *destination);
 
 /**
  * @brief This function will removes the first element of the container
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  *
  * @return NONE
  */
 
-void tree_family_control_modifiers_pop_front(struct tree_family_s *tree);
+void tree_family_control_modifiers_pop_front(tree_family_stp tree_family);
 
 /**
- * @brief This function will increase the capacity of the tree to a size
+ * @brief This function will increase the capacity of the tree_family to a size
 			that's greater or equal to new_cap
  *
- * @param tree the pointer to the tree struct pointer
- * @param size the size of the tree struct
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param size the size of the tree_family struct
  *
  * @return NONE
  */
 
-void tree_family_control_modifiers_resize(struct tree_family_s **tree,
+void tree_family_control_modifiers_resize(tree_family_stpp tree_family,
 										  container_size_t size);
 
 /**
  * @brief This function will exchanges the contents of the container with those of other
  *
- * @param tree the pointer to the tree struct pointer
- * @param other the pointer to the other tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param other the pointer to the other tree_family struct pointer
  *
  * @return NONE
  */
 
-void tree_family_control_modifiers_swap(struct tree_family_s **tree,
-										struct tree_family_s **other);
+void tree_family_control_modifiers_swap(tree_family_stpp tree_family,
+										tree_family_stpp other);
 
 /**
  * @brief This function will get the node at the specified location in the container.
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param position the position of node,it would be equal or greater than zero
  *
  * @return NONE
  */
 
 tree_family_search_node_return_st
-tree_family_control_search(struct tree_family_s *tree, void *data);
+tree_family_control_search(tree_family_stp tree_family, void *data);
 
 /**
  * @brief This function will finds an element with key equivalent to key.
  *
- * @param tree the pointer to the tree struct pointer
- * @param other the pointer to the other tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param other the pointer to the other tree_family struct pointer
  *
  * @return NONE
  */
 
-void tree_family_control_lookup_find(struct tree_family_s *tree,
+void tree_family_control_lookup_find(tree_family_stp tree_family,
 									 container_size_t key);
 
 /**
  * @brief This function will copy the contents of the container to those of other
  *
- * @param destination the pointer to the destination tree struct pointer
- * @param source the pointer to the source tree struct
+ * @param destination the pointer to the destination tree_family struct pointer
+ * @param source the pointer to the source tree_family struct
  *
  * @return NONE
  */
 
-void tree_family_control_modifiers_copy(struct tree_family_s **destination,
-										struct tree_family_s *source);
+void tree_family_control_modifiers_copy(tree_family_stpp destination,
+										tree_family_stp source);
 
 /**
- * @brief This function will initialize the tree node struct.
+ * @brief This function will initialize the tree_family node struct.
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  *
  * @return NONE
  */
 
-void *tree_family_control_init_node(struct tree_family_s *tree);
+void *tree_family_control_init_node(tree_family_stp tree_family);
 
 /**
- * @brief This function will destroy tree node struct and free the space.
+ * @brief This function will destroy tree_family node struct and free the space.
  *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param node the pointer to the tree_family node struct pointer
  *
  * @return NONE
  */
 
-void tree_family_control_destroy_node(struct tree_family_s *tree,
+void tree_family_control_destroy_node(tree_family_stp tree_family,
 									  void **node);
 
 /**
@@ -649,7 +627,7 @@ void tree_family_control_destroy_node(struct tree_family_s *tree,
  * @return void
  */
 
-void *tree_family_node_control_init_data(struct tree_family_s *tree);
+void *tree_family_node_control_init_data(tree_family_stp tree_family);
 
 /**
  * @brief This function will destroy the data.
@@ -659,7 +637,7 @@ void *tree_family_node_control_init_data(struct tree_family_s *tree);
  * @return void
  */
 
-void tree_family_node_control_destroy_data(struct tree_family_s *tree,
+void tree_family_node_control_destroy_data(tree_family_stp tree_family,
 										   void **data);
 
 /**
@@ -670,7 +648,7 @@ void tree_family_node_control_destroy_data(struct tree_family_s *tree,
  * @return void
  */
 
-void *tree_family_node_control_get_data(struct tree_family_s *tree,
+void *tree_family_node_control_get_data(tree_family_stp tree_family,
 										struct tree_family_chain_node_s *node,
 										container_size_t id);
 
@@ -682,7 +660,7 @@ void *tree_family_node_control_get_data(struct tree_family_s *tree,
  * @return void
  */
 
-void tree_family_node_control_set_data(struct tree_family_s *tree,
+void tree_family_node_control_set_data(tree_family_stp tree_family,
 									   struct tree_family_chain_node_s *node,
 									   void *data,
 									   container_size_t id);
@@ -695,7 +673,7 @@ void tree_family_node_control_set_data(struct tree_family_s *tree,
  * @return void
  */
 
-void tree_family_node_control_insert_data(struct tree_family_s *tree,
+void tree_family_node_control_insert_data(tree_family_stp tree_family,
 										  struct tree_family_chain_node_s *node,
 										  void *data);
 
@@ -707,19 +685,19 @@ void tree_family_node_control_insert_data(struct tree_family_s *tree,
  * @return void
  */
 
-void *tree_family_node_control_del_data(struct tree_family_s *tree,
+void *tree_family_node_control_del_data(tree_family_stp tree_family,
 										struct tree_family_chain_node_s *node,
 										container_size_t id);
 
 /**
- * @brief This function will initialize the tree node's link struct.
+ * @brief This function will initialize the tree_family node's link struct.
  *
  * @param void
  *
  * @return void
  */
 
-void *tree_family_node_control_init_link(struct tree_family_s *tree);
+void *tree_family_node_control_init_link(tree_family_stp tree_family);
 
 /**
  * @brief This function will destroy the link.
@@ -729,33 +707,33 @@ void *tree_family_node_control_init_link(struct tree_family_s *tree);
  * @return void
  */
 
-void tree_family_node_control_destroy_link(struct tree_family_s *tree,
+void tree_family_node_control_destroy_link(tree_family_stp tree_family,
 										   void **link);
 
 /**
  * @brief This function will return the family member of the node.
  *
- * @param tree the pointer to the tree
+ * @param tree_family the pointer to the tree_family
  * @param node the pointer to the node
  * @param id the id member that the parent is 0,children are greater than 0
  *
  * @return void
  */
 
-void *tree_family_node_control_get_family_member(struct tree_family_s *tree,
+void *tree_family_node_control_get_family_member(tree_family_stp tree_family,
 												 struct tree_family_chain_node_s *node,
 												 container_size_t id);
 
 /**
  * @brief This function will get the node's available brother node.
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param node the pointer to node
  *
  * @return the address of the node's available brother node
  */
 
-void *tree_family_node_control_get_neighbour(struct tree_family_s *tree,
+void *tree_family_node_control_get_neighbour(tree_family_stp tree_family,
 											 struct tree_family_chain_node_s *node,
 											 struct tree_family_chain_node_s *parent,
 											 container_size_t relation_with_parent);
@@ -768,7 +746,7 @@ void *tree_family_node_control_get_neighbour(struct tree_family_s *tree,
  * @return void
  */
 
-void *tree_family_node_control_set_child(struct tree_family_s *tree,
+void *tree_family_node_control_set_child(tree_family_stp tree_family,
 										 struct tree_family_chain_node_s *node,
 										 struct tree_family_chain_node_s *family_member,
 										 container_size_t id);
@@ -781,7 +759,7 @@ void *tree_family_node_control_set_child(struct tree_family_s *tree,
  * @return void
  */
 
-void *tree_family_node_control_del_family_member(struct tree_family_s *tree,
+void *tree_family_node_control_del_family_member(tree_family_stp tree_family,
 												 struct tree_family_chain_node_s *node,
 												 container_size_t id);
 
@@ -793,19 +771,19 @@ void *tree_family_node_control_del_family_member(struct tree_family_s *tree,
  * @return void
  */
 
-container_size_t tree_family_node_control_get_relation_with_parent(struct tree_family_s *tree,
+container_size_t tree_family_node_control_get_relation_with_parent(tree_family_stp tree_family,
 																   struct tree_family_chain_node_s *node,
 																   struct tree_family_chain_node_s *parent);
 
-		  /**
-		   * @brief This function will return the type of the node.
-		   *
-		   * @param void
-		   *
-		   * @return void
-		   */
+/**
+ * @brief This function will return the type of the node.
+ *
+ * @param void
+ *
+ * @return void
+ */
 
-bool tree_family_node_control_get_if_leaf(struct tree_family_s *tree,
+bool tree_family_node_control_get_if_leaf(tree_family_stp tree_family,
 										  struct tree_family_chain_node_s *node);
 
 /**
@@ -816,7 +794,7 @@ bool tree_family_node_control_get_if_leaf(struct tree_family_s *tree,
  * @return void
  */
 
-bool tree_family_node_control_get_if_left_child(struct tree_family_s *tree,
+bool tree_family_node_control_get_if_left_child(tree_family_stp tree_family,
 												struct tree_family_chain_node_s *node,
 												struct tree_family_chain_node_s *parent);
 
@@ -828,7 +806,7 @@ bool tree_family_node_control_get_if_left_child(struct tree_family_s *tree,
  * @return void
  */
 
-bool tree_family_node_control_get_if_right_child(struct tree_family_s *tree,
+bool tree_family_node_control_get_if_right_child(tree_family_stp tree_family,
 												 struct tree_family_chain_node_s *node,
 												 struct tree_family_chain_node_s *parent);
 
@@ -840,75 +818,99 @@ bool tree_family_node_control_get_if_right_child(struct tree_family_s *tree,
  * @return void
  */
 
-container_size_t tree_family_node_control_get_node_type(struct tree_family_s *tree,
+container_size_t tree_family_node_control_get_node_type(tree_family_stp tree_family,
 														struct tree_family_chain_node_s *node);
 
 /**
- * @brief This function will destroy tree node struct and free the space.
+ * @brief This function will destroy tree_family node struct and free the space.
  *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param node the pointer to the tree_family node struct pointer
  *
  * @return NONE
  */
 
-void tree_family_control_preorder_traversal(struct tree_family_s *tree,
+void tree_family_control_preorder_traversal(tree_family_stp tree_family,
 											struct tree_family_chain_node_s *node,
 											tree_family_traversal_operator_t *operator);
 
 /**
- * @brief This function will destroy tree node struct and free the space.
+ * @brief This function will destroy tree_family node struct and free the space.
  *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param node the pointer to the tree_family node struct pointer
  *
  * @return NONE
  */
 
-void tree_family_control_inorder_traversal(struct tree_family_s *tree,
+void tree_family_control_inorder_traversal(tree_family_stp tree_family,
 										   struct tree_family_chain_node_s *node,
 										   tree_family_traversal_operator_t *operator);
 
 /**
- * @brief This function will destroy tree node struct and free the space.
+ * @brief This function will destroy tree_family node struct and free the space.
  *
- * @param tree the pointer to the tree struct pointer
- * @param node the pointer to the tree node struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param node the pointer to the tree_family node struct pointer
  *
  * @return NONE
  */
 
-void tree_family_control_posorder_traversal(struct tree_family_s *tree,
+void tree_family_control_posorder_traversal(tree_family_stp tree_family,
 											struct tree_family_chain_node_s *node,
 											tree_family_traversal_operator_t *operator);
 
 /**
  * @brief This function will get the node's precursor node.
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param node the pointer to node
  *
  * @return the address of the precursor node
  */
 
 tree_family_get_precursor_and_successor_return_st
-tree_family_control_get_precursor(struct tree_family_s *tree,
+tree_family_control_get_precursor(tree_family_stp tree_family,
 								  struct tree_family_chain_node_s *node,
 								  container_size_t id_data);
 
 /**
  * @brief This function will get the node's successor node.
  *
- * @param tree the pointer to the tree struct pointer
+ * @param tree_family the pointer to the tree_family struct pointer
  * @param node the pointer to node
  *
  * @return the address of the successor node
  */
 
 tree_family_get_precursor_and_successor_return_st
-tree_family_control_get_successor(struct tree_family_s *tree,
+tree_family_control_get_successor(tree_family_stp tree_family,
 								  struct tree_family_chain_node_s *node,
 								  container_size_t id_data);
+
+/**
+ * @brief This function will get the extra information block of tree_family family control block.
+ *
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param node the pointer to node
+ *
+ * @return the address of the successor node
+ */
+
+struct tree_family_extra_infomation_s
+tree_family_control_get_extra_infomation(tree_family_stp tree_family);
+
+/**
+ * @brief This function will get the root of the tree_family.
+ *
+ * @param tree_family the pointer to the tree_family struct pointer
+ * @param node the pointer to node
+ *
+ * @return the address of the successor node
+ */
+
+extern inline void
+*tree_family_control_get_root(tree_family_stp tree_family);
 
 /**
 * @brief This function will print all the node when traversal.
@@ -918,7 +920,7 @@ tree_family_control_get_successor(struct tree_family_s *tree,
 * @return void
 */
 
-void tree_family_control_traversal_printer(struct tree_family_s *tree,
+void tree_family_control_traversal_printer(tree_family_stp tree_family,
 										   void *node,
 										   container_size_t data_element_count);
 

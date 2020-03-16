@@ -36,7 +36,7 @@
 *********************************************************************************************************
 */
 
-/* Configure    red-black-tree type.																	*/
+/* Configure    red-black-tree_family type.																	*/
 typedef struct tree_family_s
 *AVL_TREE_TYPEDEF_PTR,
 **AVL_TREE_TYPEDEF_PPTR;

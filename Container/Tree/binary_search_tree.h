@@ -28,7 +28,7 @@
 #define BINARY_SEARCH_TREE_CFG_ALLOCATOR_TYPE								    ALLOCATOR_COMMON
 
 /* Configure    if enable integrated structure.                                                         */
-#define BINARY_SEARCH_TREE_CFG_INTEGRATED_STRUCTURE_MODE_EN					1u
+#define BINARY_SEARCH_TREE_CFG_INTEGRATED_STRUCTURE_MODE_EN					    1u
 
 /* Configure    if enable debug mode.																	*/
 #define BINARY_SEARCH_TREE_CFG_DEBUG_EN											1u
@@ -39,10 +39,13 @@
 *********************************************************************************************************
 */
 
-/* Configure    list ptr type.                                                                          */
-typedef struct tree_family_s
-*binary_search_tree_stp,
-**binary_search_tree_stpp;
+/**
+ * @brief This type is the binary search tree typedef.
+ */
+
+typedef tree_family_stp
+binary_search_tree_stp,
+*binary_search_tree_stpp;
 
 /*
 *********************************************************************************************************
@@ -51,17 +54,18 @@ typedef struct tree_family_s
 */
 
 /**
- * @brief This function will initialize the tree struct
+ * @brief This function will initialize the binary_search_tree struct
  *
- * @param tree the pointer to the tree struct pointer
- * @param element_size the element memory size of the tree struct
+ * @param binary_search_tree the pointer to the binary_search_tree struct pointer
+ * @param element_size the element memory size of the binary_search_tree struct
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-void binary_search_tree_control_configuration_init(binary_search_tree_stpp tree,
+void binary_search_tree_control_configuration_init(binary_search_tree_stpp binary_search_tree,
+												   container_size_t key_size,
 												   container_size_t element_size,
 												   generic_type_element_assign_t assign,
 												   generic_type_element_free_t free);
@@ -86,7 +90,7 @@ struct tree_family_control_environment_s
 #if (BINARY_SEARCH_TREE_CFG_INTEGRATED_STRUCTURE_MODE_EN)
 
 /**
- * @brief This struct will record the binary search tree's node operator.
+ * @brief This struct will record the binary search binary_search_tree's node operator.
  */
 
 struct tree_family_node_operator_s binary_search_tree_control_node_operator;

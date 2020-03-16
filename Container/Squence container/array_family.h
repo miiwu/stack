@@ -43,7 +43,7 @@
 */
 
 /**
- * @brief This type is the list family typedef
+ * @brief This type is the array family typedef
  */
 
 typedef struct container_family_s

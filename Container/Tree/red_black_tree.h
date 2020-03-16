@@ -39,10 +39,13 @@
 *********************************************************************************************************
 */
 
-/* Configure    red-black-tree type.																	*/
-typedef struct tree_family_s
-*red_black_tree_stp,
-**red_black_tree_stpp;;
+/**
+ * @brief This type is the binary search tree typedef.
+ */
+
+typedef tree_family_stp
+red_black_tree_stp,
+*red_black_tree_stpp;
 
 /*
 *********************************************************************************************************
@@ -51,17 +54,17 @@ typedef struct tree_family_s
 */
 
 /**
- * @brief This function will initialize the tree struct
+ * @brief This function will initialize the red_black_tree struct
  *
- * @param tree the pointer to the tree struct pointer
- * @param element_size the element memory size of the tree struct
+ * @param red_black_tree the pointer to the red_black_tree struct pointer
+ * @param element_size the element memory size of the red_black_tree struct
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-void red_black_tree_control_configuration_init(red_black_tree_stpp tree,
+void red_black_tree_control_configuration_init(red_black_tree_stpp red_black_tree,
 											   container_size_t element_size,
 											   generic_type_element_assign_t assign,
 											   generic_type_element_free_t free);

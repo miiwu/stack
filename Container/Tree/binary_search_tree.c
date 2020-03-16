@@ -6,11 +6,16 @@
 
 #include "binary_search_tree.h"
 
+#include "container_pte_def.h"
+
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
 *********************************************************************************************************
 */
+
+#define BINARY_SEARCH_TREE_GET_EXTRA_INFO()																		\
+tree_family_control_get_extra_infomation(binary_search_tree)
 
 /*
 *********************************************************************************************************
@@ -25,7 +30,7 @@
 */
 
 /**
- * @brief This struct is the binary search tree chain node link structure module.
+ * @brief This struct is the binary search binary_search_tree chain node link structure module.
  */
 
 struct binary_search_tree_chain_node_link_s {
@@ -62,7 +67,7 @@ struct binary_search_tree_chain_node_link_s {
  * @return void
  */
 
-void binary_search_tree_control_switch_control(binary_search_tree_stp tree);
+void binary_search_tree_control_switch_control(binary_search_tree_stp binary_search_tree);
 
 /**
  * @brief This function will control the search()'s match rule.
@@ -73,7 +78,7 @@ void binary_search_tree_control_switch_control(binary_search_tree_stp tree);
  */
 
 container_size_t
-binary_search_tree_control_search_match_rule(binary_search_tree_stp tree,
+binary_search_tree_control_search_match_rule(binary_search_tree_stp binary_search_tree,
 											 struct tree_family_chain_node_s *node,
 											 void *data);
 
@@ -86,7 +91,7 @@ binary_search_tree_control_search_match_rule(binary_search_tree_stp tree,
  */
 
 container_size_t
-binary_search_tree_control_search_recursion_rule(binary_search_tree_stp tree,
+binary_search_tree_control_search_recursion_rule(binary_search_tree_stp binary_search_tree,
 												 struct tree_family_chain_node_s **node,
 												 void *data);
 
@@ -98,7 +103,7 @@ binary_search_tree_control_search_recursion_rule(binary_search_tree_stp tree,
  * @return void
  */
 
-void *binary_search_tree_control_insert_rule(binary_search_tree_stp tree,
+void *binary_search_tree_control_insert_rule(binary_search_tree_stp binary_search_tree,
 											 struct tree_family_search_node_return_s search_return,
 											 void *data);
 
@@ -110,7 +115,7 @@ void *binary_search_tree_control_insert_rule(binary_search_tree_stp tree,
  * @return void
  */
 
-void *binary_search_tree_control_delete_rule(binary_search_tree_stp tree,
+void *binary_search_tree_control_delete_rule(binary_search_tree_stp binary_search_tree,
 											 struct tree_family_search_node_return_s search_return,
 											 void *data);
 
@@ -121,7 +126,7 @@ void *binary_search_tree_control_delete_rule(binary_search_tree_stp tree,
 */
 
 /**
- * @brief This struct will record the binary search tree's environment.
+ * @brief This struct will record the binary search binary_search_tree's environment.
  */
 
 struct tree_family_control_environment_s binary_search_tree_control_environment = {
@@ -131,11 +136,16 @@ struct tree_family_control_environment_s binary_search_tree_control_environment 
 		binary_search_tree_control_search_recursion_rule,
 		binary_search_tree_control_insert_rule,
 		binary_search_tree_control_delete_rule
+	},
+	{
+		.degree = 2,
+		.mem_size_key = 4,
+		.minimum_amt_key = 1,
 	}
 };
 
 /**
- * @brief This struct will record the binary search tree's node operator.
+ * @brief This struct will record the binary search binary_search_tree's node operator.
  */
 
 struct tree_family_node_operator_s binary_search_tree_control_node_operator = {
@@ -152,10 +162,10 @@ struct tree_family_node_operator_s binary_search_tree_control_node_operator = {
 */
 
 /**
- * @brief This function will initialize the tree struct
+ * @brief This function will initialize the binary_search_tree struct
  *
- * @param tree the pointer to the tree struct pointer
- * @param element_size the element memory size of the tree struct
+ * @param binary_search_tree the pointer to the binary_search_tree struct pointer
+ * @param element_size the element memory size of the binary_search_tree struct
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
@@ -163,16 +173,19 @@ struct tree_family_node_operator_s binary_search_tree_control_node_operator = {
  */
 
 extern inline void
-binary_search_tree_control_configuration_init(binary_search_tree_stpp tree,
+binary_search_tree_control_configuration_init(binary_search_tree_stpp binary_search_tree,
+											  container_size_t key_size,
 											  container_size_t element_size,
 											  generic_type_element_assign_t assign,
 											  generic_type_element_free_t free)
 {
-	assert(tree);
+	assert(binary_search_tree);
 	assert(0 <= element_size);
 
-	tree_family_control_configuration_init(tree, binary_search_tree_control_switch_control,
-										   2, TREE_FAMILY_RED_BLACK_TREE,
+	tree_family_control_configuration_init(binary_search_tree, 
+										   binary_search_tree_control_switch_control,
+										   2, key_size,
+										   TREE_FAMILY_RED_BLACK_TREE,
 										   BINARY_SEARCH_TREE_CFG_ALLOCATOR_TYPE,
 										   element_size, assign, free);
 }
@@ -185,8 +198,11 @@ binary_search_tree_control_configuration_init(binary_search_tree_stpp tree,
  * @return void
  */
 
-void binary_search_tree_control_switch_control(binary_search_tree_stp tree)
+void binary_search_tree_control_switch_control(binary_search_tree_stp binary_search_tree)
 {
+	binary_search_tree_control_environment.extra_info 
+		= *(struct tree_family_extra_infomation_s *)(&binary_search_tree->addon);
+
 	tree_family_control_get_control(binary_search_tree_control_environment);
 }
 
@@ -199,19 +215,19 @@ void binary_search_tree_control_switch_control(binary_search_tree_stp tree)
  */
 
 container_size_t
-binary_search_tree_control_search_match_rule(binary_search_tree_stp tree,
+binary_search_tree_control_search_match_rule(binary_search_tree_stp binary_search_tree,
 											 struct tree_family_chain_node_s *node,
 											 void *data)
 {
-	assert(tree);
+	assert(binary_search_tree);
 	assert(node);
 	assert(data);
 
 	container_size_t location = 0;
 
-	for (; location < tree->info.degree - 1; location++) {
+	for (; location < BINARY_SEARCH_TREE_GET_EXTRA_INFO().degree - 1; location++) {
 		if (NULL != *((void **)node->data + location) &&
-			compare_control_equal(data, *((void **)node->data + location), tree->info.mem_size_key)) {
+			compare_control_equal(data, *((void **)node->data + location), BINARY_SEARCH_TREE_GET_EXTRA_INFO().mem_size_key)) {
 			goto EXIT;
 		}
 	}
@@ -225,7 +241,7 @@ EXIT:
 	printf("search.match rule:node:%p Data ",
 		   node);
 
-	for (size_t cnt = 0; cnt < tree->info.degree - 1; cnt++) {
+	for (size_t cnt = 0; cnt < BINARY_SEARCH_TREE_GET_EXTRA_INFO().degree - 1; cnt++) {
 		printf("No.%d:\"%s\"-%p ", cnt, (char *)*((void **)node->data + cnt), *((void **)node->data + cnt));
 	}
 
@@ -245,27 +261,27 @@ EXIT:
  */
 
 container_size_t
-binary_search_tree_control_search_recursion_rule(binary_search_tree_stp tree,
+binary_search_tree_control_search_recursion_rule(binary_search_tree_stp binary_search_tree,
 												 struct tree_family_chain_node_s **node,
 												 void *data)
 {
-	assert(tree);
+	assert(binary_search_tree);
 	assert(node);
 	assert(*node);
 	assert(data);
 
 	container_size_t evaluation_level = LINK_OPERATOR_CODE_CHILD_FAR_LEFT;
 
-	for (; evaluation_level < tree->info.degree; evaluation_level++) {
+	for (; evaluation_level < BINARY_SEARCH_TREE_GET_EXTRA_INFO().degree; evaluation_level++) {
 		if ((NULL == *((void **)(*node)->data + evaluation_level - 1) ||				/* If the data of this evaluation_level is NULL,the previous would the far right one */
 			(NULL != *((void **)(*node)->data + evaluation_level - 1) &&				/* If the data of this evaluation_level isn't NULL,and the data is lesser than the data of this evaluation_level */
 			 compare_control_lesser(data, *((void **)(*node)->data + evaluation_level - 1),
-									tree->info.mem_size_key)))) {
+									BINARY_SEARCH_TREE_GET_EXTRA_INFO().mem_size_key)))) {
 			goto EXIT;
 		}
 	}
 
-	evaluation_level = tree->info.degree;												/* Assign to be the id of link far right */
+	evaluation_level = BINARY_SEARCH_TREE_GET_EXTRA_INFO().degree;												/* Assign to be the id of link far right */
 
 EXIT:
 
@@ -273,7 +289,7 @@ EXIT:
 
 	printf("search.recursion rule:node:%p Link ", (*node));
 
-	for (size_t cnt = 1; cnt <= tree->info.degree; cnt++) {
+	for (size_t cnt = 1; cnt <= BINARY_SEARCH_TREE_GET_EXTRA_INFO().degree; cnt++) {
 		printf("No.%d:%p ", cnt, *((void **)(*node)->link + cnt));
 	}
 
@@ -294,21 +310,21 @@ EXIT:
  * @return void
  */
 
-void *binary_search_tree_control_insert_rule(binary_search_tree_stp tree,
+void *binary_search_tree_control_insert_rule(binary_search_tree_stp binary_search_tree,
 											 struct tree_family_search_node_return_s search_return,
 											 void *data)
 {
-	assert(tree);
+	assert(binary_search_tree);
 	assert(data);
 
-	struct tree_family_chain_node_s *node = tree_family_control_init_node(tree);
-	void *data_cpy = tree->allocator_ctrl->allocate(tree->allocator, 1, tree->info.mem_size);
+	struct tree_family_chain_node_s *node = tree_family_control_init_node(binary_search_tree);
+	void *data_cpy = binary_search_tree->allocator_control_ptr->allocate(binary_search_tree->allocator_ptr, 1, binary_search_tree->info.mem_size);
 
 	if (NULL == data_cpy) {
 		return NULL;
 	}
 
-	memcpy(data_cpy, data, tree->info.mem_size);
+	memcpy(data_cpy, data, binary_search_tree->info.mem_size);
 
 	*((void **)node->data) = data_cpy;												/* Copy the data and assign to data */
 	*((void **)node->link) = search_return.node_prev;								/* Link the search parent to be node's parent */
@@ -326,11 +342,11 @@ void *binary_search_tree_control_insert_rule(binary_search_tree_stp tree,
  * @return void
  */
 
-void *binary_search_tree_control_delete_rule(binary_search_tree_stp tree,
+void *binary_search_tree_control_delete_rule(binary_search_tree_stp binary_search_tree,
 											 struct tree_family_search_node_return_s search_return,
 											 void *data)
 {
-	assert(tree);
+	assert(binary_search_tree);
 	assert(data);
 
 	struct tree_family_chain_node_s
@@ -340,11 +356,11 @@ void *binary_search_tree_control_delete_rule(binary_search_tree_stp tree,
 	container_size_t relation = LINK_OPERATOR_CODE_PARENT;											/* Record the relation id with their parent */
 
 	while (NULL != node) {
-		if (tree_family_node_control_get_if_leaf(tree, node)) {										/* Delete the node that is a leaf node */
+		if (tree_family_node_control_get_if_leaf(binary_search_tree, node)) {										/* Delete the node that is a leaf node */
 			if (NULL == parent) {
-				tree->root = NULL;
+				binary_search_tree->element_ptr = NULL;
 			} else {
-				relation = tree_family_node_control_get_relation_with_parent(tree, node, parent);
+				relation = tree_family_node_control_get_relation_with_parent(binary_search_tree, node, parent);
 
 				if (LINK_OPERATOR_CODE_PARENT != relation) {
 					*((void **)parent->link + relation) = NULL;
@@ -353,14 +369,14 @@ void *binary_search_tree_control_delete_rule(binary_search_tree_stp tree,
 
 			goto EXIT;
 
-			//tree_family_control_destroy_node(tree, &node);
+			//tree_family_control_destroy_node(binary_search_tree, &node);
 		} else if (NULL != *((void **)node->link + 1) &&											/* If it have two child linked */
 				   NULL != *((void **)node->link + 2)) {
 			tree_family_get_precursor_and_successor_return_st
-				get_precursor_successor_return = tree_family_control_get_precursor(tree, node, 0);
+				get_precursor_successor_return = tree_family_control_get_precursor(binary_search_tree, node, 0);
 
 			if (NULL == get_precursor_successor_return.node &&										/* If the precursor is NULL,get the successor */
-				(get_precursor_successor_return = tree_family_control_get_successor(tree, node, 0),
+				(get_precursor_successor_return = tree_family_control_get_successor(binary_search_tree, node, 0),
 				 NULL == get_precursor_successor_return.node)) {
 				goto FAIL;
 			}
@@ -383,7 +399,7 @@ void *binary_search_tree_control_delete_rule(binary_search_tree_stp tree,
 			node_cut = *((void **)node->link + relation);											/* Cut the node's child */
 
 			if (NULL == parent &&
-				NULL == (parent = tree->root = node_cut, node_cut = NULL)) {						/* If it's parent is NULL,it would be the root */
+				NULL == (parent = binary_search_tree->element_ptr = node_cut, node_cut = NULL)) {						/* If it's parent is NULL,it would be the root */
 				goto FAIL;
 			} else {
 				*((void **)parent->link + LINK_OPERATOR_CODE_PARENT) = node_cut;					/* Link the node into parent to be one of it's child */

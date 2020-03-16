@@ -6,11 +6,16 @@
 
 #include "red_black_tree.h"
 
+#include "container_pte_def.h"
+
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
 *********************************************************************************************************
 */
+
+#define RED_BLACK_TREE_GET_EXTRA_INFO()																		\
+tree_family_control_get_extra_infomation(red_black_tree)
 
 /*
 *********************************************************************************************************
@@ -25,7 +30,7 @@
 */
 
 /**
- * @brief This enum is the red black tree color enums.
+ * @brief This enum is the red black red_black_tree color enums.
  */
 
 enum red_black_tree_color_e {
@@ -37,10 +42,10 @@ enum red_black_tree_color_e {
 };
 
 /**
- * @brief This type is the red black tree's rotate function typedef.
+ * @brief This type is the red black red_black_tree's rotate function typedef.
  */
 
-typedef void (*red_black_tree_node_control_rotate_t) (struct tree_family_s *tree,
+typedef void (*red_black_tree_node_control_rotate_t) (red_black_tree_stp red_black_tree,
 													  struct tree_family_chain_node_s *node);
 
 /*
@@ -62,14 +67,14 @@ typedef void (*red_black_tree_node_control_rotate_t) (struct tree_family_s *tree
 */
 
 /**
- * @brief This function will switch the tree-family control.
+ * @brief This function will switch the red_black_tree-family control.
  *
  * @param void
  *
  * @return void
  */
 
-void red_black_tree_control_switch_control(struct tree_family_s *tree);
+void red_black_tree_control_switch_control(red_black_tree_stp red_black_tree);
 
 /**
  * @brief This function will  control the tree_family_control_search()'s match rule.
@@ -80,7 +85,7 @@ void red_black_tree_control_switch_control(struct tree_family_s *tree);
  */
 
 container_size_t
-red_black_tree_control_search_match_rule(struct tree_family_s *tree,
+red_black_tree_control_search_match_rule(red_black_tree_stp red_black_tree,
 										 struct tree_family_chain_node_s *node,
 										 void *data);
 
@@ -93,7 +98,7 @@ red_black_tree_control_search_match_rule(struct tree_family_s *tree,
  */
 
 container_size_t
-red_black_tree_control_search_recursion_rule(struct tree_family_s *tree,
+red_black_tree_control_search_recursion_rule(red_black_tree_stp red_black_tree,
 											 struct tree_family_chain_node_s **node,
 											 void *data);
 
@@ -105,7 +110,7 @@ red_black_tree_control_search_recursion_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *red_black_tree_control_insert_rule(struct tree_family_s *tree,
+void *red_black_tree_control_insert_rule(red_black_tree_stp red_black_tree,
 										 struct tree_family_search_node_return_s search_return,
 										 void *data);
 
@@ -117,31 +122,31 @@ void *red_black_tree_control_insert_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *red_black_tree_control_delete_rule(struct tree_family_s *tree,
+void *red_black_tree_control_delete_rule(red_black_tree_stp red_black_tree,
 										 struct tree_family_search_node_return_s search_return,
 										 void *data);
 
 /**
- * @brief This function will fix the tree to be a red_black_tree after insert the node specified.
+ * @brief This function will fix the red_black_tree to be a red_black_tree after insert the node specified.
  *
  * @param void
  *
  * @return void
  */
 
-void red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
+void red_black_tree_control_insert_fix_rule(red_black_tree_stp red_black_tree,
 											struct tree_family_chain_node_s *node,
 											struct tree_family_chain_node_s *parent);
 
 /**
- * @brief This function will fix the tree to be a red_black_tree after delete the node specified.
+ * @brief This function will fix the red_black_tree to be a red_black_tree after delete the node specified.
  *
  * @param void
  *
  * @return void
  */
 
-void red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
+void red_black_tree_control_delete_fix_rule(red_black_tree_stp red_black_tree,
 											struct tree_family_chain_node_s *node,
 											struct tree_family_chain_node_s *parent);
 
@@ -154,7 +159,7 @@ void red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
  */
 
 enum red_black_tree_color_e
-	red_black_tree_node_control_extract_color(struct tree_family_s *tree,
+	red_black_tree_node_control_extract_color(red_black_tree_stp red_black_tree,
 											  struct tree_family_chain_node_s *node);
 
 /**
@@ -165,7 +170,7 @@ enum red_black_tree_color_e
  * @return void
  */
 
-void red_black_tree_node_control_paint_color(struct tree_family_s *tree,
+void red_black_tree_node_control_paint_color(red_black_tree_stp red_black_tree,
 											 struct tree_family_chain_node_s *node,
 											 enum red_black_tree_color_e color);
 
@@ -177,7 +182,7 @@ void red_black_tree_node_control_paint_color(struct tree_family_s *tree,
  * @return void
  */
 
-void red_black_tree_node_control_left_rotate(struct tree_family_s *tree,
+void red_black_tree_node_control_left_rotate(red_black_tree_stp red_black_tree,
 											 struct tree_family_chain_node_s *node);
 
 /**
@@ -188,7 +193,7 @@ void red_black_tree_node_control_left_rotate(struct tree_family_s *tree,
  * @return void
  */
 
-void red_black_tree_node_control_right_rotate(struct tree_family_s *tree,
+void red_black_tree_node_control_right_rotate(red_black_tree_stp red_black_tree,
 											  struct tree_family_chain_node_s *node);
 
 /**
@@ -199,7 +204,7 @@ void red_black_tree_node_control_right_rotate(struct tree_family_s *tree,
  * @return void
  */
 
-void red_black_tree_node_control_rotate_core(struct tree_family_s *tree,
+void red_black_tree_node_control_rotate_core(red_black_tree_stp red_black_tree,
 											 struct tree_family_chain_node_s *node,
 											 container_size_t id_rule[2]);
 
@@ -210,7 +215,7 @@ void red_black_tree_node_control_rotate_core(struct tree_family_s *tree,
 */
 
 /**
- * @brief This struct will record the red-black tree's environment.
+ * @brief This struct will record the red-black red_black_tree's environment.
  */
 
 struct tree_family_control_environment_s red_black_tree_control_environment = {
@@ -230,26 +235,27 @@ struct tree_family_control_environment_s red_black_tree_control_environment = {
 */
 
 /**
- * @brief This function will initialize the tree struct
+ * @brief This function will initialize the red_black_tree struct
  *
- * @param tree the pointer to the tree struct pointer
- * @param element_size the element memory size of the tree struct
+ * @param red_black_tree the pointer to the red_black_tree struct pointer
+ * @param element_size the element memory size of the red_black_tree struct
  * @param assign the pointer to the assign element handler of the specified data type
  * @param free the pointer to the free element handler of the specified data type
  *
  * @return NONE
  */
 
-void red_black_tree_control_configuration_init(red_black_tree_stpp tree,
+void red_black_tree_control_configuration_init(red_black_tree_stpp red_black_tree,
 											   container_size_t element_size,
 											   generic_type_element_assign_t assign,
 											   generic_type_element_free_t free)
 {
-	assert(tree);
+	assert(red_black_tree);
 	assert(0 <= element_size);
 
-	tree_family_control_configuration_init(tree, red_black_tree_control_switch_control,
-										   2, TREE_FAMILY_RED_BLACK_TREE,
+	tree_family_control_configuration_init(red_black_tree, red_black_tree_control_switch_control,
+										   2, 4,
+										   TREE_FAMILY_RED_BLACK_TREE,
 										   RED_BLACK_TREE_CFG_ALLOCATOR_TYPE,
 										   element_size + sizeof(enum red_black_tree_color_e),
 										   assign, free);
@@ -263,8 +269,11 @@ void red_black_tree_control_configuration_init(red_black_tree_stpp tree,
  * @return void
  */
 
-void red_black_tree_control_switch_control(struct tree_family_s *tree)
+void red_black_tree_control_switch_control(red_black_tree_stp red_black_tree)
 {
+	red_black_tree_control_environment.extra_info
+		= *(struct tree_family_extra_infomation_s *)(&red_black_tree->addon);
+
 	tree_family_control_get_control(red_black_tree_control_environment);
 }
 
@@ -277,15 +286,15 @@ void red_black_tree_control_switch_control(struct tree_family_s *tree)
  */
 
 container_size_t
-red_black_tree_control_search_match_rule(struct tree_family_s *tree,
+red_black_tree_control_search_match_rule(red_black_tree_stp red_black_tree,
 										 struct tree_family_chain_node_s *node,
 										 void *data)
 {
-	assert(tree);
+	assert(red_black_tree);
 	assert(node);
 	assert(data);
 
-	return binary_search_tree_control_node_operator.search_match_rule(tree, node, data);
+	return binary_search_tree_control_node_operator.search_match_rule(red_black_tree, node, data);
 }
 
 /**
@@ -297,16 +306,16 @@ red_black_tree_control_search_match_rule(struct tree_family_s *tree,
  */
 
 container_size_t
-red_black_tree_control_search_recursion_rule(struct tree_family_s *tree,
+red_black_tree_control_search_recursion_rule(red_black_tree_stp red_black_tree,
 											 struct tree_family_chain_node_s **node,
 											 void *data)
 {
-	assert(tree);
+	assert(red_black_tree);
 	assert(node);
 	assert(data);
 	assert(*node);
 
-	return binary_search_tree_control_node_operator.search_recursion_rule(tree, node, data);
+	return binary_search_tree_control_node_operator.search_recursion_rule(red_black_tree, node, data);
 }
 
 /**
@@ -317,34 +326,34 @@ red_black_tree_control_search_recursion_rule(struct tree_family_s *tree,
  * @return void
  */
 
-void *red_black_tree_control_insert_rule(struct tree_family_s *tree,
+void *red_black_tree_control_insert_rule(red_black_tree_stp red_black_tree,
 										 struct tree_family_search_node_return_s search_return,
 										 void *data)
 {
-	assert(tree);
+	assert(red_black_tree);
 	assert(data);
 
 	struct tree_family_chain_node_s
-		*node = binary_search_tree_control_node_operator.insert_rule(tree, search_return, data),
+		*node = binary_search_tree_control_node_operator.insert_rule(red_black_tree, search_return, data),
 		*parent = *((void **)node->link + LINK_OPERATOR_CODE_PARENT);
 
-	if (NULL == parent) {                                                                   /* Paint the root to black color */
-		red_black_tree_node_control_paint_color(tree, tree->root, RED_BLACK_TREE_COLOR_BLACK);
+	if (NULL == parent) {                                                                   /* Paint the element_ptr to black color */
+		red_black_tree_node_control_paint_color(red_black_tree, red_black_tree->element_ptr, RED_BLACK_TREE_COLOR_BLACK);
 
 		goto EXIT;
 	}
 
-	red_black_tree_node_control_paint_color(tree, node, RED_BLACK_TREE_COLOR_RED);          /* Paint the new node that insert just now to red color */
+	red_black_tree_node_control_paint_color(red_black_tree, node, RED_BLACK_TREE_COLOR_RED);          /* Paint the new node that insert just now to red color */
 
-	if (RED_BLACK_TREE_COLOR_RED == red_black_tree_node_control_extract_color(tree, parent)) {
-		red_black_tree_control_insert_fix_rule(tree, node, parent);
+	if (RED_BLACK_TREE_COLOR_RED == red_black_tree_node_control_extract_color(red_black_tree, parent)) {
+		red_black_tree_control_insert_fix_rule(red_black_tree, node, parent);
 	}
 
 EXIT:
 
 	#if (RED_BLACK_TREE_CFG_DEBUG_EN)
 
-	tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
+	tree_family_control_inorder_traversal(red_black_tree, red_black_tree->element_ptr, tree_family_control_traversal_printer);
 
 	#endif // (RED_BLACK_TREE_CFG_DEBUG_EN)
 
@@ -359,15 +368,15 @@ EXIT:
  * @return void
  */
 
-void *red_black_tree_control_delete_rule(struct tree_family_s *tree,
+void *red_black_tree_control_delete_rule(red_black_tree_stp red_black_tree,
 										 struct tree_family_search_node_return_s search_return,
 										 void *data)
 {
-	assert(tree);
+	assert(red_black_tree);
 	assert(data);
 
 	struct tree_family_chain_node_s
-		*node = binary_search_tree_control_node_operator.delete_rule(tree, search_return, data),
+		*node = binary_search_tree_control_node_operator.delete_rule(red_black_tree, search_return, data),
 		*parent = NULL;
 
 	if (NULL == node ||
@@ -375,8 +384,8 @@ void *red_black_tree_control_delete_rule(struct tree_family_s *tree,
 		goto EXIT;
 	}
 
-	if (RED_BLACK_TREE_COLOR_BLACK == red_black_tree_node_control_extract_color(tree, parent)) {
-		red_black_tree_control_delete_fix_rule(tree, node, parent);
+	if (RED_BLACK_TREE_COLOR_BLACK == red_black_tree_node_control_extract_color(red_black_tree, parent)) {
+		red_black_tree_control_delete_fix_rule(red_black_tree, node, parent);
 	}
 
 EXIT:
@@ -385,7 +394,7 @@ EXIT:
 }
 
 /**
- * @brief This function will fix the tree to be a red_black_tree after insert the node specified.
+ * @brief This function will fix the red_black_tree to be a red_black_tree after insert the node specified.
  *
  * @param void
  *
@@ -393,11 +402,11 @@ EXIT:
  */
 
 static inline void
-red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
+red_black_tree_control_insert_fix_rule(red_black_tree_stp red_black_tree,
 									   struct tree_family_chain_node_s *node,
 									   struct tree_family_chain_node_s *parent)
 {
-	assert(tree);
+	assert(red_black_tree);
 	assert(node);
 
 	struct tree_family_chain_node_s
@@ -410,17 +419,17 @@ red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
 	while (NULL != parent &&
 		(NULL != grand_parent ||
 		 NULL != (grand_parent = *((void **)parent->link + LINK_OPERATOR_CODE_PARENT))) &&
-		   RED_BLACK_TREE_COLOR_RED == red_black_tree_node_control_extract_color(tree, parent)) {
+		   RED_BLACK_TREE_COLOR_RED == red_black_tree_node_control_extract_color(red_black_tree, parent)) {
 		#if (RED_BLACK_TREE_CFG_DEBUG_EN)
 
-		tree_family_control_inorder_traversal(tree, tree->root, tree_family_control_traversal_printer);
+		tree_family_control_inorder_traversal(red_black_tree, red_black_tree->element_ptr, tree_family_control_traversal_printer);
 		printf("red_black_tree_control.insert.fix_rule:node:%p parent:%p \r\n", node, parent);
 		printf("red_black_tree_control.insert.fix_rule:%s parent \r\n",
-			(tree_family_node_control_get_if_left_child(tree, parent, grand_parent)) ? "left" : "right");
+			(tree_family_node_control_get_if_left_child(red_black_tree, parent, grand_parent)) ? "left" : "right");
 
 		#endif // (RED_BLACK_TREE_CFG_DEBUG_EN)
 
-		if (left_side = tree_family_node_control_get_if_left_child(tree, parent, grand_parent)) {			/* If parent is the left child */
+		if (left_side = tree_family_node_control_get_if_left_child(red_black_tree, parent, grand_parent)) {			/* If parent is the left child */
 			red_black_tree_node_control_rotate[0] = &red_black_tree_node_control_left_rotate;
 			red_black_tree_node_control_rotate[1] = &red_black_tree_node_control_right_rotate;
 		} else {
@@ -430,7 +439,7 @@ red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
 
 		uncle = *((void **)grand_parent->link + left_side + 1);
 
-		switch (red_black_tree_node_control_extract_color(tree, uncle)) {
+		switch (red_black_tree_node_control_extract_color(red_black_tree, uncle)) {
 			case RED_BLACK_TREE_COLOR_RED:
 				#if (RED_BLACK_TREE_CFG_DEBUG_EN)
 
@@ -438,9 +447,9 @@ red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
 
 				#endif // (RED_BLACK_TREE_CFG_DEBUG_EN)
 
-				red_black_tree_node_control_paint_color(tree, grand_parent, RED_BLACK_TREE_COLOR_RED);
-				red_black_tree_node_control_paint_color(tree, parent, RED_BLACK_TREE_COLOR_BLACK);
-				red_black_tree_node_control_paint_color(tree, uncle, RED_BLACK_TREE_COLOR_BLACK);
+				red_black_tree_node_control_paint_color(red_black_tree, grand_parent, RED_BLACK_TREE_COLOR_RED);
+				red_black_tree_node_control_paint_color(red_black_tree, parent, RED_BLACK_TREE_COLOR_BLACK);
+				red_black_tree_node_control_paint_color(red_black_tree, uncle, RED_BLACK_TREE_COLOR_BLACK);
 
 				node = grand_parent;
 				parent = *((void **)node->link + LINK_OPERATOR_CODE_PARENT);
@@ -453,7 +462,7 @@ red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
 
 				#endif // (RED_BLACK_TREE_CFG_DEBUG_EN)
 
-				if (left_side != tree_family_node_control_get_if_left_child(tree, node, parent)) {			/* If node is the left child */
+				if (left_side != tree_family_node_control_get_if_left_child(red_black_tree, node, parent)) {			/* If node is the left child */
 					#if (RED_BLACK_TREE_CFG_DEBUG_EN)
 
 					printf("red_black_tree_control.insert.fix_rule:%s child \r\n",
@@ -463,24 +472,24 @@ red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
 
 					ALGORITHM_SWAP((size_t)node, (size_t)parent);
 
-					red_black_tree_node_control_rotate[0](tree, node);
+					red_black_tree_node_control_rotate[0](red_black_tree, node);
 				}
 
-				red_black_tree_node_control_paint_color(tree, grand_parent, RED_BLACK_TREE_COLOR_RED);
-				red_black_tree_node_control_paint_color(tree, parent, RED_BLACK_TREE_COLOR_BLACK);
+				red_black_tree_node_control_paint_color(red_black_tree, grand_parent, RED_BLACK_TREE_COLOR_RED);
+				red_black_tree_node_control_paint_color(red_black_tree, parent, RED_BLACK_TREE_COLOR_BLACK);
 
-				red_black_tree_node_control_rotate[1](tree, grand_parent);
+				red_black_tree_node_control_rotate[1](red_black_tree, grand_parent);
 				break;
 			default:
 				break;
 		}
 	}
 
-	red_black_tree_node_control_paint_color(tree, tree->root, RED_BLACK_TREE_COLOR_BLACK);
+	red_black_tree_node_control_paint_color(red_black_tree, red_black_tree->element_ptr, RED_BLACK_TREE_COLOR_BLACK);
 }
 
 /**
- * @brief This function will fix the tree to be a red_black_tree after delete the node specified.
+ * @brief This function will fix the red_black_tree to be a red_black_tree after delete the node specified.
  *
  * @param void
  *
@@ -488,11 +497,11 @@ red_black_tree_control_insert_fix_rule(struct tree_family_s *tree,
  */
 
 static inline void
-red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
+red_black_tree_control_delete_fix_rule(red_black_tree_stp red_black_tree,
 									   struct tree_family_chain_node_s *node,
 									   struct tree_family_chain_node_s *parent)
 {
-	assert(tree);
+	assert(red_black_tree);
 	assert(node);
 	assert(parent);
 
@@ -503,9 +512,9 @@ red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
 	}
 
 	while (NULL != node &&
-		   tree->root != node &&
+		   red_black_tree->element_ptr != node &&
 		   NULL != parent &&
-		   RED_BLACK_TREE_COLOR_BLACK == red_black_tree_node_control_extract_color(tree, node)) {
+		   RED_BLACK_TREE_COLOR_BLACK == red_black_tree_node_control_extract_color(red_black_tree, node)) {
 		red_black_tree_node_control_rotate_t red_black_tree_node_control_rotate[2] = {
 			red_black_tree_node_control_left_rotate,
 			red_black_tree_node_control_right_rotate };
@@ -531,24 +540,24 @@ red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
 			mem_size_color = sizeof(enum red_black_tree_color_e),
 			color_brother_both_child = 0;
 
-		switch (red_black_tree_node_control_extract_color(tree, brother)) {								/* Extract the color of the brother */
+		switch (red_black_tree_node_control_extract_color(red_black_tree, brother)) {								/* Extract the color of the brother */
 			case RED_BLACK_TREE_COLOR_RED:																/* TAG:
 																											Node is left child of parent,
 																											BLACK-node + BLACK-both-node-child/nil +
 																											RED-brother */
-				red_black_tree_node_control_paint_color(tree, brother, RED_BLACK_TREE_COLOR_BLACK);
-				red_black_tree_node_control_paint_color(tree, parent, RED_BLACK_TREE_COLOR_RED);
+				red_black_tree_node_control_paint_color(red_black_tree, brother, RED_BLACK_TREE_COLOR_BLACK);
+				red_black_tree_node_control_paint_color(red_black_tree, parent, RED_BLACK_TREE_COLOR_RED);
 
-				red_black_tree_node_control_rotate[0](tree, parent);
+				red_black_tree_node_control_rotate[0](red_black_tree, parent);
 
 				brother = *((void **)parent->link + id_link_parent_child[1]);							/* Refresh the brother */
 			case RED_BLACK_TREE_COLOR_BLACK:
 				if (NULL != brother) {
 					color_brother_both_child =															/* Extract the color of the brother's both child */
-						red_black_tree_node_control_extract_color(tree, *((void **)brother->link +
+						red_black_tree_node_control_extract_color(red_black_tree, *((void **)brother->link +
 																		  id_link_brother_child[0]))
 						<< sizeof(enum red_black_tree_color_e) |
-						red_black_tree_node_control_extract_color(tree, *((void **)brother->link +
+						red_black_tree_node_control_extract_color(red_black_tree, *((void **)brother->link +
 																		  id_link_brother_child[1]));
 				} else {
 					color_brother_both_child = RED_BLACK_TREE_COLOR_BLACK << 4 | RED_BLACK_TREE_COLOR_BLACK;
@@ -560,7 +569,7 @@ red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
 																											Node is left child of parent,
 																											BLACK-node + BLACK-both-node-child/nil +
 																											BLACK-brother + BLACK-both-brother-child/nil */
-						red_black_tree_node_control_paint_color(tree, brother, RED_BLACK_TREE_COLOR_RED);
+						red_black_tree_node_control_paint_color(red_black_tree, brother, RED_BLACK_TREE_COLOR_RED);
 
 						node = parent;
 						parent = *((void **)node->link + LINK_OPERATOR_CODE_PARENT);
@@ -570,12 +579,12 @@ red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
 																											Node is right child of parent,
 																											BLACK-node + BLACK-both-node-child/nil +
 																											BLACK-brother + BLACK-brother-left-child/nil + RED-brother-right-child/nil */
-						red_black_tree_node_control_paint_color(tree,
+						red_black_tree_node_control_paint_color(red_black_tree,
 																*((void **)brother->link + id_link_brother_child[0]),
 																RED_BLACK_TREE_COLOR_BLACK);
-						red_black_tree_node_control_paint_color(tree, brother, RED_BLACK_TREE_COLOR_RED);
+						red_black_tree_node_control_paint_color(red_black_tree, brother, RED_BLACK_TREE_COLOR_RED);
 
-						red_black_tree_node_control_rotate[1](tree, brother);
+						red_black_tree_node_control_rotate[1](red_black_tree, brother);
 
 						brother = *((void **)parent->link + id_link_parent_child[1]);
 					case RED_BLACK_TREE_COLOR_RED << sizeof(enum red_black_tree_color_e) | RED_BLACK_TREE_COLOR_RED:
@@ -584,17 +593,17 @@ red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
 																											Node is left child of parent,
 																											BLACK-node + BLACK-both-node-child/nil +
 																											BLACK-brother + ANY-brother-left-child/nil + RED-brother-right-child/nil */
-						red_black_tree_node_control_paint_color(tree, brother,
-																red_black_tree_node_control_extract_color(tree,
+						red_black_tree_node_control_paint_color(red_black_tree, brother,
+																red_black_tree_node_control_extract_color(red_black_tree,
 																										  parent));
-						red_black_tree_node_control_paint_color(tree, parent, RED_BLACK_TREE_COLOR_BLACK);
-						red_black_tree_node_control_paint_color(tree,
+						red_black_tree_node_control_paint_color(red_black_tree, parent, RED_BLACK_TREE_COLOR_BLACK);
+						red_black_tree_node_control_paint_color(red_black_tree,
 																*((void **)brother->link + id_link_brother_child[1]),
 																RED_BLACK_TREE_COLOR_BLACK);
 
-						red_black_tree_node_control_rotate[0](tree, parent);
+						red_black_tree_node_control_rotate[0](red_black_tree, parent);
 
-						node = tree->root;
+						node = red_black_tree->element_ptr;
 						break;
 					default:
 						break;
@@ -605,7 +614,7 @@ red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
 		}
 	}
 
-	red_black_tree_node_control_paint_color(tree, node, RED_BLACK_TREE_COLOR_BLACK);
+	red_black_tree_node_control_paint_color(red_black_tree, node, RED_BLACK_TREE_COLOR_BLACK);
 }
 
 /**
@@ -617,10 +626,10 @@ red_black_tree_control_delete_fix_rule(struct tree_family_s *tree,
  */
 
 static inline enum red_black_tree_color_e
-red_black_tree_node_control_extract_color(struct tree_family_s *tree,
+red_black_tree_node_control_extract_color(red_black_tree_stp red_black_tree,
 										  struct tree_family_chain_node_s *node)
 {
-	assert(tree);
+	assert(red_black_tree);
 
 	if (NULL == node) {
 		goto BLACK;
@@ -628,7 +637,7 @@ red_black_tree_node_control_extract_color(struct tree_family_s *tree,
 
 	enum red_black_tree_color_e
 		*color_operator = (enum red_black_tree_color_e *)((size_t)(*((void **)node->data)) +
-														  tree->info.mem_size_key);
+														  RED_BLACK_TREE_GET_EXTRA_INFO().mem_size_key);
 
 	switch (*color_operator) {
 		case RED_BLACK_TREE_COLOR_RED:
@@ -650,20 +659,20 @@ red_black_tree_node_control_extract_color(struct tree_family_s *tree,
  */
 
 static inline void
-red_black_tree_node_control_paint_color(struct tree_family_s *tree,
+red_black_tree_node_control_paint_color(red_black_tree_stp red_black_tree,
 										struct tree_family_chain_node_s *node,
 										enum red_black_tree_color_e color)
 {
-	assert(tree);
+	assert(red_black_tree);
 
 	if (NULL == node ||
-		color == red_black_tree_node_control_extract_color(tree, node)) {
+		color == red_black_tree_node_control_extract_color(red_black_tree, node)) {
 		return;
 	}
 
 	enum red_black_tree_color_e
 		*color_operator = (enum red_black_tree_color_e *)((size_t)(*((void **)node->data)) +
-														  tree->info.mem_size_key);
+														  RED_BLACK_TREE_GET_EXTRA_INFO().mem_size_key);
 
 	*color_operator = color;
 }
@@ -676,10 +685,10 @@ red_black_tree_node_control_paint_color(struct tree_family_s *tree,
  * @return void
  */
 
-void red_black_tree_node_control_left_rotate(struct tree_family_s *tree,
+void red_black_tree_node_control_left_rotate(red_black_tree_stp red_black_tree,
 											 struct tree_family_chain_node_s *node)
 {
-	assert(tree);
+	assert(red_black_tree);
 	assert(node);
 
 	#if (RED_BLACK_TREE_CFG_DEBUG_EN)
@@ -690,7 +699,7 @@ void red_black_tree_node_control_left_rotate(struct tree_family_s *tree,
 
 	container_size_t id_rule[2] = { 2,1 };
 
-	red_black_tree_node_control_rotate_core(tree, node, id_rule);
+	red_black_tree_node_control_rotate_core(red_black_tree, node, id_rule);
 }
 
 /**
@@ -701,10 +710,10 @@ void red_black_tree_node_control_left_rotate(struct tree_family_s *tree,
  * @return void
  */
 
-void red_black_tree_node_control_right_rotate(struct tree_family_s *tree,
+void red_black_tree_node_control_right_rotate(red_black_tree_stp red_black_tree,
 											  struct tree_family_chain_node_s *node)
 {
-	assert(tree);
+	assert(red_black_tree);
 	assert(node);
 
 	#if (RED_BLACK_TREE_CFG_DEBUG_EN)
@@ -715,7 +724,7 @@ void red_black_tree_node_control_right_rotate(struct tree_family_s *tree,
 
 	container_size_t id_rule[2] = { 1,2 };
 
-	red_black_tree_node_control_rotate_core(tree, node, id_rule);
+	red_black_tree_node_control_rotate_core(red_black_tree, node, id_rule);
 }
 
 /**
@@ -727,11 +736,11 @@ void red_black_tree_node_control_right_rotate(struct tree_family_s *tree,
  */
 
 static inline void
-red_black_tree_node_control_rotate_core(struct tree_family_s *tree,
+red_black_tree_node_control_rotate_core(red_black_tree_stp red_black_tree,
 										struct tree_family_chain_node_s *node,
 										container_size_t id_rule[2])
 {
-	assert(tree);
+	assert(red_black_tree);
 	assert(node);
 
 	struct tree_family_chain_node_s
@@ -752,7 +761,7 @@ red_black_tree_node_control_rotate_core(struct tree_family_s *tree,
 	*((void **)child->link + LINK_OPERATOR_CODE_PARENT) = father;		/* Link child as father's child */
 
 	if (NULL == father) {
-		tree->root = child;
+		red_black_tree->element_ptr = child;
 	} else if (*((void **)father->link + 1) == node) {
 		*((void **)father->link + 1) = child;
 	} else if (*((void **)father->link + 2) == node) {
