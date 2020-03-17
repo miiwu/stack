@@ -49,6 +49,65 @@
 */
 
 /**
+* @brief This function will search the substring upon the string by the brute force algorithm.
+*
+* @param str the pointer to the string.
+* @param substr the pointer to the substring.
+* @param len the length of the substring.
+*
+* @return the max matching rate.
+*/
+
+float substring_search_control_brute_force_algorithm(const char *str, size_t len,
+													 const char *substr, size_t sublen)
+{
+	assert(str);
+	assert(len);
+	assert(substr);
+	assert(sublen);
+
+	static const size_t step = 1;
+
+	static size_t
+		loc, subloc;
+
+	static char
+		symbol_substr;
+
+	static float
+		max_matching_rate;
+
+	loc = 0;																				/* Set zero */
+	max_matching_rate = 0.0;
+
+	do {
+		subloc = 0;
+		do {
+			symbol_substr = *(str + loc + subloc);
+
+			if (*(substr + subloc) != symbol_substr) {
+				#if (STRING_MATCHING_CFG_DEBUG_EN)
+
+				printf("substring_search.brute_force_algorithm.not match:str \'%c\' - substr \'%c\' \r\n",
+					   *(substr + subloc), symbol_substr);
+
+				#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+
+				if (subloc && max_matching_rate < subloc / (float)sublen) {					/* Calculate max matching rate */
+					max_matching_rate = subloc / (float)sublen;
+				}
+
+				break;
+			} else if (sublen - 1 == subloc) {
+				return 1.0;
+			}
+		} while (subloc++ < sublen);
+	} while ((loc += step) < len);
+
+	return max_matching_rate;
+}
+
+/**
 * @brief This function will search the substring upon the string by the sunday algorithm.
 *
 * @param str the pointer to the string.
@@ -136,7 +195,7 @@ float substring_search_control_sunday_algorithm(const char *str, size_t len,
 
 				#endif // (STRING_MATCHING_CFG_DEBUG_EN)
 
-				if (subloc && max_matching_rate < subloc / (float)sublen) {
+				if (subloc && max_matching_rate < subloc / (float)sublen) {					/* Calculate max matching rate */
 					max_matching_rate = subloc / (float)sublen;
 				}
 

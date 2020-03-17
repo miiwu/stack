@@ -40,6 +40,19 @@
 */
 
 /**
+* @brief This function will search the substring upon the string by the brute force algorithm.
+*
+* @param str the pointer to the string.
+* @param substr the pointer to the substring.
+* @param len the length of the substring.
+*
+* @return the max matching rate.
+*/
+
+float substring_search_control_brute_force_algorithm(const char *str, size_t len,
+													 const char *substr, size_t sublen);
+
+/**
 * @brief This function will search the substring upon the string by the sunday algorithm.
 *
 * @param str the pointer to the string.
