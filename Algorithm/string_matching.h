@@ -7,29 +7,25 @@
 *********************************************************************************************************
 */
 
-#ifndef __ALGORITHM_H
-#define __ALGORITHM_H
+#ifndef __STRING_MATCHING_H
+#define __STRING_MATCHING_H
 
 /*
 *********************************************************************************************************
-*                                          INCLUDE FILES
+*                                            INCLUDE FILES
 *********************************************************************************************************
 */
 
-#include "string_matching.h"
-
-#include "compare.h"
-
-#include "sort.h"
+#include "algorithm_def.h"
 
 /*
 *********************************************************************************************************
-*												DEFINES
+*									            DEFINES
 *********************************************************************************************************
 */
 
-/* Define		the definition of swap algorithm.														*/
-#define ALGORITHM_SWAP(x,y)		(x) = (x) ^ (y),(y) = (x) ^ (y),(x) = (x) ^ (y)
+/* Configure        if enable string matching debug.													*/
+#define STRING_MATCHING_CFG_DEBUG_EN										1u
 
 /*
 *********************************************************************************************************
@@ -39,9 +35,22 @@
 
 /*
 *********************************************************************************************************
-*								         FUNCTION PROTOTYPES
+*								            FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
+
+/**
+* @brief This function will search the substring upon the string by the sunday algorithm.
+*
+* @param str the pointer to the string.
+* @param substr the pointer to the substring.
+* @param len the length of the substring.
+*
+* @return the max matching rate.
+*/
+
+float substring_search_control_sunday_algorithm(const char *str, size_t len,
+												const char *substr, size_t sublen);
 
 /*
 *********************************************************************************************************
@@ -55,4 +64,4 @@
 *********************************************************************************************************
 */
 
-#endif // !__ALGORITHM_H
+#endif // !__STRING_MATCHING_H

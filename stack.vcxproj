@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Algorithm\compare.c" />
     <ClCompile Include="Algorithm\sort.c" />
+    <ClCompile Include="Algorithm\string_matching.c" />
     <ClCompile Include="Allocator\allocator_common.c" />
     <ClCompile Include="Container\Container adaptors\container_adaptor_def.c" />
     <ClCompile Include="Container\Container adaptors\priority_queue.c" />
@@ -41,6 +42,7 @@
     <ClCompile Include="Container\Tree\tree_family.c" />
     <ClCompile Include="Debug Component\debug_stack_back_trace.c" />
     <ClCompile Include="Main\main.c" />
+    <ClCompile Include="Main\main_algorithm.c" />
     <ClCompile Include="Main\main_allocator.c" />
     <ClCompile Include="Main\main_array.c" />
     <ClCompile Include="Main\main_binary_search_tree.c" />
@@ -61,6 +63,7 @@
     <ClInclude Include="Algorithm\algorithm_def.h" />
     <ClInclude Include="Algorithm\compare.h" />
     <ClInclude Include="Algorithm\sort.h" />
+    <ClInclude Include="Algorithm\string_matching.h" />
     <ClInclude Include="Allocator\allocator.h" />
     <ClInclude Include="Allocator\allocator_cfg.h" />
     <ClInclude Include="Allocator\allocator_common.h" />

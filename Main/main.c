@@ -8,6 +8,12 @@ void main(void)
 
 	#endif
 
+	#if	(MAIN_ALGORITHM_EN)
+
+	main_algorithm();
+
+	#endif
+
 	#if	(MAIN_ALLOCATOR_EN)
 
 	main_allocator();

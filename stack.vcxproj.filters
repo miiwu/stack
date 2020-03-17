@@ -177,6 +177,12 @@
     <ClCompile Include="Container\Squence container\vector.c">
       <Filter>源文件\container\sequence containers</Filter>
     </ClCompile>
+    <ClCompile Include="Algorithm\string_matching.c">
+      <Filter>源文件\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\main_algorithm.c">
+      <Filter>源文件\main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\container.h">
@@ -277,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="Container\Tree\tree_family.h">
       <Filter>头文件\container\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Algorithm\string_matching.h">
+      <Filter>头文件\algorithm</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

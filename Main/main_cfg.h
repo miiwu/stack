@@ -9,15 +9,17 @@
 
 #define MAIN_DEBUG_COMPONENT_EN		0u
 
+#define MAIN_ALGORITHM_EN			1u
+
 #define MAIN_ALLOCATOR_EN			0u
 
 #define MAIN_GENERIC_TYPE_EN		0u
 
-#define MAIN_B_TREE_EN				1u
+#define MAIN_B_TREE_EN				0u
 
-#define MAIN_BINARY_SEARCH_TREE_EN	1u
+#define MAIN_BINARY_SEARCH_TREE_EN	0u
 
-#define MAIN_RED_BLACK_TREE_EN		1u
+#define MAIN_RED_BLACK_TREE_EN		0u
 
 #define MAIN_ARRAY_EN				0u
 
@@ -38,6 +40,12 @@
 #if	(MAIN_DEBUG_COMPONENT_EN)
 
 void main_debug_component(void);
+
+#endif
+
+#if	(MAIN_ALGORITHM_EN)
+
+void main_algorithm(void);
 
 #endif
 
