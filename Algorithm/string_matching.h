@@ -27,6 +27,9 @@
 /* Configure        if enable string matching debug.													*/
 #define STRING_MATCHING_CFG_DEBUG_EN										1u
 
+/* Configure        if enable max match rate.															*/
+#define STRING_MATCHING_CFG_MAX_MATCH_RATE_EN								1u
+
 /*
 *********************************************************************************************************
 *									           DATA TYPES

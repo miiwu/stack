@@ -42,6 +42,36 @@
 *********************************************************************************************************
 */
 
+/**
+* @brief This function will match the substring by forward search.
+*
+* @param str the pointer to the string.
+* @param substr the pointer to the substring.
+* @param sublen the length of the substring.
+*
+* @return the location of not match.
+*/
+
+static inline size_t
+substring_search_control_match_forward_search(const char *str,
+											  const char *substr,
+											  size_t sublen);
+
+/**
+* @brief This function will match the substring by backward search.
+*
+* @param str the pointer to the string.
+* @param substr the pointer to the substring.
+* @param sublen the length of the substring.
+*
+* @return the location of not match.
+*/
+
+static inline size_t
+substring_search_control_match_backward_search(const char *str,
+											   const char *substr,
+											   size_t sublen);
+
 /*
 *********************************************************************************************************
 *                                            FUNCTIONS
@@ -49,14 +79,14 @@
 */
 
 /**
-* @brief This function will search the substring upon the string by the brute force algorithm.
-*
-* @param str the pointer to the string.
-* @param substr the pointer to the substring.
-* @param len the length of the substring.
-*
-* @return the max matching rate.
-*/
+ * @brief This function will search the substring upon the string by the brute force algorithm.
+ *
+ * @param str the pointer to the string.
+ * @param substr the pointer to the substring.
+ * @param len the length of the substring.
+ *
+ * @return the max matching rate.
+ */
 
 float substring_search_control_brute_force_algorithm(const char *str, size_t len,
 													 const char *substr, size_t sublen)
@@ -81,27 +111,23 @@ float substring_search_control_brute_force_algorithm(const char *str, size_t len
 	max_matching_rate = 0.0;
 
 	do {
-		subloc = 0;
-		do {
-			symbol_substr = *(str + loc + subloc);
+		subloc = substring_search_control_match_forward_search((str + loc),
+															   substr,
+															   sublen);
 
-			if (*(substr + subloc) != symbol_substr) {
-				#if (STRING_MATCHING_CFG_DEBUG_EN)
+		if (sublen == subloc) {
+			return 1.0;
+		} else {
 
-				printf("substring_search.brute_force_algorithm.not match:str \'%c\' - substr \'%c\' \r\n",
-					   *(substr + subloc), symbol_substr);
+		}
 
-				#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+		#if (STRING_MATCHING_CFG_MAX_MATCH_RATE_EN)
 
-				if (subloc && max_matching_rate < subloc / (float)sublen) {					/* Calculate max matching rate */
-					max_matching_rate = subloc / (float)sublen;
-				}
+		if (subloc && max_matching_rate < subloc / (float)sublen) {
+			max_matching_rate = subloc / (float)sublen;
+		}
 
-				break;
-			} else if (sublen - 1 == subloc) {
-				return 1.0;
-			}
-		} while (subloc++ < sublen);
+		#endif // (STRING_MATCHING_CFG_MAX_MATCH_RATE_EN)
 	} while ((loc += step) < len);
 
 	return max_matching_rate;
@@ -154,18 +180,21 @@ float substring_search_control_sunday_algorithm(const char *str, size_t len,
 		}
 
 		symbol[symbol_substr].location = sublen - subloc - 1;
-	} while (subloc++ < sublen);
+	} while (sublen > subloc++);
 
 	do {
-		subloc = 0;
-		do {
-			symbol_substr = *(str + loc + subloc);
+		subloc = substring_search_control_match_backward_search(str + loc,
+																substr,
+																sublen);
 
-			if (*(substr + subloc) != symbol_substr) {
+		if (sublen == subloc) {
+			return 1.0;
+		} else {
+			if (*(substr + subloc) != *(str + loc + subloc)) {
 				#if (STRING_MATCHING_CFG_DEBUG_EN)
 
 				printf("substring_search.sunday_algorithm.not match:str \'%c\' - substr \'%c\' the point is \'%c\' \r\n",
-					   *(substr + subloc), symbol_substr, *(str + loc + sublen));
+					   *(substr + subloc), *(str + loc + subloc), *(str + loc + sublen));
 
 				#endif // (STRING_MATCHING_CFG_DEBUG_EN)
 
@@ -188,23 +217,120 @@ float substring_search_control_sunday_algorithm(const char *str, size_t len,
 
 					step = sublen + 1;
 				}
-
-				#if (STRING_MATCHING_CFG_DEBUG_EN)
-
-				printf("substring_search.sunday_algorithm.step:%d \r\n", step);
-
-				#endif // (STRING_MATCHING_CFG_DEBUG_EN)
-
-				if (subloc && max_matching_rate < subloc / (float)sublen) {					/* Calculate max matching rate */
-					max_matching_rate = subloc / (float)sublen;
-				}
-
-				break;
-			} else if (sublen - 1 == subloc) {
-				return 1.0;
 			}
-		} while (subloc++ < sublen);
-	} while ((loc += step) < len);
+
+			#if (STRING_MATCHING_CFG_DEBUG_EN)
+
+			printf("substring_search.sunday_algorithm.step:%d \r\n"
+				   ,step);
+
+			#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+		}
+
+		#if (STRING_MATCHING_CFG_MAX_MATCH_RATE_EN)
+
+		if (subloc && max_matching_rate < subloc / (float)sublen) {
+			max_matching_rate = subloc / (float)sublen;
+		}
+
+		#endif // (STRING_MATCHING_CFG_MAX_MATCH_RATE_EN)
+	} while (len > (loc += step));
 
 	return max_matching_rate;
+}
+
+/**
+ * @brief This function will match the substring by forward search.
+ *
+ * @param str the pointer to the string.
+ * @param substr the pointer to the substring.
+ * @param sublen the length of the substring.
+ *
+ * @return the location of not match.
+ */
+
+static inline size_t
+substring_search_control_match_forward_search(const char *str,
+											  const char *substr,
+											  size_t sublen)
+{
+	assert(str);
+	assert(substr);
+	assert(sublen);
+
+	static size_t
+		subloc;
+
+	subloc = sublen - 1;
+
+	do {
+		if (*(substr + subloc) != *(str + subloc)) {
+			#if (STRING_MATCHING_CFG_DEBUG_EN)
+
+			printf("substring_search.match.forward_search.not match:str \'%c\' - substr \'%c\' \r\n",
+				   *(substr + subloc), *(str + subloc));
+
+			#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+
+			break;
+		} else if (0 == subloc) {															/* If the last symbol match */
+			#if (STRING_MATCHING_CFG_DEBUG_EN)
+
+			printf("substring_search.match.forward_search.all matched \r\n");
+
+			#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+
+			return sublen;
+		}
+	} while (0 < subloc--);
+
+	return subloc;
+}
+
+/**
+ * @brief This function will match the substring by backward search.
+ *
+ * @param str the pointer to the string.
+ * @param substr the pointer to the substring.
+ * @param sublen the length of the substring.
+ *
+ * @return the location of not match.
+ */
+
+static inline size_t
+substring_search_control_match_backward_search(const char *str,
+											   const char *substr,
+											   size_t sublen)
+{
+	assert(str);
+	assert(substr);
+	assert(sublen);
+
+	static size_t
+		subloc;
+
+	subloc = 0;
+
+	do {
+		if (*(substr + subloc) != *(str + subloc)) {
+			#if (STRING_MATCHING_CFG_DEBUG_EN)
+
+			printf("substring_search.match.backward_search.not match:str \'%c\' - substr \'%c\' \r\n",
+				   *(substr + subloc), *(str + subloc));
+
+			#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+
+			break;
+		} else if (sublen - 1 == subloc) {													/* If the last symbol match */
+			#if (STRING_MATCHING_CFG_DEBUG_EN)
+
+			printf("substring_search.match.backward_search.all matched \r\n");
+
+			#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+
+			return sublen;
+		}
+	} while (sublen > subloc++);
+
+	return subloc;
 }
