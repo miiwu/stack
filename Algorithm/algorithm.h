@@ -16,7 +16,7 @@
 *********************************************************************************************************
 */
 
-#include "substring_search.h"
+#include "search_substring.h"
 
 #include "modify_sequence.h"
 

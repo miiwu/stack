@@ -7,7 +7,7 @@ void main_red_black_tree(void)
 	printf("\r\n ------------------------+ red black tree_family demo start +------------------------ \r\n");
 
 	printf("red_black_tree.init start\r\n");
-	red_black_tree_control_configuration_init(&tree_family,sizeof(size_t), NULL, NULL);
+	red_black_tree_control_configuration_init(&tree_family, sizeof(size_t), NULL, NULL);
 
 	printf("\r\nred_black_tree.insert start\r\n");
 	size_t cnt = 0;

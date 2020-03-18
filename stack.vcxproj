@@ -22,7 +22,7 @@
     <ClCompile Include="Algorithm\compare.c" />
     <ClCompile Include="Algorithm\modify_sequence.c" />
     <ClCompile Include="Algorithm\sort.c" />
-    <ClCompile Include="Algorithm\substring_search.c" />
+    <ClCompile Include="Algorithm\search_substring.c" />
     <ClCompile Include="Allocator\allocator_common.c" />
     <ClCompile Include="Container\Container adaptors\container_adaptor_def.c" />
     <ClCompile Include="Container\Container adaptors\priority_queue.c" />
@@ -65,7 +65,7 @@
     <ClInclude Include="Algorithm\compare.h" />
     <ClInclude Include="Algorithm\modify_sequence.h" />
     <ClInclude Include="Algorithm\sort.h" />
-    <ClInclude Include="Algorithm\substring_search.h" />
+    <ClInclude Include="Algorithm\search_substring.h" />
     <ClInclude Include="Allocator\allocator.h" />
     <ClInclude Include="Allocator\allocator_cfg.h" />
     <ClInclude Include="Allocator\allocator_common.h" />

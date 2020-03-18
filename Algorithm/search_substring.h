@@ -7,8 +7,8 @@
 *********************************************************************************************************
 */
 
-#ifndef __SUBSTRING_SEARCH_H
-#define __SUBSTRING_SEARCH_H
+#ifndef __SEARCH_SUBSTRING_H
+#define __SEARCH_SUBSTRING_H
 
 /*
 *********************************************************************************************************
@@ -25,10 +25,10 @@
 */
 
 /* Configure        if enable string matching debug.													*/
-#define SUBSTRING_SEARCH_CFG_DEBUG_EN										1u
+#define SEARCH_SUBSTRING_CFG_DEBUG_EN										1u
 
 /* Configure        if enable max match rate.															*/
-#define SUBSTRING_SEARCH_CFG_MAX_MATCH_RATE_EN								1u
+#define SEARCH_SUBSTRING_CFG_MAX_MATCH_RATE_EN								1u
 
 /*
 *********************************************************************************************************
@@ -40,8 +40,8 @@
 * @brief This struct will contain the necessary information that sort needed.
 */
 
-enum substring_search_type_e {
-	DEFAULT_SUBSTRING_SEARCH_ALGORITHM,
+enum search_substring_type_e {
+	DEFAULT_SEARCH_SUBSTRING_ALGORITHM,
 
 	BRUTE_FORCE_ALGORITHM,
 
@@ -52,7 +52,7 @@ enum substring_search_type_e {
  * @brief This type is the substring search function prototype typedef
  */
 
-typedef float (*substring_search_t)(const char *str, size_t len,
+typedef float (*search_substring_t)(const char *str, size_t len,
 									const char *substr, size_t sublen);
 
 /**
@@ -68,7 +68,7 @@ struct string_unit_s {
 * @brief This struct will contain the necessary information that sort needed.
 */
 
-struct substring_search_package_s {
+struct search_substring_package_s {
 	struct string_unit_s str;
 
 	struct string_unit_s substr;
@@ -89,8 +89,8 @@ struct substring_search_package_s {
  * @return void
  */
 
-float substring_search_control(enum substring_search_type_e algorithm,
-							   struct substring_search_package_s package);
+float search_substring_control(enum search_substring_type_e algorithm,
+							   struct search_substring_package_s package);
 
 /**
 * @brief This function will search the substring upon the string by the brute force algorithm.
@@ -102,7 +102,7 @@ float substring_search_control(enum substring_search_type_e algorithm,
 * @return the max matching rate.
 */
 
-float substring_search_control_brute_force_algorithm(const char *str, size_t len,
+float search_substring_control_brute_force_algorithm(const char *str, size_t len,
 													 const char *substr, size_t sublen);
 
 /**
@@ -115,7 +115,7 @@ float substring_search_control_brute_force_algorithm(const char *str, size_t len
 * @return the max matching rate.
 */
 
-float substring_search_control_sunday_algorithm(const char *str, size_t len,
+float search_substring_control_sunday_algorithm(const char *str, size_t len,
 												const char *substr, size_t sublen);
 
 /*
@@ -130,4 +130,4 @@ float substring_search_control_sunday_algorithm(const char *str, size_t len,
 *********************************************************************************************************
 */
 
-#endif // !__SUBSTRING_SEARCH_H
+#endif // !__SEARCH_SUBSTRING_H

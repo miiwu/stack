@@ -47,8 +47,8 @@ enum sort_algorithm_category {
 
 /* Configure the enum type of sort algorithm.															*/
 enum sort_algorithm_type {
-	QUICK_SORT = UNSTABLE_SORT + 0x01, 
-	
+	QUICK_SORT = UNSTABLE_SORT + 0x01,
+
 	BUBBLE_SORT = STABLE_SORT + 0x01,
 };
 

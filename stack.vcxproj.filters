@@ -180,7 +180,7 @@
     <ClCompile Include="Main\main_algorithm.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
-    <ClCompile Include="Algorithm\substring_search.c">
+    <ClCompile Include="Algorithm\search_substring.c">
       <Filter>源文件\algorithm</Filter>
     </ClCompile>
     <ClCompile Include="Algorithm\modify_sequence.c">
@@ -287,7 +287,7 @@
     <ClInclude Include="Container\Tree\tree_family.h">
       <Filter>头文件\container\tree</Filter>
     </ClInclude>
-    <ClInclude Include="Algorithm\substring_search.h">
+    <ClInclude Include="Algorithm\search_substring.h">
       <Filter>头文件\algorithm</Filter>
     </ClInclude>
     <ClInclude Include="Algorithm\modify_sequence.h">
