@@ -8,8 +8,8 @@ void main_algorithm(void)
 		string[] = "substring searching algorithm",
 		substring[] = "search";
 
-	struct substring_search_package_s
-		substring_search_package = {
+	struct search_substring_package_s
+		search_substring_package = {
 		.str.string = string,
 		.str.length = strlen(string),
 		.substr.string = substring,
@@ -18,11 +18,11 @@ void main_algorithm(void)
 
 	printf("\r\n ------------------------+ algorithm demo start +------------------------\r\n");
 
-	printf("algorithm.substring_search.brute_force_algorithm:%f \r\n\r\n",
-		   substring_search_control(BRUTE_FORCE_ALGORITHM, substring_search_package));
+	printf("algorithm.search_substring.brute_force_algorithm:%f \r\n\r\n",
+		   search_substring_control(BRUTE_FORCE_ALGORITHM, search_substring_package));
 
-	printf("algorithm.substring_search.sunday_algorithm:%f \r\n\r\n",
-		   substring_search_control(SUNDAY_ALGORITHM, substring_search_package));
+	printf("algorithm.search_substring.sunday_algorithm:%f \r\n\r\n",
+		   search_substring_control(SUNDAY_ALGORITHM, search_substring_package));
 
 	printf("\r\n ------------------------+ algorithm demo end +------------------------ \r\n");
 

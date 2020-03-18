@@ -2,7 +2,7 @@
 
 void main_b_tree(void)
 {
-	tree_family_stp 
+	tree_family_stp
 		tree_family = NULL;
 
 	struct b_tree_data {

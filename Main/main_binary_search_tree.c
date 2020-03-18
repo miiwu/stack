@@ -2,7 +2,7 @@
 
 void main_binary_search_tree(void)
 {
-	tree_family_stp 
+	tree_family_stp
 		tree_family = NULL;
 
 	printf("\r\n ------------------------+ binary search tree_family demo start +------------------------ \r\n");

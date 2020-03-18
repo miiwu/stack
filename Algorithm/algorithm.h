@@ -16,7 +16,7 @@
 *********************************************************************************************************
 */
 
-#include "substring_search.h"
+#include "search_substring.h"
 
 #include "compare.h"
 
