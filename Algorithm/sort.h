@@ -65,7 +65,7 @@ struct sort_package_s {
 * @return the specified sort algorithm's function address
 */
 
-void *sort_algorithm_control_convert_type_to_func_addr(enum sort_algorithm_type type);
+void *sort_control_convert_type_to_func_addr(enum sort_algorithm_type type);
 
 /**
 * @brief This function will sort the object by the comp and the sort algorithm is distinguished by
@@ -76,8 +76,20 @@ void *sort_algorithm_control_convert_type_to_func_addr(enum sort_algorithm_type 
 * @return void
 */
 
-void sort_algorithm_control(void *sort_algorithm_addr,
-							struct sort_package_s sort_package, compare_t comp);
+void sort_control(void *sort_algorithm_addr,
+				  struct sort_package_s sort_package, compare_t compare);
+
+/**
+ * @brief This function will sort the object by the compare().
+ *
+ * @param sort_package the information package of the sort
+ * @param compare the compare() function
+ *
+ * @return void
+ */
+
+void sort_control_bubble_sort(struct sort_package_s sort_package,
+							  compare_t compare);
 
 /*
 *********************************************************************************************************

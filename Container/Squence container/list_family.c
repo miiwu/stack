@@ -185,9 +185,9 @@ errno_t list_family_control_configuration_init(list_family_stpp list_family,
 	assert(allocator_type);
 	assert(element_size);
 
-	static struct container_allocte_package_s 
+	static struct container_allocte_package_s
 		allocate_package = { 0 };
-	static struct container_control_configuration_allocate_return_s 
+	static struct container_control_configuration_allocate_return_s
 		allocate_return = { 0 };
 
 	allocate_package.allocator_type = allocator_type;
@@ -812,7 +812,7 @@ void list_family_control_list_operations_unique(list_family_stp list_family)
 		size_list = list_family->info.size,
 		cnt_pos_repetitive = 0,
 		(*pos_repetitive_store)[2] = list_family->allocator_control_ptr->allocate(list_family->allocator_ptr,
-																		   size_list, sizeof(container_size_t) * 2);
+																				  size_list, sizeof(container_size_t) * 2);
 
 	for (container_size_t pos = 1; pos < size_list; pos++) {
 		if (compare_control_equal(data_prev, (data = list_node_control_get_data(list_family, pos)), list_family->info.mem_size)) {
@@ -849,7 +849,7 @@ void list_family_control_list_operations_unique(list_family_stp list_family)
 	}
 
 	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr,
-											pos_repetitive_store, size_list);
+												   pos_repetitive_store, size_list);
 }
 
 /**
@@ -880,8 +880,8 @@ void list_family_control_list_operations_sort(list_family_stp list_family,
 		.swap_method = list_family_control_node_operator.swap,
 	};
 
-	sort_algorithm_control(sort_algorithm_control_convert_type_to_func_addr(BUBBLE_SORT),
-						   list_sort_pack, comp);
+	sort_control(sort_control_convert_type_to_func_addr(BUBBLE_SORT),
+				 list_sort_pack, comp);
 }
 
 /**
@@ -925,10 +925,10 @@ void *list_family_control_init_node(list_family_stp list_family)
 	assert(list_family);
 
 	void *node_alloced = list_family->allocator_control_ptr->allocate(list_family->allocator_ptr,
-															   1, list_family_control_get_node_len(list_family_control_type_in_control));	/* Allocate #1 */
+																	  1, list_family_control_get_node_len(list_family_control_type_in_control));	/* Allocate #1 */
 
 	void *data_pack_allocated = list_family->allocator_control_ptr->allocate(list_family->allocator_ptr,
-																	  1, list_family->info.mem_size);			/* Allocate #2 */
+																			 1, list_family->info.mem_size);			/* Allocate #2 */
 
 	void **data_ptr = (void *)node_alloced;
 

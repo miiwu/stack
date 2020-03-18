@@ -55,10 +55,10 @@
  *	- false	no
  */
 
-static inline bool sort_algorithm_control_get_value(struct sort_package_s sort_package,
-													size_t pos,
-													void **value_lhs,
-													void **value_rhs);
+static inline bool sort_control_get_value(struct sort_package_s sort_package,
+										  size_t pos,
+										  void **value_lhs,
+										  void **value_rhs);
 
 /**
  * @brief This function will sort the object by the comp.
@@ -70,8 +70,8 @@ static inline bool sort_algorithm_control_get_value(struct sort_package_s sort_p
  *	- false	no
  */
 
-void sort_algorithm_control_quick_sort(struct sort_package_s sort_package,
-									   compare_t compare);
+void sort_control_quick_sort(struct sort_package_s sort_package,
+							 compare_t compare);
 
 /**
  * @brief This function will sort the object by the comp.
@@ -83,8 +83,8 @@ void sort_algorithm_control_quick_sort(struct sort_package_s sort_package,
  *	- false	no
  */
 
-void sort_algorithm_control_bubble_sort(struct sort_package_s sort_package,
-										compare_t compare);
+void sort_control_bubble_sort(struct sort_package_s sort_package,
+							  compare_t compare);
 
 /*
 *********************************************************************************************************
@@ -101,12 +101,13 @@ void sort_algorithm_control_bubble_sort(struct sort_package_s sort_package,
  * @return void
  */
 
-void sort_algorithm_control(void *sort_algorithm_addr,
-							struct sort_package_s sort_package, compare_t comp)
+void sort_control(void *sort_algorithm_addr,
+				  struct sort_package_s sort_package, 
+                  compare_t compare)
 {
 	void (*sort_algorithm)(struct sort_package_s, compare_t  comp) = sort_algorithm_addr;
 
-	sort_algorithm(sort_package, comp);
+	sort_algorithm(sort_package, compare);
 }
 
 /**
@@ -117,16 +118,16 @@ void sort_algorithm_control(void *sort_algorithm_addr,
  * @return the specified sort algorithm's function address
  */
 
-void *sort_algorithm_control_convert_type_to_func_addr(enum sort_algorithm_type type)
+void *sort_control_convert_type_to_func_addr(enum sort_algorithm_type type)
 {
 	void *func_addr_table = NULL;
 
 	switch (type) {
 		case QUICK_SORT:
-			func_addr_table = sort_algorithm_control_quick_sort;
+			func_addr_table = sort_control_quick_sort;
 			break;
 		case BUBBLE_SORT:
-			func_addr_table = sort_algorithm_control_bubble_sort;
+			func_addr_table = sort_control_bubble_sort;
 			break;
 		default:
 			break;
@@ -148,10 +149,10 @@ void *sort_algorithm_control_convert_type_to_func_addr(enum sort_algorithm_type 
  *	- false	no
  */
 
-static inline bool sort_algorithm_control_get_value(struct sort_package_s sort_package,
-													size_t pos,
-													void **value_lhs,
-													void **value_rhs)
+static inline bool sort_control_get_value(struct sort_package_s sort_package,
+										  size_t pos,
+										  void **value_lhs,
+										  void **value_rhs)
 {
 	if (NULL == sort_package.get_value_method) {								/* Get the value */
 		*value_lhs = (void *)((size_t)sort_package.object + pos * sort_package.mem_len);
@@ -178,8 +179,8 @@ static inline bool sort_algorithm_control_get_value(struct sort_package_s sort_p
  * @return void
  */
 
-void sort_algorithm_control_quick_sort(struct sort_package_s sort_package,
-									   compare_t compare)
+void sort_control_quick_sort(struct sort_package_s sort_package,
+							 compare_t compare)
 {
 }
 
@@ -192,8 +193,8 @@ void sort_algorithm_control_quick_sort(struct sort_package_s sort_package,
  * @return void
  */
 
-void sort_algorithm_control_bubble_sort(struct sort_package_s sort_package,
-										compare_t compare)
+void sort_control_bubble_sort(struct sort_package_s sort_package,
+							  compare_t compare)
 {
 	char
 		*value_lhs = NULL,
@@ -201,7 +202,7 @@ void sort_algorithm_control_bubble_sort(struct sort_package_s sort_package,
 
 	for (size_t cnt = 0; cnt < sort_package.len - 1; cnt++) {
 		for (size_t ct = 0; ct < sort_package.len - cnt - 1; ct++) {
-			if (!sort_algorithm_control_get_value(sort_package, ct, &value_lhs, &value_rhs)) {	/* Get the value */
+			if (!sort_control_get_value(sort_package, ct, &value_lhs, &value_rhs)) {	/* Get the value */
 				continue;
 			}
 

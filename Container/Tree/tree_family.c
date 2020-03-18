@@ -94,8 +94,8 @@ void tree_family_control_get_control_callback(enum tree_family_node_type_e membe
 *	- false	no
 */
 
-void *tree_family_sort_algorithm_control_get_data(void *object,
-												  container_size_t loc);
+void *tree_family_sort_control_get_data(void *object,
+										container_size_t loc);
 
 /**
 * @brief This function will compare if the left-hand-side greater than the right-hand-side.
@@ -108,8 +108,9 @@ void *tree_family_sort_algorithm_control_get_data(void *object,
 *	- false	no
 */
 
-void tree_family_sort_algorithm_control_swap_data(void *object,
-												  container_size_t lhs, container_size_t rhs);
+void tree_family_sort_control_swap_data(void *object,
+										container_size_t lhs, 
+										container_size_t rhs);
 
 /**
 * @brief This function will compare if the left-hand-side greater than the right-hand-side.
@@ -181,8 +182,8 @@ struct sort_package_s tree_family_control_data_sort_package = {
 	.object = NULL,
 	.len = 0u,
 	.mem_len = 0u,
-	.get_value_method = tree_family_sort_algorithm_control_get_data,
-	.swap_method = tree_family_sort_algorithm_control_swap_data,
+	.get_value_method = tree_family_sort_control_get_data,
+	.swap_method = tree_family_sort_control_swap_data,
 	.compare_method = tree_family_node_control_compare_greater,
 };
 
@@ -283,14 +284,14 @@ static inline void tree_family_control_get_control_callback(enum tree_family_mem
  */
 
 errno_t tree_family_control_configuration_init(tree_family_stpp tree_family,
-											container_family_switch_control switch_control,
-											container_size_t degree,
-											container_size_t key_size,
-											enum tree_family_member_type_e member_type,
-											enum allocator_type_e allocator_type,
-											container_size_t element_size,
-											generic_type_element_assign_t assign,
-											generic_type_element_free_t free)
+											   container_family_switch_control switch_control,
+											   container_size_t degree,
+											   container_size_t key_size,
+											   enum tree_family_member_type_e member_type,
+											   enum allocator_type_e allocator_type,
+											   container_size_t element_size,
+											   generic_type_element_assign_t assign,
+											   generic_type_element_free_t free)
 {
 	assert(tree_family);
 	assert(switch_control);
@@ -305,7 +306,7 @@ errno_t tree_family_control_configuration_init(tree_family_stpp tree_family,
 		extra_infomation = { 0 };
 
 	allocate_package.allocator_type = allocator_type;
-	allocate_package.container_mem_size 
+	allocate_package.container_mem_size
 		= sizeof(struct container_family_s) + sizeof(struct tree_family_extra_infomation_s);
 	allocate_package.arg_list_ptr = NULL;
 
@@ -336,8 +337,8 @@ errno_t tree_family_control_configuration_init(tree_family_stpp tree_family,
 	extra_infomation.minimum_amt_key = (size_t)ceil((float)degree / 2) - 1;
 	extra_infomation.mem_size_key = key_size;
 
-	memcpy(&(*tree_family)->addon, 
-		   &extra_infomation, 
+	memcpy(&(*tree_family)->addon,
+		   &extra_infomation,
 		   sizeof(struct tree_family_extra_infomation_s));
 
 	tree_family_control_configuration_exception(
@@ -566,13 +567,13 @@ void *tree_family_control_init_node(tree_family_stp tree_family)
 
 	struct tree_family_chain_node_s
 		*node_alloced = tree_family->allocator_control_ptr->allocate(tree_family->allocator_ptr,
-													   1, sizeof(struct tree_family_chain_node_s));	/* Allocate #1 */
+																	 1, sizeof(struct tree_family_chain_node_s));	/* Allocate #1 */
 
 	void *data_pack_allocated = tree_family->allocator_control_ptr->allocate(tree_family->allocator_ptr,
-															   1, tree_family->info.mem_size);				/* Allocate #2 */
+																			 1, tree_family->info.mem_size);				/* Allocate #2 */
 
 	void *link_pack_allocated = tree_family->allocator_control_ptr->allocate(tree_family->allocator_ptr,
-															   1, tree_family_control_node_infomation.link_mem_len);					/* Allocate #3 */
+																			 1, tree_family_control_node_infomation.link_mem_len);					/* Allocate #3 */
 
 	if (NULL == tree_family ||																				/* Check if tree_family point to NULL					*/
 		NULL == node_alloced ||																		/* Check if tree_family node point to NULL				*/
@@ -628,7 +629,7 @@ void *tree_family_node_control_init_data(tree_family_stp tree_family)
 {
 	struct tree_family_chain_node_data_content_s
 		*block_data_allocated = tree_family->allocator_control_ptr->allocate(tree_family->allocator_ptr, 1,
-															   tree_family->info.mem_size);
+																			 tree_family->info.mem_size);
 
 	return block_data_allocated;
 }
@@ -731,8 +732,8 @@ void tree_family_node_control_insert_data(tree_family_stp tree_family,
 		void
 			*data_cpy = tree_family->allocator_control_ptr->allocate(tree_family->allocator_ptr, 1, tree_family->info.mem_size),
 			*data_package_sort = tree_family->allocator_control_ptr->allocate(tree_family->allocator_ptr, 			/* The package which store the address of the node's data */
-																tree_family_control_node_infomation.data_element_count + 1,
-																sizeof(void *));
+																			  tree_family_control_node_infomation.data_element_count + 1,
+																			  sizeof(void *));
 
 		if (NULL == data_cpy ||
 			NULL == data_package_sort) {
@@ -751,9 +752,9 @@ void tree_family_node_control_insert_data(tree_family_stp tree_family,
 		tree_family_control_data_sort_package.len = tree_family_control_node_infomation.data_element_count + 1;
 		tree_family_control_data_sort_package.mem_len = tree_family_control_environment.extra_info.mem_size_key;
 
-		sort_algorithm_control(sort_algorithm_control_convert_type_to_func_addr(TREE_FAMILY_CFG_SORT_ALGORITHM_TYPE),
-							   tree_family_control_data_sort_package,						/* Sort the address of the data in the data package by the data's key */
-							   tree_family_node_control_compare_greater);
+		sort_control(sort_control_convert_type_to_func_addr(TREE_FAMILY_CFG_SORT_ALGORITHM_TYPE),
+					 tree_family_control_data_sort_package,						/* Sort the address of the data in the data package by the data's key */
+					 tree_family_node_control_compare_greater);
 	}
 }
 
@@ -831,7 +832,7 @@ void *tree_family_node_control_init_link(tree_family_stp tree_family)
 {
 	struct tree_family_chain_node_data_content_s
 		*block_link_allocated = tree_family->allocator_control_ptr->allocate(tree_family->allocator_ptr, 1,
-															   tree_family_control_node_infomation.link_mem_len);
+																			 tree_family_control_node_infomation.link_mem_len);
 
 	return block_link_allocated;
 }
@@ -1187,8 +1188,8 @@ bool tree_family_node_control_get_if_leaf(tree_family_stp tree_family,
 *	- false	no
 */
 
-static inline void *tree_family_sort_algorithm_control_get_data(void *object,
-																container_size_t loc)
+static inline void *tree_family_sort_control_get_data(void *object,
+													  container_size_t loc)
 {
 	assert(object);
 
@@ -1206,9 +1207,9 @@ static inline void *tree_family_sort_algorithm_control_get_data(void *object,
 *	- false	no
 */
 
-static inline void tree_family_sort_algorithm_control_swap_data(void *object,
-																container_size_t lhs,
-																container_size_t rhs)
+static inline void tree_family_sort_control_swap_data(void *object,
+													  container_size_t lhs,
+													  container_size_t rhs)
 {
 	assert(object);
 
@@ -1469,7 +1470,7 @@ extern inline struct tree_family_extra_infomation_s
 tree_family_control_get_extra_infomation(tree_family_stp tree_family)
 {
 	struct tree_family_extra_infomation_s
-		*extra_info_ptr = (struct tree_family_extra_infomation_s*)tree_family->addon;
+		*extra_info_ptr = (struct tree_family_extra_infomation_s *)tree_family->addon;
 
 	return *extra_info_ptr;
 }
@@ -1581,9 +1582,9 @@ void tree_family_control_traversal_printer(tree_family_stp tree_family,
 			if (DATA_OPERATOR_CODE_DATA_FAR_LEFT < id_data) {
 				printf("\r\n");
 			}
-			printf("key:\"%s\"-%d content:\"%s\" ", 
-				   *(*data + id_data), *(*(*data + id_data)) - '0', 
-				   (char *)((size_t)(*(*data + id_data)) 
+			printf("key:\"%s\"-%d content:\"%s\" ",
+				   *(*data + id_data), *(*(*data + id_data)) - '0',
+				   (char *)((size_t)(*(*data + id_data))
 							+ tree_family_control_environment.extra_info.mem_size_key));
 		}
 	}
