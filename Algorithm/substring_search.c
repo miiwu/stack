@@ -4,7 +4,7 @@
 *********************************************************************************************************
 */
 
-#include "string_matching.h"
+#include "substring_search.h"
 
 /*
 *********************************************************************************************************
@@ -29,6 +29,16 @@
 *                                            LOCAL TABLES
 *********************************************************************************************************
 */
+
+/**
+* @brief This struct will contain the necessary information that sort needed.
+*/
+
+substring_search_t substring_search_control_algorithm_address_table[] = {
+	&substring_search_control_sunday_algorithm,
+	&substring_search_control_brute_force_algorithm,
+	&substring_search_control_sunday_algorithm
+};
 
 /*
 *********************************************************************************************************
@@ -79,6 +89,33 @@ substring_search_control_match_backward_search(const char *str,
 */
 
 /**
+ * @brief This function will substring search the package by the specified algorithm.
+ *
+ * @param algorithm the enum name of the algorithm
+ * @param package the package contains the necessary information
+ *
+ * @return void
+ */
+
+float substring_search_control(enum substring_search_type_e algorithm,
+							   struct substring_search_package_s package)
+{
+	assert(NULL != package.str.string
+		   && NULL != package.substr.string
+		   && package.str.length
+		   && package.substr.length);
+
+	substring_search_t
+		substring_search_algorithm
+		= substring_search_control_algorithm_address_table[algorithm];
+
+	return substring_search_algorithm(package.str.string,
+									  package.str.length,
+									  package.substr.string,
+									  package.substr.length);
+}
+
+/**
  * @brief This function will search the substring upon the string by the brute force algorithm.
  *
  * @param str the pointer to the string.
@@ -118,16 +155,15 @@ float substring_search_control_brute_force_algorithm(const char *str, size_t len
 		if (sublen == subloc) {
 			return 1.0;
 		} else {
-
 		}
 
-		#if (STRING_MATCHING_CFG_MAX_MATCH_RATE_EN)
+		#if (SUBSTRING_SEARCH_CFG_MAX_MATCH_RATE_EN)
 
 		if (subloc && max_matching_rate < subloc / (float)sublen) {
 			max_matching_rate = subloc / (float)sublen;
 		}
 
-		#endif // (STRING_MATCHING_CFG_MAX_MATCH_RATE_EN)
+		#endif // (SUBSTRING_SEARCH_CFG_MAX_MATCH_RATE_EN)
 	} while ((loc += step) < len);
 
 	return max_matching_rate;
@@ -191,49 +227,49 @@ float substring_search_control_sunday_algorithm(const char *str, size_t len,
 			return 1.0;
 		} else {
 			if (*(substr + subloc) != *(str + loc + subloc)) {
-				#if (STRING_MATCHING_CFG_DEBUG_EN)
+				#if (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 				printf("substring_search.sunday_algorithm.not match:str \'%c\' - substr \'%c\' the point is \'%c\' \r\n",
 					   *(substr + subloc), *(str + loc + subloc), *(str + loc + sublen));
 
-				#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+				#endif // (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 				symbol_substr = *(str + loc + sublen);
 
 				if (true == symbol[symbol_substr].exist) {
-					#if (STRING_MATCHING_CFG_DEBUG_EN)
+					#if (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 					printf("substring_search.sunday_algorithm.not match.point is exist \r\n");
 
-					#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+					#endif // (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 					step = symbol[symbol_substr].location + 1;
 				} else {
-					#if (STRING_MATCHING_CFG_DEBUG_EN)
+					#if (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 					printf("substring_search.sunday_algorithm.not match.point is not exist \r\n");
 
-					#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+					#endif // (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 					step = sublen + 1;
 				}
 			}
 
-			#if (STRING_MATCHING_CFG_DEBUG_EN)
+			#if (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 			printf("substring_search.sunday_algorithm.step:%d \r\n"
-				   ,step);
+				   , step);
 
-			#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+			#endif // (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 		}
 
-		#if (STRING_MATCHING_CFG_MAX_MATCH_RATE_EN)
+		#if (SUBSTRING_SEARCH_CFG_MAX_MATCH_RATE_EN)
 
 		if (subloc && max_matching_rate < subloc / (float)sublen) {
 			max_matching_rate = subloc / (float)sublen;
 		}
 
-		#endif // (STRING_MATCHING_CFG_MAX_MATCH_RATE_EN)
+		#endif // (SUBSTRING_SEARCH_CFG_MAX_MATCH_RATE_EN)
 	} while (len > (loc += step));
 
 	return max_matching_rate;
@@ -265,20 +301,20 @@ substring_search_control_match_forward_search(const char *str,
 
 	do {
 		if (*(substr + subloc) != *(str + subloc)) {
-			#if (STRING_MATCHING_CFG_DEBUG_EN)
+			#if (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 			printf("substring_search.match.forward_search.not match:str \'%c\' - substr \'%c\' \r\n",
 				   *(substr + subloc), *(str + subloc));
 
-			#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+			#endif // (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 			break;
 		} else if (0 == subloc) {															/* If the last symbol match */
-			#if (STRING_MATCHING_CFG_DEBUG_EN)
+			#if (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 			printf("substring_search.match.forward_search.all matched \r\n");
 
-			#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+			#endif // (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 			return sublen;
 		}
@@ -313,20 +349,20 @@ substring_search_control_match_backward_search(const char *str,
 
 	do {
 		if (*(substr + subloc) != *(str + subloc)) {
-			#if (STRING_MATCHING_CFG_DEBUG_EN)
+			#if (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 			printf("substring_search.match.backward_search.not match:str \'%c\' - substr \'%c\' \r\n",
 				   *(substr + subloc), *(str + subloc));
 
-			#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+			#endif // (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 			break;
 		} else if (sublen - 1 == subloc) {													/* If the last symbol match */
-			#if (STRING_MATCHING_CFG_DEBUG_EN)
+			#if (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 			printf("substring_search.match.backward_search.all matched \r\n");
 
-			#endif // (STRING_MATCHING_CFG_DEBUG_EN)
+			#endif // (SUBSTRING_SEARCH_CFG_DEBUG_EN)
 
 			return sublen;
 		}

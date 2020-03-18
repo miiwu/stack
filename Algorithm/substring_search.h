@@ -7,8 +7,8 @@
 *********************************************************************************************************
 */
 
-#ifndef __STRING_MATCHING_H
-#define __STRING_MATCHING_H
+#ifndef __SUBSTRING_SEARCH_H
+#define __SUBSTRING_SEARCH_H
 
 /*
 *********************************************************************************************************
@@ -25,10 +25,10 @@
 */
 
 /* Configure        if enable string matching debug.													*/
-#define STRING_MATCHING_CFG_DEBUG_EN										1u
+#define SUBSTRING_SEARCH_CFG_DEBUG_EN										1u
 
 /* Configure        if enable max match rate.															*/
-#define STRING_MATCHING_CFG_MAX_MATCH_RATE_EN								1u
+#define SUBSTRING_SEARCH_CFG_MAX_MATCH_RATE_EN								1u
 
 /*
 *********************************************************************************************************
@@ -36,11 +36,61 @@
 *********************************************************************************************************
 */
 
+/**
+* @brief This struct will contain the necessary information that sort needed.
+*/
+
+enum substring_search_type_e {
+	DEFAULT_SUBSTRING_SEARCH_ALGORITHM,
+
+	BRUTE_FORCE_ALGORITHM,
+
+	SUNDAY_ALGORITHM,
+};
+
+/**
+ * @brief This type is the substring search function prototype typedef
+ */
+
+typedef float (*substring_search_t)(const char *str, size_t len,
+									const char *substr, size_t sublen);
+
+/**
+* @brief This struct will contain the necessary information that sort needed.
+*/
+
+struct string_unit_s {
+	char *string;
+	size_t length;
+};
+
+/**
+* @brief This struct will contain the necessary information that sort needed.
+*/
+
+struct substring_search_package_s {
+	struct string_unit_s str;
+
+	struct string_unit_s substr;
+};
+
 /*
 *********************************************************************************************************
 *								            FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
+
+/**
+ * @brief This function will sort the object by the comp and the sort algorithm is distinguished by
+ *		   the sort_algorithm_addr that will get by xxx_convert_type_to_func_addr_table().
+ *
+ * @param data the pointer to the data list will give
+ *
+ * @return void
+ */
+
+float substring_search_control(enum substring_search_type_e algorithm,
+							   struct substring_search_package_s package);
 
 /**
 * @brief This function will search the substring upon the string by the brute force algorithm.
@@ -80,4 +130,4 @@ float substring_search_control_sunday_algorithm(const char *str, size_t len,
 *********************************************************************************************************
 */
 
-#endif // !__STRING_MATCHING_H
+#endif // !__SUBSTRING_SEARCH_H
