@@ -443,7 +443,7 @@ void *b_tree_control_delete_rule(b_tree_stp b_tree,
 
 	while (NULL != node) {
 		if (tree_family_node_control_get_if_leaf(b_tree, node)) {										/* Delete the node that is a leaf node */
-			ALGORITHM_SWAP((size_t)data_delete, (size_t) * ((void **)node->data + location));
+			MODIFY_SEQUENCE_CONTROL_SWAP((size_t)data_delete, (size_t) * ((void **)node->data + location));
 
 			while ((NULL != node) && (NULL != parent || NULL != (parent = *((void **)node->link))) &&
 				(B_TREE_GET_EXTRA_INFO().minimum_amt_key > tree_family_node_control_get_node_type(b_tree, node))) {
@@ -832,7 +832,7 @@ void *b_tree_control_delete_fix_rule(b_tree_stp b_tree,
 	bool node_on_the_right_side = false;
 
 	if (location > location_brother) {
-		ALGORITHM_SWAP(location, location_brother);
+		MODIFY_SEQUENCE_CONTROL_SWAP(location, location_brother);
 
 		node_on_the_right_side = true;
 	}
@@ -850,7 +850,7 @@ void *b_tree_control_delete_fix_rule(b_tree_stp b_tree,
 
 		if (node_on_the_right_side) {
 			data_operator = DATA_OPERATOR_CODE_DATA_FAR_RIGHT;
-			ALGORITHM_SWAP(link_operator[0], link_operator[1]);
+			MODIFY_SEQUENCE_CONTROL_SWAP(link_operator[0], link_operator[1]);
 		}
 
 		*((void **)node->data + B_TREE_GET_EXTRA_INFO().minimum_amt_key - 1) = *((void **)parent->data + location - 1);
@@ -872,7 +872,7 @@ void *b_tree_control_delete_fix_rule(b_tree_stp b_tree,
 		container_size_t id_del_data = DATA_OPERATOR_CODE_DATA_FAR_LEFT;
 
 		if (node_on_the_right_side) {
-			ALGORITHM_SWAP((size_t)node, (size_t)node_brother);									/* Let node always is the left one */
+			MODIFY_SEQUENCE_CONTROL_SWAP((size_t)node, (size_t)node_brother);									/* Let node always is the left one */
 			id_set_data = B_TREE_GET_EXTRA_INFO().minimum_amt_key;
 		}
 

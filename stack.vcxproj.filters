@@ -183,6 +183,9 @@
     <ClCompile Include="Algorithm\substring_search.c">
       <Filter>源文件\algorithm</Filter>
     </ClCompile>
+    <ClCompile Include="Algorithm\modify_sequence.c">
+      <Filter>源文件\algorithm</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\container.h">
@@ -285,6 +288,9 @@
       <Filter>头文件\container\tree</Filter>
     </ClInclude>
     <ClInclude Include="Algorithm\substring_search.h">
+      <Filter>头文件\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Algorithm\modify_sequence.h">
       <Filter>头文件\algorithm</Filter>
     </ClInclude>
   </ItemGroup>

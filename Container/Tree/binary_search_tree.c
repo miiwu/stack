@@ -381,7 +381,7 @@ void *binary_search_tree_control_delete_rule(binary_search_tree_stp binary_searc
 				goto FAIL;
 			}
 
-			ALGORITHM_SWAP((size_t)(*((void **)get_precursor_successor_return.node->data +
+			MODIFY_SEQUENCE_CONTROL_SWAP((size_t)(*((void **)get_precursor_successor_return.node->data +
 									  get_precursor_successor_return.location)),
 									  (size_t)(*((void **)node->data + search_return.location)));	/* Swap the data of the node with it's precursor or the successor */
 

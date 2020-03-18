@@ -1212,7 +1212,7 @@ static inline void tree_family_sort_algorithm_control_swap_data(void *object,
 {
 	assert(object);
 
-	ALGORITHM_SWAP((size_t)(**((char ***)object + lhs)), (size_t)(**((char ***)object + rhs)));
+	MODIFY_SEQUENCE_CONTROL_SWAP((size_t)(**((char ***)object + lhs)), (size_t)(**((char ***)object + rhs)));
 }
 
 /**

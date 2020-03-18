@@ -470,7 +470,7 @@ red_black_tree_control_insert_fix_rule(red_black_tree_stp red_black_tree,
 
 					#endif // (RED_BLACK_TREE_CFG_DEBUG_EN)
 
-					ALGORITHM_SWAP((size_t)node, (size_t)parent);
+					MODIFY_SEQUENCE_CONTROL_SWAP((size_t)node, (size_t)parent);
 
 					red_black_tree_node_control_rotate[0](red_black_tree, node);
 				}
@@ -525,9 +525,9 @@ red_black_tree_control_delete_fix_rule(red_black_tree_stp red_black_tree,
 
 		if (if_node_is_parent_right_child ||															/* If node is the parent's right child */
 			node == *((void **)parent->link + 2)) {
-			ALGORITHM_SWAP(id_link_parent_child[0], id_link_parent_child[1]);
-			ALGORITHM_SWAP(id_link_brother_child[0], id_link_brother_child[1]);
-			ALGORITHM_SWAP((size_t)red_black_tree_node_control_rotate[0],
+			MODIFY_SEQUENCE_CONTROL_SWAP(id_link_parent_child[0], id_link_parent_child[1]);
+			MODIFY_SEQUENCE_CONTROL_SWAP(id_link_brother_child[0], id_link_brother_child[1]);
+			MODIFY_SEQUENCE_CONTROL_SWAP((size_t)red_black_tree_node_control_rotate[0],
 				(size_t)red_black_tree_node_control_rotate[1]);
 
 			if_node_is_parent_right_child = false;

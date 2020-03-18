@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Algorithm\compare.c" />
+    <ClCompile Include="Algorithm\modify_sequence.c" />
     <ClCompile Include="Algorithm\sort.c" />
     <ClCompile Include="Algorithm\substring_search.c" />
     <ClCompile Include="Allocator\allocator_common.c" />
@@ -62,6 +63,7 @@
     <ClInclude Include="Algorithm\algorithm.h" />
     <ClInclude Include="Algorithm\algorithm_def.h" />
     <ClInclude Include="Algorithm\compare.h" />
+    <ClInclude Include="Algorithm\modify_sequence.h" />
     <ClInclude Include="Algorithm\sort.h" />
     <ClInclude Include="Algorithm\substring_search.h" />
     <ClInclude Include="Allocator\allocator.h" />

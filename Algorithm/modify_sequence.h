@@ -7,28 +7,28 @@
 *********************************************************************************************************
 */
 
-#ifndef __ALGORITHM_H
-#define __ALGORITHM_H
+#ifndef __MODIFY_SEQUENCE_H
+#define __MODIFY_SEQUENCE_H
 
 /*
 *********************************************************************************************************
-*                                          INCLUDE FILES
+*                                            INCLUDE FILES
 *********************************************************************************************************
 */
 
-#include "substring_search.h"
-
-#include "modify_sequence.h"
-
-#include "compare.h"
-
-#include "sort.h"
+#include "algorithm_def.h"
 
 /*
 *********************************************************************************************************
-*												DEFINES
+*									            DEFINES
 *********************************************************************************************************
 */
+
+/* Configure        if enable modify sequence debug.													*/
+#define MODIFY_SEQUENCE_CFG_DEBUG_EN										1u
+
+/* Define			the definition of swap algorithm.													*/
+#define MODIFY_SEQUENCE_CONTROL_SWAP(x,y)		(x) = (x) ^ (y),(y) = (x) ^ (y),(x) = (x) ^ (y)
 
 /*
 *********************************************************************************************************
@@ -38,9 +38,20 @@
 
 /*
 *********************************************************************************************************
-*								         FUNCTION PROTOTYPES
+*								            FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
+
+/**
+ * @brief This function will swap the left-hand-side with the right-hand-side.
+ *
+ * @param lhs the pointer to the left-hand-side item
+ * @param rhs the pointer to the right-hand-side item
+ *
+ * @return the error code
+ */
+
+errno_t modify_sequence_control_swap(void *lhs, void *rhs, size_t len);
 
 /*
 *********************************************************************************************************
@@ -54,4 +65,4 @@
 *********************************************************************************************************
 */
 
-#endif // !__ALGORITHM_H
+#endif // !__MODIFY_SEQUENCE_H
