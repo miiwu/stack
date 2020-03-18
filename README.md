@@ -194,6 +194,10 @@ I am confused that if it is necessary for unified structure?
     - [x] Greater
     - [x] Lesser
     - [ ] ...
+  - Substring Search
+    - [x] Brute Force algorithm
+    - [x] Sunday algorithm
+    - [ ] ...
 
 - Allocator
 
