@@ -89,7 +89,8 @@ search_substring_control_match_backward_search(const char *str,
 */
 
 /**
- * @brief This function will substring search the package by the specified algorithm.
+ * @brief This function will search the substring upon the string in the package 
+ *			by the specified algorithm.
  *
  * @param algorithm the enum name of the algorithm
  * @param package the package contains the necessary information

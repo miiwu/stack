@@ -81,10 +81,11 @@ struct search_substring_package_s {
 */
 
 /**
- * @brief This function will sort the object by the comp and the sort algorithm is distinguished by
- *		   the sort_algorithm_addr that will get by xxx_convert_type_to_func_addr_table().
+ * @brief This function will search the substring upon the string in the package
+ *			by the specified algorithm.
  *
- * @param data the pointer to the data list will give
+ * @param algorithm the enum name of the algorithm
+ * @param package the package contains the necessary information
  *
  * @return void
  */
