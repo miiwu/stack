@@ -12,6 +12,16 @@
 *********************************************************************************************************
 */
 
+#define SORT_CONTROL_COMMON_ASSERT_BLOCK()																\
+	assert(0 <= left);																					\
+	assert(0 <= right);																					\
+	assert(left < right);																				\
+	assert(package.mem_len);																			\
+	assert(package.object_ptr);																			\
+	assert((package.object_operator.get_element_ptr || package.object_operator.get_address_ptr)			\
+		   ? (package.object_operator.get_element_ptr && package.object_operator.get_address_ptr)		\
+		   : (true))
+
 /*
 *********************************************************************************************************
 *                                           LOCAL CONSTANTS
@@ -112,18 +122,23 @@ errno_t sort_control_common_swap(struct sort_package_s package,
  * @brief This function will sort the object by the comp and the sort algorithm is distinguished by
  *		   the sort_algorithm_addr that will get by xxx_convert_type_to_func_addr_table().
  *
- * @param data the pointer to the data list will give
+ * @param type the type of sort algorithm
+ * @param package the package of sort algorithm
+ * @param left the leftmost index of the element
+ * @param right the rightmost index of the element
  *
  * @return void
  */
 
 extern inline errno_t
 sort_control(enum sort_algorithm_type type,
-			 struct sort_package_s package)
+			 struct sort_package_s package,
+			 size_t left,
+			 size_t right)
 {
-	assert(0 <= package.left);
-	assert(0 <= package.right);
-	assert(package.left < package.right);
+	assert(0 <= left);
+	assert(0 <= right);
+	assert(left < right);
 	assert(package.mem_len);
 	assert(package.object_ptr);
 	assert((package.object_operator.get_element_ptr || package.object_operator.get_address_ptr)
@@ -132,7 +147,7 @@ sort_control(enum sort_algorithm_type type,
 
 	sort_t sort = sort_control_algorithm_address_table[type];								/* Get the sort algorithm function address */
 
-	return sort(package);
+	return sort(package, left, right);
 }
 
 /**
@@ -209,7 +224,7 @@ sort_control_common_compare(struct sort_package_s package,
 	assert(0 <= left);
 	assert(0 <= right);
 
-	static void
+	static char
 		*value_lhs,
 		*value_rhs;
 
@@ -283,27 +298,17 @@ sort_control_common_swap(struct sort_package_s package,
  * @brief This function will sort the object by the bubble sort algorithm.
  *
  * @param sort_package the information package of the sort
+ * @param left the leftmost index of the element
+ * @param right the rightmost index of the element
  *
  * @return void
  */
 
-errno_t sort_control_bubble_sort(struct sort_package_s package)
+errno_t sort_control_bubble_sort(struct sort_package_s package,
+								 size_t left,
+								 size_t right)
 {
-	assert(0 <= package.left);
-	assert(0 <= package.right);
-	assert(package.left < package.right);
-	assert(package.mem_len);
-	assert(package.object_ptr);
-	assert((package.object_operator.get_element_ptr || package.object_operator.get_address_ptr)
-		   ? (package.object_operator.get_element_ptr && package.object_operator.get_address_ptr)
-		   : (true));																		/* Assert if both the operators valid */
-
-	static char
-		*value_lhs,
-		*value_rhs;
-	static void
-		*address_lhs,
-		*address_rhs;
+	SORT_CONTROL_COMMON_ASSERT_BLOCK();
 
 	if (0u == package.mem_len_key) {
 		package.mem_len_key = package.mem_len;												/* Default the memory length of the object's compare key */
@@ -317,13 +322,13 @@ errno_t sort_control_bubble_sort(struct sort_package_s package)
 		package.swap_ptr = SORT_CFG_DEFAULT_SWAP_ADDRESS;
 	}
 
-	for (size_t cnt = package.left; cnt < package.right; cnt++) {
-		for (size_t ct = package.left; ct < package.right - cnt; ct++) {
+	for (size_t cnt = left; cnt < right; cnt++) {
+		for (size_t ct = left; ct < right - cnt; ct++) {
 			errno_t error_compare
-				= sort_control_common_compare(package, ct, ct + 1);							/* Compare the value */
+				= sort_control_common_compare(package, ct, ct + 1);							/* Compare the element */
 
 			if (true == error_compare) {
-				if (!sort_control_common_swap(package, ct, ct + 1)) {						/* Swap the value */
+				if (!sort_control_common_swap(package, ct, ct + 1)) {						/* Swap the element */
 					return 2;
 				}
 			} else if (0xff == error_compare) {
@@ -331,6 +336,70 @@ errno_t sort_control_bubble_sort(struct sort_package_s package)
 			}
 		}
 	}
+
+	return 0;
+}
+
+/**
+ * @brief This function will partition the object for the quick sort algorithm.
+ *
+ * @param sort_package the information package of the sort
+ * @param left the leftmost index of the element
+ * @param right the rightmost index of the element
+ *
+ * @return void
+ */
+
+size_t sort_contorl_quick_sort_partition(struct sort_package_s package,
+										 size_t left,
+										 size_t right)
+{
+	void
+		*pivot = sort_control_common_get_element(package, right);
+	size_t
+		tail = left - 1;
+
+	for (size_t cnt = left; cnt < right; cnt++) {
+		errno_t error_compare
+			= sort_control_common_compare(package, cnt, right);								/* Compare the element */
+
+		if (true == error_compare) {
+			if (!sort_control_common_swap(package, ++tail, cnt)) {							/* Swap the element */
+				return -1;
+			}
+		} else if (0xff == error_compare) {
+			return -2;
+		}
+	}
+
+	if (!sort_control_common_swap(package, tail + 1, right)) {
+		return -3;
+	}
+
+	return tail + 1;
+}
+
+/**
+ * @brief This function will sort the object by the quick sort algorithm.
+ *
+ * @param sort_package the information package of the sort
+ * @param left the leftmost index of the element
+ * @param right the rightmost index of the element
+ *
+ * @return void
+ */
+
+errno_t sort_control_quick_sort(struct sort_package_s package,
+								size_t left,
+								size_t right)
+{
+	SORT_CONTROL_COMMON_ASSERT_BLOCK();
+
+	size_t
+		pivot_index = sort_contorl_quick_sort_partition(package, left, right);
+
+	sort_control_quick_sort(package, left, pivot_index - 1);
+	sort_control_quick_sort(package, pivot_index + 1, right);
 
 	return 0;
 }
