@@ -38,19 +38,67 @@
 *********************************************************************************************************
 */
 
-/* Configure the enum category of sort algorithm.														*/
+/**
+ * @brief This type is the sort algorithm category enum.
+ */
+
 enum sort_algorithm_category {
-	UNSTABLE_SORT = 0x10,
+	STABLE_SORT = 0x00,
 
-	STABLE_SORT = 0x20,
+	UNSTABLE_SORT = 0x01,
 };
 
-/* Configure the enum type of sort algorithm.															*/
+/**
+ * @brief This type is the sort algorithm type enum.
+ */
+
 enum sort_algorithm_type {
-	QUICK_SORT = UNSTABLE_SORT + 0x01,
+	BUBBLE_SORT = STABLE_SORT,
 
-	BUBBLE_SORT = STABLE_SORT + 0x01,
+	QUICK_SORT = UNSTABLE_SORT,
 };
+
+/**
+ * @brief This type is the compare function prototype typedef.
+ */
+
+typedef bool (*compare_t)(void *lhs, void *rhs, size_t len);
+
+/**
+ * @brief This type is the swap function prototype typedef.
+ */
+
+typedef errno_t(*swap_t)(void *lhs, void *rhs, size_t len);
+
+/**
+ * @brief This type is the sort package object operator structure.
+ */
+
+struct sort_package_object_operator_s {
+	void *(*get_value_ptr)(void *object, size_t loc);
+	void *(*get_address_ptr)(void *object, size_t loc);
+};
+
+/**
+ * @brief This type is the sort package structure.
+ */
+
+struct sort_package_s {
+	size_t count;
+	size_t mem_len;
+	size_t mem_len_key;
+	void *object_ptr;
+	swap_t swap_ptr;
+	compare_t compare_ptr;
+
+	struct sort_package_object_operator_s object_operator;
+};
+
+/**
+ * @brief This type is the sort function prototype typedef.
+ */
+
+typedef errno_t(*sort_t)(struct sort_package_s package);
 
 /*
 *********************************************************************************************************

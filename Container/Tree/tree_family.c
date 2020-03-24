@@ -178,14 +178,14 @@ void tree_family_control_configuration_exception_default_full_callback(void);
  * @brief This variables will record the tree_family's data sort package.
  */
 
-struct sort_package_s tree_family_control_data_sort_package = {
-	.object = NULL,
-	.len = 0u,
-	.mem_len = 0u,
-	.get_value_method = tree_family_sort_control_get_data,
-	.swap_method = tree_family_sort_control_swap_data,
-	.compare_method = tree_family_node_control_compare_greater,
-};
+//struct sort_package_s tree_family_control_data_sort_package = {
+//	.object = NULL,
+//	.len = 0u,
+//	.mem_len = 0u,
+//	.get_value_method = tree_family_sort_control_get_data,
+//	.swap_method = tree_family_sort_control_swap_data,
+//	.compare_method = tree_family_node_control_compare_greater,
+//};
 
 /*
 *********************************************************************************************************
@@ -748,13 +748,13 @@ void tree_family_node_control_insert_data(tree_family_stp tree_family,
 
 		*((void **)data_package_sort + tree_family_control_node_infomation.data_element_count) = &data_cpy;
 
-		tree_family_control_data_sort_package.object = data_package_sort;
-		tree_family_control_data_sort_package.len = tree_family_control_node_infomation.data_element_count + 1;
-		tree_family_control_data_sort_package.mem_len = tree_family_control_environment.extra_info.mem_size_key;
+		//tree_family_control_data_sort_package.object = data_package_sort;
+		//tree_family_control_data_sort_package.len = tree_family_control_node_infomation.data_element_count + 1;
+		//tree_family_control_data_sort_package.mem_len = tree_family_control_environment.extra_info.mem_size_key;
 
-		sort_control(sort_control_convert_type_to_func_addr(TREE_FAMILY_CFG_SORT_ALGORITHM_TYPE),
-					 tree_family_control_data_sort_package,						/* Sort the address of the data in the data package by the data's key */
-					 tree_family_node_control_compare_greater);
+		//sort_control(sort_control_convert_type_to_func_addr(TREE_FAMILY_CFG_SORT_ALGORITHM_TYPE),
+		//			 tree_family_control_data_sort_package,						/* Sort the address of the data in the data package by the data's key */
+		//			 tree_family_node_control_compare_greater);
 	}
 }
 

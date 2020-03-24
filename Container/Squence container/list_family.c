@@ -872,16 +872,16 @@ void list_family_control_list_operations_sort(list_family_stp list_family,
 		comp = compare_control_lesser;
 	}
 
-	struct sort_package_s list_sort_pack = {
-		.object = list_family,
-		.len = list_family->info.size,
-		.mem_len = list_family->info.mem_size,
-		.get_value_method = list_node_control_get_data,
-		.swap_method = list_family_control_node_operator.swap,
-	};
+	//struct sort_package_s list_sort_pack = {
+	//	.object = list_family,
+	//	.len = list_family->info.size,
+	//	.mem_len = list_family->info.mem_size,
+	//	.get_value_method = list_node_control_get_data,
+	//	.swap_method = list_family_control_node_operator.swap,
+	//};
 
-	sort_control(sort_control_convert_type_to_func_addr(BUBBLE_SORT),
-				 list_sort_pack, comp);
+	//sort_control(sort_control_convert_type_to_func_addr(BUBBLE_SORT),
+	//			 list_sort_pack, comp);
 }
 
 /**
@@ -1100,48 +1100,6 @@ bool list_family_control_remove_rule(void *data)
 	}
 
 	return false;
-}
-
-/**
-* @brief This function will sort the object by the comp.
-*
-* @param data the pointer to the data list_family will give
-*
-* @return if the data match the rule
-*	- true	yes
-*	- false	no
-*/
-
-void list_family_control_sort_algorithm_bubble_sort(struct sort_package_s sort_package,
-													bool (*comp)(void *, void *, size_t))
-{
-	char
-		*value_lhs = NULL,
-		*value_rhs = NULL;
-
-	for (size_t cnt = 0; cnt < sort_package.len - 1; cnt++) {
-		for (size_t ct = 0; ct < sort_package.len - cnt - 1; ct++) {
-			if (NULL == sort_package.get_value_method) {								/* Get the value */
-				value_lhs = (void *)((size_t)sort_package.object + ct * sort_package.mem_len);
-				value_rhs = (void *)((size_t)sort_package.object + (ct + 1) * sort_package.mem_len);
-			} else {
-				value_lhs = sort_package.get_value_method(sort_package.object, ct);
-				value_rhs = sort_package.get_value_method(sort_package.object, ct + 1);
-			}
-
-			if (NULL == value_lhs ||
-				NULL == value_rhs) {
-				return;
-			}
-
-			if (comp(value_lhs, value_rhs, sort_package.mem_len)) {						/* Compare the value */
-				printf("sort_algorithm.bubble_sort.no.%d-%d: %d \"%s\" swap %d \"%s\" \r\n",
-					   cnt, ct, ct, value_lhs, ct + 1, value_rhs);
-
-				sort_package.swap_method(sort_package.object, ct, ct + 1);
-			}
-		}
-	}
 }
 
 /**

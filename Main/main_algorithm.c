@@ -38,5 +38,32 @@ void main_algorithm(void)
 
 	printf("\r\n ------------------------+ algorithm.modify_sequence demo end +------------------------ \r\n");
 
+	printf("\r\n ------------------------+ algorithm.sort demo start +------------------------\r\n");
+
+	char
+		string_lhs[] = "string_lhs",
+		string_rhs[] = "string_rhs";
+
+	char
+		*sort_object[] = {
+		string_lhs,
+		string_rhs
+	};
+
+	struct sort_package_s
+		sort_package = {
+		.count = 2,
+		.mem_len = sizeof(char*),
+		.mem_len_key = sizeof(string_lhs),
+		.object_ptr = sort_object,
+		.compare_ptr = compare_control_lesser,
+	};
+
+	sort_control(STABLE_SORT, sort_package);
+	printf("algorithm.modify_sequence.swap: lhs:\"%s\" rhs:\"%s\" \r\n",
+		   sort_object[0], sort_object[1]);
+
+	printf("\r\n ------------------------+ algorithm.sort demo end +------------------------ \r\n");
+
 	return;
 }

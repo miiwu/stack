@@ -20,13 +20,24 @@
 
 #include "compare.h"
 
+#include "modify_sequence.h"
+
 /*
 *********************************************************************************************************
 *									            DEFINES
 *********************************************************************************************************
 */
 
-#define SORT_ALGORITHM_CFG_DEBUG_EN										0
+/* Configure        if enable sort debug.													            */
+#define SORT_CFG_DEBUG_EN										            0
+
+/* Configure        if enable sort debug.													            */
+#define SORT_CFG_DEFAULT_COMPARE_ADDRESS								                                \
+    (&compare_control_greater)
+
+/* Configure        if enable sort debug.													            */
+#define SORT_CFG_DEFAULT_SWAP_ADDRESS									                                \
+    (&modify_sequence_control_swap)
 
 /*
 *********************************************************************************************************
@@ -34,38 +45,11 @@
 *********************************************************************************************************
 */
 
-/**
-* @brief This struct will contain the necessary information that sort needed.
-*/
-
-struct sort_package_s {
-	void *object;
-
-	size_t len;
-	size_t mem_len;
-
-	void *(*get_value_method)(void *object, size_t loc);
-
-	void (*swap_method)(void *object, size_t lhs, size_t rhs);
-
-	compare_t compare_method;
-};
-
 /*
 *********************************************************************************************************
 *								            FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
-
-/**
-* @brief This function will return the specified sort algorithm's function address.
-*
-* @param data the pointer to the data list will give
-*
-* @return the specified sort algorithm's function address
-*/
-
-void *sort_control_convert_type_to_func_addr(enum sort_algorithm_type type);
 
 /**
 * @brief This function will sort the object by the comp and the sort algorithm is distinguished by
@@ -76,8 +60,8 @@ void *sort_control_convert_type_to_func_addr(enum sort_algorithm_type type);
 * @return void
 */
 
-void sort_control(void *sort_algorithm_addr,
-				  struct sort_package_s sort_package, compare_t compare);
+errno_t sort_control(enum sort_algorithm_type type,
+				  struct sort_package_s package);
 
 /**
  * @brief This function will sort the object by the compare().
@@ -88,8 +72,7 @@ void sort_control(void *sort_algorithm_addr,
  * @return void
  */
 
-void sort_control_bubble_sort(struct sort_package_s sort_package,
-							  compare_t compare);
+errno_t sort_control_bubble_sort(struct sort_package_s sort_package);
 
 /*
 *********************************************************************************************************
