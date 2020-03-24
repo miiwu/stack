@@ -51,23 +51,56 @@ void *sort_control_algorithm_address_table[] = {
 */
 
 /**
- * @brief This function will get the value of object.
+ * @brief This function will get the element of object.
  *
- * @param sort_package the package of the sort information
- * @param pos the position of the value
- * @param value_lhs the pointer to the left side value
- * @param value_rhs the pointer to the right side value
+ * @param package the package of the sort
+ * @param index the index of the element
  *
- * @return if get the value of object successful
- *	- true	yes
- *	- false	no
+ * @return the element pointer
  */
 
-static inline bool
-sort_control_get_value(struct sort_package_s sort_package,
-					   size_t pos,
-					   void **value_lhs,
-					   void **value_rhs);
+void *sort_control_common_get_element(struct sort_package_s sort_package,
+									  size_t index);
+
+/**
+ * @brief This function will get the address of element.
+ *
+ * @param package the package of the sort
+ * @param index the index of the element
+ *
+ * @return the address of the element
+ */
+
+void *sort_control_common_get_address(struct sort_package_s sort_package,
+									  size_t index);
+
+/**
+ * @brief This function will compare the elements.
+ *
+ * @param sort_package the package of the sort
+ * @param left the index of the left element
+ * @param right the index of the right element
+ *
+ * @return the error code
+ */
+
+errno_t sort_control_common_compare(struct sort_package_s package,
+									size_t left,
+									size_t right);
+
+/**
+ * @brief This function will swap the elements.
+ *
+ * @param sort_package the package of the sort
+ * @param left the index of the left element
+ * @param right the index of the right element
+ *
+ * @return the error code
+ */
+
+errno_t sort_control_common_swap(struct sort_package_s package,
+								 size_t left,
+								 size_t right);
 
 /*
 *********************************************************************************************************
@@ -93,8 +126,8 @@ sort_control(enum sort_algorithm_type type,
 	assert(package.left < package.right);
 	assert(package.mem_len);
 	assert(package.object_ptr);
-	assert((package.object_operator.get_value_ptr || package.object_operator.get_address_ptr)
-		   ? (package.object_operator.get_value_ptr && package.object_operator.get_address_ptr)
+	assert((package.object_operator.get_element_ptr || package.object_operator.get_address_ptr)
+		   ? (package.object_operator.get_element_ptr && package.object_operator.get_address_ptr)
 		   : (true));																		/* Assert if both the operators valid */
 
 	sort_t sort = sort_control_algorithm_address_table[type];								/* Get the sort algorithm function address */
@@ -103,85 +136,147 @@ sort_control(enum sort_algorithm_type type,
 }
 
 /**
- * @brief This function will get the value of object.
+ * @brief This function will get the element of object.
  *
- * @param sort_package the package of the sort information
- * @param pos the position of the value
- * @param value_lhs the pointer to the left side value
- * @param value_rhs the pointer to the right side value
+ * @param package the package of the sort
+ * @param index the index of the element
  *
- * @return if get the value of object successful
- *	- true	yes
- *	- false	no
+ * @return the element pointer
  */
 
-static inline bool
-sort_control_get_value(struct sort_package_s sort_package,
-					   size_t pos,
-					   void **value_lhs,
-					   void **value_rhs)
+static inline void
+*sort_control_common_get_element(struct sort_package_s sort_package,
+								 size_t index)
 {
-	assert(0 <= pos);
+	assert(0 <= index);
 
-	if (NULL == sort_package.object_operator.get_value_ptr) {								/* If the object operator is valid */
-		*value_lhs = *(void **)((size_t)sort_package										/* Calculate the value */
-								.object_ptr + pos * sort_package.mem_len);
-		*value_rhs = *(void **)((size_t)sort_package
-								.object_ptr + (pos + 1) * sort_package.mem_len);
+	static void *value;
+
+	if (NULL == sort_package.object_operator.get_element_ptr) {								/* If the object operator is valid */
+		value = *(void **)((size_t)sort_package												/* Calculate the element */
+						   .object_ptr + index * sort_package.mem_len);
 	} else {
-		*value_lhs = sort_package.object_operator											/* Get the value */
-			.get_value_ptr(sort_package.object_ptr, pos);
-		*value_rhs = sort_package.object_operator
-			.get_value_ptr(sort_package.object_ptr, pos + 1);
+		value = sort_package.object_operator												/* Get the element */
+			.get_element_ptr(sort_package.object_ptr, index);
 	}
 
-	if (NULL == *value_lhs &&
-		NULL == *value_rhs) {
-		return false;
-	}
-
-	return true;
+	return value;
 }
 
 /**
- * @brief This function will get the value of object.
+ * @brief This function will get the address of element.
  *
- * @param sort_package the package of the sort information
- * @param pos the position of the value
- * @param value_lhs the pointer to the left side value
- * @param value_rhs the pointer to the right side value
+ * @param package the package of the sort
+ * @param index the index of the element
  *
- * @return if get the value of object successful
- *	- true	yes
- *	- false	no
+ * @return the address of the element
  */
 
-static inline bool
-sort_control_get_address(struct sort_package_s sort_package,
-						 size_t pos,
-						 void **address_lhs,
-						 void **address_rhs)
+static inline void
+*sort_control_common_get_address(struct sort_package_s sort_package,
+								 size_t index)
 {
-	assert(0 <= pos);
+	assert(0 <= index);
 
-	if (NULL == sort_package.object_operator.get_address_ptr) {				
-		*address_lhs = (void *)((size_t)sort_package										/* If the object operator is valid */
-								.object_ptr + pos * sort_package.mem_len);					/* Calculate the address of the value */
-		*address_rhs = (void *)((size_t)sort_package
-								.object_ptr + (pos + 1) * sort_package.mem_len);
+	static void *address;
+
+	if (NULL == sort_package.object_operator.get_element_ptr) {								/* If the object operator is valid */
+		address = (void *)((size_t)sort_package												/* Calculate the address */
+						   .object_ptr + index * sort_package.mem_len);
 	} else {
-		*address_lhs = sort_package.object_operator
-			.get_address_ptr(sort_package.object_ptr, pos);									/* Get the address of the value */
-		*address_rhs = sort_package.object_operator
-			.get_address_ptr(sort_package.object_ptr, pos + 1);
+		address = sort_package.object_operator												/* Get the address */
+			.get_address_ptr(sort_package.object_ptr, index);
 	}
 
-	if (NULL == *address_lhs &&
-		NULL == *address_rhs) {
-		return false;
+	return address;
+}
+
+/**
+ * @brief This function will compare the elements.
+ *
+ * @param sort_package the package of the sort
+ * @param left the index of the left element
+ * @param right the index of the right element
+ *
+ * @return the error code
+ */
+
+static inline errno_t
+sort_control_common_compare(struct sort_package_s package,
+							size_t left,
+							size_t right)
+{
+	assert(0 <= left);
+	assert(0 <= right);
+
+	static void
+		*value_lhs,
+		*value_rhs;
+
+	value_lhs = sort_control_common_get_element(package, left);
+	value_rhs = sort_control_common_get_element(package, right);
+
+	if (NULL == value_lhs &&
+		NULL == value_rhs) {
+		return 0xff;
 	}
 
-	return true;
+	#if (SORT_CFG_DEBUG_EN)
+
+	printf("sort_algorithm.compare: lhs:\"%s\" rhs:\"%s\" \r\n"
+		   , value_lhs, value_rhs);
+
+	#endif // (SORT_CFG_DEBUG_EN)
+
+	if (package.compare_ptr(value_lhs, value_rhs, package.mem_len_key)) {
+		return 1;
+	}
+
+	return 0;
+}
+
+/**
+ * @brief This function will swap the elements.
+ *
+ * @param sort_package the package of the sort
+ * @param left the index of the left element
+ * @param right the index of the right element
+ *
+ * @return the error code
+ */
+
+static inline errno_t
+sort_control_common_swap(struct sort_package_s package,
+						 size_t left,
+						 size_t right)
+{
+	assert(0 <= left);
+	assert(0 <= right);
+
+	static void
+		*address_lhs,
+		*address_rhs;
+
+	address_lhs = sort_control_common_get_address(package, left);
+	address_rhs = sort_control_common_get_address(package, right);
+
+	if (NULL == address_lhs &&
+		NULL == address_rhs) {
+		return 1;
+	}
+
+	#if (SORT_CFG_DEBUG_EN)
+
+	printf("sort_algorithm.swap: lhs:%p rhs:%p \r\n"
+		   , address_lhs, address_rhs);
+
+	#endif // (SORT_CFG_DEBUG_EN)
+
+	if (package.swap_ptr(address_lhs, address_rhs, package.mem_len)) {						/* Swap the value */
+		return 2;
+	}
+
+	return 0;
 }
 
 /**
@@ -199,8 +294,8 @@ errno_t sort_control_bubble_sort(struct sort_package_s package)
 	assert(package.left < package.right);
 	assert(package.mem_len);
 	assert(package.object_ptr);
-	assert((package.object_operator.get_value_ptr || package.object_operator.get_address_ptr)
-		   ? (package.object_operator.get_value_ptr && package.object_operator.get_address_ptr)
+	assert((package.object_operator.get_element_ptr || package.object_operator.get_address_ptr)
+		   ? (package.object_operator.get_element_ptr && package.object_operator.get_address_ptr)
 		   : (true));																		/* Assert if both the operators valid */
 
 	static char
@@ -224,46 +319,18 @@ errno_t sort_control_bubble_sort(struct sort_package_s package)
 
 	for (size_t cnt = package.left; cnt < package.right; cnt++) {
 		for (size_t ct = package.left; ct < package.right - cnt; ct++) {
-			if (!sort_control_get_value(package, ct, &value_lhs, &value_rhs)) {				/* Get the value */
-				return 1;
-			}
+			errno_t error_compare
+				= sort_control_common_compare(package, ct, ct + 1);							/* Compare the value */
 
-			#if (SORT_CFG_DEBUG_EN)
-
-			printf("sort_algorithm.bubble_sort.compare: lhs:\"%s\" rhs:\"%s\" \r\n"
-				   , value_lhs, value_rhs);
-
-			#endif // (SORT_CFG_DEBUG_EN)
-
-			if (package.compare_ptr(value_lhs, value_rhs, package.mem_len_key)) {			/* Compare the value */
-				if (!sort_control_get_address(package, ct, &address_lhs, &address_rhs)) {
+			if (true == error_compare) {
+				if (!sort_control_common_swap(package, ct, ct + 1)) {						/* Swap the value */
 					return 2;
 				}
-
-				#if (SORT_CFG_DEBUG_EN)
-
-				printf("sort_algorithm.bubble_sort.swap: lhs:%p rhs:%p \r\n"
-					   , address_lhs, address_rhs);
-
-				#endif // (SORT_CFG_DEBUG_EN)
-
-				package.swap_ptr(address_lhs, address_rhs, package.mem_len);				/* Swap the value */
+			} else if (0xff == error_compare) {
+				return  1;
 			}
 		}
 	}
 
 	return 0;
-}
-
-/**
- * @brief This function will sort the object by the quick sort algorithm.
- *
- * @param sort_package the information package of the sort
- *
- * @return void
- */
-
-errno_t sort_control_quick_sort(struct sort_package_s package)
-{
-
 }

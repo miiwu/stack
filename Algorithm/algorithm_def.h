@@ -75,7 +75,7 @@ typedef errno_t(*swap_t)(void *lhs, void *rhs, size_t len);
  */
 
 struct sort_package_object_operator_s {
-	void *(*get_value_ptr)(void *object, size_t loc);
+	void *(*get_element_ptr)(void *object, size_t loc);
 	void *(*get_address_ptr)(void *object, size_t loc);
 };
 
