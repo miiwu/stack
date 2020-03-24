@@ -61,7 +61,9 @@
 */
 
 errno_t sort_control(enum sort_algorithm_type type,
-					 struct sort_package_s package);
+					 struct sort_package_s package,
+					 size_t left,
+					 size_t right);
 
 /**
  * @brief This function will sort the object by the bubble sort algorithm.
@@ -71,7 +73,9 @@ errno_t sort_control(enum sort_algorithm_type type,
  * @return void
  */
 
-errno_t sort_control_bubble_sort(struct sort_package_s sort_package);
+errno_t sort_control_bubble_sort(struct sort_package_s sort_package,
+								 size_t left,
+								 size_t right);
 
 /*
 *********************************************************************************************************
