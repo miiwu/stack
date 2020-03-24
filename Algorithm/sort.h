@@ -29,7 +29,7 @@
 */
 
 /* Configure        if enable sort debug.													            */
-#define SORT_CFG_DEBUG_EN										            0
+#define SORT_CFG_DEBUG_EN										            1
 
 /* Configure        default compare function address.												    */
 #define SORT_CFG_DEFAULT_COMPARE_ADDRESS								                                \

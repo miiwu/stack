@@ -88,7 +88,9 @@ extern inline errno_t
 sort_control(enum sort_algorithm_type type,
 			 struct sort_package_s package)
 {
-	assert(package.count);
+	assert(0 <= package.left);
+	assert(0 <= package.right);
+	assert(package.left < package.right);
 	assert(package.mem_len);
 	assert(package.object_ptr);
 	assert((package.object_operator.get_value_ptr || package.object_operator.get_address_ptr)
@@ -192,7 +194,9 @@ sort_control_get_address(struct sort_package_s sort_package,
 
 errno_t sort_control_bubble_sort(struct sort_package_s package)
 {
-	assert(package.count);
+	assert(0 <= package.left);
+	assert(0 <= package.right);
+	assert(package.left < package.right);
 	assert(package.mem_len);
 	assert(package.object_ptr);
 	assert((package.object_operator.get_value_ptr || package.object_operator.get_address_ptr)
@@ -218,8 +222,8 @@ errno_t sort_control_bubble_sort(struct sort_package_s package)
 		package.swap_ptr = SORT_CFG_DEFAULT_SWAP_ADDRESS;
 	}
 
-	for (size_t cnt = 0; cnt < package.count - 1; cnt++) {
-		for (size_t ct = 0; ct < package.count - cnt - 1; ct++) {
+	for (size_t cnt = package.left; cnt < package.right; cnt++) {
+		for (size_t ct = package.left; ct < package.right - cnt; ct++) {
 			if (!sort_control_get_value(package, ct, &value_lhs, &value_rhs)) {				/* Get the value */
 				return 1;
 			}
@@ -249,4 +253,17 @@ errno_t sort_control_bubble_sort(struct sort_package_s package)
 	}
 
 	return 0;
+}
+
+/**
+ * @brief This function will sort the object by the quick sort algorithm.
+ *
+ * @param sort_package the information package of the sort
+ *
+ * @return void
+ */
+
+errno_t sort_control_quick_sort(struct sort_package_s package)
+{
+
 }

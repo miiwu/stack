@@ -84,7 +84,8 @@ struct sort_package_object_operator_s {
  */
 
 struct sort_package_s {
-	size_t count;
+	size_t left;
+	size_t right;
 	size_t mem_len;
 	size_t mem_len_key;
 	void *object_ptr;

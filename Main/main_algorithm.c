@@ -52,7 +52,8 @@ void main_algorithm(void)
 
 	struct sort_package_s
 		sort_package = {
-		.count = 2,
+		.left = 0,
+		.right = 1,
 		.mem_len = sizeof(char*),
 		.mem_len_key = sizeof(string_lhs),
 		.object_ptr = sort_object,
