@@ -88,7 +88,14 @@ extern inline errno_t
 sort_control(enum sort_algorithm_type type,
 			 struct sort_package_s package)
 {
-	sort_t sort = sort_control_algorithm_address_table[type];
+	assert(package.count);
+	assert(package.mem_len);
+	assert(package.object_ptr);
+	assert((package.object_operator.get_value_ptr || package.object_operator.get_address_ptr)
+		   ? (package.object_operator.get_value_ptr && package.object_operator.get_address_ptr)
+		   : (true));																		/* Assert if both the operators valid */
+
+	sort_t sort = sort_control_algorithm_address_table[type];								/* Get the sort algorithm function address */
 
 	return sort(package);
 }
@@ -112,13 +119,15 @@ sort_control_get_value(struct sort_package_s sort_package,
 					   void **value_lhs,
 					   void **value_rhs)
 {
-	if (NULL == sort_package.object_operator.get_value_ptr) {								/* Get the value */
-		*value_lhs = *(void **)((size_t)sort_package
-							  .object_ptr + pos * sort_package.mem_len);
+	assert(0 <= pos);
+
+	if (NULL == sort_package.object_operator.get_value_ptr) {								/* If the object operator is valid */
+		*value_lhs = *(void **)((size_t)sort_package										/* Calculate the value */
+								.object_ptr + pos * sort_package.mem_len);
 		*value_rhs = *(void **)((size_t)sort_package
-							  .object_ptr + (pos + 1) * sort_package.mem_len);
+								.object_ptr + (pos + 1) * sort_package.mem_len);
 	} else {
-		*value_lhs = sort_package.object_operator
+		*value_lhs = sort_package.object_operator											/* Get the value */
 			.get_value_ptr(sort_package.object_ptr, pos);
 		*value_rhs = sort_package.object_operator
 			.get_value_ptr(sort_package.object_ptr, pos + 1);
@@ -151,14 +160,16 @@ sort_control_get_address(struct sort_package_s sort_package,
 						 void **address_lhs,
 						 void **address_rhs)
 {
-	if (NULL == sort_package.object_operator.get_address_ptr) {								/* Get the address */
-		*address_lhs = (void *)((size_t)sort_package
-								.object_ptr + pos * sort_package.mem_len);
+	assert(0 <= pos);
+
+	if (NULL == sort_package.object_operator.get_address_ptr) {				
+		*address_lhs = (void *)((size_t)sort_package										/* If the object operator is valid */
+								.object_ptr + pos * sort_package.mem_len);					/* Calculate the address of the value */
 		*address_rhs = (void *)((size_t)sort_package
 								.object_ptr + (pos + 1) * sort_package.mem_len);
 	} else {
 		*address_lhs = sort_package.object_operator
-			.get_address_ptr(sort_package.object_ptr, pos);
+			.get_address_ptr(sort_package.object_ptr, pos);									/* Get the address of the value */
 		*address_rhs = sort_package.object_operator
 			.get_address_ptr(sort_package.object_ptr, pos + 1);
 	}
@@ -172,10 +183,9 @@ sort_control_get_address(struct sort_package_s sort_package,
 }
 
 /**
- * @brief This function will sort the object by the compare().
+ * @brief This function will sort the object by the bubble sort algorithm.
  *
  * @param sort_package the information package of the sort
- * @param compare the compare() function
  *
  * @return void
  */
@@ -185,6 +195,9 @@ errno_t sort_control_bubble_sort(struct sort_package_s package)
 	assert(package.count);
 	assert(package.mem_len);
 	assert(package.object_ptr);
+	assert((package.object_operator.get_value_ptr || package.object_operator.get_address_ptr)
+		   ? (package.object_operator.get_value_ptr && package.object_operator.get_address_ptr)
+		   : (true));																		/* Assert if both the operators valid */
 
 	static char
 		*value_lhs,
@@ -211,19 +224,26 @@ errno_t sort_control_bubble_sort(struct sort_package_s package)
 				return 1;
 			}
 
+			#if (SORT_CFG_DEBUG_EN)
+
+			printf("sort_algorithm.bubble_sort.compare: lhs:\"%s\" rhs:\"%s\" \r\n"
+				   , value_lhs, value_rhs);
+
+			#endif // (SORT_CFG_DEBUG_EN)
+
 			if (package.compare_ptr(value_lhs, value_rhs, package.mem_len_key)) {			/* Compare the value */
-				#if (SORT_CFG_DEBUG_EN)
-
-				printf("sort_algorithm.bubble_sort.no.%d-%d: %d \"%s\" swap %d \"%s\" \r\n",
-					   cnt, ct, ct, value_lhs, ct + 1, value_rhs);
-
-				#endif // (SORT_CFG_DEBUG_EN)
-
 				if (!sort_control_get_address(package, ct, &address_lhs, &address_rhs)) {
 					return 2;
 				}
 
-				package.swap_ptr(address_lhs, address_rhs, package.mem_len);
+				#if (SORT_CFG_DEBUG_EN)
+
+				printf("sort_algorithm.bubble_sort.swap: lhs:%p rhs:%p \r\n"
+					   , address_lhs, address_rhs);
+
+				#endif // (SORT_CFG_DEBUG_EN)
+
+				package.swap_ptr(address_lhs, address_rhs, package.mem_len);				/* Swap the value */
 			}
 		}
 	}

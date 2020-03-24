@@ -18,8 +18,8 @@
 
 #include "algorithm_def.h"
 
+/* Include        compare and sort function address.												    */
 #include "compare.h"
-
 #include "modify_sequence.h"
 
 /*
@@ -31,11 +31,11 @@
 /* Configure        if enable sort debug.													            */
 #define SORT_CFG_DEBUG_EN										            0
 
-/* Configure        if enable sort debug.													            */
+/* Configure        default compare function address.												    */
 #define SORT_CFG_DEFAULT_COMPARE_ADDRESS								                                \
     (&compare_control_greater)
 
-/* Configure        if enable sort debug.													            */
+/* Configure        default sort function address.													    */
 #define SORT_CFG_DEFAULT_SWAP_ADDRESS									                                \
     (&modify_sequence_control_swap)
 
@@ -61,13 +61,12 @@
 */
 
 errno_t sort_control(enum sort_algorithm_type type,
-				  struct sort_package_s package);
+					 struct sort_package_s package);
 
 /**
- * @brief This function will sort the object by the compare().
+ * @brief This function will sort the object by the bubble sort algorithm.
  *
  * @param sort_package the information package of the sort
- * @param compare the compare() function
  *
  * @return void
  */
