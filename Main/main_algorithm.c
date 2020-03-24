@@ -52,13 +52,15 @@ void main_algorithm(void)
 
 	struct sort_package_s
 		sort_package = {
-		.mem_len = sizeof(char *),
+		.left = 0,
+		.right = 1,
+		.mem_len = sizeof(char*),
 		.mem_len_key = sizeof(string_lhs),
 		.object_ptr = sort_object,
 		.compare_ptr = compare_control_lesser,
 	};
 
-	sort_control(STABLE_SORT, sort_package, 0, 1);
+	sort_control(STABLE_SORT, sort_package);
 	printf("algorithm.modify_sequence.swap: lhs:\"%s\" rhs:\"%s\" \r\n",
 		   sort_object[0], sort_object[1]);
 
