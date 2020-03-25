@@ -42,11 +42,13 @@ void main_algorithm(void)
 
 	char
 		string_lhs[] = "string_lhs",
+		string_mhs[] = "string_mhs",
 		string_rhs[] = "string_rhs";
 
 	char
 		*sort_object[] = {
 		string_lhs,
+		string_mhs,
 		string_rhs
 	};
 
@@ -58,9 +60,15 @@ void main_algorithm(void)
 		.compare_ptr = compare_control_lesser,
 	};
 
-	sort_control(STABLE_SORT, sort_package, 0, 1);
-	printf("algorithm.modify_sequence.swap: lhs:\"%s\" rhs:\"%s\" \r\n",
-		   sort_object[0], sort_object[1]);
+	sort_control(BUBBLE_SORT, sort_package, 0, 2);
+	printf("algorithm.sort.bubble_sort: lhs:\"%s\" mhs:\"%s\" rhs:\"%s\" \r\n",
+		   sort_object[0], sort_object[1], sort_object[2]);
+
+	sort_package.compare_ptr = compare_control_greater;
+
+	sort_control(QUICK_SORT, sort_package, 0, 2);
+	printf("algorithm.sort.quick_sort: lhs:\"%s\" mhs:\"%s\" rhs:\"%s\" \r\n",
+		   sort_object[0], sort_object[1], sort_object[2]);
 
 	printf("\r\n ------------------------+ algorithm.sort demo end +------------------------ \r\n");
 
