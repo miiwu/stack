@@ -62,10 +62,9 @@ search_substring_t search_substring_control_algorithm_address_table[] = {
 * @return the location of not match.
 */
 
-static inline size_t
-search_substring_control_match_forward_search(const char *str,
-											  const char *substr,
-											  size_t sublen);
+size_t search_substring_control_match_forward_search(const char *str,
+													 const char *substr,
+													 size_t sublen);
 
 /**
 * @brief This function will match the substring by backward search.
@@ -77,10 +76,9 @@ search_substring_control_match_forward_search(const char *str,
 * @return the location of not match.
 */
 
-static inline size_t
-search_substring_control_match_backward_search(const char *str,
-											   const char *substr,
-											   size_t sublen);
+size_t search_substring_control_match_backward_search(const char *str,
+													  const char *substr,
+													  size_t sublen);
 
 /*
 *********************************************************************************************************
@@ -89,7 +87,8 @@ search_substring_control_match_backward_search(const char *str,
 */
 
 /**
- * @brief This function will substring search the package by the specified algorithm.
+ * @brief This function will search the substring upon the string in the package 
+ *			by the specified algorithm.
  *
  * @param algorithm the enum name of the algorithm
  * @param package the package contains the necessary information
