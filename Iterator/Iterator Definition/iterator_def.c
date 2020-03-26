@@ -93,6 +93,7 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 	}
 
 	(*iterator)->info.position = (size_t)-1;
+	(*iterator)->info.featured = (addon_size) ? true : false;
 	(*iterator)->allocator_unit = allocator_unit;
 	(*iterator)->object_unit = object_unit;
 
@@ -155,7 +156,7 @@ void *iterator_control_iterator_operations_advance(struct iterator_s *iterator,
 	}
 
 	return iterator_control_iterator_operations_at(iterator,
-												   (int)iterator->info.position + step);
+												   (size_t)((int)iterator->info.position + step));
 }
 
 /**
@@ -171,7 +172,7 @@ void *iterator_control_iterator_operations_next(struct iterator_s *iterator)
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, void *, NULL);
 
 	return iterator_control_iterator_operations_at(iterator,
-												   (int)iterator->info.position + 1);
+												   (size_t)((int)iterator->info.position + 1));
 }
 
 /**
@@ -187,7 +188,7 @@ void *iterator_control_iterator_operations_prev(struct iterator_s *iterator)
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, void *, NULL);
 
 	return iterator_control_iterator_operations_at(iterator,
-												   (int)iterator->info.position - 1);
+												   (size_t)((int)iterator->info.position - 1));
 }
 
 /**

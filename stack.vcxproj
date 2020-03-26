@@ -114,28 +114,22 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -157,78 +151,34 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)\Main;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Debug Component;$(ProjectDir)\Container;$(ProjectDir)\Container\Tree;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Allocator;$(ProjectDir)\Algorithm;$(ProjectDir)\Debug Component;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Main;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Algorithm;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Allocator;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Tree;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Squence container;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Container adaptors;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Debug Component;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Allocator;$(ProjectDir)\Algorithm;$(ProjectDir)\Debug Component;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Main;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Algorithm;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Allocator;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Tree;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Squence container;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Container adaptors;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Debug Component;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Allocator;$(ProjectDir)\Algorithm;$(ProjectDir)\Debug Component;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Main;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Algorithm;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Allocator;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Tree;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Squence container;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Container adaptors;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Debug Component;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Allocator;$(ProjectDir)\Algorithm;$(ProjectDir)\Debug Component;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <Profile>true</Profile>
-    </Link>
+    <ClCompile />
+    <Link />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <Profile>true</Profile>
-    </Link>
+    <ClCompile />
+    <Link />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <SupportJustMyCode>true</SupportJustMyCode>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
+    <ClCompile />
+    <Link />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <SupportJustMyCode>true</SupportJustMyCode>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
+    <ClCompile />
+    <Link />
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

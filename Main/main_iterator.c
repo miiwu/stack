@@ -46,13 +46,13 @@ void main_input_iterator(void)
 {
 	printf("\r\n ------------------------+ input_iterator demo start +------------------------\r\n");
 
-	printf("\r\n ------------------------+ input_iterator.configuration.init start +------------------------\r\n");
+	printf("\r\ninput_iterator.configuration.init start\r\n");
 	if (input_iterator_control.configuration.init(&input_iterator, object_unit)) {
 		return;
 	}
 
 	printf("\r\ninput_iterator.iterator_operations.advance start\r\n");
-	element = input_iterator_control.iterator_operations.advance(input_iterator, -2);
+	element = input_iterator_control.iterator_operations.advance(input_iterator, -1);
 	printf("input_iterator.iterator_operations.advance:\"%c\" \r\n"
 		   , (NULL == element) ? '?' : *element);
 
@@ -71,7 +71,7 @@ void main_input_iterator(void)
 	printf("input_iterator.range_access.data:%p \r\n"
 		   , (NULL == element) ? NULL : element);
 
-	printf("\r\n ------------------------+ input_iterator.configuration.destroy start +------------------------\r\n");
+	printf("\r\ninput_iterator.configuration.destroy start\r\n");
 	if (input_iterator_control.configuration.destroy(&input_iterator)) {
 		return;
 	}
@@ -83,7 +83,7 @@ void main_random_access_iterator(void)
 {
 	printf("\r\n ------------------------+ random_access_iterator demo start +------------------------\r\n");
 
-	printf("\r\n ------------------------+ random_access_iterator.configuration.init start +------------------------\r\n");
+	printf("\r\nrandom_access_iterator.configuration.init start\r\n");
 	if (random_access_iterator_control.configuration.init(&random_access_iterator, object_unit)) {
 		return;
 	}
@@ -104,7 +104,7 @@ void main_random_access_iterator(void)
 		   , (NULL == element) ? '?' : *element);
 
 	printf("\r\nrandom_access_iterator.iterator_operations.advance start\r\n");
-	element = random_access_iterator_control.iterator_operations.advance(random_access_iterator, -2);
+	element = random_access_iterator_control.iterator_operations.advance(random_access_iterator, -1);
 	printf("random_access_iterator.iterator_operations.advance:\"%c\" \r\n"
 		   , (NULL == element) ? '?' : *element);
 
@@ -128,7 +128,7 @@ void main_random_access_iterator(void)
 	printf("random_access_iterator.range_access.data:%p \r\n"
 		   , (NULL == element) ? NULL : element);
 
-	printf("\r\n ------------------------+ random_access_iterator.configuration.destroy start +------------------------\r\n");
+	printf("\r\nrandom_access_iterator.configuration.destroy start\r\n");
 	if (random_access_iterator_control.configuration.destroy(&random_access_iterator)) {
 		return;
 	}

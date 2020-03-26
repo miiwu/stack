@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#include <windows.h>
+
 void main(void)
 {
 	#if	(MAIN_DEBUG_COMPONENT_EN)
@@ -91,6 +93,8 @@ void main(void)
 	main_priority_queue();
 
 	#endif
+
+	system("pause");
 
 	return;
 }
