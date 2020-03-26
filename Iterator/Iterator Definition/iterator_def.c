@@ -4,7 +4,7 @@
  *********************************************************************************************************
  */
 
-#include "random_access_iterator.h"
+#include "iterator_def.h"
 
 #include "iterator_pte_def.h"
 
@@ -38,26 +38,6 @@
  *********************************************************************************************************
  */
 
-/**
- * @brief This type is the iterator control structure.
- */
-
-struct random_access_iterator_control_s random_access_iterator_control = {
-	.configuration.init = random_access_iterator_control_configuration_init,
-	.configuration.destroy = random_access_iterator_control_configuration_destroy,
-
-	.iterator_operations.advance = random_access_iterator_control_iterator_operations_advance,
-	.iterator_operations.next = random_access_iterator_control_iterator_operations_next,
-	.iterator_operations.prev = random_access_iterator_control_iterator_operations_prev,
-	.iterator_operations.at = random_access_iterator_control_iterator_operations_at,
-
-    .range_access.begin = random_access_iterator_control_range_access_begin,
-    .range_access.end = random_access_iterator_control_range_access_end,
-    .range_access.empty = random_access_iterator_control_range_access_empty,
-    .range_access.size = random_access_iterator_control_range_access_size,
-    .range_access.data = random_access_iterator_control_range_access_data,
-};
-
 /*
  *********************************************************************************************************
  *                                      LOCAL FUNCTION PROTOTYPES
@@ -84,30 +64,35 @@ struct random_access_iterator_control_s random_access_iterator_control = {
  * @return
  */
 
-errno_t random_access_iterator_control_configuration_init(iterator_stpp iterator,
-														  struct iterator_object_unit_s object_unit)
+errno_t iterator_control_configuration_init(struct iterator_s **iterator,
+											struct iterator_object_unit_s object_unit,
+											size_t addon_size)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, errno_t, 1);
+	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(object_unit.object_ptr, errno_t, 2);
+	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(object_unit.control_ptr, errno_t, 3);
 
 	struct iterator_allocator_unit_s
 		allocator_unit = { 0 };
 
 	if (NULL == (allocator_unit
 				 .control_ptr = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON))) {
-		return 2;
+		return 4;
 	}
 
 	if (allocator_unit.control_ptr->configuration
 		.init(&allocator_unit.allocator_ptr, NULL)) {
-		return 3;
+		return 5;
 	}
 
 	if (NULL == ((*iterator)
 				 = allocator_unit.control_ptr->allocate(allocator_unit.allocator_ptr,
-														1, sizeof(struct iterator_s)))) {
-		return 4;
+														1,
+														sizeof(struct iterator_s) + addon_size))) {
+		return 6;
 	}
 
+	(*iterator)->info.position = (size_t)-1;
 	(*iterator)->allocator_unit = allocator_unit;
 	(*iterator)->object_unit = object_unit;
 
@@ -122,10 +107,27 @@ errno_t random_access_iterator_control_configuration_init(iterator_stpp iterator
  * @return
  */
 
-errno_t random_access_iterator_control_configuration_destroy(iterator_stpp iterator)
+errno_t iterator_control_configuration_destroy(struct iterator_s **iterator)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, errno_t, 1);
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT((*iterator), errno_t, 1);
+
+	static struct iterator_allocator_unit_s allocator_unit = { 0 };
+
+	allocator_unit = (*iterator)->allocator_unit;                                           /* Store allocator unit structure */
+
+	if (allocator_unit.control_ptr
+		->deallocate(allocator_unit.allocator_ptr,
+					 (*iterator), 1)) {					                                    /* Deallocate the iterator */
+		return 2;
+	}
+
+	if (allocator_unit.control_ptr
+		->configuration.destroy(&allocator_unit.allocator_ptr)) {						    /* Destroy the allocator */
+		return 3;
+	}
+
+	*iterator = NULL;
 
 	return 0;
 }
@@ -138,13 +140,22 @@ errno_t random_access_iterator_control_configuration_destroy(iterator_stpp itera
  * @return
  */
 
-void *random_access_iterator_control_iterator_operations_advance(iterator_stp iterator,
-																 int step)
+void *iterator_control_iterator_operations_advance(struct iterator_s *iterator,
+												   int step)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, void *, NULL);
 
-	return random_access_iterator_control_iterator_operations_at(iterator,
-																 (int)iterator->info.position + step);
+	if (iterator->info.featured) {                                                          /* Check if is featured */
+		static struct iterator_feature_package_s *feature_package;
+
+		if (!(feature_package = (struct iterator_feature_package_s *)iterator->addon)
+			->advance(step)) {
+			return NULL;
+		}
+	}
+
+	return iterator_control_iterator_operations_at(iterator,
+												   (int)iterator->info.position + step);
 }
 
 /**
@@ -155,12 +166,12 @@ void *random_access_iterator_control_iterator_operations_advance(iterator_stp it
  * @return
  */
 
-void *random_access_iterator_control_iterator_operations_next(iterator_stp iterator)
+void *iterator_control_iterator_operations_next(struct iterator_s *iterator)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, void *, NULL);
 
-	return random_access_iterator_control_iterator_operations_at(iterator,
-																 (int)iterator->info.position + 1);
+	return iterator_control_iterator_operations_at(iterator,
+												   (int)iterator->info.position + 1);
 }
 
 /**
@@ -171,12 +182,12 @@ void *random_access_iterator_control_iterator_operations_next(iterator_stp itera
  * @return
  */
 
-void *random_access_iterator_control_iterator_operations_prev(iterator_stp iterator)
+void *iterator_control_iterator_operations_prev(struct iterator_s *iterator)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, void *, NULL);
 
-	return random_access_iterator_control_iterator_operations_at(iterator,
-																 (int)iterator->info.position - 1);
+	return iterator_control_iterator_operations_at(iterator,
+												   (int)iterator->info.position - 1);
 }
 
 /**
@@ -187,8 +198,8 @@ void *random_access_iterator_control_iterator_operations_prev(iterator_stp itera
  * @return
  */
 
-void *random_access_iterator_control_iterator_operations_at(iterator_stp iterator,
-															size_t index)
+void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
+											  size_t index)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, void *, NULL);
 
@@ -210,7 +221,7 @@ void *random_access_iterator_control_iterator_operations_at(iterator_stp iterato
  * @return
  */
 
-void *random_access_iterator_control_range_access_begin(iterator_stp iterator)
+void *iterator_control_range_access_begin(struct iterator_s *iterator)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, void *, NULL);
 
@@ -227,7 +238,7 @@ void *random_access_iterator_control_range_access_begin(iterator_stp iterator)
  * @return
  */
 
-void *random_access_iterator_control_range_access_end(iterator_stp iterator)
+void *iterator_control_range_access_end(struct iterator_s *iterator)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, void *, NULL);
 
@@ -245,7 +256,7 @@ void *random_access_iterator_control_range_access_end(iterator_stp iterator)
  * @return
  */
 
-size_t random_access_iterator_control_range_access_size(iterator_stp iterator)
+size_t iterator_control_range_access_size(struct iterator_s *iterator)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, size_t, 0);
 
@@ -261,7 +272,7 @@ size_t random_access_iterator_control_range_access_size(iterator_stp iterator)
  * @return
  */
 
-bool random_access_iterator_control_range_access_empty(iterator_stp iterator)
+bool iterator_control_range_access_empty(struct iterator_s *iterator)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, bool, false);
 
@@ -277,10 +288,38 @@ bool random_access_iterator_control_range_access_empty(iterator_stp iterator)
  * @return
  */
 
-void *random_access_iterator_control_range_access_data(iterator_stp iterator)
+void *iterator_control_range_access_data(struct iterator_s *iterator)
 {
 	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, void *, NULL);
 
 	return iterator->object_unit.control_ptr->element_access
 		.data(iterator->object_unit.object_ptr);
+}
+
+/**
+ * @brief This function will check if the at iterator operations can perform.
+ *
+ * @param
+ *
+ * @return
+ */
+
+extern inline bool
+iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
+											  size_t index)
+{
+	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, bool, false);
+
+	if (iterator->object_unit.control_ptr->capacity
+		.empty(iterator->object_unit.object_ptr)) {                                         /* Check if empty() */
+		return false;
+	}
+
+	if ((int)iterator->object_unit.control_ptr->capacity
+		.max_size(iterator->object_unit.object_ptr) < (int)index                            /* Check if max_size() is less than index */
+		|| (int)0 > (int)index) {                                                           /* Check if 0 is greater than index */
+		return false;
+	}
+
+	return true;
 }

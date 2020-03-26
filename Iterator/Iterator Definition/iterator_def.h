@@ -91,6 +91,8 @@ struct iterator_object_control_s {
 
 struct iterator_common_information_s {
 	size_t position;
+
+    bool featured;
 };
 
 /**
@@ -117,11 +119,134 @@ struct iterator_allocator_unit_s {
     struct allocator_control_s *control_ptr;
 };
 
+/**
+ * @brief This type is the iterator feature package structure.
+ */
+
+struct iterator_feature_package_s {
+    /* @brief This variables will point to the object.						                            */
+    bool (*advance)(int step);
+};
+
 /*
  *********************************************************************************************************
  *								            FUNCTION PROTOTYPES
  *********************************************************************************************************
  */
+
+/**
+ * @brief This function will initialize the iterator.
+ *
+ * @param
+ *
+ * @return
+ */
+
+errno_t iterator_control_configuration_init(struct iterator_s **iterator,
+                                            struct iterator_object_unit_s object_unit,
+                                            size_t addon_size);
+
+/**
+ * @brief This function will destroy the iterator.
+ *
+ * @param
+ *
+ * @return
+ */
+
+errno_t iterator_control_configuration_destroy(struct iterator_s **iterator);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+void *iterator_control_iterator_operations_advance(struct iterator_s *iterator,
+                                                   int step);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+void *iterator_control_iterator_operations_next(struct iterator_s *iterator);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+void *iterator_control_iterator_operations_prev(struct iterator_s *iterator);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
+                                              size_t index);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+void *iterator_control_range_access_begin(struct iterator_s *iterator);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+void *iterator_control_range_access_end(struct iterator_s *iterator);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+size_t iterator_control_range_access_size(struct iterator_s *iterator);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+bool iterator_control_range_access_empty(struct iterator_s *iterator);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+void *iterator_control_range_access_data(struct iterator_s *iterator);
 
 /**
  * @brief This function will check if the at iterator operations can perform.

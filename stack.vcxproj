@@ -42,8 +42,9 @@
     <ClCompile Include="Container\Tree\red_black_tree.c" />
     <ClCompile Include="Container\Tree\tree_family.c" />
     <ClCompile Include="Debug Component\debug_stack_back_trace.c" />
-    <ClCompile Include="Iterator\iterator_def.c" />
-    <ClCompile Include="Iterator\random_access_iterator.c" />
+    <ClCompile Include="Iterator\Input Iterator\input_iterator.c" />
+    <ClCompile Include="Iterator\Iterator Definition\iterator_def.c" />
+    <ClCompile Include="Iterator\Random Access Iterator\random_access_iterator.c" />
     <ClCompile Include="Main\main.c" />
     <ClCompile Include="Main\main_algorithm.c" />
     <ClCompile Include="Main\main_allocator.c" />
@@ -97,10 +98,11 @@
     <ClInclude Include="Debug Component\debug_component.h" />
     <ClInclude Include="Debug Component\debug_component_def.h" />
     <ClInclude Include="Debug Component\debug_stack_back_trace.h" />
+    <ClInclude Include="Iterator\Input Iterator\input_iterator.h" />
+    <ClInclude Include="Iterator\Iterator Definition\iterator_def.h" />
+    <ClInclude Include="Iterator\Iterator Definition\iterator_pte_def.h" />
     <ClInclude Include="Iterator\iterator.h" />
-    <ClInclude Include="Iterator\random_access_iterator.h" />
-    <ClInclude Include="Iterator\iterator_def.h" />
-    <ClInclude Include="Iterator\iterator_pte_def.h" />
+    <ClInclude Include="Iterator\Random Access Iterator\random_access_iterator.h" />
     <ClInclude Include="Main\main_cfg.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -155,7 +157,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)\Main;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Debug Component;$(ProjectDir)\Container;$(ProjectDir)\Container\Tree;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Main;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Debug Component;$(ProjectDir)\Container;$(ProjectDir)\Container\Tree;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Main;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Algorithm;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Allocator;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Tree;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Squence container;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container\Container adaptors;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Container;C:\Storages\Project\Microsoft\Microsoft-Visual-Studio\stack\Debug Component;$(IncludePath)</IncludePath>

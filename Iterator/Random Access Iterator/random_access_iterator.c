@@ -4,7 +4,7 @@
  *********************************************************************************************************
  */
 
-#include "iterator_def.h"
+#include "random_access_iterator.h"
 
 #include "iterator_pte_def.h"
 
@@ -38,6 +38,26 @@
  *********************************************************************************************************
  */
 
+/**
+ * @brief This type is the iterator control structure.
+ */
+
+struct random_access_iterator_control_s random_access_iterator_control = {
+	.configuration.init = random_access_iterator_control_configuration_init,
+	.configuration.destroy = iterator_control_configuration_destroy,
+
+	.iterator_operations.advance = iterator_control_iterator_operations_advance,
+	.iterator_operations.next = iterator_control_iterator_operations_next,
+	.iterator_operations.prev = iterator_control_iterator_operations_prev,
+	.iterator_operations.at = iterator_control_iterator_operations_at,
+
+    .range_access.begin = iterator_control_range_access_begin,
+    .range_access.end = iterator_control_range_access_end,
+    .range_access.empty = iterator_control_range_access_empty,
+    .range_access.size = iterator_control_range_access_size,
+    .range_access.data = iterator_control_range_access_data,
+};
+
 /*
  *********************************************************************************************************
  *                                      LOCAL FUNCTION PROTOTYPES
@@ -57,29 +77,19 @@
  */
 
 /**
- * @brief This function will check if the at iterator operations can perform.
+ * @brief This function will initialize the iterator.
  *
  * @param
  *
  * @return
  */
 
-extern inline bool
-iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
-											  size_t index)
+errno_t random_access_iterator_control_configuration_init(random_access_iterator_stpp iterator,
+                                                          struct iterator_object_unit_s object_unit)
 {
-	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, bool, false);
+	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, errno_t, 1);
+	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(object_unit.object_ptr, errno_t, 2);
+	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(object_unit.control_ptr, errno_t, 3);
 
-	if (iterator->object_unit.control_ptr->capacity
-		.empty(iterator->object_unit.object_ptr)) {                                         /* Check if empty() */
-		return false;
-	}
-
-	if ((int)iterator->object_unit.control_ptr->capacity
-		.max_size(iterator->object_unit.object_ptr) < (int)index                            /* Check if max_size() is less than index */
-		|| (int)0 > (int)index) {                                                           /* Check if 0 is greater than index */
-		return false;
-	}
-
-	return true;
+    return iterator_control_configuration_init(iterator, object_unit, 0);
 }

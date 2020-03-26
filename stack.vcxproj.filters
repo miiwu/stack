@@ -73,6 +73,24 @@
     <Filter Include="头文件\iterator">
       <UniqueIdentifier>{f3d005d9-67c9-4b6d-b845-dbfdebd609f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\iterator\input iterator">
+      <UniqueIdentifier>{690ba4f7-864d-48f8-a1b2-f207ce2e8fcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\random access iterator">
+      <UniqueIdentifier>{8bd662c8-a658-4c7e-b7ff-a369215afce6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\input iterator">
+      <UniqueIdentifier>{a7f5ef9f-1360-4b67-a10f-62da0ffb8a91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\random access iterator">
+      <UniqueIdentifier>{370faa22-a6de-404e-bb07-0a0759673a22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\iterator definition">
+      <UniqueIdentifier>{4a4f7cb9-e714-483c-8171-affc92238305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\iterator definition">
+      <UniqueIdentifier>{167dfe11-038a-435c-90ad-9042a0a907a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -195,11 +213,14 @@
     <ClCompile Include="Main\main_iterator.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
-    <ClCompile Include="Iterator\random_access_iterator.c">
-      <Filter>源文件\iterator</Filter>
+    <ClCompile Include="Iterator\Input Iterator\input_iterator.c">
+      <Filter>源文件\iterator\input iterator</Filter>
     </ClCompile>
-    <ClCompile Include="Iterator\iterator_def.c">
-      <Filter>源文件\iterator</Filter>
+    <ClCompile Include="Iterator\Random Access Iterator\random_access_iterator.c">
+      <Filter>源文件\iterator\random access iterator</Filter>
+    </ClCompile>
+    <ClCompile Include="Iterator\Iterator Definition\iterator_def.c">
+      <Filter>源文件\iterator\iterator definition</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -308,17 +329,20 @@
     <ClInclude Include="Algorithm\modify_sequence.h">
       <Filter>头文件\algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="Iterator\iterator_def.h">
-      <Filter>头文件\iterator</Filter>
-    </ClInclude>
-    <ClInclude Include="Iterator\iterator_pte_def.h">
-      <Filter>头文件\iterator</Filter>
-    </ClInclude>
-    <ClInclude Include="Iterator\random_access_iterator.h">
-      <Filter>头文件\iterator</Filter>
-    </ClInclude>
     <ClInclude Include="Iterator\iterator.h">
       <Filter>头文件\iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator\Input Iterator\input_iterator.h">
+      <Filter>头文件\iterator\input iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator\Random Access Iterator\random_access_iterator.h">
+      <Filter>头文件\iterator\random access iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator\Iterator Definition\iterator_def.h">
+      <Filter>头文件\iterator\iterator definition</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator\Iterator Definition\iterator_pte_def.h">
+      <Filter>头文件\iterator\iterator definition</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
