@@ -94,7 +94,11 @@ void main(void)
 
 	#endif
 
+	#ifndef _DEDUG
+
 	system("pause");
+
+	#endif // (_NDEDUG)
 
 	return;
 }

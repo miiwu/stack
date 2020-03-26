@@ -71,6 +71,7 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 	DEBUG_ASSERT_CONTROL_POINTER(iterator, errno_t, 1);
 	DEBUG_ASSERT_CONTROL_POINTER(object_unit.object_ptr, errno_t, 2);
 	DEBUG_ASSERT_CONTROL_POINTER(object_unit.control_ptr, errno_t, 3);
+    DEBUG_ASSERT_CONTROL_VARIABLE(addon_size, >= , int, 0, errno_t, 4);
 
 	struct iterator_allocator_unit_s
 		allocator_unit = { 0 };
