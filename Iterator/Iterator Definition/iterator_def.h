@@ -23,6 +23,8 @@
 #include <assert.h>
 #include <malloc.h>
 
+#include "debug_component.h"
+
 #include "allocator.h"
 
 /*
@@ -30,15 +32,6 @@
  *									            DEFINES
  *********************************************************************************************************
  */
-
-/* Define			iterator control common prepare block.												*/
-#define ITERATOR_CONTROL_COMMON_POINTER_ASSERT(pointer,error_type,error_code)							\
-	do {																								\
-		assert(NULL != (pointer));									/* Assert first,DEBUG will work */	\
-		if (NULL == (pointer)) {									/* If second,RELEASE will work	*/	\
-			return (error_type)(error_code);															\
-		}																								\
-	} while (false)
 
 #pragma warning( disable : 4996)
 #pragma warning( disable : 26812)

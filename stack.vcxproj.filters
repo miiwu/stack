@@ -25,12 +25,6 @@
     <Filter Include="源文件\container">
       <UniqueIdentifier>{96772820-d70f-490e-b2b4-a8d17bcffa53}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\debug">
-      <UniqueIdentifier>{4554375c-e8c5-4b07-b58b-9e7fcbbec68b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\debug">
-      <UniqueIdentifier>{5de867b5-a197-407f-b510-b03d777ab402}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\allocator">
       <UniqueIdentifier>{c3a4dd55-7f03-49d1-bd22-08c24c842df1}</UniqueIdentifier>
     </Filter>
@@ -91,6 +85,24 @@
     <Filter Include="头文件\iterator\iterator definition">
       <UniqueIdentifier>{167dfe11-038a-435c-90ad-9042a0a907a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\debug component">
+      <UniqueIdentifier>{5de867b5-a197-407f-b510-b03d777ab402}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\debug component\debug stack back trace">
+      <UniqueIdentifier>{0fd87972-bd3f-4f78-a521-3cd3a592b043}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\debug component\debug assert">
+      <UniqueIdentifier>{30f29444-c012-4d77-9c8e-9f92959edfca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\debug component\debug component definition">
+      <UniqueIdentifier>{1ae48c28-fb54-4018-8636-863afd951be3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\debug component">
+      <UniqueIdentifier>{4554375c-e8c5-4b07-b58b-9e7fcbbec68b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\debug component\debug stack back trace">
+      <UniqueIdentifier>{b699c320-f688-4b33-a542-e0fd5832c6b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -110,9 +122,6 @@
     </ClCompile>
     <ClCompile Include="Main\main_forward_list.c">
       <Filter>源文件\main</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug Component\debug_stack_back_trace.c">
-      <Filter>源文件\debug</Filter>
     </ClCompile>
     <ClCompile Include="Main\main_allocator.c">
       <Filter>源文件\main</Filter>
@@ -222,6 +231,9 @@
     <ClCompile Include="Iterator\Iterator Definition\iterator_def.c">
       <Filter>源文件\iterator\iterator definition</Filter>
     </ClCompile>
+    <ClCompile Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.c">
+      <Filter>源文件\debug component\debug stack back trace</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\container.h">
@@ -233,9 +245,6 @@
     <ClInclude Include="Main\main_cfg.h">
       <Filter>头文件\main</Filter>
     </ClInclude>
-    <ClInclude Include="Debug Component\debug_stack_back_trace.h">
-      <Filter>头文件\debug</Filter>
-    </ClInclude>
     <ClInclude Include="Allocator\allocator.h">
       <Filter>头文件\allocator</Filter>
     </ClInclude>
@@ -246,10 +255,7 @@
       <Filter>头文件\allocator</Filter>
     </ClInclude>
     <ClInclude Include="Debug Component\debug_component.h">
-      <Filter>头文件\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="Debug Component\debug_component_def.h">
-      <Filter>头文件\debug</Filter>
+      <Filter>头文件\debug component</Filter>
     </ClInclude>
     <ClInclude Include="Algorithm\algorithm.h">
       <Filter>头文件\algorithm</Filter>
@@ -343,6 +349,15 @@
     </ClInclude>
     <ClInclude Include="Iterator\Iterator Definition\iterator_pte_def.h">
       <Filter>头文件\iterator\iterator definition</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.h">
+      <Filter>头文件\debug component\debug stack back trace</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug Component\Debug Assert\debug_assert.h">
+      <Filter>头文件\debug component\debug assert</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug Component\Debug Component Definition\debug_component_def.h">
+      <Filter>头文件\debug component\debug component definition</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -87,9 +87,9 @@ struct random_access_iterator_control_s random_access_iterator_control = {
 errno_t random_access_iterator_control_configuration_init(random_access_iterator_stpp iterator,
                                                           struct iterator_object_unit_s object_unit)
 {
-	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, errno_t, 1);
-	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(object_unit.object_ptr, errno_t, 2);
-	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(object_unit.control_ptr, errno_t, 3);
+	DEBUG_ASSERT_CONTROL_POINTER(iterator, errno_t, 1);
+	DEBUG_ASSERT_CONTROL_POINTER(object_unit.object_ptr, errno_t, 2);
+	DEBUG_ASSERT_CONTROL_POINTER(object_unit.control_ptr, errno_t, 3);
 
     return iterator_control_configuration_init(iterator, object_unit, 0);
 }
