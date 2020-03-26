@@ -20,6 +20,12 @@ void main(void)
 
 	#endif
 
+	#if	(MAIN_ITERATOR_EN)
+
+	main_iterator();
+
+	#endif
+
 	#if	(MAIN_GENERIC_TYPE_EN)
 
 	main_generic_type();

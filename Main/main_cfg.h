@@ -9,9 +9,11 @@
 
 #define MAIN_DEBUG_COMPONENT_EN		0u
 
-#define MAIN_ALGORITHM_EN			1u
+#define MAIN_ALGORITHM_EN			0u
 
 #define MAIN_ALLOCATOR_EN			0u
+
+#define MAIN_ITERATOR_EN			1u
 
 #define MAIN_GENERIC_TYPE_EN		0u
 
@@ -52,6 +54,12 @@ void main_algorithm(void);
 #if	(MAIN_ALLOCATOR_EN)
 
 void main_allocator(void);
+
+#endif
+
+#if	(MAIN_ITERATOR_EN)
+
+void main_iterator(void);
 
 #endif
 
