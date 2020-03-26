@@ -4,7 +4,9 @@
  *********************************************************************************************************
  */
 
-#include "header_template.h"
+#include "iterator_def.h"
+
+#include "iterator_pte_def.h"
 
 /*
  *********************************************************************************************************
@@ -49,7 +51,35 @@
  */
 
 /*
-*********************************************************************************************************
-*                                            FUNCTIONS
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                            FUNCTIONS
+ *********************************************************************************************************
+ */
+
+/**
+ * @brief This function will check if the at iterator operations can perform.
+ *
+ * @param
+ *
+ * @return
+ */
+
+extern inline bool
+iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
+											  size_t index)
+{
+	ITERATOR_CONTROL_COMMON_POINTER_ASSERT(iterator, bool, false);
+
+	if (iterator->object_unit.control_ptr->capacity
+		.empty(iterator->object_unit.object_ptr)) {                                         /* Check if empty() */
+		return false;
+	}
+
+	if ((int)iterator->object_unit.control_ptr->capacity
+		.max_size(iterator->object_unit.object_ptr) < (int)index                            /* Check if max_size() is less than index */
+		|| (int)0 > (int)index) {                                                           /* Check if 0 is greater than index */
+		return false;
+	}
+
+	return true;
+}

@@ -192,11 +192,14 @@
     <ClCompile Include="Algorithm\modify_sequence.c">
       <Filter>源文件\algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="Iterator\iterator.c">
-      <Filter>源文件\iterator</Filter>
-    </ClCompile>
     <ClCompile Include="Main\main_iterator.c">
       <Filter>源文件\main</Filter>
+    </ClCompile>
+    <ClCompile Include="Iterator\random_access_iterator.c">
+      <Filter>源文件\iterator</Filter>
+    </ClCompile>
+    <ClCompile Include="Iterator\iterator_def.c">
+      <Filter>源文件\iterator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -308,10 +311,13 @@
     <ClInclude Include="Iterator\iterator_def.h">
       <Filter>头文件\iterator</Filter>
     </ClInclude>
-    <ClInclude Include="Iterator\iterator.h">
+    <ClInclude Include="Iterator\iterator_pte_def.h">
       <Filter>头文件\iterator</Filter>
     </ClInclude>
-    <ClInclude Include="Iterator\iterator_pte_def.h">
+    <ClInclude Include="Iterator\random_access_iterator.h">
+      <Filter>头文件\iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator\iterator.h">
       <Filter>头文件\iterator</Filter>
     </ClInclude>
   </ItemGroup>

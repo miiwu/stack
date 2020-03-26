@@ -1,20 +1,20 @@
 /*
-*********************************************************************************************************
-*                                               MODULE
-*
-* Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
-*               through use of the definition module present pre-processor macro definition.
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                               MODULE
+ *
+ * Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
+ *               through use of the definition module present pre-processor macro definition.
+ *********************************************************************************************************
+ */
 
 #ifndef __ITERATOR_DEFINITION_H
 #define __ITERATOR_DEFINITION_H
 
 /*
-*********************************************************************************************************
-*                                            INCLUDE FILES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                            INCLUDE FILES
+ *********************************************************************************************************
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -26,19 +26,28 @@
 #include "allocator.h"
 
 /*
-*********************************************************************************************************
-*									            DEFINES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *									            DEFINES
+ *********************************************************************************************************
+ */
+
+/* Define			iterator control common prepare block.												*/
+#define ITERATOR_CONTROL_COMMON_POINTER_ASSERT(pointer,error_type,error_code)							\
+	do {																								\
+		assert(NULL != (pointer));									/* Assert first,DEBUG will work */	\
+		if (NULL == (pointer)) {									/* If second,RELEASE will work	*/	\
+			return (error_type)(error_code);															\
+		}																								\
+	} while (false)
 
 #pragma warning( disable : 4996)
 #pragma warning( disable : 26812)
 
 /*
-*********************************************************************************************************
-*									           DATA TYPES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *									           DATA TYPES
+ *********************************************************************************************************
+ */
 
 /**
  * @brief This type is the iterator type enum.
@@ -56,19 +65,23 @@ struct iterator_object_control_s {
     struct {
         /* @brief This function will returns a reference to the element
                     at specified location position, with bounds checking.								*/
-        void *(*at)(void *container, size_t position);
+        void *(*at)(void *object, size_t position);
+
+        /* @brief This function will returns pointer to the underlying array
+                  serving as element storage.                                                           */
+        void *(*data)(void *object);
     }element_access;
 
     struct {
         /* @brief This function will check if the underlying object has no elements.					*/
-        bool(*empty)(void *container);
+        bool(*empty)(void *object);
 
         /* @brief This function will returns the number of elements in the object.					    */
-        size_t(*size)(void *container);
+        size_t(*size)(void *object);
 
         /* @brief This function will returns the maximum number of elements
                     the object is able to hold due to system or library implementation limitations.	    */
-        size_t(*max_size)(void *container);
+        size_t(*max_size)(void *object);
     }capacity;
 };
 
@@ -105,21 +118,32 @@ struct iterator_allocator_unit_s {
 };
 
 /*
-*********************************************************************************************************
-*								            FUNCTION PROTOTYPES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *								            FUNCTION PROTOTYPES
+ *********************************************************************************************************
+ */
+
+/**
+ * @brief This function will check if the at iterator operations can perform.
+ *
+ * @param
+ *
+ * @return
+ */
+
+bool iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
+                                                   size_t index);
 
 /*
-*********************************************************************************************************
-*                                       EXTERN GLOBAL VARIABLES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                       EXTERN GLOBAL VARIABLES
+ *********************************************************************************************************
+ */
 
 /*
-*********************************************************************************************************
-*                                             MODULE END
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                             MODULE END
+ *********************************************************************************************************
+ */
 
 #endif // !__ITERATOR_DEFINITION_H
