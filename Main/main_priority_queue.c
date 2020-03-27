@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#if MAIN_PRIORITY_QUEUE_EN
+
 #define MAIN_PRIORITY_QUEUE_CFG_ADAPT_VECTOR_EN				0u
 
 #define MAIN_PRIORITY_QUEUE_CFG_ADAPT_FORWARD_LIST_EN		1u
@@ -67,7 +69,8 @@ void main_priority_queue(void)
 
 		if (cnt % 2) {
 			string_moudle[0] -= 1;
-		} else {
+		}
+		else {
 			string_moudle[0] = 'a' + 3 * (char)cnt;
 		}
 	}
@@ -94,3 +97,5 @@ void main_priority_queue(void)
 
 	return;
 }
+
+#endif // MAIN_PRIORITY_QUEUE_EN

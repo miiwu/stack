@@ -1,6 +1,6 @@
-#include "vector.h"
-
 #include "main_cfg.h"
+
+#if MAIN_VECTOR_EN
 
 void main_vector(void)
 {
@@ -79,3 +79,5 @@ void main_vector(void)
 
 	return;
 }
+
+#endif // MAIN_VECTOR_EN

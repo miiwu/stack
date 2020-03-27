@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#if MAIN_ALLOCATOR_EN
+
 #define MAIN_ALLOCATOR_CFG_ALLOCATOR_COMMON_EN	1u
 
 #if (MAIN_ALLOCATOR_CFG_ALLOCATOR_COMMON_EN)
@@ -44,3 +46,5 @@ void main_allocator(void)
 
 	return;
 }
+
+#endif // MAIN_ALLOCATOR_EN

@@ -1,6 +1,6 @@
-#include "iterator.h"
-
 #include "main_cfg.h"
+
+#if MAIN_ITERATOR_EN
 
 void *string_element_access_at(char string[],
 							   size_t position);
@@ -161,3 +161,5 @@ size_t string_capacity_size(char string[])
 {
 	return strlen(string);
 }
+
+#endif // MAIN_ITERATOR_EN

@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#if MAIN_DEBUG_COMPONENT_EN
+
 #define MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_EN			0u
 #define MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_LINK_EN		1u
 
@@ -67,11 +69,11 @@ void main_debug_component(void)
 	debug_capture_stack_back_trace_link_link(link, 0);
 
 	printf("\r\ndebug component.stack back trace link.get trace ptr start \r\n");
-	STACK_BACK_TRACE_TYPEDEF_PPTR stack_back_trace_tmp = malloc(sizeof(void*));
+	STACK_BACK_TRACE_TYPEDEF_PPTR stack_back_trace_tmp = malloc(sizeof(void *));
 	if (NULL == stack_back_trace_tmp) {
 		return;
 	}
-	debug_capture_stack_back_trace_link_get_trace_ptr(link, stack_back_trace_tmp); 
+	debug_capture_stack_back_trace_link_get_trace_ptr(link, stack_back_trace_tmp);
 	debug_capture_stack_back_trace_convert_to_string(*(stack_back_trace_tmp + 0));
 	debug_capture_stack_back_trace_convert_to_string(*(stack_back_trace_tmp + 1));
 
@@ -84,3 +86,5 @@ void main_debug_component(void)
 
 	return;
 }
+
+#endif // MAIN_DEBUG_COMPONENT_EN

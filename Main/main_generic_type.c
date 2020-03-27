@@ -1,9 +1,12 @@
 #include "main_cfg.h"
 
+#if MAIN_GENERIC_TYPE_EN
+
 errno_t main_generic_type_demo_assign(void *gnc, void *src);
 errno_t main_generic_type_demo_free(void *gnc);
 
-struct generic_type_s {
+struct generic_type_s
+{
 	char symbol;
 
 	char *string;
@@ -45,14 +48,14 @@ void main_generic_type(void)
 
 	printf("\r\nstack .top start\r\n");
 	printf("top : \"%s\" \r\n",
-		((struct generic_type_s *)stack_ctrl.element_access.top(stack))->string);
+		   ((struct generic_type_s *)stack_ctrl.element_access.top(stack))->string);
 
 	printf("\r\nstack_attach.pop start\r\n");
 	stack_ctrl.modifiers.pop(stack);
 
 	printf("\r\nstack .top start\r\n");
 	printf("top : \"%s\" \r\n",
-		((struct generic_type_s *)stack_ctrl.element_access.top(stack))->string);
+		   ((struct generic_type_s *)stack_ctrl.element_access.top(stack))->string);
 
 	printf("\r\nstack_attach.destroy start\r\n");
 	stack_ctrl.configuration.destroy(&stack);
@@ -106,3 +109,5 @@ errno_t main_generic_type_demo_free(void *gnc)
 
 	return 0;
 }
+
+#endif // MAIN_GENERIC_TYPE_EN

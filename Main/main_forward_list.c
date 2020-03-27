@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#if MAIN_FORWARD_LIST_EN
+
 bool main_forward_list_remove_if_rule(void *data)
 {
 	if (*((char *)data) >= 'w') {
@@ -111,3 +113,5 @@ void main_forward_list(void)
 
 	return;
 }
+
+#endif // MAIN_FORWARD_LIST_EN

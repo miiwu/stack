@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#if MAIN_LIST_EN
+
 bool main_list_remove_if_rule(void *data)
 {
 	if (*((char *)data) > 'z') {
@@ -111,3 +113,5 @@ void main_list(void)
 
 	return;
 }
+
+#endif // MAIN_LIST_EN

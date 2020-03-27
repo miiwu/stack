@@ -3,9 +3,13 @@
 
 #include "debug_component.h"
 
-#include "container.h"
+#include "algorithm.h"
 
 #include "allocator.h"
+
+#include "iterator.h"
+
+#include "container.h"
 
 #define MAIN_DEBUG_COMPONENT_EN		0u
 

@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#if MAIN_QUEUE_EN
+
 #define MAIN_QUEUE_CFG_ADAPT_VECTOR_EN				0u
 
 #define MAIN_QUEUE_CFG_ADAPT_FORWARD_LIST_EN		1u
@@ -83,3 +85,5 @@ void main_queue(void)
 
 	return;
 }
+
+#endif // MAIN_QUEUE_EN

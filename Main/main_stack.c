@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#if MAIN_STACK_EN
+
 #define MAIN_STACK_CFG_ADAPT_ARRAY_EN				0
 
 #define MAIN_STACK_CFG_ADAPT_VECTOR_EN				0
@@ -121,3 +123,5 @@ void main_stack(void)
 
 	return;
 }
+
+#endif // MAIN_STACK_EN

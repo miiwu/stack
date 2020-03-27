@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#if MAIN_ARRAY_EN
+
 void main_array(void)
 {
 	array_stp
@@ -77,3 +79,5 @@ void main_array(void)
 
 	return;
 }
+
+#endif // MAIN_ARRAY_EN

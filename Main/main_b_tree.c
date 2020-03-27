@@ -1,11 +1,14 @@
 #include "main_cfg.h"
 
+#if MAIN_B_TREE_EN
+
 void main_b_tree(void)
 {
 	tree_family_stp
 		tree_family = NULL;
 
-	struct b_tree_data {
+	struct b_tree_data
+	{
 		size_t key;
 		char string[10];
 	} data = { '1',"B-Tree" };
@@ -65,3 +68,5 @@ void main_b_tree(void)
 
 	return;
 }
+
+#endif // MAIN_B_TREE_EN

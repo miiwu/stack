@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#if MAIN_BINARY_SEARCH_TREE_EN
+
 void main_binary_search_tree(void)
 {
 	tree_family_stp
@@ -62,3 +64,5 @@ void main_binary_search_tree(void)
 
 	return;
 }
+
+#endif // MAIN_BINARY_SEARCH_TREE_EN

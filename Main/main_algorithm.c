@@ -1,6 +1,6 @@
-#include "algorithm.h"
-
 #include "main_cfg.h"
+
+#if MAIN_ALGORITHM_EN
 
 void main_algorithm(void)
 {
@@ -74,3 +74,5 @@ void main_algorithm(void)
 
 	return;
 }
+
+#endif // MAIN_ALGORITHM_EN

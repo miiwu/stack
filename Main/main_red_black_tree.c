@@ -1,5 +1,7 @@
 #include "main_cfg.h"
 
+#if MAIN_RED_BLACK_TREE_EN
+
 void main_red_black_tree(void)
 {
 	tree_family_stp tree_family = NULL;
@@ -75,3 +77,5 @@ void main_red_black_tree(void)
 
 	return;
 }
+
+#endif // MAIN_RED_BLACK_TREE_EN
