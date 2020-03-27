@@ -71,7 +71,7 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
     ITERATOR_CONTROL_ASSERT_POINTER(object_unit.object_ptr);
     ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
-    ITERATOR_CONTROL_ASSERT_VARIABLE(addon_size, < , int, 0);
+    ITERATOR_CONTROL_ASSERT_VARIABLE(addon_size, >= , int, 0);
 
 	struct iterator_allocator_unit_s
 		allocator_unit = { 0 };

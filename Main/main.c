@@ -94,11 +94,11 @@ void main(void)
 
 	#endif
 
-	#ifdef _NDEDUG
+	#ifdef NDEDUG
 
 	system("pause");
 
-	#endif // (_NDEDUG)
+	#endif // (NDEDUG)
 
 	return;
 }
