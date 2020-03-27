@@ -44,6 +44,7 @@
     <ClCompile Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.c" />
     <ClCompile Include="Iterator\Input Iterator\input_iterator.c" />
     <ClCompile Include="Iterator\Iterator Definition\iterator_def.c" />
+    <ClCompile Include="Iterator\Output Iterator\output_iterator.c" />
     <ClCompile Include="Iterator\Random Access Iterator\random_access_iterator.c" />
     <ClCompile Include="Main\main.c" />
     <ClCompile Include="Main\main_algorithm.c" />
@@ -103,6 +104,7 @@
     <ClInclude Include="Iterator\Iterator Definition\iterator_def.h" />
     <ClInclude Include="Iterator\Iterator Definition\iterator_pte_def.h" />
     <ClInclude Include="Iterator\iterator.h" />
+    <ClInclude Include="Iterator\Output Iterator\output_iterator.h" />
     <ClInclude Include="Iterator\Random Access Iterator\random_access_iterator.h" />
     <ClInclude Include="Main\main_cfg.h" />
   </ItemGroup>
@@ -159,21 +161,21 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
   </PropertyGroup>
-   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>

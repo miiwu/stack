@@ -7,8 +7,8 @@
  *********************************************************************************************************
  */
 
-#ifndef __RANDOM_ACCESS_ITERATOR_H
-#define __RANDOM_ACCESS_ITERATOR_H
+#ifndef __OUTPUT_ITERATOR_H
+#define __OUTPUT_ITERATOR_H
 
 /*
  *********************************************************************************************************
@@ -24,65 +24,63 @@
  *********************************************************************************************************
  */
 
-/*
- *********************************************************************************************************
- *									           DATA TYPES
- *********************************************************************************************************
- */
-
 /**
  * @brief This type is the iterator typedef.
  */
 
 typedef struct iterator_s
-*random_access_iterator_stp,
-**random_access_iterator_stpp;
+*output_iterator_stp,
+**output_iterator_stpp;
 
 /**
  * @brief This type is the iterator control structure.
  */
 
-struct random_access_iterator_control_s {
-	struct {
-		errno_t(*init)(random_access_iterator_stpp iterator,
+struct output_iterator_control_s
+{
+	struct
+	{
+		errno_t(*init)(output_iterator_stpp iterator,
 					   struct iterator_object_unit_s object_unit);
 
-		errno_t(*destroy)(random_access_iterator_stpp iterator);
+		errno_t(*destroy)(output_iterator_stpp iterator);
 	}configuration;
 
-	struct {
-		void *(*advance)(random_access_iterator_stp iterator,
+	struct
+	{
+		void *(*advance)(output_iterator_stp iterator,
 						 int step);
 
-		size_t(*distance)(random_access_iterator_stp iterator);
+		size_t(*distance)(output_iterator_stp iterator);
 
-		void *(*next)(random_access_iterator_stp iterator);
+		void *(*next)(output_iterator_stp iterator);
 
-		void *(*prev)(random_access_iterator_stp iterator);
+		void *(*prev)(output_iterator_stp iterator);
 
-		void *(*at)(random_access_iterator_stp iterator,
+		void *(*at)(output_iterator_stp iterator,
 					size_t index);
 
-		errno_t(*modify)(random_access_iterator_stp iterator,
-						 void *source);
+        errno_t(*modify)(output_iterator_stp iterator,
+                         void *source);
 	}iterator_operations;
 
-	struct {
-		void *(*begin)(random_access_iterator_stp iterator);
+	struct
+	{
+		void *(*begin)(output_iterator_stp iterator);
 
-		void *(*end)(random_access_iterator_stp iterator);
+		void *(*end)(output_iterator_stp iterator);
 
-		size_t(*size)(random_access_iterator_stp iterator);
+		size_t(*size)(output_iterator_stp iterator);
 
-		bool (*empty)(random_access_iterator_stp iterator);
+		bool (*empty)(output_iterator_stp iterator);
 
-		void *(*data)(random_access_iterator_stp iterator);
+		void *(*data)(output_iterator_stp iterator);
 	}range_access;
 };
 
 /*
  *********************************************************************************************************
- *								            FUNCTION PROTOTYPES
+ *									           DATA TYPES
  *********************************************************************************************************
  */
 
@@ -94,8 +92,8 @@ struct random_access_iterator_control_s {
  * @return
  */
 
-errno_t random_access_iterator_control_configuration_init(random_access_iterator_stpp iterator,
-                                                          struct iterator_object_unit_s object_unit);
+errno_t output_iterator_control_configuration_init(output_iterator_stpp iterator,
+												   struct iterator_object_unit_s object_unit);
 
 /*
  *********************************************************************************************************
@@ -107,7 +105,7 @@ errno_t random_access_iterator_control_configuration_init(random_access_iterator
  * @brief This type is the iterator control structure.
  */
 
-extern struct random_access_iterator_control_s random_access_iterator_control;
+extern struct output_iterator_control_s output_iterator_control;
 
 /*
  *********************************************************************************************************
@@ -115,4 +113,4 @@ extern struct random_access_iterator_control_s random_access_iterator_control;
  *********************************************************************************************************
  */
 
-#endif // !__RANDOM_ACCESS_ITERATOR_H
+#endif // !__OUTPUT_ITERATOR_H

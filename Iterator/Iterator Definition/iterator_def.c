@@ -69,9 +69,9 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 											size_t addon_size)
 {
 	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
-    ITERATOR_CONTROL_ASSERT_POINTER(object_unit.object_ptr);
-    ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
-    ITERATOR_CONTROL_ASSERT_VARIABLE(addon_size, >= , int, 0);
+	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.object_ptr);
+	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
+	ITERATOR_CONTROL_ASSERT_VARIABLE(addon_size, >= , int, 0);
 
 	struct iterator_allocator_unit_s
 		allocator_unit = { 0 };
@@ -112,7 +112,7 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 errno_t iterator_control_configuration_destroy(struct iterator_s **iterator)
 {
 	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
-    ITERATOR_CONTROL_ASSERT_POINTER((*iterator));
+	ITERATOR_CONTROL_ASSERT_POINTER((*iterator));
 
 	static struct iterator_allocator_unit_s allocator_unit = { 0 };
 
@@ -223,6 +223,31 @@ void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
  * @return
  */
 
+errno_t iterator_control_iterator_operations_modify(struct iterator_s *iterator,
+													void *source)
+{
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
+	ITERATOR_CONTROL_ASSERT_POINTER(source);
+
+	if (!iterator_control_iterator_operations_at_check(iterator,                            /* Check if the index or position is valid */
+													   iterator->info.position)) {
+		return 1;
+	}
+
+	return iterator->object_unit.control_ptr->modifiers
+		.modify(iterator->object_unit.object_ptr,
+				iterator->info.position,
+				source);
+}
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
 void *iterator_control_range_access_begin(struct iterator_s *iterator)
 {
 	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
@@ -247,7 +272,7 @@ void *iterator_control_range_access_end(struct iterator_s *iterator)
 	return iterator->object_unit.control_ptr->element_access
 		.at(iterator->object_unit.object_ptr,
 			iterator->object_unit.control_ptr->capacity
-			.max_size(iterator->object_unit.object_ptr));
+			.max_size(iterator->object_unit.object_ptr) - 1);
 }
 
 /**
@@ -318,7 +343,7 @@ iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
 	}
 
 	if ((int)iterator->object_unit.control_ptr->capacity
-		.max_size(iterator->object_unit.object_ptr) < (int)index                            /* Check if max_size() is less than index */
+		.max_size(iterator->object_unit.object_ptr) - 1 < (int)index                        /* Check if max_size() is less than index */
 		|| (int)0 > (int)index) {                                                           /* Check if 0 is greater than index */
 		return false;
 	}

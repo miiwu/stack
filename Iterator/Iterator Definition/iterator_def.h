@@ -61,8 +61,7 @@
  * @brief This type is the iterator type enum.
  */
 
-enum iterator_type
-{
+enum iterator_type {
 	ITORATER,
 };
 
@@ -70,12 +69,10 @@ enum iterator_type
  * @brief This type is the iterator object control structure.
  */
 
-struct iterator_object_control_s
-{
-	struct
-	{
+struct iterator_object_control_s {
+	struct {
 		/* @brief This function will returns a reference to the element
-			at specified location position, with bounds checking.								*/
+			at specified location position, with bounds checking.								        */
 		void *(*at)(void *object, size_t position);
 
 		/* @brief This function will returns pointer to the underlying array
@@ -83,8 +80,7 @@ struct iterator_object_control_s
 		void *(*data)(void *object);
 	}element_access;
 
-	struct
-	{
+	struct {
 		/* @brief This function will check if the underlying object has no elements.					*/
 		bool(*empty)(void *object);
 
@@ -95,14 +91,20 @@ struct iterator_object_control_s
 					the object is able to hold due to system or library implementation limitations.	    */
 		size_t(*max_size)(void *object);
 	}capacity;
+
+	struct {
+		/* @brief This function will modify the specific element of the underlying object.			    */
+        errno_t(*modify)(void *object,
+                         size_t index,
+                         void *source);
+	}modifiers;
 };
 
 /**
  * @brief This type is the iterator common information structure.
  */
 
-struct iterator_common_information_s
-{
+struct iterator_common_information_s {
 	size_t position;
 
 	bool featured;
@@ -112,8 +114,7 @@ struct iterator_common_information_s
  * @brief This type is the iterator object unit structure.
  */
 
-struct iterator_object_unit_s
-{
+struct iterator_object_unit_s {
 	/* @brief This variables will point to the object.						                            */
 	void *object_ptr;
 
@@ -125,8 +126,7 @@ struct iterator_object_unit_s
  * @brief This type is the iterator allocator unit structure.
  */
 
-struct iterator_allocator_unit_s
-{
+struct iterator_allocator_unit_s {
 	/* @brief This variables will point to the object.						                            */
 	void *allocator_ptr;
 
@@ -138,8 +138,7 @@ struct iterator_allocator_unit_s
  * @brief This type is the iterator feature package structure.
  */
 
-struct iterator_feature_package_s
-{
+struct iterator_feature_package_s {
 	/* @brief This variables will point to the object.						                            */
 	bool (*advance)(int step);
 };
@@ -213,6 +212,17 @@ void *iterator_control_iterator_operations_prev(struct iterator_s *iterator);
 
 void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
 											  size_t index);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+errno_t iterator_control_iterator_operations_modify(struct iterator_s *iterator,
+													void *source);
 
 /**
  * @brief This function will.

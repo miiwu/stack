@@ -103,6 +103,12 @@
     <Filter Include="源文件\debug component\debug stack back trace">
       <UniqueIdentifier>{b699c320-f688-4b33-a542-e0fd5832c6b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\iterator\output iterator">
+      <UniqueIdentifier>{abe0e9eb-9053-4d4e-b0c9-fa4fbb3851a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\output iterator">
+      <UniqueIdentifier>{9953906e-cf9f-4af2-978d-0b07c870beca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -234,6 +240,9 @@
     <ClCompile Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.c">
       <Filter>源文件\debug component\debug stack back trace</Filter>
     </ClCompile>
+    <ClCompile Include="Iterator\Output Iterator\output_iterator.c">
+      <Filter>源文件\iterator\output iterator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\container.h">
@@ -358,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="Debug Component\Debug Component Definition\debug_component_def.h">
       <Filter>头文件\debug component\debug component definition</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator\Output Iterator\output_iterator.h">
+      <Filter>头文件\iterator\output iterator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
