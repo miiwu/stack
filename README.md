@@ -98,31 +98,31 @@ This package contains some simple data structures together.
    */
   
   struct stack_control_s {
-  	struct {
-  		/* @brief This function will initialize the stack struct and the specified container. */
-  		errno_t (*init)(...);
-  
-  		/* @brief This function will destroy the stack struct.                                */
-  		errno_t (*destroy)(...);
+      struct {
+          /* @brief This function will initialize the stack struct and the specified container. */
+          errno_t (*init)(...);
+          
+          /* @brief This function will destroy the stack struct.                                */
+          errno_t (*destroy)(...);
           
           ...
-  	}configuration;
-  
-  	struct {
-  		/* @brief This function will return reference to the top element in the stack.        */
-  		void *(*top)(...);
+      }configuration;
+      
+      struct {
+          /* @brief This function will return reference to the top element in the stack.        */
+          void *(*top)(...);
           
           ...
-  	}element_access;
-  
-  	...
+      }element_access;
+      
+      ...
   };
   
   errno_t any_function(void *arg_list)
   {
       assert(arg_list);
       
-  	/* Both two methods call the init function of the stack are correct.                      */
+      /* Both two methods call the init function of the stack are correct.                      */
       stack_ctrl.configuration.init(...);
       stack_control_configration_init(...);
   }
