@@ -33,8 +33,23 @@
  *********************************************************************************************************
  */
 
+/* Disable			compiler warning.										                            */
 #pragma warning( disable : 4996)
 #pragma warning( disable : 26812)
+
+/* Define			iterator control assert variable.										            */
+#define ITERATOR_CONTROL_ASSERT_VARIABLE(variable, comp, value_type, value)                             \
+    DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value,                                    \
+        printf("Assert Failed: \r\n\tfunc:\"%s\" assert:\"%s %s %s\"\r\n\tfile:\"%s\" line:%ld\r\n",    \
+               __FUNCTION__,#variable,#comp,#value,                                                     \
+               __FILE__,(size_t)__LINE__))
+
+/* Define			iterator control assert pointer.										            */
+#define ITERATOR_CONTROL_ASSERT_POINTER(pointer)                                                        \
+    DEBUG_ASSERT_CONTROL_POINTER(pointer,                                                               \
+        printf("Assert Failed: \r\n\tfunc:\"%s\" assert:\"%s\"\r\n\tfile:\"%s\" line:%ld\r\n",          \
+               __FUNCTION__,#pointer,                                                                   \
+               __FILE__,(size_t)__LINE__))
 
 /*
  *********************************************************************************************************
@@ -46,7 +61,8 @@
  * @brief This type is the iterator type enum.
  */
 
-enum iterator_type {
+enum iterator_type
+{
 	ITORATER,
 };
 
@@ -54,71 +70,78 @@ enum iterator_type {
  * @brief This type is the iterator object control structure.
  */
 
-struct iterator_object_control_s {
-    struct {
-        /* @brief This function will returns a reference to the element
-                    at specified location position, with bounds checking.								*/
-        void *(*at)(void *object, size_t position);
+struct iterator_object_control_s
+{
+	struct
+	{
+		/* @brief This function will returns a reference to the element
+			at specified location position, with bounds checking.								*/
+		void *(*at)(void *object, size_t position);
 
-        /* @brief This function will returns pointer to the underlying array
-                  serving as element storage.                                                           */
-        void *(*data)(void *object);
-    }element_access;
+		/* @brief This function will returns pointer to the underlying array
+				  serving as element storage.                                                           */
+		void *(*data)(void *object);
+	}element_access;
 
-    struct {
-        /* @brief This function will check if the underlying object has no elements.					*/
-        bool(*empty)(void *object);
+	struct
+	{
+		/* @brief This function will check if the underlying object has no elements.					*/
+		bool(*empty)(void *object);
 
-        /* @brief This function will returns the number of elements in the object.					    */
-        size_t(*size)(void *object);
+		/* @brief This function will returns the number of elements in the object.					    */
+		size_t(*size)(void *object);
 
-        /* @brief This function will returns the maximum number of elements
-                    the object is able to hold due to system or library implementation limitations.	    */
-        size_t(*max_size)(void *object);
-    }capacity;
+		/* @brief This function will returns the maximum number of elements
+					the object is able to hold due to system or library implementation limitations.	    */
+		size_t(*max_size)(void *object);
+	}capacity;
 };
 
 /**
  * @brief This type is the iterator common information structure.
  */
 
-struct iterator_common_information_s {
+struct iterator_common_information_s
+{
 	size_t position;
 
-    bool featured;
+	bool featured;
 };
 
 /**
  * @brief This type is the iterator object unit structure.
  */
 
-struct iterator_object_unit_s {
+struct iterator_object_unit_s
+{
 	/* @brief This variables will point to the object.						                            */
-    void *object_ptr;
+	void *object_ptr;
 
 	/* @brief This variables will point to the control structure of the object_ptr.				        */
-    struct iterator_object_control_s *control_ptr;
+	struct iterator_object_control_s *control_ptr;
 };
 
 /**
  * @brief This type is the iterator allocator unit structure.
  */
 
-struct iterator_allocator_unit_s {
-    /* @brief This variables will point to the object.						                            */
-    void *allocator_ptr;
+struct iterator_allocator_unit_s
+{
+	/* @brief This variables will point to the object.						                            */
+	void *allocator_ptr;
 
-    /* @brief This variables will point to the control structure of the object_ptr.				        */
-    struct allocator_control_s *control_ptr;
+	/* @brief This variables will point to the control structure of the object_ptr.				        */
+	struct allocator_control_s *control_ptr;
 };
 
 /**
  * @brief This type is the iterator feature package structure.
  */
 
-struct iterator_feature_package_s {
-    /* @brief This variables will point to the object.						                            */
-    bool (*advance)(int step);
+struct iterator_feature_package_s
+{
+	/* @brief This variables will point to the object.						                            */
+	bool (*advance)(int step);
 };
 
 /*
@@ -136,8 +159,8 @@ struct iterator_feature_package_s {
  */
 
 errno_t iterator_control_configuration_init(struct iterator_s **iterator,
-                                            struct iterator_object_unit_s object_unit,
-                                            size_t addon_size);
+											struct iterator_object_unit_s object_unit,
+											size_t addon_size);
 
 /**
  * @brief This function will destroy the iterator.
@@ -158,7 +181,7 @@ errno_t iterator_control_configuration_destroy(struct iterator_s **iterator);
  */
 
 void *iterator_control_iterator_operations_advance(struct iterator_s *iterator,
-                                                   int step);
+												   int step);
 
 /**
  * @brief This function will.
@@ -189,7 +212,7 @@ void *iterator_control_iterator_operations_prev(struct iterator_s *iterator);
  */
 
 void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
-                                              size_t index);
+											  size_t index);
 
 /**
  * @brief This function will.
@@ -250,7 +273,7 @@ void *iterator_control_range_access_data(struct iterator_s *iterator);
  */
 
 bool iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
-                                                   size_t index);
+												   size_t index);
 
 /*
  *********************************************************************************************************

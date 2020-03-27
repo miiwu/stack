@@ -68,10 +68,10 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 											struct iterator_object_unit_s object_unit,
 											size_t addon_size)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, errno_t, 1);
-	DEBUG_ASSERT_CONTROL_POINTER(object_unit.object_ptr, errno_t, 2);
-	DEBUG_ASSERT_CONTROL_POINTER(object_unit.control_ptr, errno_t, 3);
-    DEBUG_ASSERT_CONTROL_VARIABLE(addon_size, >= , int, 0, errno_t, 4);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
+    ITERATOR_CONTROL_ASSERT_POINTER(object_unit.object_ptr);
+    ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
+    ITERATOR_CONTROL_ASSERT_VARIABLE(addon_size, < , int, 0);
 
 	struct iterator_allocator_unit_s
 		allocator_unit = { 0 };
@@ -111,8 +111,8 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 
 errno_t iterator_control_configuration_destroy(struct iterator_s **iterator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, errno_t, 1);
-	DEBUG_ASSERT_CONTROL_POINTER((*iterator), errno_t, 1);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
+    ITERATOR_CONTROL_ASSERT_POINTER((*iterator));
 
 	static struct iterator_allocator_unit_s allocator_unit = { 0 };
 
@@ -145,7 +145,7 @@ errno_t iterator_control_configuration_destroy(struct iterator_s **iterator)
 void *iterator_control_iterator_operations_advance(struct iterator_s *iterator,
 												   int step)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, void *, NULL);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 
 	if (iterator->info.featured) {                                                          /* Check if is featured */
 		static struct iterator_feature_package_s *feature_package;
@@ -170,7 +170,7 @@ void *iterator_control_iterator_operations_advance(struct iterator_s *iterator,
 
 void *iterator_control_iterator_operations_next(struct iterator_s *iterator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, void *, NULL);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 
 	return iterator_control_iterator_operations_at(iterator,
 												   (size_t)((int)iterator->info.position + 1));
@@ -186,7 +186,7 @@ void *iterator_control_iterator_operations_next(struct iterator_s *iterator)
 
 void *iterator_control_iterator_operations_prev(struct iterator_s *iterator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, void *, NULL);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 
 	return iterator_control_iterator_operations_at(iterator,
 												   (size_t)((int)iterator->info.position - 1));
@@ -203,7 +203,7 @@ void *iterator_control_iterator_operations_prev(struct iterator_s *iterator)
 void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
 											  size_t index)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, void *, NULL);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 
 	if (!iterator_control_iterator_operations_at_check(iterator,
 													   index)) {
@@ -225,7 +225,7 @@ void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
 
 void *iterator_control_range_access_begin(struct iterator_s *iterator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, void *, NULL);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 
 	return iterator->object_unit.control_ptr->element_access
 		.at(iterator->object_unit.object_ptr,
@@ -242,7 +242,7 @@ void *iterator_control_range_access_begin(struct iterator_s *iterator)
 
 void *iterator_control_range_access_end(struct iterator_s *iterator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, void *, NULL);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 
 	return iterator->object_unit.control_ptr->element_access
 		.at(iterator->object_unit.object_ptr,
@@ -260,7 +260,7 @@ void *iterator_control_range_access_end(struct iterator_s *iterator)
 
 size_t iterator_control_range_access_size(struct iterator_s *iterator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, size_t, 0);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 
 	return iterator->object_unit.control_ptr->capacity
 		.size(iterator->object_unit.object_ptr);
@@ -276,7 +276,7 @@ size_t iterator_control_range_access_size(struct iterator_s *iterator)
 
 bool iterator_control_range_access_empty(struct iterator_s *iterator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, bool, false);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 
 	return iterator->object_unit.control_ptr->capacity
 		.empty(iterator->object_unit.object_ptr);
@@ -292,7 +292,7 @@ bool iterator_control_range_access_empty(struct iterator_s *iterator)
 
 void *iterator_control_range_access_data(struct iterator_s *iterator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, void *, NULL);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 
 	return iterator->object_unit.control_ptr->element_access
 		.data(iterator->object_unit.object_ptr);
@@ -310,7 +310,7 @@ extern inline bool
 iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
 											  size_t index)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator, bool, false);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 
 	if (iterator->object_unit.control_ptr->capacity
 		.empty(iterator->object_unit.object_ptr)) {                                         /* Check if empty() */

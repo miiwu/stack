@@ -94,7 +94,7 @@ void main(void)
 
 	#endif
 
-	#ifndef _DEDUG
+	#ifdef _NDEDUG
 
 	system("pause");
 

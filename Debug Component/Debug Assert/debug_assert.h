@@ -22,23 +22,20 @@
  *********************************************************************************************************
  */
 
-/* Define			debug assert control pointer.										                */
-#define DEBUG_ASSERT_CONTROL_POINTER(pointer, error_type, error_code)							        \
-	do {																								\
-		assert(NULL != (pointer));									/* Assert first,DEBUG will work */	\
-		if (NULL == (pointer)) {									/* If second,RELEASE will work	*/	\
-			return (error_type)(error_code);															\
-		}																								\
-	} while (false)
-
 /* Define			debug assert control variable.										                */
-#define DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value, error_type, error_code)        \
+#define DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value, print)                         \
 	do {																								\
 		assert((((value_type)(variable)) comp ((value_type)(value))));	                                \
-		if (!(((value_type)(variable)) comp ((value_type)(value)))) {	                                \
-			return (error_type)(error_code);															\
-		}																								\
-	} while (false)
+        if (!(((value_type)(variable)) comp ((value_type)(value)))) {                                   \
+            print;                                                                                      \
+            while (1) {                                                                                 \
+            }                                                                                           \
+        }                                                                                               \
+	} while (0)
+
+/* Define			debug assert control pointer.										                */
+#define DEBUG_ASSERT_CONTROL_POINTER(pointer, print)							                        \
+	DEBUG_ASSERT_CONTROL_VARIABLE(pointer, !=, void*, NULL, print)
 
 /*
  *********************************************************************************************************
