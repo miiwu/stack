@@ -8,8 +8,6 @@ This package contains some simple data structures together.
 
 ![Constructing](<https://github.com/Miao-Mico/stack/blob/master/constructing.png>)
 
-I am confused that if it is necessary for unified structure? 
-
 ## Feature
 
 - **Generic Type Element**
@@ -19,12 +17,11 @@ I am confused that if it is necessary for unified structure?
   This is a demo show my thought, it may have some problem and may not be very good, but we will make it look greater, won't we?
 
   ```c
-  
-  /* Generic type element Assign and Free function prototypes	typedef			*/
+  /* Generic type element Assign and Free function prototypes	typedef.        */
   typedef errno_t(*genric_type_element_assign_t)(void *gnc, void *src);
   typedef errno_t(*genric_type_element_free_t)(void *gnc);
   
-  /* Generic type element demo												*/
+  /* Generic type element demo.                                               */
   struct generic_type_demo_s {
   	char symbol;
   
@@ -35,7 +32,7 @@ I am confused that if it is necessary for unified structure?
   
   /* Generic type element Assign function,
   	function may perform like copy the pointer src to the pointer gnc,
-  	it may allocate memory space for the pointer in the generic structure	*/
+  	it may allocate memory space for the pointer in the generic structure   */
   errno_t generic_type_element_assign(void *gnc, void *src)
   {
   	assert(gnc);
@@ -45,25 +42,25 @@ I am confused that if it is necessary for unified structure?
   		because it may use the memcpy(), for safety,
   		Or you need to allocate the memory for the type in advance,
   		then Store the address of the memory to the container,
-  		when this element is useless, deallocate it yourself.				*/
+  		when this element is useless, deallocate it yourself.               */
   
   	struct generic_type_demo_s
   		*generic_type_gnc = gnc,
   		*generic_type_src = src;
   
   	/* This are pointer,i want to store many "*tack",
-  		so malloc it as count * sizeof("stack")								*/
+  		so malloc it as count * sizeof("stack").                            */
   	if (NULL == (generic_type_gnc->string = calloc(1, sizeof("stack")))) {
   		return -1;
   	}
   
-  	/* Memcpy the content of the pointer point to							*/
+  	/* Memcpy the content of the pointer point to.                          */
   	if (NULL == memcpy(generic_type_gnc->string, generic_type_src->string,
   					   sizeof("stack"))) {
   		return 1;
   	}
   
-  	/* Copy the value of src to the gnc										*/
+  	/* Copy the value of src to the gnc.                                    */
   	generic_type_gnc->symbol = generic_type_src->symbol;
   	generic_type_gnc->number = generic_type_src->number;
   
@@ -71,12 +68,12 @@ I am confused that if it is necessary for unified structure?
   }
   
   /* Generic type element Free function,
-  	function may perform like free the memory space the assign() allocated	*/
+  	function may perform like free the memory space the assign() allocated. */
   errno_t generic_type_element_free(void *gnc)
   {
   	assert(gnc);
   
-  	/* Free the memory space allocated at the assign()						*/
+  	/* Free the memory space allocated at the assign().                     */
   	free(((struct generic_type_demo_s *)gnc)->string);
   
   	return 0;
@@ -96,24 +93,23 @@ I am confused that if it is necessary for unified structure?
   Here is the template referenced From stack.h:
 
   ```c
-  
   /**
    * @brief This type will contain all the stack control functions.
    */
   
   struct stack_control_s {
   	struct {
-  		/* @brief This function will initialize the stack struct and the specified container.	*/
+  		/* @brief This function will initialize the stack struct and the specified container. */
   		errno_t (*init)(...);
   
-  		/* @brief This function will destroy the stack struct.									*/
+  		/* @brief This function will destroy the stack struct.                                */
   		errno_t (*destroy)(...);
           
           ...
   	}configuration;
   
   	struct {
-  		/* @brief This function will return reference to the top element in the stack.			*/
+  		/* @brief This function will return reference to the top element in the stack.        */
   		void *(*top)(...);
           
           ...
@@ -126,13 +122,12 @@ I am confused that if it is necessary for unified structure?
   {
       assert(arg_list);
       
-  	/* Both two methods call the init function of the stack are correct							*/
+  	/* Both two methods call the init function of the stack are correct.                      */
       stack_ctrl.configuration.init(...);
       stack_control_configration_init(...);
   }
-  
   ```
-
+  
   
 
 - **Divisible-To-Independent-Module**
@@ -207,7 +202,20 @@ I am confused that if it is necessary for unified structure?
 
   - [ ] ...
 
+- Iterator
+
+  - [x] Input iterator
+- [ ] Forward iterator
+  - [ ] Bidirectional iterator
+- [x] Random access iterator
+  - [ ] Output iterator
+  - [x] _modify
+  
 - Debug Component
+
+  - Assert
+
+    A try on function entry check definition file.
 
   - Stack back trace
 
@@ -216,9 +224,9 @@ I am confused that if it is necessary for unified structure?
     It can get much information from the stack trace, of course, it depends on `the WIN32 Api`, you can watch more from the MS's doc, [click here](https://docs.microsoft.com/en-us/windows/win32/debug/capturestackbacktrace).
 
     Now, it only support the windows platform.
-
+  
     The API is `CaptureStackBackTrace()`;
-
+  
     ```c
     #include <DbgHelp.h>
     
