@@ -98,6 +98,7 @@ errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
 	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
 
 	if (iterator_control_configuration_init(iterator,
+											INPUT_ITORATER,
 											object_unit,
 											sizeof(struct iterator_feature_package_s))) {
 		return 4;
@@ -105,7 +106,7 @@ errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
 
 	static struct iterator_feature_package_s *feature_package;
 
-    feature_package = (struct iterator_feature_package_s *)(*iterator)->addon;
+	feature_package = (struct iterator_feature_package_s *)(*iterator)->addon;
 
 	feature_package->advance = input_iterator_control_feature_package_advance;
 

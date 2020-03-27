@@ -61,8 +61,13 @@
  * @brief This type is the iterator type enum.
  */
 
-enum iterator_type {
-	ITORATER,
+enum iterator_type_e {
+	INPUT_ITORATER = 1,
+	FORWARD_ITORATER,
+	BIDIRECTIONAL_ITORATER,
+	RANDOM_ACCESS_ITORATER,
+	OUTPUT_ITORATER,
+	CONTIGUOUS_ITERATOR,
 };
 
 /**
@@ -94,9 +99,9 @@ struct iterator_object_control_s {
 
 	struct {
 		/* @brief This function will modify the specific element of the underlying object.			    */
-        errno_t(*modify)(void *object,
-                         size_t index,
-                         void *source);
+		errno_t(*modify)(void *object,
+						 size_t index,
+						 void *source);
 	}modifiers;
 };
 
@@ -158,6 +163,7 @@ struct iterator_feature_package_s {
  */
 
 errno_t iterator_control_configuration_init(struct iterator_s **iterator,
+											enum iterator_type_e type,
 											struct iterator_object_unit_s object_unit,
 											size_t addon_size);
 

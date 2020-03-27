@@ -52,11 +52,11 @@ struct random_access_iterator_control_s random_access_iterator_control = {
 	.iterator_operations.at = iterator_control_iterator_operations_at,
 	.iterator_operations.modify = iterator_control_iterator_operations_modify,
 
-    .range_access.begin = iterator_control_range_access_begin,
-    .range_access.end = iterator_control_range_access_end,
-    .range_access.empty = iterator_control_range_access_empty,
-    .range_access.size = iterator_control_range_access_size,
-    .range_access.data = iterator_control_range_access_data,
+	.range_access.begin = iterator_control_range_access_begin,
+	.range_access.end = iterator_control_range_access_end,
+	.range_access.empty = iterator_control_range_access_empty,
+	.range_access.size = iterator_control_range_access_size,
+	.range_access.data = iterator_control_range_access_data,
 };
 
 /*
@@ -86,11 +86,14 @@ struct random_access_iterator_control_s random_access_iterator_control = {
  */
 
 errno_t random_access_iterator_control_configuration_init(random_access_iterator_stpp iterator,
-                                                          struct iterator_object_unit_s object_unit)
+														  struct iterator_object_unit_s object_unit)
 {
 	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.object_ptr);
 	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
 
-    return iterator_control_configuration_init(iterator, object_unit, 0);
+	return iterator_control_configuration_init(iterator,
+											   RANDOM_ACCESS_ITORATER,
+											   object_unit,
+											   0);
 }

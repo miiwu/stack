@@ -65,10 +65,12 @@
  */
 
 errno_t iterator_control_configuration_init(struct iterator_s **iterator,
+											enum iterator_type_e type,
 											struct iterator_object_unit_s object_unit,
 											size_t addon_size)
 {
 	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
+	ITERATOR_CONTROL_ASSERT_VARIABLE(type, > , int, 0);
 	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.object_ptr);
 	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
 	ITERATOR_CONTROL_ASSERT_VARIABLE(addon_size, >= , int, 0);
@@ -93,6 +95,7 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 		return 6;
 	}
 
+	(*iterator)->type_id = type;
 	(*iterator)->info.position = (size_t)-1;
 	(*iterator)->info.featured = (addon_size) ? true : false;
 	(*iterator)->allocator_unit = allocator_unit;

@@ -31,16 +31,16 @@
  */
 
 struct output_iterator_control_s output_iterator_control = {
-    .configuration.init = output_iterator_control_configuration_init,
-    .configuration.destroy = iterator_control_configuration_destroy,
+	.configuration.init = output_iterator_control_configuration_init,
+	.configuration.destroy = iterator_control_configuration_destroy,
 
-    .iterator_operations.advance = iterator_control_iterator_operations_advance,
-    .iterator_operations.next = iterator_control_iterator_operations_next,
-    .iterator_operations.modify = iterator_control_iterator_operations_modify,
+	.iterator_operations.advance = iterator_control_iterator_operations_advance,
+	.iterator_operations.next = iterator_control_iterator_operations_next,
+	.iterator_operations.modify = iterator_control_iterator_operations_modify,
 
-    .range_access.empty = iterator_control_range_access_empty,
-    .range_access.size = iterator_control_range_access_size,
-    .range_access.data = iterator_control_range_access_data,
+	.range_access.empty = iterator_control_range_access_empty,
+	.range_access.size = iterator_control_range_access_size,
+	.range_access.data = iterator_control_range_access_data,
 };
 
 /*
@@ -92,25 +92,26 @@ bool output_iterator_control_feature_package_advance(int step);
  */
 
 errno_t output_iterator_control_configuration_init(output_iterator_stpp iterator,
-                                                  struct iterator_object_unit_s object_unit)
+												   struct iterator_object_unit_s object_unit)
 {
-    ITERATOR_CONTROL_ASSERT_POINTER(iterator);
-    ITERATOR_CONTROL_ASSERT_POINTER(object_unit.object_ptr);
-    ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
+	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
+	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.object_ptr);
+	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
 
-    if (iterator_control_configuration_init(iterator,
-                                            object_unit,
-                                            sizeof(struct iterator_feature_package_s))) {
-        return 4;
-    }
+	if (iterator_control_configuration_init(iterator,
+											OUTPUT_ITORATER,
+											object_unit,
+											sizeof(struct iterator_feature_package_s))) {
+		return 4;
+	}
 
-    static struct iterator_feature_package_s *feature_package;
+	static struct iterator_feature_package_s *feature_package;
 
-    feature_package = (struct iterator_feature_package_s *)(*iterator)->addon;
+	feature_package = (struct iterator_feature_package_s *)(*iterator)->addon;
 
-    feature_package->advance = output_iterator_control_feature_package_advance;
+	feature_package->advance = output_iterator_control_feature_package_advance;
 
-    return 0;
+	return 0;
 }
 
 /**
@@ -123,9 +124,9 @@ errno_t output_iterator_control_configuration_init(output_iterator_stpp iterator
 
 static inline bool output_iterator_control_feature_package_advance(int step)
 {
-    if (0 > step) {
-        return false;
-    }
+	if (0 > step) {
+		return false;
+	}
 
-    return true;
+	return true;
 }
