@@ -109,6 +109,12 @@
     <Filter Include="头文件\iterator\output iterator">
       <UniqueIdentifier>{9953906e-cf9f-4af2-978d-0b07c870beca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\iterator\iterator adaptor definition">
+      <UniqueIdentifier>{08bf8482-ff59-4d59-b0d2-7911d6f384e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\iterator adaptor  definition">
+      <UniqueIdentifier>{b5175d21-6999-4caf-81d7-1dc1374277ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -243,6 +249,9 @@
     <ClCompile Include="Iterator\Output Iterator\output_iterator.c">
       <Filter>源文件\iterator\output iterator</Filter>
     </ClCompile>
+    <ClCompile Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_def.c">
+      <Filter>源文件\iterator\iterator adaptor  definition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Container\container.h">
@@ -370,6 +379,12 @@
     </ClInclude>
     <ClInclude Include="Iterator\Output Iterator\output_iterator.h">
       <Filter>头文件\iterator\output iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator\Iterator Adapter Definition\iterator_adaptor_def.h">
+      <Filter>头文件\iterator\iterator adaptor definition</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator\Iterator Adapter Definition\iterator_adaptor_pte_def.h">
+      <Filter>头文件\iterator\iterator adaptor definition</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
