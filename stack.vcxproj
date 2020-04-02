@@ -102,8 +102,8 @@
     <ClInclude Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.h" />
     <ClInclude Include="Debug Component\debug_component.h" />
     <ClInclude Include="Iterator\Input Iterator\input_iterator.h" />
-    <ClInclude Include="Iterator\Iterator Adapter Definition\iterator_adaptor_def.h" />
-    <ClInclude Include="Iterator\Iterator Adapter Definition\iterator_adaptor_pte_def.h" />
+    <ClInclude Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_def.h" />
+    <ClInclude Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_pte_def.h" />
     <ClInclude Include="Iterator\Iterator Definition\iterator_def.h" />
     <ClInclude Include="Iterator\Iterator Definition\iterator_pte_def.h" />
     <ClInclude Include="Iterator\iterator.h" />

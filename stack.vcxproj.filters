@@ -380,10 +380,10 @@
     <ClInclude Include="Iterator\Output Iterator\output_iterator.h">
       <Filter>头文件\iterator\output iterator</Filter>
     </ClInclude>
-    <ClInclude Include="Iterator\Iterator Adapter Definition\iterator_adaptor_def.h">
+    <ClInclude Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_def.h">
       <Filter>头文件\iterator\iterator adaptor definition</Filter>
     </ClInclude>
-    <ClInclude Include="Iterator\Iterator Adapter Definition\iterator_adaptor_pte_def.h">
+    <ClInclude Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_pte_def.h">
       <Filter>头文件\iterator\iterator adaptor definition</Filter>
     </ClInclude>
   </ItemGroup>
