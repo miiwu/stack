@@ -45,6 +45,26 @@
 *********************************************************************************************************
 */
 
+/**
+ * @brief This type is the sort algorithm category enum.
+ */
+
+enum sort_algorithm_category {
+    STABLE_SORT = 0x00,
+
+    UNSTABLE_SORT = 0x01,
+};
+
+/**
+ * @brief This type is the sort algorithm type enum.
+ */
+
+enum sort_algorithm_type {
+    BUBBLE_SORT = STABLE_SORT,
+
+    QUICK_SORT = UNSTABLE_SORT,
+};
+
 /*
 *********************************************************************************************************
 *								            FUNCTION PROTOTYPES
