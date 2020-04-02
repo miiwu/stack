@@ -108,11 +108,6 @@ void main_random_access_iterator(void)
 	printf("random_access_iterator.iterator_operations.at:\"%c\" \r\n"
 		   , (NULL == element) ? '?' : *element);
 
-	printf("\r\nrandom_access_iterator.iterator_operations.modify start\r\n");
-	element = (char *)random_access_iterator_control.iterator_operations.modify(random_access_iterator, "!");
-	printf("random_access_iterator.iterator_operations.modify:%d \r\n"
-		   , (size_t)element);
-
 	printf("\r\nrandom_access_iterator.iterator_operations.advance start\r\n");
 	element = random_access_iterator_control.iterator_operations.advance(random_access_iterator, -2);
 	printf("random_access_iterator.iterator_operations.advance:\"%c\" \r\n"

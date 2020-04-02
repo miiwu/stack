@@ -226,31 +226,6 @@ void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
  * @return
  */
 
-errno_t iterator_control_iterator_operations_modify(struct iterator_s *iterator,
-													void *source)
-{
-	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
-	ITERATOR_CONTROL_ASSERT_POINTER(source);
-
-	if (!iterator_control_iterator_operations_at_check(iterator,                            /* Check if the index or position is valid */
-													   iterator->info.position)) {
-		return 1;
-	}
-
-	return iterator->object_unit.control_ptr->modifiers
-		.modify(iterator->object_unit.object_ptr,
-				iterator->info.position,
-				source);
-}
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
 void *iterator_control_range_access_begin(struct iterator_s *iterator)
 {
 	ITERATOR_CONTROL_ASSERT_POINTER(iterator);

@@ -62,9 +62,6 @@ struct random_access_iterator_control_s {
 
 		void *(*at)(random_access_iterator_stp iterator,
 					size_t index);
-
-		errno_t(*modify)(random_access_iterator_stp iterator,
-						 void *source);
 	}iterator_operations;
 
 	struct {

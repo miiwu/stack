@@ -50,7 +50,6 @@ struct random_access_iterator_control_s random_access_iterator_control = {
 	.iterator_operations.next = iterator_control_iterator_operations_next,
 	.iterator_operations.prev = iterator_control_iterator_operations_prev,
 	.iterator_operations.at = iterator_control_iterator_operations_at,
-	.iterator_operations.modify = iterator_control_iterator_operations_modify,
 
 	.range_access.begin = iterator_control_range_access_begin,
 	.range_access.end = iterator_control_range_access_end,
