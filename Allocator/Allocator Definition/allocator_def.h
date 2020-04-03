@@ -99,25 +99,25 @@ struct memory_control_s {
 struct allocator_control_s {
 	struct {
 		/* @brief This function will initialize the allocator struct.									*/
-		errno_t(*init)(void **allocator,
+		errno_t(*init)(struct allocator_s **allocator,
 					   void (*lack_of_memory)(void));
 
 		  /* @brief This function will destroy the allocator struct.										*/
-		errno_t(*destroy)(void **allocator);
+		errno_t(*destroy)(struct allocator_s **allocator);
 
 		/* @brief This function will configure the exceptions of allocator struct.					    */
-		errno_t(*exception)(void *allocator,
+		errno_t(*exception)(struct allocator_s *allocator,
 							void (*lack_of_memory)(void));
 	}configuration;
 
 	/* @brief This function will allocates n * sizeof(Type) bytes of uninitialized storage by calling
 			  malloc(n * sizeof(Type)) or calloc(n,sizeof(Type)).										*/
-	void *(*allocate)(void *allocator,
+	void *(*allocate)(struct allocator_s *allocator,
 					  ALLOCATOR_GLOBAL_CFG_SIZE_TYPE count, ALLOCATOR_GLOBAL_CFG_SIZE_TYPE size);
 
 	/* @brief This function will deallocates the storage referenced by the pointer block,
 			  which must be a pointer obtained by an earlier call to allocate().						*/
-	errno_t(*deallocate)(void *allocator,
+	errno_t(*deallocate)(struct allocator_s *allocator,
 						 void *block, ALLOCATOR_GLOBAL_CFG_SIZE_TYPE count);
 };
 

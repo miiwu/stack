@@ -25,66 +25,10 @@
     <ClCompile Include="Algorithm\search_substring.c" />
     <ClCompile Include="Allocator\Allocator Definition\allocator_def.c" />
     <ClCompile Include="Allocator\Concept Allocator\concept_allocator.c" />
-    <ClCompile Include="Container\Container adaptors\container_adaptor_def.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\Container adaptors\priority_queue.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\Container adaptors\queue.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\Container adaptors\stack.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\container_def.c" />
-    <ClCompile Include="Container\Squence container\array.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\Squence container\array_family.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\Squence container\deque.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\Squence container\forward_list.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\Squence container\list.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\Squence container\list_family.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="Container\Squence container\vector.c" />
-    <ClCompile Include="Container\Tree\avl_tree.c" />
-    <ClCompile Include="Container\Tree\binary_search_tree.c" />
-    <ClCompile Include="Container\Tree\b_tree.c" />
-    <ClCompile Include="Container\Tree\red_black_tree.c" />
-    <ClCompile Include="Container\Tree\tree_family.c" />
     <ClCompile Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.c" />
-    <ClCompile Include="Iterator\Input Iterator\input_iterator.c" />
-    <ClCompile Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_def.c" />
-    <ClCompile Include="Iterator\Iterator Definition\iterator_def.c" />
-    <ClCompile Include="Iterator\Output Iterator\output_iterator.c" />
-    <ClCompile Include="Iterator\Random Access Iterator\random_access_iterator.c" />
     <ClCompile Include="Main\main.c" />
     <ClCompile Include="Main\main_algorithm.c" />
     <ClCompile Include="Main\main_allocator.c" />
-    <ClCompile Include="Main\main_array.c" />
-    <ClCompile Include="Main\main_binary_search_tree.c" />
-    <ClCompile Include="Main\main_b_tree.c" />
-    <ClCompile Include="Main\main_debug_component.c" />
-    <ClCompile Include="Main\main_deque.c" />
-    <ClCompile Include="Main\main_forward_list.c" />
-    <ClCompile Include="Main\main_generic_type.c" />
-    <ClCompile Include="Main\main_iterator.c" />
-    <ClCompile Include="Main\main_list.c" />
-    <ClCompile Include="Main\main_priority_queue.c" />
-    <ClCompile Include="Main\main_queue.c" />
-    <ClCompile Include="Main\main_red_black_tree.c" />
-    <ClCompile Include="Main\main_stack.c" />
-    <ClCompile Include="Main\main_vector.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithm\algorithm.h" />
@@ -98,39 +42,10 @@
     <ClInclude Include="Allocator\Allocator Definition\allocator_pte_def.h" />
     <ClInclude Include="Allocator\allocator.h" />
     <ClInclude Include="Allocator\Concept Allocator\concept_allocator.h" />
-    <ClInclude Include="Container\Container adaptors\container_adaptor_def.h" />
-    <ClInclude Include="Container\Container adaptors\container_adatpor_pte_def.h" />
-    <ClInclude Include="Container\Container adaptors\priority_queue.h" />
-    <ClInclude Include="Container\Container adaptors\queue.h" />
-    <ClInclude Include="Container\Container adaptors\stack.h" />
-    <ClInclude Include="Container\container_cfg.h" />
-    <ClInclude Include="Container\container_pte_def.h" />
-    <ClInclude Include="Container\Squence container\array.h" />
-    <ClInclude Include="Container\Squence container\array_family.h" />
-    <ClInclude Include="Container\Squence container\deque.h" />
-    <ClInclude Include="Container\Squence container\forward_list.h" />
-    <ClInclude Include="Container\Squence container\list.h" />
-    <ClInclude Include="Container\Squence container\list_family.h" />
-    <ClInclude Include="Container\Squence container\vector.h" />
-    <ClInclude Include="Container\container.h" />
-    <ClInclude Include="Container\container_def.h" />
-    <ClInclude Include="Container\Tree\avl_tree.h" />
-    <ClInclude Include="Container\Tree\binary_search_tree.h" />
-    <ClInclude Include="Container\Tree\b_tree.h" />
-    <ClInclude Include="Container\Tree\red_black_tree.h" />
-    <ClInclude Include="Container\Tree\tree_family.h" />
     <ClInclude Include="Debug Component\Debug Assert\debug_assert.h" />
     <ClInclude Include="Debug Component\Debug Component Definition\debug_component_def.h" />
     <ClInclude Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.h" />
     <ClInclude Include="Debug Component\debug_component.h" />
-    <ClInclude Include="Iterator\Input Iterator\input_iterator.h" />
-    <ClInclude Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_def.h" />
-    <ClInclude Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_pte_def.h" />
-    <ClInclude Include="Iterator\Iterator Definition\iterator_def.h" />
-    <ClInclude Include="Iterator\Iterator Definition\iterator_pte_def.h" />
-    <ClInclude Include="Iterator\iterator.h" />
-    <ClInclude Include="Iterator\Output Iterator\output_iterator.h" />
-    <ClInclude Include="Iterator\Random Access Iterator\random_access_iterator.h" />
     <ClInclude Include="Main\main_cfg.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

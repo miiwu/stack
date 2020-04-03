@@ -13,10 +13,10 @@
 struct allocator_control_s
 	*allocator_control_ptr = NULL;
 
-void
+struct allocator_s
 *allocator = { NULL };
 
-void
+struct allocator_s
 *block = NULL;
 
 void main_allocator(void)
@@ -30,7 +30,7 @@ void main_allocator(void)
 	allocator_control_ptr->configuration.init(&allocator, NULL);
 
 	printf("\r\nallocator.exception start \r\n");
-	allocator_control_ptr->configuration.exception(&allocator, NULL);
+	allocator_control_ptr->configuration.exception(allocator, NULL);
 
 	printf("\r\nallocator.allocate start \r\n");
 	block = allocator_control_ptr->allocate(allocator, 1, 1);
