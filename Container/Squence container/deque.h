@@ -28,7 +28,7 @@
 #define DEQUE_CFG_MAX_SIZE										50u
 
 /* Configure    the type of allocator.                                                                  */
-#define DEQUE_CFG_ALLOCATOR_TYPE                                ALLOCATOR_COMMON
+#define DEQUE_CFG_ALLOCATOR_TYPE                                CONCEPT_ALLOCATOR
 
 /* Configure    if enable integrated structure.                                                         */
 #define DEQUE_CFG_INTEGRATED_STRUCTURE_MODE_EN			        1u

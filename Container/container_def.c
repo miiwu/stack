@@ -78,7 +78,7 @@ struct container_control_configuration_allocate_return_s
 
 	if (NULL
 		== (init_return.allocator_control_ptr
-			= allocator_control_convert_type_to_func_addr_table(package.allocator_type))) {
+			= allocator_control_get_function_address_table(package.allocator_type))) {
 		return (struct container_control_configuration_allocate_return_s) { err_code[0] };
 	}
 

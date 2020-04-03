@@ -212,7 +212,7 @@ errno_t array_family_control_configuration_destroy(array_family_stpp array_famil
 {
 	assert(array_family);
 
-	allocator_common_stp
+	concept_allocator_stp
 		array_family_allocator = (*array_family)->allocator_ptr;
 	struct allocator_control_s
 		*array_family_allocator_control = (*array_family)->allocator_control_ptr;

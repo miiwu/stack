@@ -23,18 +23,39 @@
     <ClCompile Include="Algorithm\modify_sequence.c" />
     <ClCompile Include="Algorithm\sort.c" />
     <ClCompile Include="Algorithm\search_substring.c" />
-    <ClCompile Include="Allocator\allocator_common.c" />
-    <ClCompile Include="Container\Container adaptors\container_adaptor_def.c" />
-    <ClCompile Include="Container\Container adaptors\priority_queue.c" />
-    <ClCompile Include="Container\Container adaptors\queue.c" />
-    <ClCompile Include="Container\Container adaptors\stack.c" />
+    <ClCompile Include="Allocator\Allocator Definition\allocator_def.c" />
+    <ClCompile Include="Allocator\Concept Allocator\concept_allocator.c" />
+    <ClCompile Include="Container\Container adaptors\container_adaptor_def.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="Container\Container adaptors\priority_queue.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="Container\Container adaptors\queue.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="Container\Container adaptors\stack.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
     <ClCompile Include="Container\container_def.c" />
-    <ClCompile Include="Container\Squence container\array.c" />
-    <ClCompile Include="Container\Squence container\array_family.c" />
-    <ClCompile Include="Container\Squence container\deque.c" />
-    <ClCompile Include="Container\Squence container\forward_list.c" />
-    <ClCompile Include="Container\Squence container\list.c" />
-    <ClCompile Include="Container\Squence container\list_family.c" />
+    <ClCompile Include="Container\Squence container\array.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\array_family.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\deque.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\forward_list.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\list.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="Container\Squence container\list_family.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
     <ClCompile Include="Container\Squence container\vector.c" />
     <ClCompile Include="Container\Tree\avl_tree.c" />
     <ClCompile Include="Container\Tree\binary_search_tree.c" />
@@ -72,10 +93,11 @@
     <ClInclude Include="Algorithm\modify_sequence.h" />
     <ClInclude Include="Algorithm\sort.h" />
     <ClInclude Include="Algorithm\search_substring.h" />
+    <ClInclude Include="Allocator\Allocator Definition\allocator_cfg.h" />
+    <ClInclude Include="Allocator\Allocator Definition\allocator_def.h" />
+    <ClInclude Include="Allocator\Allocator Definition\allocator_pte_def.h" />
     <ClInclude Include="Allocator\allocator.h" />
-    <ClInclude Include="Allocator\allocator_cfg.h" />
-    <ClInclude Include="Allocator\allocator_common.h" />
-    <ClInclude Include="Allocator\allocator_def.h" />
+    <ClInclude Include="Allocator\Concept Allocator\concept_allocator.h" />
     <ClInclude Include="Container\Container adaptors\container_adaptor_def.h" />
     <ClInclude Include="Container\Container adaptors\container_adatpor_pte_def.h" />
     <ClInclude Include="Container\Container adaptors\priority_queue.h" />
@@ -164,19 +186,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Iterator Adaptor Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Allocator\Allocator Definition;$(ProjectDir)\Allocator\Concept Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Iterator Adaptor Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Iterator Adaptor Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Allocator\Allocator Definition;$(ProjectDir)\Allocator\Concept Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Iterator Adaptor Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Iterator Adaptor Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Allocator\Allocator Definition;$(ProjectDir)\Allocator\Concept Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Iterator Adaptor Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Iterator Adaptor Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Debug Component;$(ProjectDir)\Debug Component\Debug Component Definition;$(ProjectDir)\Debug Component\Debug Assert;$(ProjectDir)\Debug Component\Debug Stack Back Trace;$(ProjectDir)\Algorithm;$(ProjectDir)\Allocator;$(ProjectDir)\Allocator\Allocator Definition;$(ProjectDir)\Allocator\Concept Allocator;$(ProjectDir)\Iterator;$(ProjectDir)\Iterator\Iterator Definition;$(ProjectDir)\Iterator\Iterator Adaptor Definition;$(ProjectDir)\Iterator\Input Iterator;$(ProjectDir)\Iterator\Output Iterator;$(ProjectDir)\Iterator\Random Access Iterator;$(ProjectDir)\Container;$(ProjectDir)\Container\Squence container;$(ProjectDir)\Container\Container adaptors;$(ProjectDir)\Container\Tree;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

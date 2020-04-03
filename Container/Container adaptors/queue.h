@@ -28,7 +28,7 @@
 #define QUEUE_CFG_DEFAULT_ADAPT_CONTAINER_TYPE			        VECTOR
 
 /* Configure    the type of allocator.                                                                  */
-#define QUEUE_CFG_ALLOCATOR_TYPE                                ALLOCATOR_COMMON
+#define QUEUE_CFG_ALLOCATOR_TYPE                                CONCEPT_ALLOCATOR
 
 /* Configure    if enable integrated structure.                                                         */
 #define QUEUE_CFG_INTEGRATED_STRUCTURE_MODE_EN			        1u

@@ -2,13 +2,13 @@
 
 #if MAIN_ALLOCATOR_EN
 
-#define MAIN_ALLOCATOR_CFG_ALLOCATOR_COMMON_EN	1u
+#define MAIN_ALLOCATOR_CFG_CONCEPT_ALLOCATOR_EN	1u
 
-#if (MAIN_ALLOCATOR_CFG_ALLOCATOR_COMMON_EN)
+#if (MAIN_ALLOCATOR_CFG_CONCEPT_ALLOCATOR_EN)
 
-#define ALLOCATOR_TYPE	ALLOCATOR_COMMON
+#define ALLOCATOR_TYPE	CONCEPT_ALLOCATOR
 
-#endif // (MAIN_ALLOCATOR_CFG_ALLOCATOR_COMMON_EN)
+#endif // (MAIN_ALLOCATOR_CFG_CONCEPT_ALLOCATOR_EN)
 
 struct allocator_control_s
 	*allocator_control_ptr = NULL;
@@ -23,7 +23,7 @@ void main_allocator(void)
 {
 	printf("\r\n------------------------+ allocator demo start +------------------------\r\n");
 
-	allocator_control_ptr = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_TYPE);	/* Variables pointer to	the function address table of
+	allocator_control_ptr = allocator_control_get_function_address_table(ALLOCATOR_TYPE);	/* Variables pointer to	the function address table of
 																								specified container type		*/
 
 	printf("\r\nallocator.init start \r\n");

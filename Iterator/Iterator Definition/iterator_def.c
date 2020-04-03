@@ -79,7 +79,7 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 		allocator_unit = { 0 };
 
 	if (NULL == (allocator_unit
-				 .control_ptr = allocator_control_convert_type_to_func_addr_table(ALLOCATOR_COMMON))) {
+				 .control_ptr = allocator_control_get_function_address_table(CONCEPT_ALLOCATOR))) {
 		return 4;
 	}
 

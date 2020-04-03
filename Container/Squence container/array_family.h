@@ -31,7 +31,7 @@
 #define ARRAY_FAMILY_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE		1024u
 
 /* Configure    the type of allocator.                                                                  */
-#define ARRAY_FAMILY_CFG_ALLOCATOR_TYPE                                 ALLOCATOR_COMMON
+#define ARRAY_FAMILY_CFG_ALLOCATOR_TYPE                                 CONCEPT_ALLOCATOR
 
 /* Configure    if enable array_family debug.														    */
 #define ARRAY_FAMILY_CFG_DEBUG_EN										1u
