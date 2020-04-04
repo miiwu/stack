@@ -80,7 +80,7 @@ void *concept_allocator_control_function_address_table[] =
  * @param count the amount of blocks
  * @param size the size of block
  *
- * @return the error code
+ * @return the address of the memory block
  */
 
 void *concept_allocator_control_memory_manage_allocate(void *memory_manage,

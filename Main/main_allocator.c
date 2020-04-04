@@ -2,7 +2,9 @@
 
 #if MAIN_ALLOCATOR_EN
 
-#define MAIN_ALLOCATOR_CFG_CONCEPT_ALLOCATOR_EN	1u
+#define MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN											1u
+
+#define MAIN_ALLOCATOR_CFG_CONCEPT_ALLOCATOR_EN										1u
 
 #if (MAIN_ALLOCATOR_CFG_CONCEPT_ALLOCATOR_EN)
 
@@ -33,6 +35,28 @@ void main_allocator(void)
 	printf("\r\nallocator.allocate start \r\n");
 	block = allocator_control_ptr->allocate(allocator, 1, 1);
 	printf("allocator.allocate:block %p \r\n", block);
+
+	#if MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN
+
+	struct allocator_s
+		*allocator_second = { NULL };
+
+	void *block_second = NULL;
+
+	printf("\r\nallocator_second.init start \r\n");
+	allocator_control_ptr->configuration.init(&allocator_second);
+
+	printf("\r\nallocator_second.allocate start \r\n");
+	block_second = allocator_control_ptr->allocate(allocator_second, 1, 1);
+	printf("allocator.allocate:block %p \r\n", block_second);
+
+	printf("\r\nallocator_second.deallocate start \r\n");
+	allocator_control_ptr->deallocate(allocator_second, block_second);
+
+	printf("\r\nallocator_second.destroy start \r\n");
+	allocator_control_ptr->configuration.destroy(&allocator_second);
+
+	#endif // MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN
 
 	printf("\r\nallocator.deallocate start \r\n");
 	allocator_control_ptr->deallocate(allocator, block);

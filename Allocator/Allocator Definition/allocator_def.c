@@ -117,15 +117,18 @@ allocator_control_configuration_init(struct allocator_s **allocator,
 {
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
 
+	static struct allocator_exception_s exception = { NULL };
+
 	if (NULL == ((*allocator)
 				 = calloc(1,																/* Allocate the allocator structure */
 						  sizeof(struct allocator_s)))) {
 		return -1;
 	}
 
-	if (NULL == ((*allocator)->memory_manage_unit.memory_manage_ptr
-				 = calloc(1,																/* Allocate the allocator memory manage structure */
-						  package.memory_manage_length))) {
+	if (0 != package.memory_manage_length
+		&& NULL == ((*allocator)->memory_manage_unit.memory_manage_ptr
+					= calloc(1,																/* Allocate the allocator memory manage structure */
+							 package.memory_manage_length))) {
 		return -2;
 	}
 
@@ -140,9 +143,7 @@ allocator_control_configuration_init(struct allocator_s **allocator,
 	(*allocator)->info.match = 0u;
 	(*allocator)->memory_manage_unit.control = package.control;
 
-	static struct allocator_exception_s exception = { NULL };
-
-	allocator_control_configuration_exception((*allocator),
+	allocator_control_configuration_exception((*allocator),									/* Default the exception of the allocator */
 											  exception);
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
