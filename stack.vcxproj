@@ -19,10 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Algorithm\compare.c" />
-    <ClCompile Include="Algorithm\modify_sequence.c" />
-    <ClCompile Include="Algorithm\sort.c" />
-    <ClCompile Include="Algorithm\search_substring.c" />
     <ClCompile Include="Allocator\Allocator Definition\allocator_def.c" />
     <ClCompile Include="Allocator\Concept Allocator\concept_allocator.c" />
     <ClCompile Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.c" />
@@ -31,12 +27,6 @@
     <ClCompile Include="Main\main_allocator.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Algorithm\algorithm.h" />
-    <ClInclude Include="Algorithm\algorithm_def.h" />
-    <ClInclude Include="Algorithm\compare.h" />
-    <ClInclude Include="Algorithm\modify_sequence.h" />
-    <ClInclude Include="Algorithm\sort.h" />
-    <ClInclude Include="Algorithm\search_substring.h" />
     <ClInclude Include="Allocator\Allocator Definition\allocator_cfg.h" />
     <ClInclude Include="Allocator\Allocator Definition\allocator_def.h" />
     <ClInclude Include="Allocator\Allocator Definition\allocator_pte_def.h" />
@@ -154,6 +144,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -30,10 +30,10 @@
  *********************************************************************************************************
  */
 
-void *allocator_function_address_table_set[2] = {
+void *allocator_function_address_table_set[] = {
 	#ifdef __CONCEPT_ALLOCATOR_H
 
-	& concept_allocator_function_address_table,
+	& concept_allocator_control_function_address_table,
 
 	#else
 
@@ -42,7 +42,7 @@ void *allocator_function_address_table_set[2] = {
 	#endif // __CONCEPT_ALLOCATOR_H
 	#ifdef __CONCEPT_ALLOCATOR_H
 
-	& concept_allocator_function_address_table,
+	& concept_allocator_control_function_address_table,
 
 	#else
 
@@ -96,7 +96,62 @@ void allocator_control_exception_default_lack_of_memory(struct allocator_s *allo
 extern inline struct allocator_control_s
 *allocator_control_get_function_address_table(enum allocator_type_e type)
 {
+	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(type, >= , int, 0);
+
 	return allocator_function_address_table_set[type];
+}
+
+/**
+ * @brief This function will initialize the allocator struct.
+ *
+ * @param allocator the pointer of allocator address
+ * @param type the type of the allocator
+ *
+ * @return the error code
+ */
+
+extern inline errno_t
+allocator_control_configuration_init(struct allocator_s **allocator,
+									 enum allocator_type_e type,
+									 struct allocator_memory_manage_init_package_s package)
+{
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
+
+	if (NULL == ((*allocator)
+				 = calloc(1,																/* Allocate the allocator structure */
+						  sizeof(struct allocator_s)))) {
+		return -1;
+	}
+
+	if (NULL == ((*allocator)->memory_manage_unit.memory_manage_ptr
+				 = calloc(1,																/* Allocate the allocator memory manage structure */
+						  package.memory_manage_length))) {
+		return -2;
+	}
+
+	if (NULL != package.memory_manage_ptr &&
+		NULL == memcpy((*allocator)->memory_manage_unit.memory_manage_ptr,
+					   package.memory_manage_ptr,
+					   package.memory_manage_length)) {
+		return 1;
+	}
+
+	(*allocator)->allocator_type_id = type;
+	(*allocator)->info.match = 0u;
+	(*allocator)->memory_manage_unit.control = package.control;
+
+	static struct allocator_exception_s exception = { NULL };
+
+	allocator_control_configuration_exception((*allocator),
+											  exception);
+
+	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+	debug_capture_stack_back_trace_link_init(&allocator_alloced->capture_stack_back_trace_link, 256);
+
+	#endif
+
+	return 0;
 }
 
 /**
@@ -168,6 +223,79 @@ errno_t allocator_control_configuration_exception(struct allocator_s *allocator,
 }
 
 /**
+ * @brief This function will allocates n * sizeof(Type) bytes of uninitialized storage by calling
+ *			malloc(n * sizeof(Type)) or calloc(n,sizeof(Type)).
+ *
+ * @param allocator the pointer of allocator
+ * @param count the amount of blocks
+ * @param size the size of block
+ *
+ * @return return the pointer point to the uninitialized storage which allocated
+ */
+
+void *allocator_control_allocate(struct allocator_s *allocator,
+								 size_t count, size_t size)
+{
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
+	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(count, > , int, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(size, > , int, 0);
+
+	static void *block_alloced;
+
+	if (NULL == (block_alloced
+				 = allocator->memory_manage_unit.control
+				 .allocate(allocator->memory_manage_unit.memory_manage_ptr                  /* Allocate the memory block by the memory manage unit */
+						   , count, size))) {
+		allocator->exception.lack_of_memory(allocator);                                     /* Enter exception */
+
+		return NULL;
+	}
+
+	allocator->info.match += 1;
+
+	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+	debug_capture_stack_back_trace_link_mark(allocator->capture_stack_back_trace_link, 1);
+
+	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+	return block_alloced;
+}
+
+/**
+ * @brief This function will deallocates the storage referenced by the pointer block,
+ *			which must be a pointer obtained by an earlier call to allocate().
+ *
+ * @param allocator the pointer of allocator
+ * @param block the pointer of block
+ *
+ * @return NONE
+ */
+
+errno_t allocator_control_deallocate(struct allocator_s *allocator,
+									 void *block)
+{
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(block);
+
+	allocator->info.match -= 1;
+
+	if (allocator->memory_manage_unit.control
+		.deallocate(allocator->memory_manage_unit.memory_manage_ptr,						/* Deallocate the memory block by the memory manage unit */
+					block)) {
+		return 1;
+	}
+
+	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+	debug_capture_stack_back_trace_link_link(allocator->capture_stack_back_trace_link, 1);
+
+	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
+
+	return 0;
+}
+
+/**
  * @brief This function will be called when the allocator exception of lack of memory.
  *
  * @param void
@@ -178,4 +306,7 @@ errno_t allocator_control_configuration_exception(struct allocator_s *allocator,
 void allocator_control_exception_default_lack_of_memory(struct allocator_s *allocator)
 {
 	printf("allocator_control.exception.lack_of_memory! \r\n");
+
+	while (true) {
+	}
 }

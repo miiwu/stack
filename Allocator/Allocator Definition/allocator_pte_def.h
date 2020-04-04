@@ -49,6 +49,16 @@ struct allocator_exception_s {
 };
 
 /**
+ * @brief This type is the allocator memory manage control structure.
+ */
+
+struct allocator_memory_manage_unit_s {
+	struct allocator_memory_manage_control_s control;
+
+	void *memory_manage_ptr;
+};
+
+/**
  * @brief This type is the allocator structure.
  */
 
@@ -61,6 +71,9 @@ struct allocator_s {
 
 	/* @brief This variables will record the exception of the allocator.					            */
 	struct allocator_exception_s exception;
+
+	/* @brief This variables will record the memory manage control of the allocator.				    */
+	struct allocator_memory_manage_unit_s memory_manage_unit;
 
 	/* @brief This variables will record the addon of the allocator.					                */
 	char addon[0];

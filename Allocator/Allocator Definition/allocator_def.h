@@ -57,21 +57,25 @@ enum allocator_type_e {
 typedef ALLOCATOR_GLOBAL_CFG_SIZE_TYPE allocator_size_t;
 
 /**
- * @brief This type is the allocator memory control structure.
+ * @brief This type is the allocator memory manage control structure.
  */
 
-struct allocator_memory_control_s {
-	/* @brief This variables will record which memory block is available by check bit.					*/
-	int available[ALLOCATOR_GLOBAL_CFG_MEMORY_POOL_SIZE / sizeof(int) * 8];
+struct allocator_memory_manage_control_s {
+	void *(*allocate)(void *memory_manage, size_t count, size_t size);
 
-	/* @brief This variables will point to the address of memory pool.					                */
-	void *memory_pool_ptr;
+	errno_t(*deallocate)(void *memory_manage, void *block);
+};
 
-	/* @brief This variables will point to the next allocate entry point address.					    */
-	void *entry_point_ptr;
+/**
+ * @brief This type is the package of the allocator memory manage initialization.
+ */
 
-	/* @brief This variables will record the size of allocator memory pool.						        */
-	allocator_size_t memory_pool_size;
+struct allocator_memory_manage_init_package_s {
+	struct allocator_memory_manage_control_s control;
+
+	allocator_size_t memory_manage_length;
+
+	void *memory_manage_ptr;
 };
 
 /**
@@ -81,8 +85,7 @@ struct allocator_memory_control_s {
 struct allocator_control_s {
 	struct {
 		/* @brief This function will initialize the allocator struct.									*/
-		errno_t(*init)(struct allocator_s **allocator,
-					   void (*lack_of_memory)(void));
+		errno_t(*init)(struct allocator_s **allocator);
 
 		  /* @brief This function will destroy the allocator struct.								    */
 		errno_t(*destroy)(struct allocator_s **allocator);
@@ -95,7 +98,8 @@ struct allocator_control_s {
 	/* @brief This function will allocates n * sizeof(Type) bytes of uninitialized storage by calling
 			  malloc(n * sizeof(Type)) or calloc(n,sizeof(Type)).										*/
 	void *(*allocate)(struct allocator_s *allocator,
-					  allocator_size_t count, allocator_size_t size);
+					  allocator_size_t count,
+					  allocator_size_t size);
 
 	/* @brief This function will deallocates the storage referenced by the pointer block,
 			  which must be a pointer obtained by an earlier call to allocate().						*/
@@ -130,6 +134,20 @@ struct allocator_unit_s {
 struct allocator_control_s *allocator_control_get_function_address_table(enum allocator_type_e type);
 
 /**
+ * @brief This function will initialize the allocator struct.
+ *
+ * @param allocator the pointer of allocator address
+ * @param type the type of the allocator
+ *
+ * @return the error code
+ */
+
+errno_t
+allocator_control_configuration_init(struct allocator_s **allocator,
+									 enum allocator_type_e type,
+									 struct allocator_memory_manage_init_package_s package);
+
+/**
  * @brief This function will destroy and clean the allocator struct.
  *
  * @param
@@ -149,6 +167,33 @@ errno_t allocator_control_configuration_destroy(struct allocator_s **allocator);
 
 errno_t allocator_control_configuration_exception(struct allocator_s *allocator,
 												  struct allocator_exception_s exception);
+
+/**
+ * @brief This function will allocates n * sizeof(Type) bytes of uninitialized storage by calling
+ *			malloc(n * sizeof(Type)) or calloc(n,sizeof(Type)).
+ *
+ * @param allocator the pointer of allocator
+ * @param count the amount of blocks
+ * @param size the size of block
+ *
+ * @return return the pointer point to the uninitialized storage which allocated
+ */
+
+void *allocator_control_allocate(struct allocator_s *allocator,
+								 size_t count, size_t size);
+
+/**
+ * @brief This function will deallocates the storage referenced by the pointer block,
+ *			which must be a pointer obtained by an earlier call to allocate().
+ *
+ * @param allocator the pointer of allocator
+ * @param block the pointer of block
+ *
+ * @return NONE
+ */
+
+errno_t allocator_control_deallocate(struct allocator_s *allocator,
+									 void *block);
 
 /*
  *********************************************************************************************************

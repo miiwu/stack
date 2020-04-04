@@ -88,43 +88,6 @@ struct concept_allocator_control_s {
 
 errno_t concept_allocator_control_configuration_init(concept_allocator_stpp allocator);
 
-/**
- * @brief This function will destroy and clean the allocator struct.
- *
- * @param allocator the pointer of allocator address
- *
- * @return NONE
- */
-
-errno_t concept_allocator_control_configuration_destroy(concept_allocator_stpp allocator);
-
-/**
- * @brief This function will allocates n * sizeof(Type) bytes of uninitialized storage by calling
- *          malloc(n * sizeof(Type)) or calloc(n,sizeof(Type)).
- *
- * @param allocator the pointer of allocator
- * @param count the amount of blocks
- * @param size the size of block
- *
- * @return return the pointer point to the uninitialized storage which allocated
- */
-
-void *concept_allocator_control_allocate(concept_allocator_stp allocator,
-										 size_t count, size_t size);
-
-/**
- * @brief This function will deallocates the storage referenced by the pointer block,
- *          which must be a pointer obtained by an earlier call to allocate().
- *
- * @param allocator the pointer of allocator
- * @param block the pointer of block
- *
- * @return NONE
- */
-
-errno_t concept_allocator_control_deallocate(concept_allocator_stp allocator,
-											 void *block);
-
 /*
  *********************************************************************************************************
  *                                       EXTERN GLOBAL VARIABLES
@@ -135,7 +98,7 @@ errno_t concept_allocator_control_deallocate(concept_allocator_stp allocator,
  * @brief This variable is the concept allocator function address table.
  */
 
-extern void *concept_allocator_function_address_table[];
+extern void *concept_allocator_control_function_address_table[];
 
 /**
  * @brief This const variable is the concept allocator control structure.

@@ -28,7 +28,7 @@ void main_allocator(void)
 																								specified container type		*/
 
 	printf("\r\nallocator.init start \r\n");
-	allocator_control_ptr->configuration.init(&allocator, NULL);
+	allocator_control_ptr->configuration.init(&allocator);
 
 	printf("\r\nallocator.allocate start \r\n");
 	block = allocator_control_ptr->allocate(allocator, 1, 1);

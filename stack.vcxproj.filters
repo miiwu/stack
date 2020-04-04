@@ -25,12 +25,6 @@
     <Filter Include="源文件\allocator">
       <UniqueIdentifier>{615cf450-0b68-4f15-85e6-de9f73058835}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\algorithm">
-      <UniqueIdentifier>{111dc3e3-4e0a-4b3e-854b-52b52635a9ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\algorithm">
-      <UniqueIdentifier>{e29e2ad9-85f3-4839-9946-79bf08e96db5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\debug component">
       <UniqueIdentifier>{5de867b5-a197-407f-b510-b03d777ab402}</UniqueIdentifier>
     </Filter>
@@ -69,20 +63,8 @@
     <ClCompile Include="Main\main_allocator.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
-    <ClCompile Include="Algorithm\sort.c">
-      <Filter>源文件\algorithm</Filter>
-    </ClCompile>
-    <ClCompile Include="Algorithm\compare.c">
-      <Filter>源文件\algorithm</Filter>
-    </ClCompile>
     <ClCompile Include="Main\main_algorithm.c">
       <Filter>源文件\main</Filter>
-    </ClCompile>
-    <ClCompile Include="Algorithm\search_substring.c">
-      <Filter>源文件\algorithm</Filter>
-    </ClCompile>
-    <ClCompile Include="Algorithm\modify_sequence.c">
-      <Filter>源文件\algorithm</Filter>
     </ClCompile>
     <ClCompile Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.c">
       <Filter>源文件\debug component\debug stack back trace</Filter>
@@ -103,24 +85,6 @@
     </ClInclude>
     <ClInclude Include="Debug Component\debug_component.h">
       <Filter>头文件\debug component</Filter>
-    </ClInclude>
-    <ClInclude Include="Algorithm\algorithm.h">
-      <Filter>头文件\algorithm</Filter>
-    </ClInclude>
-    <ClInclude Include="Algorithm\algorithm_def.h">
-      <Filter>头文件\algorithm</Filter>
-    </ClInclude>
-    <ClInclude Include="Algorithm\sort.h">
-      <Filter>头文件\algorithm</Filter>
-    </ClInclude>
-    <ClInclude Include="Algorithm\compare.h">
-      <Filter>头文件\algorithm</Filter>
-    </ClInclude>
-    <ClInclude Include="Algorithm\search_substring.h">
-      <Filter>头文件\algorithm</Filter>
-    </ClInclude>
-    <ClInclude Include="Algorithm\modify_sequence.h">
-      <Filter>头文件\algorithm</Filter>
     </ClInclude>
     <ClInclude Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.h">
       <Filter>头文件\debug component\debug stack back trace</Filter>
