@@ -38,10 +38,13 @@
  *********************************************************************************************************
  */
 
-/* Configure the max depth of the capture stack back trace.                                             */
+/* Configure        the max depth of the capture stack back trace.                                      */
 #define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH	    64u
 
-/* Configure if enable the capture stack back trace debug mode.                                         */
+/* Configure        the main() depth of the capture stack back trace.                                   */
+#define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_MAIN_DEPTH	        7u
+
+/* Configure        if enable the capture stack back trace debug mode.                                  */
 #define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN	    0u
 
 /*

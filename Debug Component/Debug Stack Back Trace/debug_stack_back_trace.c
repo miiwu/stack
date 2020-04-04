@@ -1,49 +1,52 @@
 /*
-************************************************************************************************************************
-*                                  DEBUG COMPONENT OF CAPATURE STACK BACK TRACE FUNCTIONS
-*
-* File    : DEBUG_CAPATURE_STACK_BACK_TRACE.C
-* By      : Miao Mico
-* Version : V0.01.00
-*
-* FIRST ENLIGHTENMENT : https://gist.github.com/t-mat/7979300
-* SECONDARY REFERANCE : https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb204633(v=vs.85)?redirectedfrom=MSDN
-*
-************************************************************************************************************************
-*/
+ ************************************************************************************************************************
+ *                                  DEBUG COMPONENT OF CAPATURE STACK BACK TRACE FUNCTIONS
+ *
+ * File    : DEBUG_CAPATURE_STACK_BACK_TRACE.C
+ * By      : Miao Mico
+ * Version : V0.01.00
+ *
+ * FIRST ENLIGHTENMENT : https://gist.github.com/t-mat/7979300
+ * SECONDARY REFERANCE : https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb204633(v=vs.85)?redirectedfrom=MSDN
+ *
+ ************************************************************************************************************************
+ */
 
 /*
-*********************************************************************************************************
-*                                            INCLUDE FILES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                            INCLUDE FILES
+ *********************************************************************************************************
+ */
 
 #include "debug_stack_back_trace.h"
 
 #include "debug_assert.h"
 
 /*
-*********************************************************************************************************
-*                                            LOCAL DEFINES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                            LOCAL DEFINES
+ *********************************************************************************************************
+ */
 
-#define TRACE_MAX_DEPTH	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH
-#define TRACE_SIZE_TYPE	stack_back_trace_size_t
+/* Define			the max depth of the capture stack back trace.										*/
+#define TRACE_MAX_DEPTH																					\
+	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH
 
-#define GET_ADDRESS_VIA_PTR(pointer,mem_type,index)	(void*)((size_t)(pointer) + index * mem_type)
-
-/*
-*********************************************************************************************************
-*                                           LOCAL CONSTANTS
-*********************************************************************************************************
-*/
+/* Define			the get address of the pointer.														*/
+#define GET_ADDRESS_VIA_PTR(pointer,mem_type,index)														\
+	(void*)((size_t)(pointer) + index * mem_type)
 
 /*
-*********************************************************************************************************
-*                                          LOCAL DATA TYPES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                           LOCAL CONSTANTS
+ *********************************************************************************************************
+ */
+
+/*
+ *********************************************************************************************************
+ *                                          LOCAL DATA TYPES
+ *********************************************************************************************************
+ */
 
 /**
  * @brief This type is the stack back trace frame typedef.
@@ -225,7 +228,7 @@ errno_t debug_capture_stack_back_trace_init(stack_back_trace_stpp stack_back_tra
 	}
 
 	if (NULL == ((*stack_back_trace)->back_trace_count_ptr
-				 = calloc(count, sizeof(TRACE_SIZE_TYPE)))) {
+				 = calloc(count, sizeof(stack_back_trace_size_t)))) {
 		return 2;
 	}
 
@@ -302,13 +305,16 @@ errno_t debug_capture_stack_back_trace(stack_back_trace_stp stack_back_trace,
 	SYMBOL_INFO back_trace_symbol_tmp[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH] = { 0 };
 	IMAGEHLP_LINE64 back_trace_line_tpmp[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH] = { 0 };
 
-	back_trace_frame_t back_trace_frames_tmp = CaptureStackBackTrace(frames_to_skip + 1
-																	 , DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH
-																	 , back_trace_tmp
-																	 , &stack_back_trace_hash_tmp) - 7;	/* the stack of main() is start from the level 7 */
+	back_trace_frame_t back_trace_frames_tmp
+		= CaptureStackBackTrace(frames_to_skip + 1,
+								DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH,
+								back_trace_tmp,
+								&stack_back_trace_hash_tmp);								/* Capture the stack */
+
+	back_trace_frames_tmp -= DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_MAIN_DEPTH;					/* Skip the frames to the main depth */
 
 	if (stack_back_trace->max_type_count <= stack_back_trace->type_count &&
-		10 > (stack_back_trace->type_count / stack_back_trace->max_type_count) &&		/* Exclude it have been reduced to a negative number. */
+		10 > (stack_back_trace->type_count / stack_back_trace->max_type_count) &&			/* Exclude it have been reduced to a negative number */
 		false == debug_capture_stack_back_trace_empty_callback(stack_back_trace)) {
 		return 1;
 	}
