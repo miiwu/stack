@@ -174,7 +174,7 @@ errno_t allocator_control_configuration_destroy(struct allocator_s **allocator)
 
 	if (0 < (*allocator)->info.size) {
 		printf("\r\n-----------------------------------stack trace string table begin-----------------------------------\r\n");
-		STACK_BACK_TRACE_TYPEDEF_PPTR stack_back_trace_tmp = malloc(sizeof(void *));
+		stack_back_trace_stpp stack_back_trace_tmp = malloc(sizeof(void *));
 		if (NULL == stack_back_trace_tmp) {
 			return;
 		}
