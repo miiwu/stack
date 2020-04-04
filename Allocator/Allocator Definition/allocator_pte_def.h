@@ -31,6 +31,24 @@
  */
 
 /**
+ * @brief This type is the allocator information structure.
+ */
+
+struct allocator_information_s {
+	/* @brief This variables will record the match value of allocator allocate() and the deallocate().  */
+	allocator_size_t match;
+};
+
+/**
+ * @brief This type is the allocator exception structure.
+ */
+
+struct allocator_exception_s {
+	/* @brief This variables will point to the exception handler of lack of memory.			            */
+	void (*lack_of_memory)(void *allocator);
+};
+
+/**
  * @brief This type is the allocator structure.
  */
 

@@ -84,24 +84,26 @@ void *concept_allocator_function_address_table[] =
 /**
  * @brief This function will initialize the allocator struct.
  *
- * @param allocator the allocator
- * @param lack_of_memory the pointer to the exception handler of lack of heap memory
+ * @param allocator the pointer of allocator address
  *
- * @return NONE
+ * @return the error code
  */
 
 errno_t concept_allocator_control_configuration_init(concept_allocator_stpp allocator)
 {
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
 
-	if (NULL == (allocator = calloc(1, sizeof(struct allocator_s)))) {                      /* Allocate the allocator structure */
+	if (NULL == ((*allocator) = calloc(1, sizeof(struct allocator_s)))) {					/* Allocate the allocator structure */
 		return -1;
 	}
 
 	(*allocator)->allocator_type_id = CONCEPT_ALLOCATOR;                                    /* Assign the allocator structure */
-	(*allocator)->info.size = 0u;
+	(*allocator)->info.match = 0u;
 
-	allocator_control_configuration_exception((*allocator), NULL);
+	static struct allocator_exception_s exception = { NULL };
+
+	allocator_control_configuration_exception((*allocator),
+											  exception);
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
@@ -113,11 +115,11 @@ errno_t concept_allocator_control_configuration_init(concept_allocator_stpp allo
 }
 
 /**
- * @brief This function will destroy and clean the allocator struct.
+ * @brief This function will destroy the allocator struct.
  *
- * @param allocator the allocator
+ * @param allocator the pointer of allocator address
  *
- * @return NONE
+ * @return the error code
  */
 
 errno_t concept_allocator_control_configuration_destroy(concept_allocator_stpp allocator)
@@ -130,9 +132,9 @@ errno_t concept_allocator_control_configuration_destroy(concept_allocator_stpp a
 
 /**
  * @brief This function will allocates n * sizeof(Type) bytes of uninitialized storage by calling
- *  malloc(n * sizeof(Type)) or calloc(n,sizeof(Type)).
+ *			malloc(n * sizeof(Type)) or calloc(n,sizeof(Type)).
  *
- * @param allocator the allocator
+ * @param allocator the pointer of allocator
  * @param count the amount of blocks
  * @param size the size of block
  *
@@ -143,8 +145,8 @@ void *concept_allocator_control_allocate(concept_allocator_stp allocator,
 										 size_t count, size_t size)
 {
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(count, < , size_t, 0);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(size, < , size_t, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(count, > , size_t, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(size, > , size_t, 0);
 
 	static void *block_alloced;
 
@@ -154,7 +156,7 @@ void *concept_allocator_control_allocate(concept_allocator_stp allocator,
 		return NULL;
 	}
 
-	allocator->info.size += count * size;
+	allocator->info.match += 1;
 
 	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
 
@@ -167,23 +169,21 @@ void *concept_allocator_control_allocate(concept_allocator_stp allocator,
 
 /**
  * @brief This function will deallocates the storage referenced by the pointer block,
- *  which must be a pointer obtained by an earlier call to allocate().
+ *			which must be a pointer obtained by an earlier call to allocate().
  *
- * @param allocator the allocator
- * @param block the pointer to the blocks
- * @param count the amount of block
+ * @param allocator the pointer of allocator
+ * @param block the pointer of block
  *
  * @return NONE
  */
 
 errno_t concept_allocator_control_deallocate(concept_allocator_stp allocator,
-											 void *block, size_t size)
+											 void *block)
 {
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(block);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(size, < , size_t, 0);
 
-	allocator->info.size -= size;
+	allocator->info.match -= 1;
 
 	free(block);																	        /* Deallocate the block */
 

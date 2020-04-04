@@ -57,28 +57,10 @@ enum allocator_type_e {
 typedef ALLOCATOR_GLOBAL_CFG_SIZE_TYPE allocator_size_t;
 
 /**
- * @brief This type is the allocator information structure.
- */
-
-struct allocator_information_s {
-	/* @brief This variables will record the size of allocator allocated.						    */
-	allocator_size_t size;
-};
-
-/**
- * @brief This type is the allocator exception structure.
- */
-
-struct allocator_exception_s {
-	/* @brief This variables will point to the exception handler of lack of memory.			        */
-	void (*lack_of_memory)(void *allocator);
-};
-
-/**
  * @brief This type is the allocator memory control structure.
  */
 
-struct memory_control_s {
+struct allocator_memory_control_s {
 	/* @brief This variables will record which memory block is available by check bit.					*/
 	int available[ALLOCATOR_GLOBAL_CFG_MEMORY_POOL_SIZE / sizeof(int) * 8];
 
@@ -102,23 +84,23 @@ struct allocator_control_s {
 		errno_t(*init)(struct allocator_s **allocator,
 					   void (*lack_of_memory)(void));
 
-		  /* @brief This function will destroy the allocator struct.										*/
+		  /* @brief This function will destroy the allocator struct.								    */
 		errno_t(*destroy)(struct allocator_s **allocator);
 
 		/* @brief This function will configure the exceptions of allocator struct.					    */
 		errno_t(*exception)(struct allocator_s *allocator,
-							void (*lack_of_memory)(void));
+							struct allocator_exception_s exception);
 	}configuration;
 
 	/* @brief This function will allocates n * sizeof(Type) bytes of uninitialized storage by calling
 			  malloc(n * sizeof(Type)) or calloc(n,sizeof(Type)).										*/
 	void *(*allocate)(struct allocator_s *allocator,
-					  ALLOCATOR_GLOBAL_CFG_SIZE_TYPE count, ALLOCATOR_GLOBAL_CFG_SIZE_TYPE size);
+					  allocator_size_t count, allocator_size_t size);
 
 	/* @brief This function will deallocates the storage referenced by the pointer block,
 			  which must be a pointer obtained by an earlier call to allocate().						*/
 	errno_t(*deallocate)(struct allocator_s *allocator,
-						 void *block, ALLOCATOR_GLOBAL_CFG_SIZE_TYPE count);
+						 void *block);
 };
 
 /**
@@ -128,7 +110,7 @@ struct allocator_control_s {
 struct allocator_unit_s {
 	struct allocator_control_s *control_ptr;
 
-	void *allocator_ptr;
+	struct allocator_s *allocator_ptr;
 };
 
 /*
@@ -145,7 +127,7 @@ struct allocator_unit_s {
  * @return the function address table of the specified allocator
  */
 
-void *allocator_control_get_function_address_table(enum allocator_type_e type);
+struct allocator_control_s *allocator_control_get_function_address_table(enum allocator_type_e type);
 
 /**
  * @brief This function will destroy and clean the allocator struct.
@@ -166,24 +148,24 @@ errno_t allocator_control_configuration_destroy(struct allocator_s **allocator);
  */
 
 errno_t allocator_control_configuration_exception(struct allocator_s *allocator,
-												  void (*lack_of_memory)(void *));
+												  struct allocator_exception_s exception);
 
-   /*
-   *********************************************************************************************************
-   *                                       EXTERN GLOBAL VARIABLES
-   *********************************************************************************************************
-   */
+/*
+ *********************************************************************************************************
+ *                                       EXTERN GLOBAL VARIABLES
+ *********************************************************************************************************
+ */
 
-   /*
-   *********************************************************************************************************
-   *                                            FUNCTIONS
-   *********************************************************************************************************
-   */
+/*
+ *********************************************************************************************************
+ *                                            FUNCTIONS
+ *********************************************************************************************************
+ */
 
-   /*
-   *********************************************************************************************************
-   *                                             MODULE END
-   *********************************************************************************************************
-   */
+/*
+ *********************************************************************************************************
+ *                                             MODULE END
+ *********************************************************************************************************
+ */
 
 #endif // !__ALLOCATOR_DEFINITION_H

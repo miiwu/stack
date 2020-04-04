@@ -40,7 +40,6 @@ void *allocator_function_address_table_set[2] = {
 	NULL,
 
 	#endif // __CONCEPT_ALLOCATOR_H
-
 	#ifdef __CONCEPT_ALLOCATOR_H
 
 	& concept_allocator_function_address_table,
@@ -64,6 +63,16 @@ void *allocator_function_address_table_set[2] = {
  *********************************************************************************************************
  */
 
+/**
+ * @brief This function will be called when the allocator exception of lack of memory.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void allocator_control_exception_default_lack_of_memory(struct allocator_s *allocator);
+
 /*
  *********************************************************************************************************
  *					LOCAL GLOBAL VARIABLES & LOCAL FUNCTION PROTOTYPES INTERSECTION
@@ -84,8 +93,8 @@ void *allocator_function_address_table_set[2] = {
  * @return the function address table of the specified allocator
  */
 
-extern inline void *
-allocator_control_get_function_address_table(enum allocator_type_e type)
+extern inline struct allocator_control_s
+*allocator_control_get_function_address_table(enum allocator_type_e type)
 {
 	return allocator_function_address_table_set[type];
 }
@@ -145,17 +154,28 @@ errno_t allocator_control_configuration_destroy(struct allocator_s **allocator)
  */
 
 errno_t allocator_control_configuration_exception(struct allocator_s *allocator,
-												  void (*lack_of_memory)(void *))
+												  struct allocator_exception_s exception)
 {
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(lack_of_memory);
 
-	if (NULL == lack_of_memory) {
-		allocator->exception.lack_of_memory = NULL;// allocator_control_exception_default_lack_of_memory;
-	}
-	else {
-		allocator->exception.lack_of_memory = lack_of_memory;
+	if (NULL == exception.lack_of_memory) {
+		allocator->exception.lack_of_memory = allocator_control_exception_default_lack_of_memory;
+	} else {
+		allocator->exception.lack_of_memory = exception.lack_of_memory;
 	}
 
-    return 0;
+	return 0;
+}
+
+/**
+ * @brief This function will be called when the allocator exception of lack of memory.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void allocator_control_exception_default_lack_of_memory(struct allocator_s *allocator)
+{
+	printf("allocator_control.exception.lack_of_memory! \r\n");
 }
