@@ -73,6 +73,16 @@ void *allocator_function_address_table_set[] = {
 
 void allocator_control_exception_default_lack_of_memory(struct allocator_s *allocator);
 
+/**
+ * @brief This function will log the stack back trace link when destroy and clean the allocator struct.
+ *
+ * @param
+ *
+ * @return NONE
+ */
+
+errno_t allocator_control_configuration_destroy_log(struct allocator_s *allocator);
+
 /*
  *********************************************************************************************************
  *					LOCAL GLOBAL VARIABLES & LOCAL FUNCTION PROTOTYPES INTERSECTION
@@ -146,9 +156,9 @@ allocator_control_configuration_init(struct allocator_s **allocator,
 	allocator_control_configuration_exception((*allocator),									/* Default the exception of the allocator */
 											  exception);
 
-	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+	#if (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
 
-	debug_capture_stack_back_trace_link_init(&allocator_alloced->capture_stack_back_trace_link, 256);
+	debug_capture_stack_back_trace_link_init(&(*allocator)->stack_back_trace_link_ptr, 256);
 
 	#endif
 
@@ -168,31 +178,17 @@ errno_t allocator_control_configuration_destroy(struct allocator_s **allocator)
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(*allocator);
 
-	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+	#if (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
 
-	printf("allocator.destroy:memory free status : %d \r\n", (*allocator)->info.size);
+	printf("allocator.destroy:memory free status : %d \r\n", (*allocator)->info.match);
 
-	if (0 < (*allocator)->info.size) {
-		printf("\r\n-----------------------------------stack trace string table begin-----------------------------------\r\n");
-		stack_back_trace_stpp stack_back_trace_tmp = malloc(sizeof(void *));
-		if (NULL == stack_back_trace_tmp) {
-			return;
-		}
-
-		debug_capture_stack_back_trace_link_get_trace_ptr((*allocator)->capture_stack_back_trace_link, stack_back_trace_tmp);
-
-		printf("\r\n-----------------------------------stack trace mark string table begin-----------------------------------\r\n");
-		debug_capture_stack_back_trace_convert_to_string(*(stack_back_trace_tmp + 0));
-
-		printf("\r\n-----------------------------------stack trace link string table begin-----------------------------------\r\n");
-		debug_capture_stack_back_trace_convert_to_string(*(stack_back_trace_tmp + 1));
-
-		printf("\r\n-----------------------------------stack trace string table end-----------------------------------\r\n");
+	if ((int)0 < (int)((*allocator)->info.match)) {
+		allocator_control_configuration_destroy_log((*allocator));
 	}
 
-	debug_capture_stack_back_trace_link_destroy(&(*allocator)->capture_stack_back_trace_link);
+	debug_capture_stack_back_trace_link_destroy(&(*allocator)->stack_back_trace_link_ptr);
 
-	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
+	#endif // (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
 
 	free((*allocator));																	    /* Deallocate the allocator structure */
 
@@ -254,11 +250,11 @@ void *allocator_control_allocate(struct allocator_s *allocator,
 
 	allocator->info.match += 1;
 
-	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+	#if (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
 
-	debug_capture_stack_back_trace_link_mark(allocator->capture_stack_back_trace_link, 1);
+	debug_capture_stack_back_trace_link_mark(allocator->stack_back_trace_link_ptr, 1);
 
-	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
+	#endif // (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
 
 	return block_alloced;
 }
@@ -287,11 +283,11 @@ errno_t allocator_control_deallocate(struct allocator_s *allocator,
 		return 1;
 	}
 
-	#if (ALLOCATOR_CFG_DEBUG_MODE_EN)
+	#if (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
 
-	debug_capture_stack_back_trace_link_link(allocator->capture_stack_back_trace_link, 1);
+	debug_capture_stack_back_trace_link_link(allocator->stack_back_trace_link_ptr, 1);
 
-	#endif // (ALLOCATOR_CFG_DEBUG_MODE_EN)
+	#endif // (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
 
 	return 0;
 }
@@ -310,4 +306,35 @@ void allocator_control_exception_default_lack_of_memory(struct allocator_s *allo
 
 	while (true) {
 	}
+}
+
+/**
+ * @brief This function will log the stack back trace link when destroy and clean the allocator struct.
+ *
+ * @param
+ *
+ * @return NONE
+ */
+
+errno_t allocator_control_configuration_destroy_log(struct allocator_s *allocator)
+{
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
+
+	printf("\r\n-----------------------------------stack trace string table begin-----------------------------------\r\n");
+	stack_back_trace_stpp stack_back_trace_tmp = malloc(sizeof(void *));
+	if (NULL == stack_back_trace_tmp) {
+		return 1;
+	}
+
+	debug_capture_stack_back_trace_link_get_trace_ptr(allocator->stack_back_trace_link_ptr, stack_back_trace_tmp);
+
+	printf("\r\n-----------------------------------stack trace mark string table begin-----------------------------------\r\n");
+	debug_capture_stack_back_trace_convert_to_string(*(stack_back_trace_tmp + 0));
+
+	printf("\r\n-----------------------------------stack trace link string table begin-----------------------------------\r\n");
+	debug_capture_stack_back_trace_convert_to_string(*(stack_back_trace_tmp + 1));
+
+	printf("\r\n-----------------------------------stack trace string table end-----------------------------------\r\n");
+
+	return 0;
 }
