@@ -316,7 +316,8 @@ void allocator_control_exception_default_lack_of_memory(struct allocator_s *allo
  * @return NONE
  */
 
-errno_t allocator_control_configuration_destroy_log(struct allocator_s *allocator)
+static inline errno_t
+allocator_control_configuration_destroy_log(struct allocator_s *allocator)
 {
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
 
@@ -326,13 +327,8 @@ errno_t allocator_control_configuration_destroy_log(struct allocator_s *allocato
 		return 1;
 	}
 
-	debug_capture_stack_back_trace_link_get_trace_ptr(allocator->stack_back_trace_link_ptr, stack_back_trace_tmp);
-
-	printf("\r\n-----------------------------------stack trace mark string table begin-----------------------------------\r\n");
-	debug_capture_stack_back_trace_convert_to_string(*(stack_back_trace_tmp + 0));
-
-	printf("\r\n-----------------------------------stack trace link string table begin-----------------------------------\r\n");
-	debug_capture_stack_back_trace_convert_to_string(*(stack_back_trace_tmp + 1));
+	debug_capture_stack_back_trace_link_log(allocator->stack_back_trace_link_ptr,
+											1);
 
 	printf("\r\n-----------------------------------stack trace string table end-----------------------------------\r\n");
 

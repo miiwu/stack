@@ -700,8 +700,9 @@ errno_t debug_capture_stack_back_trace_link_log(stack_back_trace_link_stp link,
 
 			if (string_return.frames) {
 				for (size_t index = 0; index < string_return.frames; index++) {
-					printf("The %d \"%s\"'s %d/%d level stack is \"%s\" function.\r\n\r\n",
+					printf("The %d/%d %s's %d/%d level stack is \"%s\" function.\r\n",
 						   cnt,
+						   link->mark_ptr->type_count,
 						   (ct) ? "mark" : "link",
 						   index + 1,
 						   string_return.frames,
@@ -709,6 +710,8 @@ errno_t debug_capture_stack_back_trace_link_log(stack_back_trace_link_stp link,
 				}
 
 				printf("\r\n");
+
+				string_return.frames = 0;
 			}
 		}
 	}
