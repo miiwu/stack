@@ -22,16 +22,20 @@
  *********************************************************************************************************
  */
 
-/* Define			debug assert control variable.										                */
-#define DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value, print)                         \
+/* Define			debug assert control expression.										            */
+#define DEBUG_ASSERT_CONTROL_EXPRESSION(expression, print)                                              \
 	do {																								\
-		assert((((value_type)(variable)) comp ((value_type)(value))));	                                \
-        if (!(((value_type)(variable)) comp ((value_type)(value)))) {                                   \
+		assert((expression));	                                                                        \
+        if (!(expression)) {                                                                            \
             print;                                                                                      \
             while (1) {                                                                                 \
             }                                                                                           \
         }                                                                                               \
 	} while (0)
+
+/* Define			debug assert control variable.										                */
+#define DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value, print)                         \
+	DEBUG_ASSERT_CONTROL_EXPRESSION((((value_type)(variable)) comp ((value_type)(value))),print)
 
 /* Define			debug assert control pointer.										                */
 #define DEBUG_ASSERT_CONTROL_POINTER(pointer, print)							                        \
