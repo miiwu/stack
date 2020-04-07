@@ -2,7 +2,7 @@
 
 #if MAIN_ALLOCATOR_EN
 
-#define MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN											1u
+#define MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN									0u
 
 #define MAIN_ALLOCATOR_CFG_CONCEPT_ALLOCATOR_EN										1u
 
@@ -11,6 +11,9 @@
 #define ALLOCATOR_TYPE	CONCEPT_ALLOCATOR
 
 #endif // (MAIN_ALLOCATOR_CFG_CONCEPT_ALLOCATOR_EN)
+
+void main_allocator_allocate(void *block);
+void main_allocator_deallocate(void *block);
 
 struct allocator_control_s
 	*allocator_control_ptr = NULL;
@@ -58,8 +61,11 @@ void main_allocator(void)
 
 	#endif // MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN
 
-	printf("\r\nallocator.deallocate start \r\n");
-	allocator_control_ptr->deallocate(allocator, block);
+	//printf("\r\nallocator.deallocate start \r\n");
+	//allocator_control_ptr->deallocate(allocator, block);
+
+	main_allocator_allocate(block);
+	main_allocator_deallocate(block);
 
 	printf("\r\nallocator.destroy start \r\n");
 	allocator_control_ptr->configuration.destroy(&allocator);
@@ -67,6 +73,16 @@ void main_allocator(void)
 	printf("\r\n------------------------+ allocator demo end +------------------------\r\n");
 
 	return;
+}
+
+void main_allocator_allocate(void *block)
+{
+	block = allocator_control_ptr->allocate(allocator, 1, 1);
+}
+
+void main_allocator_deallocate(void *block)
+{
+	allocator_control_ptr->deallocate(allocator, block);
 }
 
 #endif // MAIN_ALLOCATOR_EN

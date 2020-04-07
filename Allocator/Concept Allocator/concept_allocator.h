@@ -25,10 +25,10 @@
 */
 
 /* Configure if enable allocator debug control structure.                                               */
-#define ALLOCATOR_CFG_DEBUG_MODE_EN			                                    0u
+#define CONCEPT_ALLOCATOR_CFG_DEBUG_MODE_EN			                                    0u
 
 /* Configure if enable integrated structure.                                                            */
-#define ALLOCATOR_CFG_INTEGRATED_STRUCTURE_MODE_EN			                    1u
+#define CONCEPT_ALLOCATOR_CFG_INTEGRATED_STRUCTURE_MODE_EN			                    1u
 
 /*
 *********************************************************************************************************
