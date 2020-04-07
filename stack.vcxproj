@@ -19,14 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Algorithm\compare.c" />
+    <ClCompile Include="Algorithm\modify_sequence.c" />
+    <ClCompile Include="Algorithm\sort.c" />
+    <ClCompile Include="Algorithm\search_substring.c" />
     <ClCompile Include="Allocator\Allocator Definition\allocator_def.c" />
     <ClCompile Include="Allocator\Concept Allocator\concept_allocator.c" />
     <ClCompile Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.c" />
+    <ClCompile Include="Iterator\Input Iterator\input_iterator.c" />
+    <ClCompile Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_def.c" />
+    <ClCompile Include="Iterator\Iterator Definition\iterator_def.c" />
+    <ClCompile Include="Iterator\Output Iterator\output_iterator.c" />
+    <ClCompile Include="Iterator\Random Access Iterator\random_access_iterator.c" />
     <ClCompile Include="Main\main.c" />
     <ClCompile Include="Main\main_algorithm.c" />
     <ClCompile Include="Main\main_allocator.c" />
+    <ClCompile Include="Main\main_debug_component.c" />
+    <ClCompile Include="Main\main_generic_type.c" />
+    <ClCompile Include="Main\main_iterator.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithm\algorithm.h" />
+    <ClInclude Include="Algorithm\algorithm_def.h" />
+    <ClInclude Include="Algorithm\compare.h" />
+    <ClInclude Include="Algorithm\modify_sequence.h" />
+    <ClInclude Include="Algorithm\sort.h" />
+    <ClInclude Include="Algorithm\search_substring.h" />
     <ClInclude Include="Allocator\Allocator Definition\allocator_cfg.h" />
     <ClInclude Include="Allocator\Allocator Definition\allocator_def.h" />
     <ClInclude Include="Allocator\Allocator Definition\allocator_pte_def.h" />
@@ -36,6 +54,14 @@
     <ClInclude Include="Debug Component\Debug Component Definition\debug_component_def.h" />
     <ClInclude Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.h" />
     <ClInclude Include="Debug Component\debug_component.h" />
+    <ClInclude Include="Iterator\Input Iterator\input_iterator.h" />
+    <ClInclude Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_def.h" />
+    <ClInclude Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_pte_def.h" />
+    <ClInclude Include="Iterator\Iterator Definition\iterator_def.h" />
+    <ClInclude Include="Iterator\Iterator Definition\iterator_pte_def.h" />
+    <ClInclude Include="Iterator\iterator.h" />
+    <ClInclude Include="Iterator\Output Iterator\output_iterator.h" />
+    <ClInclude Include="Iterator\Random Access Iterator\random_access_iterator.h" />
     <ClInclude Include="Main\main_cfg.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -144,11 +170,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

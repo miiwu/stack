@@ -35,27 +35,27 @@
  */
 
 struct iterator_control_s {
-    struct {
-        errno_t(*init)(struct iterator_s **iterator,
-                       struct iterator_object_unit_s object_unit);
+	struct {
+		errno_t(*init)(struct iterator_s **iterator,
+					   struct iterator_object_unit_s object_unit);
 
-        errno_t(*destroy)(struct iterator_s **iterator);
-    }configuration;
+		errno_t(*destroy)(struct iterator_s **iterator);
+	}configuration;
 
-    struct {
-        void *(*advance)(struct iterator_s *iterator,
-                         int step);
+	struct {
+		void *(*advance)(struct iterator_s *iterator,
+						 int step);
 
-        size_t(*distance)(struct iterator_s *iterator);
-    }iterator_operations;
+		size_t(*distance)(struct iterator_s *iterator);
+	}iterator_operations;
 
-    struct {
-        size_t(*size)(struct iterator_s *iterator);
+	struct {
+		size_t(*size)(struct iterator_s *iterator);
 
-        bool (*empty)(struct iterator_s *iterator);
+		bool (*empty)(struct iterator_s *iterator);
 
-        void *(*data)(struct iterator_s *iterator);
-    }range_access;
+		void *(*data)(struct iterator_s *iterator);
+	}range_access;
 };
 
 /**
@@ -63,9 +63,9 @@ struct iterator_control_s {
  */
 
 struct iterator_unit_s {
-    struct iterator_control_s *control_ptr;
+	struct iterator_control_s *control_ptr;
 
-    void *iterator_ptr;
+	void *iterator_ptr;
 };
 
 /*

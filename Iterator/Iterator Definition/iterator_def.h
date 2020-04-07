@@ -128,18 +128,6 @@ struct iterator_object_unit_s {
 };
 
 /**
- * @brief This type is the iterator allocator unit structure.
- */
-
-struct iterator_allocator_unit_s {
-	/* @brief This variables will point to the object.						                            */
-	void *allocator_ptr;
-
-	/* @brief This variables will point to the control structure of the object_ptr.				        */
-	struct allocator_control_s *control_ptr;
-};
-
-/**
  * @brief This type is the iterator feature package structure.
  */
 

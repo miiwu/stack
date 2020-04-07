@@ -42,7 +42,7 @@ struct iterator_s {
 	struct iterator_common_information_s info;
 
 	/* @brief This variables will record the allocator unit structure.									*/
-	struct iterator_allocator_unit_s allocator_unit;
+	struct allocator_unit_s allocator_unit;
 
 	/* @brief This variables will record the object unit structure.										*/
 	struct iterator_object_unit_s object_unit;

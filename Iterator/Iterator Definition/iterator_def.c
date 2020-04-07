@@ -75,7 +75,7 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
 	ITERATOR_CONTROL_ASSERT_VARIABLE(addon_size, >= , int, 0);
 
-	struct iterator_allocator_unit_s
+	struct allocator_unit_s
 		allocator_unit = { 0 };
 
 	if (NULL == (allocator_unit
@@ -84,7 +84,7 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 	}
 
 	if (allocator_unit.control_ptr->configuration
-		.init(&allocator_unit.allocator_ptr, NULL)) {
+		.init(&allocator_unit.allocator_ptr)) {
 		return 5;
 	}
 
@@ -117,13 +117,13 @@ errno_t iterator_control_configuration_destroy(struct iterator_s **iterator)
 	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
 	ITERATOR_CONTROL_ASSERT_POINTER((*iterator));
 
-	static struct iterator_allocator_unit_s allocator_unit = { 0 };
+	static struct allocator_unit_s allocator_unit = { 0 };
 
 	allocator_unit = (*iterator)->allocator_unit;                                           /* Store allocator unit structure */
 
 	if (allocator_unit.control_ptr
 		->deallocate(allocator_unit.allocator_ptr,
-					 (*iterator), 1)) {					                                    /* Deallocate the iterator */
+					 (*iterator))) {					                                    /* Deallocate the iterator */
 		return 2;
 	}
 

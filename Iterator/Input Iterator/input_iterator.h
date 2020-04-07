@@ -43,29 +43,29 @@ typedef struct iterator_s
  */
 
 struct input_iterator_control_s {
-    struct {
-        errno_t(*init)(input_iterator_stpp iterator,
-                       struct iterator_object_unit_s object_unit);
+	struct {
+		errno_t(*init)(input_iterator_stpp iterator,
+					   struct iterator_object_unit_s object_unit);
 
-        errno_t(*destroy)(input_iterator_stpp iterator);
-    }configuration;
+		errno_t(*destroy)(input_iterator_stpp iterator);
+	}configuration;
 
-    struct {
-        void *(*advance)(input_iterator_stp iterator,
-                         int step);
+	struct {
+		void *(*advance)(input_iterator_stp iterator,
+						 int step);
 
-        size_t(*distance)(input_iterator_stp iterator);
+		size_t(*distance)(input_iterator_stp iterator);
 
-        void *(*next)(input_iterator_stp iterator);
-    }iterator_operations;
+		void *(*next)(input_iterator_stp iterator);
+	}iterator_operations;
 
-    struct {
-        size_t(*size)(input_iterator_stp iterator);
+	struct {
+		size_t(*size)(input_iterator_stp iterator);
 
-        bool (*empty)(input_iterator_stp iterator);
+		bool (*empty)(input_iterator_stp iterator);
 
-        void *(*data)(input_iterator_stp iterator);
-    }range_access;
+		void *(*data)(input_iterator_stp iterator);
+	}range_access;
 };
 
 /*
