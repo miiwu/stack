@@ -23,37 +23,39 @@
  */
 
 /* Define			debug assert control expression.										            */
-#define DEBUG_ASSERT_CONTROL_EXPRESSION(expression, print)                                              \
+#define DEBUG_ASSERT_CONTROL_EXPRESSION(expression, ...)                                                \
 	do {																								\
 		assert((expression));	                                                                        \
         if (!(expression)) {                                                                            \
-            print;                                                                                      \
+            __VA_ARGS__;                                                                                \
             while (1) {                                                                                 \
             }                                                                                           \
         }                                                                                               \
 	} while (0)
 
 /* Define			debug assert control variable.										                */
-#define DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value, print)                         \
-	DEBUG_ASSERT_CONTROL_EXPRESSION((((value_type)(variable)) comp ((value_type)(value))),print)
+#define DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value, ...)                           \
+	DEBUG_ASSERT_CONTROL_EXPRESSION((((value_type)(variable)) comp ((value_type)(value))),              \
+                                    __VA_ARGS__)
 
 /* Define			debug assert control pointer.										                */
-#define DEBUG_ASSERT_CONTROL_POINTER(pointer, print)							                        \
-	DEBUG_ASSERT_CONTROL_VARIABLE(pointer, !=, void*, NULL, print)
+#define DEBUG_ASSERT_CONTROL_POINTER(pointer, ...)							                            \
+	DEBUG_ASSERT_CONTROL_VARIABLE(pointer, !=, void*, NULL,                                             \
+                                  __VA_ARGS__)
+
+/* Define			debug assert control expression with printf output.								    */
+#define DEBUG_ASSERT_CONTROL_EXPRESSION_PRINTF(expression)                                              \
+   DEBUG_ASSERT_CONTROL_EXPRESSION(expression,                                                          \
+                                   printf("Assert Failed: \"%s\"\r\n    "                               \
+                                          "func:\"%s\"\r\n    "                                         \
+                                          "file:\"%s\" line:%ld\r\n",                                   \
+                                          #expression,                                                  \
+                                          __FUNCTION__,                                                 \
+                                          __FILE__, (size_t)__LINE__))
 
 /* Define			debug assert control variable with printf output.								    */
 #define DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(variable, comp, value_type, value)                         \
-	do {																								\
-		assert((((value_type)(variable)) comp ((value_type)(value))));	                                \
-        if (!(((value_type)(variable)) comp ((value_type)(value)))) {                                   \
-            printf("Assert Failed: \r\n\tfunc:\"%s\"                                                    \
-                assert:\"%s %s %s\"\r\n\tfile:\"%s\" line:%ld\r\n",                                     \
-                __FUNCTION__, #variable, #comp, #value,                                                 \
-                __FILE__, (size_t)__LINE__);                                                            \
-            while (1) {                                                                                 \
-            }                                                                                           \
-        }                                                                                               \
-	} while (0)
+	DEBUG_ASSERT_CONTROL_EXPRESSION_PRINTF((((value_type)(variable)) comp ((value_type)(value))))
 
 /* Define			debug assert control pointer with printf output.								    */
 #define DEBUG_ASSERT_CONTROL_POINTER_PRINTF(pointer)							                        \
