@@ -55,6 +55,12 @@
     <Filter Include="源文件\allocator\concept allocator">
       <UniqueIdentifier>{ef21b18d-057c-4e71-8804-5cd8c9095c3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\debug component\debug error">
+      <UniqueIdentifier>{f80daea7-147b-48c9-95d9-bda966287ab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\debug component\debug error">
+      <UniqueIdentifier>{95f35da3-5d80-4c68-b2f5-bc271a39d8dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -74,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="Allocator\Allocator Definition\allocator_def.c">
       <Filter>源文件\allocator\allocator definition</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug Component\Debug Error\debug_error.c">
+      <Filter>源文件\debug component\debug error</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="Allocator\Allocator Definition\allocator_pte_def.h">
       <Filter>头文件\allocator\allocator definition</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug Component\Debug Error\debug_error.h">
+      <Filter>头文件\debug component\debug error</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
