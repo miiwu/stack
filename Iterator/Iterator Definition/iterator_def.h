@@ -37,20 +37,6 @@
 #pragma warning( disable : 4996)
 #pragma warning( disable : 26812)
 
-/* Define			iterator control assert variable.										            */
-#define ITERATOR_CONTROL_ASSERT_VARIABLE(variable, comp, value_type, value)                             \
-    DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value,                                    \
-        printf("Assert Failed: \r\n\tfunc:\"%s\" assert:\"%s %s %s\"\r\n\tfile:\"%s\" line:%ld\r\n",    \
-               __FUNCTION__,#variable,#comp,#value,                                                     \
-               __FILE__,(size_t)__LINE__))
-
-/* Define			iterator control assert pointer.										            */
-#define ITERATOR_CONTROL_ASSERT_POINTER(pointer)                                                        \
-    DEBUG_ASSERT_CONTROL_POINTER(pointer,                                                               \
-        printf("Assert Failed: \r\n\tfunc:\"%s\" assert:\"%s\"\r\n\tfile:\"%s\" line:%ld\r\n",          \
-               __FUNCTION__,#pointer,                                                                   \
-               __FILE__,(size_t)__LINE__))
-
 /*
  *********************************************************************************************************
  *									           DATA TYPES

@@ -93,9 +93,9 @@ bool input_iterator_control_feature_package_advance(int step);
 errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
 												  struct iterator_object_unit_s object_unit)
 {
-	ITERATOR_CONTROL_ASSERT_POINTER(iterator);
-	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.object_ptr);
-	ITERATOR_CONTROL_ASSERT_POINTER(object_unit.control_ptr);
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(iterator);
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(object_unit.object_ptr);
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(object_unit.control_ptr);
 
 	if (iterator_control_configuration_init(iterator,
 											INPUT_ITORATER,
