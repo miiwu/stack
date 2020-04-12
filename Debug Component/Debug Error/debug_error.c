@@ -40,7 +40,7 @@
  * @brief This variable is the debug error control error pointer.
  */
 
-errno_t *DEBUG_ERROR_CONTROL_ERRNO_PTR;
+errno_t *DEBUG_ERROR_CONTROL_ERROR_PTR;
 
 /*
  *********************************************************************************************************
