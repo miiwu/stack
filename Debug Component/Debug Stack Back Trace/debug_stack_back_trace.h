@@ -85,12 +85,25 @@ typedef struct stack_back_trace_t
 **stack_back_trace_stpp;
 
 /**
- * @brief This type is the stack back trace link structure typedef.
+ * @brief This type is the stack back trace string structure.
  */
 
-typedef struct stack_back_trace_link_t
-*stack_back_trace_link_stp,
-**stack_back_trace_link_stpp;
+struct stack_back_trace_string_t {
+    /* @brief This variables will record the max types.													*/
+    size_t name_len;
+
+    /* @brief This variables will record how many types is recorded.					                */
+    char *name_ptr;
+
+    /* @brief This variables will record the trace value of the both stack.					            */
+    size_t file_line;
+
+    /* @brief This variables will record the trace value of the both stack.					            */
+    size_t file_line_len;
+
+    /* @brief This variables will record the hash value of the both stack.					            */
+    char *file_name_ptr;
+};
 
 /**
  * @brief This type is the stack back trace convert_to_string_return typedef.
@@ -144,18 +157,6 @@ errno_t debug_capture_stack_back_trace(stack_back_trace_stp stack_back_trace,
 									   stack_back_trace_size_t frames_to_skip);
 
 /**
- * @brief This function will reduce the count of the capture stack back trace type.
- *
- * @param stack_back_trace the pointer to the capture stack back trace struct
- * @param hash the hash of the capture stack back trace
- *
- * @return NONE
- */
-
-errno_t debug_capture_stack_back_trace_reduce_count(stack_back_trace_stp strcuture,
-													stack_back_trace_hash_t hash);
-
-/**
  * @brief This function will back trace the stack.
  *
  * @param structure the pointer to the capture stack back trace struct
@@ -181,76 +182,10 @@ struct stack_back_trace_convert_to_string_return_s
 stack_back_trace_hash_t debug_capture_stack_back_trace_get_hash(stack_back_trace_stp strcuture,
 																stack_back_trace_size_t index);
 
-/**
- * @brief This function will initialize a link struct.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NONE
+/*
+ *********************************************************************************************************
+ *                                             MODULE END
+ *********************************************************************************************************
  */
-
-errno_t debug_capture_stack_back_trace_link_init(stack_back_trace_link_stpp link,
-												 stack_back_trace_size_t count);
-
-/**
- * @brief This function will destroy a link struct.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NONE
- */
-
-errno_t debug_capture_stack_back_trace_link_destroy(stack_back_trace_link_stp *link);
-
-/**
- * @brief This function will make a sign.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return index
- */
-
-errno_t debug_capture_stack_back_trace_link_mark(stack_back_trace_link_stp link,
-												 stack_back_trace_size_t frames_to_skip);
-
-/**
- * @brief This function will set a link via the sign.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NONE
- */
-
-errno_t debug_capture_stack_back_trace_link_link(stack_back_trace_link_stp link,
-												 stack_back_trace_size_t frames_to_skip);
-
-/**
- * @brief This function will log the mark and the link information.
- *
- * @param link the pointer to the stack back trace link struct
- * @param option the option of the log
- *
- * @return the error code
- */
-
-errno_t debug_capture_stack_back_trace_link_log(stack_back_trace_link_stp link,
-												size_t option);
-
-/**
- * @brief This function will get the trace in the link.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NULL
- */
-
-errno_t debug_capture_stack_back_trace_link_get_trace_ptr(stack_back_trace_link_stp link,
-														  stack_back_trace_stpp trace);
-
-   /*
-	*********************************************************************************************************
-	*                                             MODULE END
-	*********************************************************************************************************
-	*/
 
 #endif // !__DEBUG_STACK_BACK_TRACE_H
