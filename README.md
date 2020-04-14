@@ -218,12 +218,23 @@ This package contains some simple data structures together.
 
     A try on function entry check definition file.
 
+    ```c
+  void debug_assert(char *pointer, size_t variable)
+    {
+      DEBUG_ASSERT_CONTROL_POINTER_PRINTF(pointer);
+        DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(variable, >= , int, 0);
+      DEBUG_ASSERT_CONTROL_EXPRESSION_PRINTF(true == true);
+        
+        // ...
+    }
+    ```
+  
   - Error
-
+  
     A try on function  error return.
-
+  
     The using sample is here:
-
+  
     ```c
   struct debug_error_structure_s {
         errno_t err;    /* This is the must */

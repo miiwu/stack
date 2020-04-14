@@ -2,8 +2,8 @@
 
 #if MAIN_DEBUG_COMPONENT_EN
 
-#define MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN						0u
-#define MAIN_DEBUG_COMPONENT_CFG_ERROR_EN						1u
+#define MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN						1u
+#define MAIN_DEBUG_COMPONENT_CFG_ERROR_EN						0u
 #define MAIN_DEBUG_COMPONENT_CFG_STACK_BACK_TRACE_EN			0u
 
 void main_debug_assert(void);
@@ -35,8 +35,24 @@ void main_debug_component(void)
 
 #if MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN
 
+void debug_assert(char *pointer, size_t variable);
+
 void main_debug_assert(void)
 {
+	char string[] = "debug assert";
+
+	debug_assert(string, string[0]);
+}
+
+void debug_assert(char *pointer, size_t variable)
+{
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(pointer);
+	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(variable, >= , int, 0);
+	DEBUG_ASSERT_CONTROL_EXPRESSION_PRINTF(true == true);
+
+	printf("string:\"%s\" variable:%d\r\n",
+		   pointer,
+		   variable);
 }
 
 #endif // MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN
