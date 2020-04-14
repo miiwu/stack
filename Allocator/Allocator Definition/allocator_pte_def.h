@@ -7,8 +7,8 @@
  *********************************************************************************************************
  */
 
-#ifndef __INPUT_ITERATOR_H
-#define __INPUT_ITERATOR_H
+#ifndef __ALLOCATOR_PRIVITE_DEFINITION_H
+#define __ALLOCATOR_PRIVITE_DEFINITION_H
 
 /*
  *********************************************************************************************************
@@ -16,7 +16,7 @@
  *********************************************************************************************************
  */
 
-#include "iterator_def.h"
+#include "allocator_def.h"
 
 /*
  *********************************************************************************************************
@@ -31,41 +31,59 @@
  */
 
 /**
- * @brief This type is the input iterator typedef.
+ * @brief This type is the allocator information structure.
  */
 
-typedef struct iterator_s
-*input_iterator_stp,
-**input_iterator_stpp;
+struct allocator_information_s {
+	/* @brief This variables will record the match value of allocator allocate() and the deallocate().  */
+	allocator_size_t match;
+};
 
 /**
- * @brief This type is the input iterator control structure.
+ * @brief This type is the allocator exception structure.
  */
 
-struct input_iterator_control_s {
-	struct {
-		errno_t(*init)(input_iterator_stpp iterator,
-					   struct iterator_object_unit_s object_unit);
+struct allocator_exception_s {
+	/* @brief This variables will point to the exception handler of lack of memory.			            */
+	void (*lack_of_memory)(void *allocator);
+};
 
-		errno_t(*destroy)(input_iterator_stpp iterator);
-	}configuration;
+/**
+ * @brief This type is the allocator memory manage control structure.
+ */
 
-	struct {
-		void *(*advance)(input_iterator_stp iterator,
-						 int step);
+struct allocator_memory_manage_unit_s {
+	struct allocator_memory_manage_control_s control;
 
-		size_t(*distance)(input_iterator_stp iterator);
+	void *memory_manage_ptr;
+};
 
-		void *(*next)(input_iterator_stp iterator);
-	}iterator_operations;
+/**
+ * @brief This type is the allocator structure.
+ */
 
-	struct {
-		size_t(*size)(input_iterator_stp iterator);
+struct allocator_s {
+	/* @brief This variables will record the identity code of allocator type.					        */
+	enum allocator_type_e allocator_type_id;
 
-		bool (*empty)(input_iterator_stp iterator);
+	/* @brief This variables will record the information of the allocator.					            */
+	struct allocator_information_s info;
 
-		void *(*data)(input_iterator_stp iterator);
-	}range_access;
+	/* @brief This variables will record the exception of the allocator.					            */
+	struct allocator_exception_s exception;
+
+	/* @brief This variables will record the memory manage control of the allocator.				    */
+	struct allocator_memory_manage_unit_s memory_manage_unit;
+
+	#if ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN
+
+	/* @brief This variables will record the stack back trace link of the allocator.				    */
+	stack_back_trace_link_stp stack_back_trace_link_ptr;
+
+	#endif // ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN
+
+	/* @brief This variables will record the addon of the allocator.					                */
+	char addon[0];
 };
 
 /*
@@ -74,28 +92,11 @@ struct input_iterator_control_s {
  *********************************************************************************************************
  */
 
-/**
- * @brief This function will initialize the iterator.
- *
- * @param
- *
- * @return
- */
-
-errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
-												  struct iterator_object_unit_s object_unit);
-
 /*
  *********************************************************************************************************
  *                                       EXTERN GLOBAL VARIABLES
  *********************************************************************************************************
  */
-
-/**
- * @brief This type is the input iterator control structure.
- */
-
-extern struct input_iterator_control_s input_iterator_control;
 
 /*
  *********************************************************************************************************
@@ -103,4 +104,4 @@ extern struct input_iterator_control_s input_iterator_control;
  *********************************************************************************************************
  */
 
-#endif // !__INPUT_ITERATOR_H
+#endif // !__ALLOCATOR_PRIVITE_DEFINITION_H

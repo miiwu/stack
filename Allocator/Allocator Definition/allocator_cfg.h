@@ -29,7 +29,7 @@
 #define ALLOCATOR_GLOBAL_CFG_MEMORY_POOL_SIZE			                                        102400u
 
 /* Configure    if enable allocator global debug component.												*/
-#define ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN			                                        0u
+#define ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN			                                        1u
 
 #pragma warning( disable : 4996)
 #pragma warning( disable : 26812)

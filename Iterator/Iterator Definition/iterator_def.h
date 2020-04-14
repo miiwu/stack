@@ -37,20 +37,6 @@
 #pragma warning( disable : 4996)
 #pragma warning( disable : 26812)
 
-/* Define			iterator control assert variable.										            */
-#define ITERATOR_CONTROL_ASSERT_VARIABLE(variable, comp, value_type, value)                             \
-    DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value,                                    \
-        printf("Assert Failed: \r\n\tfunc:\"%s\" assert:\"%s %s %s\"\r\n\tfile:\"%s\" line:%ld\r\n",    \
-               __FUNCTION__,#variable,#comp,#value,                                                     \
-               __FILE__,(size_t)__LINE__))
-
-/* Define			iterator control assert pointer.										            */
-#define ITERATOR_CONTROL_ASSERT_POINTER(pointer)                                                        \
-    DEBUG_ASSERT_CONTROL_POINTER(pointer,                                                               \
-        printf("Assert Failed: \r\n\tfunc:\"%s\" assert:\"%s\"\r\n\tfile:\"%s\" line:%ld\r\n",          \
-               __FUNCTION__,#pointer,                                                                   \
-               __FILE__,(size_t)__LINE__))
-
 /*
  *********************************************************************************************************
  *									           DATA TYPES
@@ -128,15 +114,23 @@ struct iterator_object_unit_s {
 };
 
 /**
- * @brief This type is the iterator allocator unit structure.
+ * @brief This type is the iterator allocate package structure.
  */
 
-struct iterator_allocator_unit_s {
-	/* @brief This variables will point to the object.						                            */
-	void *allocator_ptr;
+struct iterator_allocate_package_s {
+	enum iterator_type_e type;
 
-	/* @brief This variables will point to the control structure of the object_ptr.				        */
-	struct allocator_control_s *control_ptr;
+	size_t mem_size;
+};
+
+/**
+ * @brief This type is the iterator allocate package structure.
+ */
+
+struct iterator_allocate_return_package_s {
+    errno_t error;
+
+    struct allocator_unit_s allocator_unit;
 };
 
 /**
@@ -148,11 +142,35 @@ struct iterator_feature_package_s {
 	bool (*advance)(int step);
 };
 
+/**
+ * @brief This type is the iterator feature package structure.
+ */
+
+struct iterator_adaptor_allocate_package_s {
+    enum iterator_type_e type;
+
+    struct iterator_object_unit_s object_unit;
+
+    size_t addon_size;
+};
+
 /*
  *********************************************************************************************************
  *								            FUNCTION PROTOTYPES
  *********************************************************************************************************
  */
+
+/**
+ * @brief This function will allocate the iterator.
+ *
+ * @param
+ *
+ * @return
+ */
+
+struct iterator_allocate_return_package_s
+    iterator_control_configuration_allocate(void **iterator,
+                                            struct iterator_allocate_package_s package);
 
 /**
  * @brief This function will initialize the iterator.
@@ -227,17 +245,6 @@ void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
  * @return
  */
 
-errno_t iterator_control_iterator_operations_modify(struct iterator_s *iterator,
-													void *source);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
 void *iterator_control_range_access_begin(struct iterator_s *iterator);
 
 /**
@@ -281,15 +288,14 @@ bool iterator_control_range_access_empty(struct iterator_s *iterator);
 void *iterator_control_range_access_data(struct iterator_s *iterator);
 
 /**
- * @brief This function will check if the at iterator operations can perform.
+ * @brief This function will inquire for the allocator unit of the iterator.
  *
- * @param
+ * @param iterator the pointer to the iterator
  *
- * @return
+ * @return the allocator unit of the iterator
  */
 
-bool iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
-												   size_t index);
+struct allocator_unit_s iterator_control_inquire_allocator_unit(struct iterator_s *iterator);
 
 /*
  *********************************************************************************************************
