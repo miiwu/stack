@@ -221,9 +221,9 @@ This package contains some simple data structures together.
     ```c
   void debug_assert(char *pointer, size_t variable)
     {
-      DEBUG_ASSERT_CONTROL_POINTER_PRINTF(pointer);
+        DEBUG_ASSERT_CONTROL_POINTER_PRINTF(pointer);
         DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(variable, >= , int, 0);
-      DEBUG_ASSERT_CONTROL_EXPRESSION_PRINTF(true == true);
+        DEBUG_ASSERT_CONTROL_EXPRESSION_PRINTF(true == true);
         
         // ...
     }
