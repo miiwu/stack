@@ -97,11 +97,13 @@ errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(object_unit.object_ptr);
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(object_unit.control_ptr);
 
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
+
 	if (iterator_control_configuration_init(iterator,
 											INPUT_ITORATER,
 											object_unit,
 											sizeof(struct iterator_feature_package_s))) {
-		return 4;
+		DEBUG_ERROR_CONTROL_JUMP(1);
 	}
 
 	static struct iterator_feature_package_s *feature_package;
@@ -110,7 +112,7 @@ errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
 
 	feature_package->advance = input_iterator_control_feature_package_advance;
 
-	return 0;
+	DEBUG_ERROR_CONTROL_EXIT();
 }
 
 /**

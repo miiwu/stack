@@ -103,24 +103,26 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(object_unit.control_ptr);
 	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(addon_size, >= , int, 0);
 
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(3, 1, 2, 3);
+
 	struct allocator_unit_s
 		allocator_unit = { 0 };
 
 	if (NULL == (allocator_unit
 				 .control_ptr = allocator_control_get_function_address_table(type))) {
-		return 4;
+		DEBUG_ERROR_CONTROL_JUMP(1);
 	}
 
 	if (allocator_unit.control_ptr->configuration
 		.init(&allocator_unit.allocator_ptr)) {
-		return 5;
+		DEBUG_ERROR_CONTROL_JUMP(2);
 	}
 
 	if (NULL == ((*iterator)
 				 = allocator_unit.control_ptr->allocate(allocator_unit.allocator_ptr,
 														1,
 														sizeof(struct iterator_s) + addon_size))) {
-		return 6;
+		DEBUG_ERROR_CONTROL_JUMP(3);
 	}
 
 	(*iterator)->type_id = type;
@@ -129,7 +131,7 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 	(*iterator)->allocator_unit = allocator_unit;
 	(*iterator)->object_unit = object_unit;
 
-	return 0;
+	DEBUG_ERROR_CONTROL_EXIT();
 }
 
 /**
@@ -183,6 +185,8 @@ errno_t iterator_control_configuration_destroy(struct iterator_s **iterator)
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(iterator);
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF((*iterator));
 
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(2, 1, 2);
+
 	static struct allocator_unit_s allocator_unit = { 0 };
 
 	allocator_unit = (*iterator)->allocator_unit;                                           /* Store allocator unit structure */
@@ -190,17 +194,17 @@ errno_t iterator_control_configuration_destroy(struct iterator_s **iterator)
 	if (allocator_unit.control_ptr
 		->deallocate(allocator_unit.allocator_ptr,
 					 (*iterator))) {					                                    /* Deallocate the iterator */
-		return 2;
+		DEBUG_ERROR_CONTROL_JUMP(1);
 	}
 
 	if (allocator_unit.control_ptr
 		->configuration.destroy(&allocator_unit.allocator_ptr)) {						    /* Destroy the allocator */
-		return 3;
+		DEBUG_ERROR_CONTROL_JUMP(2);
 	}
+    
+    *iterator = NULL;
 
-	*iterator = NULL;
-
-	return 0;
+	DEBUG_ERROR_CONTROL_EXIT();
 }
 
 /**
