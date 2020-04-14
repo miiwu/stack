@@ -206,6 +206,7 @@ This package contains some simple data structures together.
 
   - [x] Input iterator
 - [ ] Forward iterator
+  
   - [ ] Bidirectional iterator
 - [x] Random access iterator
   - [ ] Output iterator
@@ -217,12 +218,58 @@ This package contains some simple data structures together.
 
     A try on function entry check definition file.
 
+  - Error
+
+    A try on function  error return.
+
+    The using sample is here:
+
+    ```c
+  struct debug_error_structure_s {
+        errno_t err;    /* This is the must */
+  
+        char *string;
+    };
+    
+    errno_t debug_error_errno()
+    {
+        DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
+        /* DEBUG_ERROR_CONTROL_INIT(errno_t, 2, 0, 1); */
+    
+        if (true) {
+            DEBUG_ERROR_CONTROL_JUMP(1);
+        }
+    
+        DEBUG_ERROR_CONTROL_EXIT(printf("error:%d\r\n",
+                                        DEBUG_ERROR_CONTROL_ERROR_VAL),
+                                 printf("error:%d\r\n",
+                                        DEBUG_ERROR_CONTROL_RETURN_VAL));
+    }
+    
+    struct debug_error_structure_s debug_error_structure()
+    {
+        DEBUG_ERROR_CONTROL_STRUCTURE_INIT(struct debug_error_structure_s, 1, 1);
+        /* DEBUG_ERROR_CONTROL_INIT(struct debug_error_structure_s, 2, 0, 1); */
+    
+        DEBUG_ERROR_CONTROL_RETURN_VAL.string = "debug_error_structure";
+    
+        if (true) {
+            DEBUG_ERROR_CONTROL_JUMP(1);
+        }
+    
+        DEBUG_ERROR_CONTROL_EXIT(printf("error:%d\r\n",
+                                        DEBUG_ERROR_CONTROL_ERROR_VAL),
+                                 printf("string:\"%s\"\r\n",
+                                        DEBUG_ERROR_CONTROL_RETURN_VAL.string));
+    }
+    ```
+    
   - Stack back trace
-
+  
     I think of it because i want to make sure the malloc() and the free() can match themselves.
-
+  
     It can get much information from the stack trace, of course, it depends on `the WIN32 Api`, you can watch more from the MS's doc, [click here](https://docs.microsoft.com/en-us/windows/win32/debug/capturestackbacktrace).
-
+  
     Now, it only support the windows platform.
   
     The API is `CaptureStackBackTrace()`;
