@@ -181,7 +181,8 @@ struct iterator_allocate_return_package_s
  */
 
 errno_t iterator_control_configuration_init(struct iterator_s **iterator,
-											enum iterator_type_e type,
+											enum iterator_type_e iterator_type,
+											enum allocator_type_e allocator_type,
 											struct iterator_object_unit_s object_unit,
 											size_t addon_size);
 

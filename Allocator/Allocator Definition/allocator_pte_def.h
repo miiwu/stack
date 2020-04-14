@@ -59,6 +59,16 @@ struct allocator_memory_manage_unit_s {
 };
 
 /**
+ * @brief This type is the allocator stack back trace package structure.
+ */
+
+struct allocator_stack_back_trace_package_s {
+	stack_back_trace_stp allocate_ptr;
+
+	stack_back_trace_stp deallocate_ptr;
+};
+
+/**
  * @brief This type is the allocator structure.
  */
 
@@ -75,12 +85,12 @@ struct allocator_s {
 	/* @brief This variables will record the memory manage control of the allocator.				    */
 	struct allocator_memory_manage_unit_s memory_manage_unit;
 
-	#if ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN
+	#if ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN
 
-	/* @brief This variables will record the stack back trace link of the allocator.				    */
-	stack_back_trace_link_stp stack_back_trace_link_ptr;
+	/* @brief This variables will record the stack back traced of the allocator.				        */
+	struct allocator_stack_back_trace_package_s stack_back_trace_package;
 
-	#endif // ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN
+	#endif // ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN
 
 	/* @brief This variables will record the addon of the allocator.					                */
 	char addon[0];

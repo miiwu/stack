@@ -24,26 +24,18 @@
  *********************************************************************************************************
  */
 
-/* Define			debug error control error pointer.										            */
-#define DEBUG_ERROR_CONTROL_ERROR_PTR                                                                   \
-    debug_error_control_error_ptr
-
 /* Define			debug error control error.										                    */
 #define DEBUG_ERROR_CONTROL_ERROR_VAL                                                                   \
-    *debug_error_control_error_ptr
+    (*debug_error_control_error_ptr)
 
-/* Define			debug error control error pointer.										            */
-#define DEBUG_ERROR_CONTROL_RETURN_PTR                                                                  \
-    debug_error_control_return_ptr
-
-/* Define			debug error control error.										                    */
+/* Define			debug error control return.										                    */
 #define DEBUG_ERROR_CONTROL_RETURN_VAL                                                                  \
-    *debug_error_control_return_ptr
+    (debug_error_control_return)
 
 /* Define			debug error control init.										                    */
 #define DEBUG_ERROR_CONTROL_INIT(return_type, count, code, ...)                                         \
     static errno_t debug_error_control_error_table[count] = { code, __VA_ARGS__ };                      \
-    static return_type *DEBUG_ERROR_CONTROL_RETURN_PTR;                                                 \
+    static return_type DEBUG_ERROR_CONTROL_RETURN_VAL;                                                  \
     _DEBUG_ERROR_CONTROL_SET_(0)
 
 /* Define			debug error control jump.										                    */
@@ -55,6 +47,7 @@
 
 /* Define			debug error control exit.										                    */
 #define DEBUG_ERROR_CONTROL_EXIT(...)                                                                   \
+    goto DEBUG_ERROR_CONTROL_EXIT_LABLE;                                                                \
     DEBUG_ERROR_CONTROL_EXIT_LABLE:                                                                     \
 	    __VA_ARGS__;                                                                                    \
         return DEBUG_ERROR_CONTROL_RETURN_VAL
@@ -63,15 +56,16 @@
 #define DEBUG_ERROR_CONTROL_ERRNO_INIT(count, ...)                                                      \
     DEBUG_ERROR_CONTROL_INIT(errno_t, count + 1, 0, __VA_ARGS__)
 
-/* Define			debug error control errno init.										                */
+/* Define			debug error control structure init.										            */
 #define DEBUG_ERROR_CONTROL_STRUCTURE_INIT(return_type, count, ...)                                     \
     DEBUG_ERROR_CONTROL_INIT(return_type, count + 1, 0, __VA_ARGS__)
 
 /* Define			debug error control set.										                    */
 #define _DEBUG_ERROR_CONTROL_SET_(count, ...)                                                           \
-    (errno_t*)DEBUG_ERROR_CONTROL_RETURN_PTR                                                            \
-	    = DEBUG_ERROR_CONTROL_ERROR_PTR                                                                 \
-            = &debug_error_control_error_table[count];                                                  \
+    debug_error_control_error_ptr                                                                       \
+        = (errno_t*)&DEBUG_ERROR_CONTROL_RETURN_VAL;                                                    \
+    DEBUG_ERROR_CONTROL_ERROR_VAL                                                                       \
+        = debug_error_control_error_table[count];                                                       \
     (errno_t*)debug_error_control_error_table[count] __VA_ARGS__;                                       \
 
 /*
@@ -96,7 +90,7 @@
  * @brief This variable is the debug error control error pointer.
  */
 
-extern errno_t *DEBUG_ERROR_CONTROL_ERROR_PTR;
+extern errno_t *debug_error_control_error_ptr;
 
 /*
  *********************************************************************************************************

@@ -101,6 +101,7 @@ errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
 
 	if (iterator_control_configuration_init(iterator,
 											INPUT_ITORATER,
+                                            INPUT_ITERATOR_CFG_ALLOCATOR_TYPE,
 											object_unit,
 											sizeof(struct iterator_feature_package_s))) {
 		DEBUG_ERROR_CONTROL_JUMP(1);

@@ -28,8 +28,8 @@
 /* Configure    allocator global memory pool size.                                                      */
 #define ALLOCATOR_GLOBAL_CFG_MEMORY_POOL_SIZE			                                        102400u
 
-/* Configure    if enable allocator global debug component.												*/
-#define ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN			                                        1u
+/* Configure    if enable allocator global stack back trace.											*/
+#define ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN												1u
 
 #pragma warning( disable : 4996)
 #pragma warning( disable : 26812)

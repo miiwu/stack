@@ -93,6 +93,7 @@ errno_t random_access_iterator_control_configuration_init(random_access_iterator
 
 	return iterator_control_configuration_init(iterator,
 											   RANDOM_ACCESS_ITORATER,
+                                               RANDOM_ACCESS_ITERATOR_CFG_ALLOCATOR_TYPE,
 											   object_unit,
 											   0);
 }
