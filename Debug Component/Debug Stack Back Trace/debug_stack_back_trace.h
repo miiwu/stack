@@ -99,8 +99,8 @@ typedef struct stack_back_trace_link_t
  * @return NONE
  */
 
-errno_t debug_capture_stack_back_trace_init(stack_back_trace_stp *stack_back_trace,
-                                            stack_back_trace_size_t count);
+errno_t debug_capture_stack_back_trace_init(stack_back_trace_stpp stack_back_trace,
+											stack_back_trace_size_t count);
 
 /**
  * @brief This function will destroy the capture stack back trace struct.
@@ -110,7 +110,7 @@ errno_t debug_capture_stack_back_trace_init(stack_back_trace_stp *stack_back_tra
  * @return NONE
  */
 
-errno_t debug_capture_stack_back_trace_destroy(stack_back_trace_stp *stack_back_trace);
+errno_t debug_capture_stack_back_trace_destroy(stack_back_trace_stpp stack_back_trace);
 
 /**
  * @brief This function will back trace the stack.
@@ -123,7 +123,7 @@ errno_t debug_capture_stack_back_trace_destroy(stack_back_trace_stp *stack_back_
  */
 
 errno_t debug_capture_stack_back_trace(stack_back_trace_stp stack_back_trace,
-									stack_back_trace_size_t frames_to_skip);
+									   stack_back_trace_size_t frames_to_skip);
 
 /**
  * @brief This function will reduce the count of the capture stack back trace type.
@@ -135,7 +135,7 @@ errno_t debug_capture_stack_back_trace(stack_back_trace_stp stack_back_trace,
  */
 
 errno_t debug_capture_stack_back_trace_reduce_count(stack_back_trace_stp strcuture,
-												 stack_back_trace_hash_t hash);
+													stack_back_trace_hash_t hash);
 
 /**
  * @brief This function will back trace the stack.
@@ -159,11 +159,7 @@ errno_t debug_capture_stack_back_trace_convert_to_string(stack_back_trace_stp st
  */
 
 stack_back_trace_hash_t debug_capture_stack_back_trace_get_hash(stack_back_trace_stp strcuture,
-														  stack_back_trace_size_t index);
-
-//single_back_trace_t *debug_capture_stack_back_trace_get_trace(stack_back_trace_stp strcuture,
-//															  stack_back_trace_size_t index,
-//															  stack_back_trace_size_t sub_index);
+																stack_back_trace_size_t index);
 
 /**
  * @brief This function will initialize a link struct.
@@ -173,8 +169,8 @@ stack_back_trace_hash_t debug_capture_stack_back_trace_get_hash(stack_back_trace
  * @return NONE
  */
 
-errno_t debug_capture_stack_back_trace_link_init(stack_back_trace_link_stp *link,
-											  stack_back_trace_size_t count);
+errno_t debug_capture_stack_back_trace_link_init(stack_back_trace_link_stpp link,
+												 stack_back_trace_size_t count);
 
 /**
  * @brief This function will destroy a link struct.
@@ -195,7 +191,7 @@ errno_t debug_capture_stack_back_trace_link_destroy(stack_back_trace_link_stp *l
  */
 
 errno_t debug_capture_stack_back_trace_link_mark(stack_back_trace_link_stp link,
-											  stack_back_trace_size_t frames_to_skip);
+												 stack_back_trace_size_t frames_to_skip);
 
 /**
  * @brief This function will set a link via the sign.
@@ -206,7 +202,7 @@ errno_t debug_capture_stack_back_trace_link_mark(stack_back_trace_link_stp link,
  */
 
 errno_t debug_capture_stack_back_trace_link_link(stack_back_trace_link_stp link,
-											  stack_back_trace_size_t frames_to_skip);
+												 stack_back_trace_size_t frames_to_skip);
 
 /**
  * @brief This function will get the trace in the link.
@@ -217,7 +213,7 @@ errno_t debug_capture_stack_back_trace_link_link(stack_back_trace_link_stp link,
  */
 
 errno_t debug_capture_stack_back_trace_link_get_trace_ptr(stack_back_trace_link_stp link,
-													   stack_back_trace_stpp trace);
+														  stack_back_trace_stpp trace);
 
 /*
  *********************************************************************************************************

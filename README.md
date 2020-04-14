@@ -231,7 +231,7 @@ This package contains some simple data structures together.
         char *string;
     };
     
-    errno_t debug_error_errno()
+    errno_t debug_error_errno(void)
     {
         DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
         /* DEBUG_ERROR_CONTROL_INIT(errno_t, 2, 0, 1); */
@@ -246,7 +246,7 @@ This package contains some simple data structures together.
                                         DEBUG_ERROR_CONTROL_RETURN_VAL));
     }
     
-    struct debug_error_structure_s debug_error_structure()
+    struct debug_error_structure_s debug_error_structure(void)
     {
         DEBUG_ERROR_CONTROL_STRUCTURE_INIT(struct debug_error_structure_s, 1, 1);
         /* DEBUG_ERROR_CONTROL_INIT(struct debug_error_structure_s, 2, 0, 1); */
