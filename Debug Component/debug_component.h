@@ -18,6 +18,8 @@
 
 #include "debug_assert.h"
 
+#include "debug_error.h"
+
 #include "debug_stack_back_trace.h"
 
 /*
