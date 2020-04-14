@@ -12,6 +12,21 @@
  *********************************************************************************************************
  */
 
+/* Configure    if enable allocator stack back trace file string.										*/
+#define ALLOCATOR_CFG_STACK_BACK_TRACE_STRING_FILE_EN										0u
+
+/* Configure    allocator stack back trace string format.												*/
+#define ALLOCATOR_CFG_STACK_BACK_TRACE_STRING_FORMAT													\
+	"func: %-75s file: %s line: %d \r\n"
+
+#if (!ALLOCATOR_CFG_STACK_BACK_TRACE_STRING_FILE_EN)
+
+#undef ALLOCATOR_CFG_STACK_BACK_TRACE_STRING_FORMAT
+#define ALLOCATOR_CFG_STACK_BACK_TRACE_STRING_FORMAT													\
+	"func: %-75s\r\n"
+
+#endif // (ALLOCATOR_CFG_STACK_BACK_TRACE_STRING_FILE_EN)
+
 /*
  *********************************************************************************************************
  *                                           LOCAL CONSTANTS
@@ -73,15 +88,19 @@ void *allocator_function_address_table_set[] = {
 
 void allocator_control_exception_default_lack_of_memory(struct allocator_s *allocator);
 
+#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
+
 /**
- * @brief This function will log the stack back trace link when destroy and clean the allocator struct.
+ * @brief This function will log the stack back trace link when destroy allocator struct.
  *
- * @param
+ * @param void
  *
- * @return NONE
+ * @return the error code
  */
 
-errno_t allocator_control_configuration_destroy_log(struct allocator_s *allocator);
+errno_t allocator_control_configuration_destroy_stack_back_trace_log(struct allocator_s *allocator);
+
+#endif // (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
 /*
  *********************************************************************************************************
@@ -126,27 +145,30 @@ allocator_control_configuration_init(struct allocator_s **allocator,
 									 struct allocator_memory_manage_init_package_s package)
 {
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
+	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(type, >= , int, 0);
+
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(5, -1, -2, 1, 2, 3);
 
 	static struct allocator_exception_s exception = { NULL };
 
 	if (NULL == ((*allocator)
 				 = calloc(1,																/* Allocate the allocator structure */
 						  sizeof(struct allocator_s)))) {
-		return -1;
+		DEBUG_ERROR_CONTROL_JUMP(1);
 	}
 
 	if (0 != package.memory_manage_length
 		&& NULL == ((*allocator)->memory_manage_unit.memory_manage_ptr
 					= calloc(1,																/* Allocate the allocator memory manage structure */
 							 package.memory_manage_length))) {
-		return -2;
+		DEBUG_ERROR_CONTROL_JUMP(2);
 	}
 
-	if (NULL != package.memory_manage_ptr &&
-		NULL == memcpy((*allocator)->memory_manage_unit.memory_manage_ptr,
-					   package.memory_manage_ptr,
-					   package.memory_manage_length)) {
-		return 1;
+	if (NULL != package.memory_manage_ptr
+		&& NULL == memcpy((*allocator)->memory_manage_unit.memory_manage_ptr,
+						  package.memory_manage_ptr,
+						  package.memory_manage_length)) {
+		DEBUG_ERROR_CONTROL_JUMP(3);
 	}
 
 	(*allocator)->allocator_type_id = type;
@@ -156,13 +178,21 @@ allocator_control_configuration_init(struct allocator_s **allocator,
 	allocator_control_configuration_exception((*allocator),									/* Default the exception of the allocator */
 											  exception);
 
-	#if (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
+	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
-	debug_capture_stack_back_trace_link_init(&(*allocator)->stack_back_trace_link_ptr, 256);
+	if (debug_capture_stack_back_trace_init(&(*allocator)->stack_back_trace_package			/* Initialize the memory manage stack back trace package */
+											.allocate_ptr, 256)) {
+		DEBUG_ERROR_CONTROL_JUMP(4);
+	}
+
+	if (debug_capture_stack_back_trace_init(&(*allocator)->stack_back_trace_package			/* Initialize the memory manage stack back trace package */
+											.deallocate_ptr, 256)) {
+		DEBUG_ERROR_CONTROL_JUMP(5);
+	}
 
 	#endif
 
-	return 0;
+	DEBUG_ERROR_CONTROL_EXIT();
 }
 
 /**
@@ -178,23 +208,34 @@ errno_t allocator_control_configuration_destroy(struct allocator_s **allocator)
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(*allocator);
 
-	#if (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(3, 1, 2, 3);
+
+	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
 	printf("allocator.destroy:memory free status : %d \r\n", (*allocator)->info.match);
 
-	if ((int)0 < (int)((*allocator)->info.match)) {
-		allocator_control_configuration_destroy_log((*allocator));
+	if ((int)0 != (int)(*allocator)->info.match
+		&& allocator_control_configuration_destroy_stack_back_trace_log((*allocator))) {
+		DEBUG_ERROR_CONTROL_JUMP(1);
 	}
 
-	debug_capture_stack_back_trace_link_destroy(&(*allocator)->stack_back_trace_link_ptr);
+	if (debug_capture_stack_back_trace_destroy(&(*allocator)->stack_back_trace_package		/* Destroy the memory manage stack back trace package */
+											   .allocate_ptr)) {
+		DEBUG_ERROR_CONTROL_JUMP(2);
+	}
 
-	#endif // (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
+	if (debug_capture_stack_back_trace_destroy(&(*allocator)->stack_back_trace_package		/* Destroy the memory manage stack back trace package */
+											   .deallocate_ptr)) {
+		DEBUG_ERROR_CONTROL_JUMP(3);
+	}
+
+	#endif // (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
 	free((*allocator));																	    /* Deallocate the allocator structure */
 
 	(*allocator) = NULL;
 
-	return 0;
+	DEBUG_ERROR_CONTROL_EXIT();
 }
 
 /**
@@ -250,11 +291,14 @@ void *allocator_control_allocate(struct allocator_s *allocator,
 
 	allocator->info.match += 1;
 
-	#if (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
+	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
-	debug_capture_stack_back_trace_link_mark(allocator->stack_back_trace_link_ptr, 1);
+	if (debug_capture_stack_back_trace(allocator->stack_back_trace_package.					/* Trace and store the stack when the allocate() is called */
+									   allocate_ptr, 1)) {
+		return NULL;
+	}
 
-	#endif // (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
+	#endif // (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
 	return block_alloced;
 }
@@ -275,21 +319,26 @@ errno_t allocator_control_deallocate(struct allocator_s *allocator,
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(block);
 
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(2, 1, 2);
+
 	allocator->info.match -= 1;
 
 	if (allocator->memory_manage_unit.control
 		.deallocate(allocator->memory_manage_unit.memory_manage_ptr,						/* Deallocate the memory block by the memory manage unit */
 					block)) {
-		return 1;
+		DEBUG_ERROR_CONTROL_JUMP(1);
 	}
 
-	#if (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
+	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
-	debug_capture_stack_back_trace_link_link(allocator->stack_back_trace_link_ptr, 1);
+	if (debug_capture_stack_back_trace(allocator->stack_back_trace_package.					/* Trace and store the stack when the deallocate() is called */
+									   deallocate_ptr, 1)) {
+		DEBUG_ERROR_CONTROL_JUMP(2);
+	}
 
-	#endif // (ALLOCATOR_GLOBAL_CFG_DEBUG_COMPONENT_EN)
+	#endif // (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
-	return 0;
+	DEBUG_ERROR_CONTROL_EXIT();
 }
 
 /**
@@ -308,29 +357,68 @@ void allocator_control_exception_default_lack_of_memory(struct allocator_s *allo
 	}
 }
 
+#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
+
 /**
- * @brief This function will log the stack back trace link when destroy and clean the allocator struct.
+ * @brief This function will log the stack back trace link when destroy allocator struct.
  *
- * @param
+ * @param void
  *
- * @return NONE
+ * @return the error code
  */
 
-static inline errno_t
-allocator_control_configuration_destroy_log(struct allocator_s *allocator)
+errno_t allocator_control_configuration_destroy_stack_back_trace_log(struct allocator_s *allocator)
 {
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
 
-	printf("\r\n-----------------------------------stack trace string table begin-----------------------------------\r\n");
-	stack_back_trace_stpp stack_back_trace_tmp = malloc(sizeof(void *));
-	if (NULL == stack_back_trace_tmp) {
-		return 1;
-	}
+	printf("\r\n----------------------------------- allocator.stack_back_trace_log -----------------------------------\r\n");
 
-	debug_capture_stack_back_trace_link_log(allocator->stack_back_trace_link_ptr,
-											1);
+	static struct stack_back_trace_string_package_s string_package;
+	static struct stack_back_trace_count_package_s count_package;
+	static stack_back_trace_stp stack_back_trace_ptr;
+	static size_t type_count;
+	static bool log_twice;
 
-	printf("\r\n-----------------------------------stack trace string table end-----------------------------------\r\n");
+	log_twice = false;
+	do {
+		type_count = 0;
+		do {
+			stack_back_trace_ptr															/* Calculate the address of the stack_back_trace_ptr by the log_twice */
+				= *((stack_back_trace_stpp)&allocator->stack_back_trace_package + log_twice);
+			count_package																	/* Get the count package of the stack_back_trace_ptr */
+				= debug_capture_stack_back_trace_get_count_package(stack_back_trace_ptr);
+
+			if (count_package.type_count > type_count) {
+				printf("\r\nallocator.stack_back_trace.log.%s #%d/%d \r\n",
+					   (!log_twice) ? "allocate" : "deallocate",
+					   type_count + 1, count_package.type_count);
+
+				string_package																/* Convert the stack_back_trace_ptr to string */
+					= debug_capture_stack_back_trace_convert_to_string(stack_back_trace_ptr,
+																	   type_count);
+
+				for (size_t ct = 0; ct < string_package.frames; ct++) {
+					#if (ALLOCATOR_CFG_STACK_BACK_TRACE_STRING_FILE_EN)
+
+					printf(ALLOCATOR_CFG_STACK_BACK_TRACE_STRING_FORMAT,
+						   (string_package.string + ct)->name_ptr,
+						   (string_package.string + ct)->file_name_ptr,
+						   (string_package.string + ct)->file_line);
+
+					#else
+
+					printf(ALLOCATOR_CFG_STACK_BACK_TRACE_STRING_FORMAT,
+						   (string_package.string + ct)->name_ptr);
+
+					#endif // (ALLOCATOR_CFG_STACK_BACK_TRACE_STRING_FILE_EN)
+				}
+			}
+		} while (count_package.type_count > ++type_count);
+	} while (!(log_twice++));
+
+	printf("\r\n----------------------------------- allocator.stack_back_trace_log end -----------------------------------\r\n");
 
 	return 0;
 }
+
+#endif // (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)

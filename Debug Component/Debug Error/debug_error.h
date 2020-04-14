@@ -47,6 +47,7 @@
 
 /* Define			debug error control exit.										                    */
 #define DEBUG_ERROR_CONTROL_EXIT(...)                                                                   \
+    goto DEBUG_ERROR_CONTROL_EXIT_LABLE;                                                                \
     DEBUG_ERROR_CONTROL_EXIT_LABLE:                                                                     \
 	    __VA_ARGS__;                                                                                    \
         return DEBUG_ERROR_CONTROL_RETURN_VAL
