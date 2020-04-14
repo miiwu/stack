@@ -30,7 +30,7 @@
 
 /* Define			debug error control error.										                    */
 #define DEBUG_ERROR_CONTROL_ERROR_VAL                                                                   \
-    *debug_error_control_error_ptr
+    (*debug_error_control_error_ptr)
 
 /* Define			debug error control error pointer.										            */
 #define DEBUG_ERROR_CONTROL_RETURN_PTR                                                                  \
@@ -38,7 +38,7 @@
 
 /* Define			debug error control error.										                    */
 #define DEBUG_ERROR_CONTROL_RETURN_VAL                                                                  \
-    *debug_error_control_return_ptr
+    (*debug_error_control_return_ptr)
 
 /* Define			debug error control init.										                    */
 #define DEBUG_ERROR_CONTROL_INIT(return_type, count, code, ...)                                         \
