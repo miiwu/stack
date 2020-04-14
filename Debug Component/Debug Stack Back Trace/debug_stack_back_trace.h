@@ -89,30 +89,42 @@ typedef struct stack_back_trace_t
  */
 
 struct stack_back_trace_string_t {
-    /* @brief This variables will record the max types.													*/
-    size_t name_len;
+	/* @brief This variables will record the max types.													*/
+	size_t name_len;
 
-    /* @brief This variables will record how many types is recorded.					                */
-    char *name_ptr;
+	/* @brief This variables will record how many types is recorded.					                */
+	char *name_ptr;
 
-    /* @brief This variables will record the trace value of the both stack.					            */
-    size_t file_line;
+	/* @brief This variables will record the trace value of the both stack.					            */
+	size_t file_line;
 
-    /* @brief This variables will record the trace value of the both stack.					            */
-    size_t file_line_len;
+	/* @brief This variables will record the trace value of the both stack.					            */
+	size_t file_line_len;
 
-    /* @brief This variables will record the hash value of the both stack.					            */
-    char *file_name_ptr;
+	/* @brief This variables will record the hash value of the both stack.					            */
+	char *file_name_ptr;
 };
 
 /**
- * @brief This type is the stack back trace convert_to_string_return typedef.
+ * @brief This type is the stack back trace string package typedef.
  */
 
-struct stack_back_trace_convert_to_string_return_s {
+struct stack_back_trace_string_package_s {
 	stack_back_trace_frame_t frames;
 
 	struct stack_back_trace_string_t *string;
+};
+
+/**
+ * @brief This type is the stack back trace count package typedef.
+ */
+
+struct stack_back_trace_count_package_s {
+	/* @brief This variables will record how many types is recorded.					                */
+	stack_back_trace_size_t type_count;
+
+	/* @brief This variables will record the amount of back trace.					                    */
+	stack_back_trace_size_t *back_trace_count_ptr;
 };
 
 /*
@@ -166,7 +178,7 @@ errno_t debug_capture_stack_back_trace(stack_back_trace_stp stack_back_trace,
  * @return NONE
  */
 
-struct stack_back_trace_convert_to_string_return_s
+struct stack_back_trace_string_package_s
 	debug_capture_stack_back_trace_convert_to_string(stack_back_trace_stp stack_back_trace,
 													 size_t count);
 
@@ -181,6 +193,17 @@ struct stack_back_trace_convert_to_string_return_s
 
 stack_back_trace_hash_t debug_capture_stack_back_trace_get_hash(stack_back_trace_stp strcuture,
 																stack_back_trace_size_t index);
+
+/**
+ * @brief This function will return the count package.
+ *
+ * @param stack_back_trace the pointer to the capture stack back trace struct
+ *
+ * @return NONE
+ */
+
+struct stack_back_trace_count_package_s
+	debug_capture_stack_back_trace_get_count_package(stack_back_trace_stp stack_back_trace);
 
 /*
  *********************************************************************************************************

@@ -77,7 +77,7 @@ typedef IMAGEHLP_LINE64
  */
 
 struct stack_back_trace_t {
-	/* @brief This variables will record the max types.					                */
+	/* @brief This variables will record the max types.													*/
 	stack_back_trace_size_t max_type_count;
 
 	/* @brief This variables will record how many types is recorded.					                */
@@ -314,7 +314,7 @@ errno_t debug_capture_stack_back_trace(stack_back_trace_stp stack_back_trace,
  * @return NONE
  */
 
-extern struct stack_back_trace_convert_to_string_return_s
+extern struct stack_back_trace_string_package_s
 debug_capture_stack_back_trace_convert_to_string(stack_back_trace_stp stack_back_trace,
 												 size_t count)
 {
@@ -322,7 +322,7 @@ debug_capture_stack_back_trace_convert_to_string(stack_back_trace_stp stack_back
 
 	static stack_back_trace_string_st back_trace_string;
 	static back_trace_tp trace;
-	static struct stack_back_trace_convert_to_string_return_s
+	static struct stack_back_trace_string_package_s
 		string_return = { 0,(struct stack_back_trace_string_t *) & back_trace_string };
 
 	for (size_t cnt = 0; cnt < string_return.frames; cnt++) {
@@ -382,6 +382,27 @@ single_back_trace_t *debug_capture_stack_back_trace_get_trace(stack_back_trace_s
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
 
 	return *(*(stack_back_trace->back_trace_ptr + index) + sub_index);
+}
+
+/**
+ * @brief This function will return the count package.
+ *
+ * @param stack_back_trace the pointer to the capture stack back trace struct
+ *
+ * @return NONE
+ */
+
+extern inline struct stack_back_trace_count_package_s
+debug_capture_stack_back_trace_get_count_package(stack_back_trace_stp stack_back_trace)
+{
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+
+	static struct stack_back_trace_count_package_s package;
+
+	package.type_count = stack_back_trace->type_count;
+	package.back_trace_count_ptr = stack_back_trace->back_trace_count_ptr;
+
+	return package;
 }
 
 /**

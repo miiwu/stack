@@ -123,11 +123,18 @@ void main_debug_stack_back_trace(void)
 	debug_capture_stack_back_trace(capture_stack_back_trace, 0);
 	stack_back_trace_function_shell(capture_stack_back_trace);
 
+	printf("\r\ndebug component.stack back trace.get_count_package start \r\n");
+	struct stack_back_trace_count_package_s
+		count_package = debug_capture_stack_back_trace_get_count_package(capture_stack_back_trace);
+
 	printf("\r\ndebug component.stack back trace.convert to string start \r\n");
-	struct stack_back_trace_convert_to_string_return_s
-		string_return = debug_capture_stack_back_trace_convert_to_string(capture_stack_back_trace, 1);
-	for (size_t cnt = 0; cnt < string_return.frames; cnt++) {
-		printf("%s\r\n", (string_return.string + cnt)->name_ptr);
+	struct stack_back_trace_string_package_s string_package;
+	for (size_t cnt = 0; cnt < count_package.type_count; cnt++) {
+		printf("debug component.stack back trace.convert to string #%d \r\n", cnt);
+		string_package = debug_capture_stack_back_trace_convert_to_string(capture_stack_back_trace, cnt);
+		for (size_t ct = 0; ct < string_package.frames; ct++) {
+			printf("%s\r\n", (string_package.string + ct)->name_ptr);
+		}
 	}
 
 	printf("\r\ndebug component.stack back trace.get hash start \r\n");
