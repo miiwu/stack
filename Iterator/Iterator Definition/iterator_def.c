@@ -8,6 +8,8 @@
 
 #include "iterator_pte_def.h"
 
+#include "iterator.h"
+
 /*
  *********************************************************************************************************
  *                                            LOCAL DEFINES
@@ -44,6 +46,17 @@
  *********************************************************************************************************
  */
 
+/**
+ * @brief This function will check if the at iterator operations can perform.
+ *
+ * @param
+ *
+ * @return
+ */
+
+bool iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
+												   size_t index);
+
 /*
  *********************************************************************************************************
  *					LOCAL GLOBAL VARIABLES & LOCAL FUNCTION PROTOTYPES INTERSECTION
@@ -55,6 +68,21 @@
  *                                            FUNCTIONS
  *********************************************************************************************************
  */
+
+/**
+ * @brief This function will inquire for the allocator unit of the iterator.
+ *
+ * @param iterator the pointer to the iterator
+ *
+ * @return the allocator unit of the iterator
+ */
+
+struct allocator_unit_s iterator_control_inquire_allocator_unit(struct iterator_s *iterator)
+{
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(iterator);
+
+	return iterator->allocator_unit;
+}
 
 /**
  * @brief This function will initialize the iterator.
@@ -79,7 +107,7 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 		allocator_unit = { 0 };
 
 	if (NULL == (allocator_unit
-				 .control_ptr = allocator_control_get_function_address_table(CONCEPT_ALLOCATOR))) {
+				 .control_ptr = allocator_control_get_function_address_table(type))) {
 		return 4;
 	}
 
@@ -102,6 +130,44 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 	(*iterator)->object_unit = object_unit;
 
 	return 0;
+}
+
+/**
+ * @brief This function will allocate the iterator.
+ *
+ * @param
+ *
+ * @return
+ */
+
+struct iterator_allocate_return_package_s
+	iterator_control_configuration_allocate(void **iterator,
+											struct iterator_allocate_package_s package)
+{
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(iterator);
+	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(package.type, > , int, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(package.mem_size, >= , int, 0);
+
+    DEBUG_ERROR_CONTROL_STRUCTURE_INIT(struct iterator_allocate_return_package_s, 3, 1, 2, 3);
+
+	if (NULL == (DEBUG_ERROR_CONTROL_RETURN_PTR->allocator_unit
+				 .control_ptr = allocator_control_get_function_address_table(CONCEPT_ALLOCATOR))) {
+		DEBUG_ERROR_CONTROL_JUMP(1);
+	}
+
+	if (DEBUG_ERROR_CONTROL_RETURN_PTR->allocator_unit.control_ptr->configuration
+		.init(&DEBUG_ERROR_CONTROL_RETURN_PTR->allocator_unit.allocator_ptr)) {
+		DEBUG_ERROR_CONTROL_JUMP(2);
+	}
+
+	if (NULL == ((*iterator)
+				 = DEBUG_ERROR_CONTROL_RETURN_PTR->allocator_unit.control_ptr
+				 ->allocate(DEBUG_ERROR_CONTROL_RETURN_PTR->allocator_unit.allocator_ptr,
+							1, package.mem_size))) {
+		DEBUG_ERROR_CONTROL_JUMP(3);
+	}
+
+	DEBUG_ERROR_CONTROL_EXIT();
 }
 
 /**
@@ -309,7 +375,7 @@ void *iterator_control_range_access_data(struct iterator_s *iterator)
  * @return
  */
 
-extern inline bool
+static inline bool
 iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
 											  size_t index)
 {

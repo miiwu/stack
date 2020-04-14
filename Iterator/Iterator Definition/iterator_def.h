@@ -114,6 +114,26 @@ struct iterator_object_unit_s {
 };
 
 /**
+ * @brief This type is the iterator allocate package structure.
+ */
+
+struct iterator_allocate_package_s {
+	enum iterator_type_e type;
+
+	size_t mem_size;
+};
+
+/**
+ * @brief This type is the iterator allocate package structure.
+ */
+
+struct iterator_allocate_return_package_s {
+    errno_t error;
+
+    struct allocator_unit_s allocator_unit;
+};
+
+/**
  * @brief This type is the iterator feature package structure.
  */
 
@@ -122,11 +142,35 @@ struct iterator_feature_package_s {
 	bool (*advance)(int step);
 };
 
+/**
+ * @brief This type is the iterator feature package structure.
+ */
+
+struct iterator_adaptor_allocate_package_s {
+    enum iterator_type_e type;
+
+    struct iterator_object_unit_s object_unit;
+
+    size_t addon_size;
+};
+
 /*
  *********************************************************************************************************
  *								            FUNCTION PROTOTYPES
  *********************************************************************************************************
  */
+
+/**
+ * @brief This function will allocate the iterator.
+ *
+ * @param
+ *
+ * @return
+ */
+
+struct iterator_allocate_return_package_s
+    iterator_control_configuration_allocate(void **iterator,
+                                            struct iterator_allocate_package_s package);
 
 /**
  * @brief This function will initialize the iterator.
@@ -201,17 +245,6 @@ void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
  * @return
  */
 
-errno_t iterator_control_iterator_operations_modify(struct iterator_s *iterator,
-													void *source);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
 void *iterator_control_range_access_begin(struct iterator_s *iterator);
 
 /**
@@ -255,15 +288,14 @@ bool iterator_control_range_access_empty(struct iterator_s *iterator);
 void *iterator_control_range_access_data(struct iterator_s *iterator);
 
 /**
- * @brief This function will check if the at iterator operations can perform.
+ * @brief This function will inquire for the allocator unit of the iterator.
  *
- * @param
+ * @param iterator the pointer to the iterator
  *
- * @return
+ * @return the allocator unit of the iterator
  */
 
-bool iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
-												   size_t index);
+struct allocator_unit_s iterator_control_inquire_allocator_unit(struct iterator_s *iterator);
 
 /*
  *********************************************************************************************************
