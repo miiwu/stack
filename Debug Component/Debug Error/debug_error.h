@@ -24,62 +24,48 @@
  *********************************************************************************************************
  */
 
-/* Define			debug error control error pointer.										            */
-#define DEBUG_ERROR_CONTROL_ERRNO_PTR                                                                   \
-    debug_error_control_errno_ptr
-
 /* Define			debug error control error.										                    */
-#define DEBUG_ERROR_CONTROL_ERRNO                                                                       \
-    *debug_error_control_errno_ptr
+#define DEBUG_ERROR_CONTROL_ERROR_VAL                                                                   \
+    (*debug_error_control_error_ptr)
 
-/* Define			debug error control error pointer.										            */
-#define DEBUG_ERROR_CONTROL_RETURN_PTR                                                                  \
-    debug_error_control_errno_exit_ptr
-
-/* Define			debug error control error.										                    */
-#define DEBUG_ERROR_CONTROL_RETURN                                                                      \
-    *debug_error_control_errno_exit_ptr
+/* Define			debug error control return.										                    */
+#define DEBUG_ERROR_CONTROL_RETURN_VAL                                                                  \
+    (debug_error_control_return)
 
 /* Define			debug error control init.										                    */
 #define DEBUG_ERROR_CONTROL_INIT(return_type, count, code, ...)                                         \
-    static errno_t debug_error_control_errno_table[count] = { code, __VA_ARGS__ };                      \
-    static return_type *debug_error_control_errno_exit_ptr
+    static errno_t debug_error_control_error_table[count] = { code, __VA_ARGS__ };                      \
+    static return_type DEBUG_ERROR_CONTROL_RETURN_VAL;                                                  \
+    _DEBUG_ERROR_CONTROL_SET_(0)
 
-/* Define			debug error control set.										                    */
-#define DEBUG_ERROR_CONTROL_SET(count, ...)                                                             \
-	DEBUG_ERROR_CONTROL_ERRNO_PTR                                                                       \
-        = (errno_t*)debug_error_control_errno_exit_ptr                                                  \
-            = &debug_error_control_errno_table[count];                                                  \
-    *(errno_t*)&debug_error_control_errno_table[count] __VA_ARGS__
+/* Define			debug error control jump.										                    */
+#define DEBUG_ERROR_CONTROL_JUMP(count, ...)                                                            \
+    while (!count){                                                                                     \
+    }                                                                                                   \
+	_DEBUG_ERROR_CONTROL_SET_(count, __VA_ARGS__);                                                      \
+    goto DEBUG_ERROR_CONTROL_EXIT_LABLE
 
 /* Define			debug error control exit.										                    */
 #define DEBUG_ERROR_CONTROL_EXIT(...)                                                                   \
-	__VA_ARGS__;                                                                                        \
-    return *debug_error_control_errno_exit_ptr
+    DEBUG_ERROR_CONTROL_EXIT_LABLE:                                                                     \
+	    __VA_ARGS__;                                                                                    \
+        return DEBUG_ERROR_CONTROL_RETURN_VAL
 
-/* Define			debug error control init.										                    */
-#define DEBUG_ERROR_CONTROL_ERRNO_INIT(count, code, ...)                                                \
-    DEBUG_ERROR_CONTROL_INIT(errno_t, count, code, __VA_ARGS__)
+/* Define			debug error control errno init.										                */
+#define DEBUG_ERROR_CONTROL_ERRNO_INIT(count, ...)                                                      \
+    DEBUG_ERROR_CONTROL_INIT(errno_t, count + 1, 0, __VA_ARGS__)
 
-/* Define			debug error control set.										                    */
-#define DEBUG_ERROR_CONTROL_ERRNO_SET(count)                                                            \
-	DEBUG_ERROR_CONTROL_SET(count)
-
-/* Define			debug error control exit.										                    */
-#define DEBUG_ERROR_CONTROL_EXIT_ERRNO(...)                                                             \
-	DEBUG_ERROR_CONTROL_EXIT(__VA_ARGS__)
-
-/* Define			debug error control init.										                    */
-#define DEBUG_ERROR_CONTROL_STRUCTURE_INIT(return_type)                                                 \
-    DEBUG_ERROR_CONTROL_INIT(return_type, 1, 0)
+/* Define			debug error control structure init.										            */
+#define DEBUG_ERROR_CONTROL_STRUCTURE_INIT(return_type, count, ...)                                     \
+    DEBUG_ERROR_CONTROL_INIT(return_type, count + 1, 0, __VA_ARGS__)
 
 /* Define			debug error control set.										                    */
-#define DEBUG_ERROR_CONTROL_STRUCTURE_SET(expression)                                                   \
-	DEBUG_ERROR_CONTROL_SET(0, expression)
-
-/* Define			debug error control exit.										                    */
-#define DEBUG_ERROR_CONTROL_STRUCTURE_EXIT(...)                                                         \
-	DEBUG_ERROR_CONTROL_EXIT(__VA_ARGS__)
+#define _DEBUG_ERROR_CONTROL_SET_(count, ...)                                                           \
+    debug_error_control_error_ptr                                                                       \
+        = (errno_t*)&DEBUG_ERROR_CONTROL_RETURN_VAL;                                                    \
+    DEBUG_ERROR_CONTROL_ERROR_VAL                                                                       \
+        = debug_error_control_error_table[count];                                                       \
+    (errno_t*)debug_error_control_error_table[count] __VA_ARGS__;                                       \
 
 /*
  *********************************************************************************************************
@@ -103,7 +89,7 @@
  * @brief This variable is the debug error control error pointer.
  */
 
-extern errno_t *DEBUG_ERROR_CONTROL_ERRNO_PTR;
+extern errno_t *debug_error_control_error_ptr;
 
 /*
  *********************************************************************************************************
