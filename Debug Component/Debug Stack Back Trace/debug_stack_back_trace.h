@@ -3,7 +3,7 @@
  *                                  DEBUG COMPONENT OF CAPATURE STACK BACK TRACE FUNCTIONS
  *
  * File    : DEBUG_CAPATURE_STACK_BACK_TRACE.H
- * By      : lqq
+ * By      : Miao Mico
  * Version : V0.01.00
  *
  * FIRST ENLIGHTENMENT : https://gist.github.com/t-mat/7979300
@@ -117,7 +117,7 @@ struct stack_back_trace_convert_to_string_return_s {
  * @return NONE
  */
 
-errno_t debug_capture_stack_back_trace_init(stack_back_trace_stp *stack_back_trace,
+errno_t debug_capture_stack_back_trace_init(stack_back_trace_stpp stack_back_trace,
 											stack_back_trace_size_t count);
 
 /**
@@ -128,7 +128,7 @@ errno_t debug_capture_stack_back_trace_init(stack_back_trace_stp *stack_back_tra
  * @return NONE
  */
 
-errno_t debug_capture_stack_back_trace_destroy(stack_back_trace_stp *stack_back_trace);
+errno_t debug_capture_stack_back_trace_destroy(stack_back_trace_stpp stack_back_trace);
 
 /**
  * @brief This function will back trace the stack.
@@ -181,10 +181,6 @@ struct stack_back_trace_convert_to_string_return_s
 stack_back_trace_hash_t debug_capture_stack_back_trace_get_hash(stack_back_trace_stp strcuture,
 																stack_back_trace_size_t index);
 
-//single_back_trace_t *debug_capture_stack_back_trace_get_trace(stack_back_trace_stp strcuture,
-//															  stack_back_trace_size_t index,
-//															  stack_back_trace_size_t sub_index);
-
 /**
  * @brief This function will initialize a link struct.
  *
@@ -193,7 +189,7 @@ stack_back_trace_hash_t debug_capture_stack_back_trace_get_hash(stack_back_trace
  * @return NONE
  */
 
-errno_t debug_capture_stack_back_trace_link_init(stack_back_trace_link_stp *link,
+errno_t debug_capture_stack_back_trace_link_init(stack_back_trace_link_stpp link,
 												 stack_back_trace_size_t count);
 
 /**
@@ -251,10 +247,10 @@ errno_t debug_capture_stack_back_trace_link_log(stack_back_trace_link_stp link,
 errno_t debug_capture_stack_back_trace_link_get_trace_ptr(stack_back_trace_link_stp link,
 														  stack_back_trace_stpp trace);
 
-   /*
-	*********************************************************************************************************
-	*                                             MODULE END
-	*********************************************************************************************************
-	*/
+/*
+ *********************************************************************************************************
+ *                                             MODULE END
+ *********************************************************************************************************
+ */
 
 #endif // !__DEBUG_STACK_BACK_TRACE_H
