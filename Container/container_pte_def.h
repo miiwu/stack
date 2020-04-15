@@ -47,11 +47,8 @@ struct container_s {
 	/* @brief This variables will record the common exception of the container.							*/
 	struct container_common_exception_s exception;
 
-	/* @brief This variables will point to the allocator control.										*/
-	struct allocator_control_s *allocator_control_ptr;
-
-	/* @brief This variables will point to the allocator.												*/
-	void *allocator_ptr;
+	/* @brief This variables will record the allocator unit of the container.							*/
+	struct allocator_unit_s allocator_unit;
 
 	/* @brief This variables will point to the address of the element.									*/
 	void *element_ptr;

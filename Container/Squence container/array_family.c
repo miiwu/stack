@@ -212,18 +212,16 @@ errno_t array_family_control_configuration_destroy(array_family_stpp array_famil
 {
 	assert(array_family);
 
-	allocator_common_stp
+	concept_allocator_stp
 		array_family_allocator = (*array_family)->allocator_ptr;
 	struct allocator_control_s
 		*array_family_allocator_control = (*array_family)->allocator_control_ptr;
+ 
+	array_family_allocator_control
+		->deallocate(array_family_allocator, (*array_family)->element_ptr);					/* Deallocate the element */
 
 	array_family_allocator_control
-		->deallocate(array_family_allocator,
-		(*array_family)->element_ptr,
-					 (*array_family)->info.max_size);										/* Deallocate the element */
-
-	array_family_allocator_control
-		->deallocate(array_family_allocator, *array_family, 1);								/* Deallocate the array family */
+		->deallocate(array_family_allocator, *array_family);								/* Deallocate the array family */
 
 	array_family_allocator_control
 		->configuration.destroy(&array_family_allocator);									/* Destroy the allocator */
@@ -621,8 +619,8 @@ errno_t array_family_control_modifiers_insert(array_family_stp array_family,
 		array_family_element_control_set_data(array_family, element_pos, (void *)element_plus_insert_addr);
 	}
 
-	array_family->allocator_control_ptr->deallocate(array_family->allocator_ptr, element_block, element_amount);								/* Deallocate #3 */
-	array_family->allocator_control_ptr->deallocate(array_family->allocator_ptr, element, 1);													/* Deallocate #4 */
+	array_family->allocator_control_ptr->deallocate(array_family->allocator_ptr, element_block);								/* Deallocate #3 */
+	array_family->allocator_control_ptr->deallocate(array_family->allocator_ptr, element);													/* Deallocate #4 */
 	element_block = NULL;
 	element = NULL;																								/* Assign the element to NULL */
 
@@ -744,7 +742,7 @@ errno_t array_family_control_modifiers_resize(array_family_stpp array_family,
 	}
 
 	(*array_family)->allocator_control_ptr->
-		deallocate((*array_family)->allocator_ptr, (*array_family)->element_ptr, 1);					/* Deallocate #2.1 */
+		deallocate((*array_family)->allocator_ptr, (*array_family)->element_ptr);					/* Deallocate #2.1 */
 
 	void
 		*data_pack_alloced =

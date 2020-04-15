@@ -151,8 +151,8 @@ errno_t container_adaptor_control_configuration_allocate(struct container_adapto
 
 	(*adaptor)->container_type_id = adaptor_type;											/* Assign priority_queue structure */
 
-	(*adaptor)->allocator_control_ptr = allocate_return.allocator_control_ptr;
-	(*adaptor)->allocator_ptr = allocate_return.allocator_ptr;
+	(*adaptor)->allocator_unit.control_ptr = allocate_return.allocator_control_ptr;
+	(*adaptor)->allocator_unit.allocator_ptr = allocate_return.allocator_ptr;
 
 	return 0;
 }
@@ -212,17 +212,18 @@ errno_t container_adaptor_control_configuration_destroy(struct container_adaptor
 	assert(adaptor);
 	assert(*adaptor);
 
-	void *allocator_ptr = (*adaptor)->allocator_ptr;										/* Store the allocator_ptr of the container adaptor */
+	struct allocator_s 
+		*allocator_ptr = (*adaptor)->allocator_unit.allocator_ptr;							/* Store the allocator_ptr of the container adaptor */
 
 	struct allocator_control_s
-		*allocator_control_ptr = (*adaptor)->allocator_control_ptr;							/* Store the allocator_control_ptr of the container adaptor */
+		*allocator_control_ptr = (*adaptor)->allocator_unit.control_ptr;					/* Store the allocator_control_ptr of the container adaptor */
 
 	if ((*adaptor)->container_control_ptr->configuration.
 		destroy(&(*adaptor)->container_ptr)) {												/* Destroy the container the container_ptr points to */
 		return 1;
 	}
 
-	if (allocator_control_ptr->deallocate(allocator_ptr, (*adaptor), 1)) {					/* Deallocate the container adaptor */
+	if (allocator_control_ptr->deallocate(allocator_ptr, (*adaptor))) {						/* Deallocate the container adaptor */
 		return 2;
 	}
 

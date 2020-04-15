@@ -19,8 +19,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Algorithm\compare.c" />
+    <ClCompile Include="Algorithm\modify_sequence.c" />
+    <ClCompile Include="Algorithm\sort.c" />
+    <ClCompile Include="Algorithm\search_substring.c" />
     <ClCompile Include="Allocator\Allocator Definition\allocator_def.c" />
     <ClCompile Include="Allocator\Concept Allocator\concept_allocator.c" />
+    <ClCompile Include="Container\Container adaptors\container_adaptor_def.c" />
+    <ClCompile Include="Container\Container adaptors\priority_queue.c" />
+    <ClCompile Include="Container\Container adaptors\queue.c" />
+    <ClCompile Include="Container\Container adaptors\stack.c" />
+    <ClCompile Include="Container\container_def.c" />
+    <ClCompile Include="Container\Squence container\array.c" />
+    <ClCompile Include="Container\Squence container\array_family.c" />
+    <ClCompile Include="Container\Squence container\deque.c" />
+    <ClCompile Include="Container\Squence container\forward_list.c" />
+    <ClCompile Include="Container\Squence container\list.c" />
+    <ClCompile Include="Container\Squence container\list_family.c" />
+    <ClCompile Include="Container\Squence container\vector.c" />
+    <ClCompile Include="Container\Tree\avl_tree.c" />
+    <ClCompile Include="Container\Tree\binary_search_tree.c" />
+    <ClCompile Include="Container\Tree\b_tree.c" />
+    <ClCompile Include="Container\Tree\red_black_tree.c" />
+    <ClCompile Include="Container\Tree\tree_family.c" />
     <ClCompile Include="Debug Component\Debug Error\debug_error.c" />
     <ClCompile Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.c" />
     <ClCompile Include="Iterator\Input Iterator\input_iterator.c" />
@@ -29,14 +50,50 @@
     <ClCompile Include="Iterator\Output Iterator\output_iterator.c" />
     <ClCompile Include="Iterator\Random Access Iterator\random_access_iterator.c" />
     <ClCompile Include="Main\main.c" />
-    <ClCompile Include="Main\main_iterator.c" />
+    <ClCompile Include="Main\main_array.c" />
+    <ClCompile Include="Main\main_binary_search_tree.c" />
+    <ClCompile Include="Main\main_b_tree.c" />
+    <ClCompile Include="Main\main_deque.c" />
+    <ClCompile Include="Main\main_forward_list.c" />
+    <ClCompile Include="Main\main_list.c" />
+    <ClCompile Include="Main\main_priority_queue.c" />
+    <ClCompile Include="Main\main_queue.c" />
+    <ClCompile Include="Main\main_red_black_tree.c" />
+    <ClCompile Include="Main\main_stack.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithm\algorithm.h" />
+    <ClInclude Include="Algorithm\algorithm_def.h" />
+    <ClInclude Include="Algorithm\compare.h" />
+    <ClInclude Include="Algorithm\modify_sequence.h" />
+    <ClInclude Include="Algorithm\sort.h" />
+    <ClInclude Include="Algorithm\search_substring.h" />
     <ClInclude Include="Allocator\Allocator Definition\allocator_cfg.h" />
     <ClInclude Include="Allocator\Allocator Definition\allocator_def.h" />
     <ClInclude Include="Allocator\Allocator Definition\allocator_pte_def.h" />
     <ClInclude Include="Allocator\allocator.h" />
     <ClInclude Include="Allocator\Concept Allocator\concept_allocator.h" />
+    <ClInclude Include="Container\Container adaptors\container_adaptor_def.h" />
+    <ClInclude Include="Container\Container adaptors\container_adatpor_pte_def.h" />
+    <ClInclude Include="Container\Container adaptors\priority_queue.h" />
+    <ClInclude Include="Container\Container adaptors\queue.h" />
+    <ClInclude Include="Container\Container adaptors\stack.h" />
+    <ClInclude Include="Container\container_cfg.h" />
+    <ClInclude Include="Container\container_pte_def.h" />
+    <ClInclude Include="Container\Squence container\array.h" />
+    <ClInclude Include="Container\Squence container\array_family.h" />
+    <ClInclude Include="Container\Squence container\deque.h" />
+    <ClInclude Include="Container\Squence container\forward_list.h" />
+    <ClInclude Include="Container\Squence container\list.h" />
+    <ClInclude Include="Container\Squence container\list_family.h" />
+    <ClInclude Include="Container\Squence container\vector.h" />
+    <ClInclude Include="Container\container.h" />
+    <ClInclude Include="Container\container_def.h" />
+    <ClInclude Include="Container\Tree\avl_tree.h" />
+    <ClInclude Include="Container\Tree\binary_search_tree.h" />
+    <ClInclude Include="Container\Tree\b_tree.h" />
+    <ClInclude Include="Container\Tree\red_black_tree.h" />
+    <ClInclude Include="Container\Tree\tree_family.h" />
     <ClInclude Include="Debug Component\Debug Assert\debug_assert.h" />
     <ClInclude Include="Debug Component\Debug Component Definition\debug_component_def.h" />
     <ClInclude Include="Debug Component\Debug Error\debug_error.h" />
@@ -158,6 +215,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -32,11 +32,8 @@ struct container_adaptor_s {
 	/* @brief RESERVED This variables will record the identity code of container_ptr type.				*/
 	enum container_type_e	container_type_id;
 
-	/* @brief This variables will point to the allocator_ptr control.									*/
-	struct allocator_control_s *allocator_control_ptr;
-
-	/* @brief This variables will point to the allocator_ptr.											*/
-	void *allocator_ptr;
+	/* @brief This variables will record the allocator unit of the container.							*/
+	struct allocator_unit_s allocator_unit;
 
 	/* @brief This variables will point to the function address table of front container_ptr type.		*/
 	struct container_control_s *container_control_ptr;

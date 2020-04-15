@@ -31,7 +31,7 @@
 #define VECTOR_CFG_DEFAULT_HARDWARE_MAX_AVAILABLE_HEAP_SIZE		1024u
 
 /* Configure    the type of allocator.                                                                  */
-#define VECTOR_CFG_ALLOCATOR_TYPE                           ALLOCATOR_COMMON
+#define VECTOR_CFG_ALLOCATOR_TYPE                           CONCEPT_ALLOCATOR
 
 /* Configure    if enable integrated structure.                                                         */
 #define VECTOR_CFG_INTEGRATED_STRUCTURE_MODE_EN			    1u

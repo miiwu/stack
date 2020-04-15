@@ -29,7 +29,7 @@
 #define PRIORITY_QUEUE_CFG_DEFAULT_ADAPT_CONTAINER_TYPE						FORWARD_LIST
 
 /* Configure    the type of allocator.                                                                  */
-#define PRIORITY_QUEUE_CFG_ALLOCATOR_TYPE									ALLOCATOR_COMMON
+#define PRIORITY_QUEUE_CFG_ALLOCATOR_TYPE									CONCEPT_ALLOCATOR
 
 /* Configure    the type of sort algorithm.                                                             */
 #define PRIORITY_QUEUE_CFG_SORT_ALGORITHM_TYPE								BUBBLE_SORT

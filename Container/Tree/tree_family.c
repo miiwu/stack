@@ -363,7 +363,7 @@ errno_t tree_family_control_configuration_destroy(tree_family_stpp tree_family)
 
 	(*tree_family)->switch_control(*tree_family);
 
-	void *allocator_ptr = (*tree_family)->allocator_ptr;
+	struct allocator_s *allocator_ptr = (*tree_family)->allocator_ptr;
 
 	struct allocator_control_s *allocator_control_ptr = (*tree_family)->allocator_control_ptr;
 
@@ -377,7 +377,7 @@ errno_t tree_family_control_configuration_destroy(tree_family_stpp tree_family)
 	tree_family_control_posorder_traversal(*tree_family, (*tree_family)->element_ptr,
 										   tree_family_control_destroy_posorder_traversal_operator);
 
-	allocator_control_ptr->deallocate(allocator_ptr, *tree_family, 1);																			/* deallocate #1 */
+	allocator_control_ptr->deallocate(allocator_ptr, *tree_family);																			/* deallocate #1 */
 
 	allocator_control_ptr->configuration.destroy(&allocator_ptr);
 
@@ -608,11 +608,11 @@ void tree_family_control_destroy_node(tree_family_stp tree_family,
 
 	struct tree_family_chain_node_s *node_destroy = *node;
 
-	tree_family->allocator_control_ptr->deallocate(tree_family->allocator_ptr, node_destroy->data, 1);				/* Deallocate #2 */
+	tree_family->allocator_control_ptr->deallocate(tree_family->allocator_ptr, node_destroy->data);				/* Deallocate #2 */
 
-	tree_family->allocator_control_ptr->deallocate(tree_family->allocator_ptr, node_destroy->link, 1);				/* Deallocate #3 */
+	tree_family->allocator_control_ptr->deallocate(tree_family->allocator_ptr, node_destroy->link);				/* Deallocate #3 */
 
-	tree_family->allocator_control_ptr->deallocate(tree_family->allocator_ptr, *node, 1);							/* Deallocate #1 */
+	tree_family->allocator_control_ptr->deallocate(tree_family->allocator_ptr, *node);							/* Deallocate #1 */
 
 	*node = NULL;
 }
@@ -648,7 +648,7 @@ void tree_family_node_control_destroy_data(tree_family_stp tree_family,
 	assert(tree_family);
 	assert(data);
 
-	tree_family->allocator_control_ptr->deallocate(tree_family->allocator_ptr, *data, 1);
+	tree_family->allocator_control_ptr->deallocate(tree_family->allocator_ptr, *data);
 
 	*data = NULL;
 }
@@ -851,7 +851,7 @@ void tree_family_node_control_destroy_link(tree_family_stp tree_family,
 	assert(tree_family);
 	assert(link);
 
-	tree_family->allocator_control_ptr->deallocate(tree_family->allocator_ptr, *link, 1);
+	tree_family->allocator_control_ptr->deallocate(tree_family->allocator_ptr, *link);
 
 	*link = NULL;
 }

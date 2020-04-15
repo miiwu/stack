@@ -239,7 +239,7 @@ void list_family_control_configuration_destroy(list_family_stpp list_family)
 
 	(*list_family)->switch_control((*list_family));
 
-	void *allocator_ptr = (*list_family)->allocator_ptr;
+	struct allocator_s *allocator_ptr = (*list_family)->allocator_ptr;
 
 	struct allocator_control_s *allocator_control_ptr = (*list_family)->allocator_control_ptr;
 
@@ -254,7 +254,7 @@ void list_family_control_configuration_destroy(list_family_stpp list_family)
 		}
 	}
 
-	allocator_control_ptr->deallocate(allocator_ptr, *list_family, 1);
+	allocator_control_ptr->deallocate(allocator_ptr, *list_family);
 
 	allocator_control_ptr->configuration.destroy(&allocator_ptr);
 
@@ -761,7 +761,7 @@ void list_family_control_list_operations_remove_if(list_family_stp list_family, 
 		list_node_control_del_data(list_family, *(pos_remove + cnt) - cnt);
 	}
 
-	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr, pos_remove, list_family->info.size);
+	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr, pos_remove);
 }
 
 /**
@@ -849,7 +849,7 @@ void list_family_control_list_operations_unique(list_family_stp list_family)
 	}
 
 	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr,
-												   pos_repetitive_store, size_list);
+												   pos_repetitive_store);
 }
 
 /**
@@ -963,9 +963,9 @@ void list_family_control_destroy_node(list_family_stp list_family,
 
 	void **data_ptr = node;
 
-	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr, *data_ptr, 1);				/* Deallocate #2 */
+	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr, *data_ptr);				/* Deallocate #2 */
 
-	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr, node, 1);					/* Deallocate #1 */
+	list_family->allocator_control_ptr->deallocate(list_family->allocator_ptr, node);					/* Deallocate #1 */
 
 	node = NULL;
 }

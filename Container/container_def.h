@@ -150,7 +150,7 @@ struct container_control_configuration_allocate_return_s {
 	struct allocator_control_s *allocator_control_ptr;
 
 	/* @brief This variables will point to the allocator_ptr.												*/
-	void *allocator_ptr;
+	struct allocator_s *allocator_ptr;
 
 	/* @brief This variables will be a external addon, validity only depends on memory allocation.		*/
 	char addon[0];
