@@ -23,8 +23,13 @@
     <ClCompile Include="Allocator\Concept Allocator\concept_allocator.c" />
     <ClCompile Include="Debug Component\Debug Error\debug_error.c" />
     <ClCompile Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.c" />
+    <ClCompile Include="Iterator\Input Iterator\input_iterator.c" />
+    <ClCompile Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_def.c" />
+    <ClCompile Include="Iterator\Iterator Definition\iterator_def.c" />
+    <ClCompile Include="Iterator\Output Iterator\output_iterator.c" />
+    <ClCompile Include="Iterator\Random Access Iterator\random_access_iterator.c" />
     <ClCompile Include="Main\main.c" />
-    <ClCompile Include="Main\main_unify_structure.c" />
+    <ClCompile Include="Main\main_iterator.c" />
     <ClCompile Include="Unify Structure\unify_structure.c" />
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +43,14 @@
     <ClInclude Include="Debug Component\Debug Error\debug_error.h" />
     <ClInclude Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.h" />
     <ClInclude Include="Debug Component\debug_component.h" />
+    <ClInclude Include="Iterator\Input Iterator\input_iterator.h" />
+    <ClInclude Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_def.h" />
+    <ClInclude Include="Iterator\Iterator Adaptor Definition\iterator_adaptor_pte_def.h" />
+    <ClInclude Include="Iterator\Iterator Definition\iterator_def.h" />
+    <ClInclude Include="Iterator\Iterator Definition\iterator_pte_def.h" />
+    <ClInclude Include="Iterator\iterator.h" />
+    <ClInclude Include="Iterator\Output Iterator\output_iterator.h" />
+    <ClInclude Include="Iterator\Random Access Iterator\random_access_iterator.h" />
     <ClInclude Include="Main\main_cfg.h" />
     <ClInclude Include="Unify Structure\unify_structure.h" />
   </ItemGroup>
