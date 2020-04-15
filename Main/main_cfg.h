@@ -7,6 +7,8 @@
 
 #include "allocator.h"
 
+#include "unify_structure.h"
+
 #include "iterator.h"
 
 #include "container.h"

@@ -60,10 +60,10 @@
  * @param structure the pointer to structure
  * @param package the package of the unify structure allocate
  *
- * @return the allocator unit
+ * @return the construct package
  */
 
-struct allocator_unit_s
+struct unify_structure_construct_package_s
 	unify_structure_control_construct(void **structure,
 									  enum allocator_type_e allocator_type,
 									  size_t structure_mem_size)
@@ -72,21 +72,21 @@ struct allocator_unit_s
 	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(allocator_type, > , int, 0);
 	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(structure_mem_size, > , int, 0);
 
-	DEBUG_ERROR_CONTROL_STRUCTURE_INIT(struct allocator_unit_s, 3, 1, 2, 3);
+	DEBUG_ERROR_CONTROL_STRUCTURE_INIT(struct unify_structure_construct_package_s, 3, 1, 2, 3);
 
-	if (NULL == (DEBUG_ERROR_CONTROL_RETURN_VAL.control_ptr
+	if (NULL == (DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr
 				 = allocator_control_get_function_address_table(allocator_type))) {
 		DEBUG_ERROR_CONTROL_JUMP(1);
 	}
 
-	if (DEBUG_ERROR_CONTROL_RETURN_VAL.control_ptr->configuration
-		.init(&DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_ptr)) {                             /* Initialize the structure pointer */
+	if (DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr->configuration
+		.init(&DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.allocator_ptr)) {              /* Initialize the structure pointer */
 		DEBUG_ERROR_CONTROL_JUMP(2);
 	}
 
 	if (NULL == ((*structure)
-				 = DEBUG_ERROR_CONTROL_RETURN_VAL.control_ptr
-				 ->allocate(DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_ptr,                   /* Allocate the structure pointer */
+				 = DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr
+				 ->allocate(DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.allocator_ptr,    /* Allocate the structure pointer */
 							1,
 							structure_mem_size))) {
 		DEBUG_ERROR_CONTROL_JUMP(3);
@@ -124,6 +124,8 @@ unify_structure_control_destruct(void **structure,
 		DEBUG_ERROR_CONTROL_JUMP(2);
 	}
 
+	allocator_unit.allocator_ptr = NULL;
+	allocator_unit.control_ptr = NULL;
 	*structure = NULL;
 
 	DEBUG_ERROR_CONTROL_EXIT();

@@ -16,9 +16,9 @@
  *********************************************************************************************************
  */
 
-#include "allocator.h"
-
 #include "debug_component.h"
+
+#include "allocator.h"
 
 /*
  *********************************************************************************************************
@@ -32,6 +32,16 @@
  *********************************************************************************************************
  */
 
+/**
+ * @brief This type is the unify structure construct package structure.
+ */
+
+struct unify_structure_construct_package_s {
+	errno_t error;
+
+	struct allocator_unit_s allocator_unit;
+};
+
 /*
  *********************************************************************************************************
  *								            FUNCTION PROTOTYPES
@@ -44,10 +54,10 @@
  * @param structure the pointer to structure
  * @param package the package of the unify structure allocate
  *
- * @return the allocator unit
+ * @return the construct package
  */
 
-struct allocator_unit_s
+struct unify_structure_construct_package_s
 	unify_structure_control_construct(void **structure,
 									  enum allocator_type_e allocator_type,
 									  size_t structure_mem_size);
