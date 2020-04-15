@@ -105,71 +105,22 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(object_unit.control_ptr);
 	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(addon_size, >= , int, 0);
 
-	DEBUG_ERROR_CONTROL_ERRNO_INIT(3, 1, 2, 3);
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
 
-	struct allocator_unit_s
-		allocator_unit = { 0 };
+	static struct unify_structure_construct_package_s construct_package;
 
-	if (NULL == (allocator_unit
-				 .control_ptr = allocator_control_get_function_address_table(allocator_type))) {
+	if ((construct_package = unify_structure_control_construct(iterator,                    /* Construct the iterator */
+															   allocator_type,
+															   sizeof(struct iterator_s) + addon_size))
+		.error) {
 		DEBUG_ERROR_CONTROL_JUMP(1);
-	}
-
-	if (allocator_unit.control_ptr->configuration
-		.init(&allocator_unit.allocator_ptr)) {
-		DEBUG_ERROR_CONTROL_JUMP(2);
-	}
-
-	if (NULL == ((*iterator)
-				 = allocator_unit.control_ptr->allocate(allocator_unit.allocator_ptr,
-														1,
-														sizeof(struct iterator_s) + addon_size))) {
-		DEBUG_ERROR_CONTROL_JUMP(3);
 	}
 
 	(*iterator)->type_id = iterator_type;
 	(*iterator)->info.position = (size_t)-1;
 	(*iterator)->info.featured = (addon_size) ? true : false;
-	(*iterator)->allocator_unit = allocator_unit;
+	(*iterator)->allocator_unit = construct_package.allocator_unit;
 	(*iterator)->object_unit = object_unit;
-
-	DEBUG_ERROR_CONTROL_EXIT();
-}
-
-/**
- * @brief This function will allocate the iterator.
- *
- * @param
- *
- * @return
- */
-
-struct iterator_allocate_return_package_s
-	iterator_control_configuration_allocate(void **iterator,
-											struct iterator_allocate_package_s package)
-{
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(iterator);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(package.type, > , int, 0);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(package.mem_size, >= , int, 0);
-
-    DEBUG_ERROR_CONTROL_STRUCTURE_INIT(struct iterator_allocate_return_package_s, 3, 1, 2, 3);
-
-	if (NULL == (DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit
-				 .control_ptr = allocator_control_get_function_address_table(CONCEPT_ALLOCATOR))) {
-		DEBUG_ERROR_CONTROL_JUMP(1);
-	}
-
-	if (DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr->configuration
-		.init(&DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.allocator_ptr)) {
-		DEBUG_ERROR_CONTROL_JUMP(2);
-	}
-
-	if (NULL == ((*iterator)
-				 = DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr
-				 ->allocate(DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.allocator_ptr,
-							1, package.mem_size))) {
-		DEBUG_ERROR_CONTROL_JUMP(3);
-	}
 
 	DEBUG_ERROR_CONTROL_EXIT();
 }
@@ -187,24 +138,12 @@ errno_t iterator_control_configuration_destroy(struct iterator_s **iterator)
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(iterator);
 	DEBUG_ASSERT_CONTROL_POINTER_PRINTF((*iterator));
 
-	DEBUG_ERROR_CONTROL_ERRNO_INIT(2, 1, 2);
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
 
-	static struct allocator_unit_s allocator_unit = { 0 };
-
-	allocator_unit = (*iterator)->allocator_unit;                                           /* Store allocator unit structure */
-
-	if (allocator_unit.control_ptr
-		->deallocate(allocator_unit.allocator_ptr,
-					 (*iterator))) {					                                    /* Deallocate the iterator */
+	if (unify_structure_control_destruct(iterator,                                          /* Destruct the iterator */
+										 (*iterator)->allocator_unit)) {
 		DEBUG_ERROR_CONTROL_JUMP(1);
 	}
-
-	if (allocator_unit.control_ptr
-		->configuration.destroy(&allocator_unit.allocator_ptr)) {						    /* Destroy the allocator */
-		DEBUG_ERROR_CONTROL_JUMP(2);
-	}
-    
-    *iterator = NULL;
 
 	DEBUG_ERROR_CONTROL_EXIT();
 }

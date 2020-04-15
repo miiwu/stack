@@ -23,9 +23,7 @@
 #include <assert.h>
 #include <malloc.h>
 
-#include "debug_component.h"
-
-#include "allocator.h"
+#include "unify_structure.h"
 
 /*
  *********************************************************************************************************
@@ -114,26 +112,6 @@ struct iterator_object_unit_s {
 };
 
 /**
- * @brief This type is the iterator allocate package structure.
- */
-
-struct iterator_allocate_package_s {
-	enum iterator_type_e type;
-
-	size_t mem_size;
-};
-
-/**
- * @brief This type is the iterator allocate package structure.
- */
-
-struct iterator_allocate_return_package_s {
-    errno_t error;
-
-    struct allocator_unit_s allocator_unit;
-};
-
-/**
  * @brief This type is the iterator feature package structure.
  */
 
@@ -142,35 +120,11 @@ struct iterator_feature_package_s {
 	bool (*advance)(int step);
 };
 
-/**
- * @brief This type is the iterator feature package structure.
- */
-
-struct iterator_adaptor_allocate_package_s {
-    enum iterator_type_e type;
-
-    struct iterator_object_unit_s object_unit;
-
-    size_t addon_size;
-};
-
 /*
  *********************************************************************************************************
  *								            FUNCTION PROTOTYPES
  *********************************************************************************************************
  */
-
-/**
- * @brief This function will allocate the iterator.
- *
- * @param
- *
- * @return
- */
-
-struct iterator_allocate_return_package_s
-    iterator_control_configuration_allocate(void **iterator,
-                                            struct iterator_allocate_package_s package);
 
 /**
  * @brief This function will initialize the iterator.
