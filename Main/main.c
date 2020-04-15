@@ -22,6 +22,12 @@ void main(void)
 
 	#endif
 
+	#if	(MAIN_UNIFY_STRUCTURE_EN)
+
+	main_unify_structure();
+
+	#endif
+
 	#if	(MAIN_ITERATOR_EN)
 
 	main_iterator();

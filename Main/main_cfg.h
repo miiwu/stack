@@ -17,6 +17,8 @@
 
 #define MAIN_ALLOCATOR_EN			0u
 
+#define MAIN_UNIFY_STRUCTURE_EN		1u
+
 #define MAIN_ITERATOR_EN			0u
 
 #define MAIN_GENERIC_TYPE_EN		0u
@@ -58,6 +60,12 @@ void main_algorithm(void);
 #if	(MAIN_ALLOCATOR_EN)
 
 void main_allocator(void);
+
+#endif
+
+#if	(MAIN_UNIFY_STRUCTURE_EN)
+
+void main_unify_structure(void);
 
 #endif
 
