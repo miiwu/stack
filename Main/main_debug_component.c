@@ -2,16 +2,24 @@
 
 #if MAIN_DEBUG_COMPONENT_EN
 
+#define MAIN_DEBUG_COMPONENT_CFG_MICRO_EN						1u
 #define MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN						0u
-#define MAIN_DEBUG_COMPONENT_CFG_ERROR_EN						1u
+#define MAIN_DEBUG_COMPONENT_CFG_ERROR_EN						0u
 #define MAIN_DEBUG_COMPONENT_CFG_STACK_BACK_TRACE_EN			0u
 
+void main_debug_micro(void);
 void main_debug_assert(void);
 void main_debug_error(void);
 void main_debug_stack_back_trace(void);
 
 void main_debug_component(void)
 {
+	#if MAIN_DEBUG_COMPONENT_CFG_MICRO_EN
+
+	main_debug_micro();
+
+	#endif // MAIN_DEBUG_COMPONENT_CFG_MICRO_EN
+
 	#if MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN
 
 	main_debug_assert();
@@ -32,6 +40,18 @@ void main_debug_component(void)
 
 	return;
 }
+
+#if MAIN_DEBUG_COMPONENT_CFG_MICRO_EN
+
+void main_debug_micro(void)
+{
+	printf("debug_component.micro.va_arg.arg%d:\"%s\" \r\n",
+		   2, DEBUG_MICRO_CONTROL_VA_ARGS_ARG(2, "1", "2", "3"));
+
+	return;
+}
+
+#endif // MAIN_DEBUG_COMPONENT_CFG_MICRO_EN
 
 #if MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN
 

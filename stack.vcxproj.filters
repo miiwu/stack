@@ -43,6 +43,9 @@
     <Filter Include="源文件\debug component\debug error">
       <UniqueIdentifier>{95f35da3-5d80-4c68-b2f5-bc271a39d8dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\debug component\debug micro">
+      <UniqueIdentifier>{b4a3f066-283d-48a2-8890-73d97ffe939e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -76,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="Debug Component\Debug Error\debug_error.h">
       <Filter>头文件\debug component\debug error</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug Component\Debug Micro\debug_micro.h">
+      <Filter>头文件\debug component\debug micro</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
