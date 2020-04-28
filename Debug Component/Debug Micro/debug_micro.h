@@ -68,13 +68,14 @@
 #define DEBUG_MICRO_CONTROL_VA_ARGS_ARG7(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...)                 \
     (arg7)
 
-/* Define			debug micro control get the arg8 of the va_arg.							            */
-#define DEBUG_MICRO_CONTROL_VA_ARGS_ARG8(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ...)           \                                                                                             \
-    (arg8)
-
 /* Define			debug micro control get the cnt-th arg of the va_arg.				                */
 #define DEBUG_MICRO_CONTROL_VA_ARGS_ARG(cnt, ...)                                                       \
-    (DEBUG_MICRO_CONTROL_VA_ARGS_ARG ## cnt DEBUG_MICRO_CONTROL_LEFTBRACKET __VA_ARGS__))
+    DEBUG_MICRO_CONTROL_VA_ARGS_ARG ## cnt DEBUG_MICRO_CONTROL_LEFTBRACKET __VA_ARGS__)
+
+/* Define			debug micro control get the number of the va_arg, the range between 0 and 6.		*/
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARG_NUM(...)                                                        \
+	DEBUG_MICRO_CONTROL_VA_ARGS_ARG DEBUG_MICRO_CONTROL_LEFTBRACKET                                     \
+        7, __VA_ARGS__, 6, 5, 4, 3, 2, 1, 0)
 
 /*
  *********************************************************************************************************

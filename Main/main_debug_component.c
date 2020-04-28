@@ -48,6 +48,13 @@ void main_debug_micro(void)
 	printf("debug_component.micro.va_arg.arg%d:\"%s\" \r\n",
 		   2, DEBUG_MICRO_CONTROL_VA_ARGS_ARG(2, "1", "2", "3"));
 
+	printf("debug_component.micro.va_arg.arg_num:%d \r\n",
+		   DEBUG_MICRO_CONTROL_VA_ARGS_ARG_NUM());
+	printf("debug_component.micro.va_arg.arg_num:%d \r\n",
+		   DEBUG_MICRO_CONTROL_VA_ARGS_ARG_NUM(1, 2, 3, 4, 5, 6));
+	printf("debug_component.micro.va_arg.arg_num:\"%s\" \r\n",
+		   DEBUG_MICRO_CONTROL_VA_ARGS_ARG_NUM(1, 2, 3, 4, 5, 6, "*"));
+
 	return;
 }
 
