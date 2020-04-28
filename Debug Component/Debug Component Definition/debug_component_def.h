@@ -21,6 +21,7 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <errno.h>
 #include <malloc.h>
 #include <windows.h>
 #include <DbgHelp.h>

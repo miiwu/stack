@@ -2,9 +2,9 @@
 
 #if MAIN_DEBUG_COMPONENT_EN
 
-#define MAIN_DEBUG_COMPONENT_CFG_MICRO_EN						1u
+#define MAIN_DEBUG_COMPONENT_CFG_MICRO_EN						0u
 #define MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN						0u
-#define MAIN_DEBUG_COMPONENT_CFG_ERROR_EN						0u
+#define MAIN_DEBUG_COMPONENT_CFG_ERROR_EN						1u
 #define MAIN_DEBUG_COMPONENT_CFG_STACK_BACK_TRACE_EN			0u
 
 void main_debug_micro(void);
@@ -71,8 +71,6 @@ void main_debug_assert(void)
 #if MAIN_DEBUG_COMPONENT_CFG_ERROR_EN
 
 struct debug_error_structure_s {
-	errno_t err;    /* This is the must */
-
 	char *string;
 };
 
@@ -81,26 +79,25 @@ struct debug_error_structure_s debug_error_structure(void);
 
 void main_debug_error(void)
 {
-	printf("debug_component.error.errno.error:%d\r\n", debug_error_errno());
+	debug_error_errno();
+	printf("debug_component.error.errno:%d\r\n", DEBUG_ERROR_CONTROL_ERROR());				/* Error, if the error have occurred, it will be not 0, in other words, true */
 
-	struct debug_error_structure_s structure = debug_error_structure();
-	printf("debug_error.structure.error:%d string:\"%s\"\r\n",
-		   structure.err,
-		   structure.string);
+	debug_error_structure();
+	printf("debug_component.error.structure:%d\r\n", DEBUG_ERROR_CONTROL_ERROR());
 
 	return;
 }
 
 errno_t debug_error_errno(void)
 {
-	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
-	/* DEBUG_ERROR_CONTROL_INIT(errno_t, 2, 0, 1); */
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 200);
+	/* DEBUG_ERROR_CONTROL_INIT(errno_t, 2, 0, 200); */
 
 	if (true) {
-		DEBUG_ERROR_CONTROL_JUMP(1);
+		DEBUG_ERROR_CONTROL_JUMP(1, "errno test debug error micro");						/* Appoint error string */
 	}
 
-	DEBUG_ERROR_CONTROL_EXIT();
+	DEBUG_ERROR_CONTROL_PRINTF_EXIT();														/* Print the error string to the stdout, then exit with the error code */
 }
 
 struct debug_error_structure_s debug_error_structure(void)
@@ -108,13 +105,13 @@ struct debug_error_structure_s debug_error_structure(void)
 	DEBUG_ERROR_CONTROL_STRUCTURE_INIT(struct debug_error_structure_s, 1, 1);
 	/* DEBUG_ERROR_CONTROL_INIT(struct debug_error_structure_s, 2, 0, 1); */
 
-	DEBUG_ERROR_CONTROL_RETURN_VAL.string = "debug_error_structure";
+	DEBUG_ERROR_CONTROL_RETURN_VAL.string = "debug_error_structure";						/* Access the variable will return when function exit() */
 
 	if (true) {
-		DEBUG_ERROR_CONTROL_JUMP(1);
+		DEBUG_ERROR_CONTROL_JUMP(1);														/* No string,suggest the error code is explain by the strerror() */
 	}
 
-	DEBUG_ERROR_CONTROL_EXIT();
+	DEBUG_ERROR_CONTROL_EXIT(DEBUG_ERROR_CONTROL_LOG(printf));								/* Exit with the error code, and log the error string with printf() */
 }
 
 #endif // MAIN_DEBUG_COMPONENT_CFG_ERROR_EN
