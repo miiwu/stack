@@ -34,6 +34,10 @@
 #define DEBUG_MICRO_CONTROL_STRING(...)                                                                 \
     (#__VA_ARGS__)
 
+/* Define			debug micro control not zero, if not, the compiler will throw warnings.		        */
+#define DEBUG_MICRO_CONTROL_NOT_ZERO(zero)                                                              \
+    (1u ? sizeof(char[zero]) : 0u)
+
 /* Define			debug micro control function-like.										            */
 #define DEBUG_MICRO_CONTROL_FUNCTION_LIKE(...)                                                          \
     do {                                                                                                \
