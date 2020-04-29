@@ -90,11 +90,13 @@ void main_debug_error(void)
 
 errno_t debug_error_errno(void)
 {
-	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 200);
-	/* DEBUG_ERROR_CONTROL_INIT(errno_t, 2, 0, 200); */
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
+	/* DEBUG_ERROR_CONTROL_INIT(errno_t, 2, 0, 1); */
+
+	DEBUG_ERROR_CONTROL_STRING_HEADER("debug_error.errno.");								/* Modify the header of the error string */
 
 	if (true) {
-		DEBUG_ERROR_CONTROL_JUMP(1, "errno test debug error micro");						/* Appoint error string */
+		DEBUG_ERROR_CONTROL_JUMP(1, "test:succeed");										/* Appoint error string */
 	}
 
 	DEBUG_ERROR_CONTROL_PRINTF_EXIT();														/* Print the error string to the stdout, then exit with the error code */

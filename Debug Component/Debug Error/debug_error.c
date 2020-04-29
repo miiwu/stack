@@ -111,7 +111,30 @@ debug_error_control_error_string_inquire(void)
 }
 
 extern inline void
+debug_error_control_error_string_header_modify(char *string)
+{
+	debug_error_control_error_string = string;
+}
+
+extern inline void
 debug_error_control_error_string_modify(char *string)
 {
+	if (NULL != debug_error_control_error_string) {
+		if (NULL != string) {
+            size_t num = 0;
+            num += strlen(debug_error_control_error_string);
+            num += strlen(string);
+
+            char *temp = debug_error_control_error_string;
+
+            debug_error_control_error_string = calloc(num, sizeof(char));
+
+			strcat(debug_error_control_error_string, temp);
+			strcat(debug_error_control_error_string, string);
+		}
+
+        return;
+	}
+
 	debug_error_control_error_string = string;
 }

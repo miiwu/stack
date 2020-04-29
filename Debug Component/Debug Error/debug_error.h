@@ -32,12 +32,17 @@
 #define DEBUG_ERROR_CONTROL_INIT(return_type, count, code, ...)                                         \
     static errno_t debug_error_control_error_table[count] = { code, __VA_ARGS__ };                      \
     static return_type DEBUG_ERROR_CONTROL_RETURN_VAL;                                                  \
+    debug_error_control_error_string_header_modify(NULL);                                               \
     _DEBUG_ERROR_CONTROL_SET_(0)
+
+/* Define			debug error control init.										                    */
+#define DEBUG_ERROR_CONTROL_STRING_HEADER(header)                                                       \
+    debug_error_control_error_string_header_modify(header)
 
 /* Define			debug error control jump.										                    */
 #define DEBUG_ERROR_CONTROL_JUMP(count, ...)                                                            \
     do {                                                                                                \
-        DEBUG_MICRO_CONTROL_NOT_ZERO(count);                                                            \
+        DEBUG_MICRO_CONTROL_PROBE_NOT_ZERO(count);                                                      \
 	    _DEBUG_ERROR_CONTROL_SET_(count, __VA_ARGS__);                                                  \
         goto DEBUG_ERROR_CONTROL_EXIT_LABLE;                                                            \
     } while (0)
@@ -63,6 +68,8 @@
 			logger("\r\n");                                                                             \
 		}                                                                                               \
     } while (0)
+
+#define plus(x,y) x + y
 
 /* Define			debug error control errno init.										                */
 #define DEBUG_ERROR_CONTROL_ERRNO_INIT(count, ...)                                                      \
@@ -106,6 +113,8 @@ void debug_error_control_error_modify(errno_t error);
 void debug_error_control_error_pointer_modify(void *pointer);
 
 char *debug_error_control_error_string_inquire(void);
+
+void debug_error_control_error_string_header_modify(char *string);
 
 void debug_error_control_error_string_modify(char *string);
 

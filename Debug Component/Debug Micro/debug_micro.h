@@ -34,9 +34,17 @@
 #define DEBUG_MICRO_CONTROL_STRING(...)                                                                 \
     (#__VA_ARGS__)
 
-/* Define			debug micro control not zero, if not, the compiler will throw warnings.		        */
-#define DEBUG_MICRO_CONTROL_NOT_ZERO(zero)                                                              \
+/* Define			debug micro control probe, if zero, the compiler will throw warnings.		        */
+#define DEBUG_MICRO_CONTROL_PROBE(zero)                                                                 \
     (1u ? sizeof(char[zero]) : 0u)
+
+/* Define			debug micro control probe value what x.		                                        */
+#define DEBUG_MICRO_CONTROL_PROBE_WHAT_X(value, symbol, x)                                              \
+    DEBUG_MICRO_CONTROL_PROBE(value symbol x)
+
+/* Define			debug micro control probe not zero.		                                            */
+#define DEBUG_MICRO_CONTROL_PROBE_NOT_ZERO(value)                                                       \
+    DEBUG_MICRO_CONTROL_PROBE_WHAT_X(value, !=, 0)
 
 /* Define			debug micro control function-like.										            */
 #define DEBUG_MICRO_CONTROL_FUNCTION_LIKE(...)                                                          \
