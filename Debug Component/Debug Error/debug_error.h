@@ -24,11 +24,13 @@
  *********************************************************************************************************
  */
 
+/* Configuration    debug error configuration logger.										            */
+#define DEBUG_ERROR_CFG_LOGGER                                                                          \
+    printf
+
 /* Define			debug error control return.										                    */
 #define DEBUG_ERROR_CONTROL_RETURN_VAL                                                                  \
     (debug_error_control_return)
-
-#define table debug_error_control_error_table
 
 /* Define			debug error control init.										                    */
 #define DEBUG_ERROR_CONTROL_INIT(return_type, count, code, ...)                                         \
@@ -72,11 +74,14 @@
         DEBUG_MICRO_CONTROL_PROBE_ARG_MAX(1, __VA_ARGS__);                                              \
         if ((char)0 != debug_error_control_error_table_index_inquire()) {                               \
             DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                            \
-                2, printf, __VA_ARGS__, printf)("debug_component.error.error occur:");                  \
+                2, printf, __VA_ARGS__, DEBUG_ERROR_CFG_LOGGER)(                                        \
+                    "debug_component.error.error occur:");                                              \
             DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                            \
-                2, printf, __VA_ARGS__, printf)(debug_error_control_error_string_inquire());            \
+                2, printf, __VA_ARGS__, DEBUG_ERROR_CFG_LOGGER)(                                        \
+                    debug_error_control_error_string_inquire());                                        \
             DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                            \
-                2, printf, __VA_ARGS__, printf)("\r\n");                                                \
+                2, printf, __VA_ARGS__, DEBUG_ERROR_CFG_LOGGER)(                                        \
+                    "\r\n");                                                                            \
 		}                                                                                               \
     } while (0)
 
@@ -97,9 +102,9 @@
     do {                                                                                                \
         DEBUG_ERROR_CONTROL_EXIT DEBUG_MICRO_CONTROL_LEFTBRACKET                                        \
 			DEBUG_ERROR_CONTROL_LOG DEBUG_MICRO_CONTROL_LEFTBRACKET									    \
-				DEBUG_MICRO_CONTROL_VA_ARGS_ARG(2, printf, __VA_ARGS__, printf));					    \
+				DEBUG_MICRO_CONTROL_VA_ARGS_ARG(2, printf, __VA_ARGS__, DEBUG_ERROR_CFG_LOGGER));	    \
             DEBUG_MICRO_CONTROL_VA_ARGS_ARGS2 DEBUG_MICRO_CONTROL_LEFTBRACKET                           \
-                __VA_ARGS__,NULL,NULL));                                                                \
+                __VA_ARGS__, NULL, NULL));                                                              \
     } while (0)
 
 /* Define			debug error control set.										                    */
