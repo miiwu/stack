@@ -83,15 +83,15 @@ void *debug_error_control_error_string_cache_inquire(void);
  */
 
 /*
-*********************************************************************************************************
-*                                            FUNCTIONS
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                            FUNCTIONS
+ *********************************************************************************************************
+ */
 
 extern inline void
 debug_error_control_error_table_modify(errno_t *error_table)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(error_table);
+	DEBUG_ASSERT_CONTROL_POINTER(error_table);
 
 	debug_error_control_error.table.table_ptr = error_table;
 }
@@ -99,7 +99,7 @@ debug_error_control_error_table_modify(errno_t *error_table)
 extern inline void
 debug_error_control_error_table_index_modify(char index)
 {
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(index, >= , int, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE(index, >= , int, 0);
 
 	debug_error_control_error.table.index = index;
 }
@@ -201,7 +201,7 @@ char *debug_error_control_error_string_inquire(void)
 static inline void
 debug_error_control_error_string_cache_modify(char *cache)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(cache);
+	DEBUG_ASSERT_CONTROL_POINTER(cache);
 
 	if (NULL != debug_error_control_error.string.cache_ptr) {
 		#if DEBUG_ERROR_CFG_DEBUG_EN

@@ -71,16 +71,25 @@ void debug_assert(char *pointer, size_t variable);
 
 void main_debug_assert(void)
 {
+	denug_assert_control_error_string_modify("error", __FUNCTION__, __FILE__, __LINE__);
+	printf("\"%s\"\r\n", denug_assert_control_error_string_inquire());
+
+	denug_assert_control_error_string_modify("error1", __FUNCTION__, __FILE__, __LINE__);
+	printf("\"%s\"\r\n", denug_assert_control_error_string_inquire());
+
+	denug_assert_control_error_string_modify("err", __FUNCTION__, __FILE__, __LINE__);
+	printf("\"%s\"\r\n", denug_assert_control_error_string_inquire());
+
 	char string[] = "debug assert";
 
 	debug_assert(string, string[0]);
 }
 
-void debug_assert(char *pointer, size_t variable)
+inline void debug_assert(char *pointer, size_t variable)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(pointer);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(variable, >= , int, 0);
-	DEBUG_ASSERT_CONTROL_EXPRESSION_PRINTF(true == true);
+	DEBUG_ASSERT_CONTROL_POINTER(pointer);
+	DEBUG_ASSERT_CONTROL_VARIABLE(variable, >= , int, 0);
+	DEBUG_ASSERT_CONTROL_EXPRESSION(true == true);
 
 	printf("string:\"%s\" variable:%d\r\n",
 		   pointer,

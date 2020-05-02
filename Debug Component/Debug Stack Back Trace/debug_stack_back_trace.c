@@ -219,8 +219,8 @@ errno_t capture_stack_back_trace_convert_to_line(stack_back_trace_string_stp str
 errno_t debug_capture_stack_back_trace_init(stack_back_trace_stpp stack_back_trace,
 											stack_back_trace_size_t count)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(count, > , int, 0);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_VARIABLE(count, > , int, 0);
 
 	if (NULL == ((*stack_back_trace)
 				 = calloc(1, sizeof(struct stack_back_trace_t)))) {
@@ -263,7 +263,7 @@ errno_t debug_capture_stack_back_trace_init(stack_back_trace_stpp stack_back_tra
 
 errno_t debug_capture_stack_back_trace_destroy(stack_back_trace_stpp stack_back_trace)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
 
@@ -297,8 +297,8 @@ errno_t debug_capture_stack_back_trace_destroy(stack_back_trace_stpp stack_back_
 errno_t debug_capture_stack_back_trace(stack_back_trace_stp stack_back_trace,
 									   stack_back_trace_size_t frames_to_skip)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(frames_to_skip, >= , int, 0);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_VARIABLE(frames_to_skip, >= , int, 0);
 
 	void *back_trace_tmp[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH] = { 0 };
 	ULONG stack_back_trace_hash_tmp = 0;
@@ -358,7 +358,7 @@ errno_t debug_capture_stack_back_trace(stack_back_trace_stp stack_back_trace,
 
 bool debug_capture_stack_back_trace_empty_callback(stack_back_trace_stp stack_back_trace)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	stack_back_trace->type_count -= 1;
 
@@ -379,7 +379,7 @@ bool debug_capture_stack_back_trace_empty_callback(stack_back_trace_stp stack_ba
 errno_t debug_capture_stack_back_trace_reduce_count(stack_back_trace_stp stack_back_trace,
 													stack_back_trace_hash_t hash)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	if (0u == hash) {
 		#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
@@ -426,7 +426,7 @@ errno_t debug_capture_stack_back_trace_reduce_count(stack_back_trace_stp stack_b
 
 errno_t debug_capture_stack_back_trace_convert_to_string(stack_back_trace_stp stack_back_trace)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	stack_back_trace_string_st back_trace_string_tmp = { 0 };
 	back_trace_frame_t frame_tmp = 0;
@@ -473,7 +473,7 @@ errno_t debug_capture_stack_back_trace_convert_to_string(stack_back_trace_stp st
 stack_back_trace_hash_t debug_capture_stack_back_trace_get_hash(stack_back_trace_stp stack_back_trace,
 																stack_back_trace_size_t index)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
 
@@ -497,7 +497,7 @@ single_back_trace_t *debug_capture_stack_back_trace_get_trace(stack_back_trace_s
 															  stack_back_trace_size_t index,
 															  stack_back_trace_size_t sub_index)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	return *(*(stack_back_trace->back_trace_ptr + index) + sub_index);
 }
@@ -516,8 +516,8 @@ errno_t debug_capture_stack_back_trace_copy(stack_back_trace_stp destination,
 											stack_back_trace_size_t dst_index,
 											stack_back_trace_size_t src_index)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(destination);
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(source);
+	DEBUG_ASSERT_CONTROL_POINTER(destination);
+	DEBUG_ASSERT_CONTROL_POINTER(source);
 
 	for (size_t sub_index = 0; sub_index < *(source->back_trace_frames_ptr + src_index); sub_index++) {
 		*(*(destination->back_trace_ptr + dst_index) + sub_index) = *(*(source->back_trace_ptr + src_index) + sub_index);
@@ -540,7 +540,7 @@ errno_t debug_capture_stack_back_trace_copy(stack_back_trace_stp destination,
 errno_t debug_capture_stack_back_trace_link_init(stack_back_trace_link_stpp link,
 												 stack_back_trace_size_t count)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(link);
+	DEBUG_ASSERT_CONTROL_POINTER(link);
 
 	if (NULL == ((*link)
 				 = calloc(1, sizeof(struct stack_back_trace_link_t)))) {
@@ -565,8 +565,8 @@ errno_t debug_capture_stack_back_trace_link_init(stack_back_trace_link_stpp link
 
 errno_t debug_capture_stack_back_trace_link_destroy(stack_back_trace_link_stp *link)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(link);
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(*link);
+	DEBUG_ASSERT_CONTROL_POINTER(link);
+	DEBUG_ASSERT_CONTROL_POINTER(*link);
 
 	debug_capture_stack_back_trace_destroy(&(*link)->mark_ptr);
 	debug_capture_stack_back_trace_destroy(&(*link)->link_ptr);
@@ -587,7 +587,7 @@ errno_t debug_capture_stack_back_trace_link_destroy(stack_back_trace_link_stp *l
 errno_t debug_capture_stack_back_trace_link_mark(stack_back_trace_link_stp link,
 												 stack_back_trace_size_t frames_to_skip)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(link);
+	DEBUG_ASSERT_CONTROL_POINTER(link);
 
 	debug_capture_stack_back_trace(global_link_stack_back_trace_tmp, frames_to_skip + 1);
 
@@ -641,7 +641,7 @@ COMMON_HANDLER:
 errno_t debug_capture_stack_back_trace_link_link(stack_back_trace_link_stp link,
 												 stack_back_trace_size_t frames_to_skip)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(link);
+	DEBUG_ASSERT_CONTROL_POINTER(link);
 
 	debug_capture_stack_back_trace(global_link_stack_back_trace_tmp, frames_to_skip + 1);
 
@@ -693,8 +693,8 @@ COMMON_HANDLER:
 errno_t debug_capture_stack_back_trace_link_get_trace_ptr(stack_back_trace_link_stp link,
 														  stack_back_trace_stpp trace)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(link);
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(trace);
+	DEBUG_ASSERT_CONTROL_POINTER(link);
+	DEBUG_ASSERT_CONTROL_POINTER(trace);
 
 	*(trace + 0) = link->mark_ptr;
 	*(trace + 1) = link->link_ptr;
@@ -716,7 +716,7 @@ errno_t capture_stack_back_trace_convert_to_symbol(stack_back_trace_string_stp s
 												   back_trace_t trace,
 												   back_trace_frame_t frames)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(trace);
+	DEBUG_ASSERT_CONTROL_POINTER(trace);
 
 	HANDLE process = GetCurrentProcess();
 	DWORD64 displacementSym = 0;
@@ -773,7 +773,7 @@ errno_t capture_stack_back_trace_convert_to_line(stack_back_trace_string_stp str
 												 back_trace_t trace,
 												 back_trace_frame_t frames)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(trace);
+	DEBUG_ASSERT_CONTROL_POINTER(trace);
 
 	HANDLE process = GetCurrentProcess();
 	DWORD displacementLine = 0;
