@@ -6,11 +6,15 @@
 
 #include "debug_error.h"
 
+#include "debug_assert.h"
+
 /*
  *********************************************************************************************************
  *                                            LOCAL DEFINES
  *********************************************************************************************************
  */
+
+#define DEBUG_ERROR_CFG_DEBUG_EN										0u
 
 /*
  *********************************************************************************************************
@@ -23,6 +27,26 @@
  *                                          LOCAL DATA TYPES
  *********************************************************************************************************
  */
+
+/**
+ * @brief This type is the debug error control error string structure.
+ */
+
+struct debug_error_s {
+	struct debug_error_table_s {
+		errno_t *table_ptr;
+
+		char index;
+	} table;
+
+	struct debug_error_string_s {
+		char *header_ptr;
+
+		char *body_ptr;
+
+		char *cache_ptr;
+	} string;
+};
 
 /*
  *********************************************************************************************************
@@ -37,22 +61,20 @@
  */
 
 /**
- * @brief This variable is the debug error control error pointer.
+ * @brief This variable is the debug error control error string structure.
  */
 
-errno_t *debug_error_control_error_ptr;
-
-/**
- * @brief This variable is the debug error control error string.
- */
-
-char *debug_error_control_error_string;
+struct debug_error_s debug_error_control_error;
 
 /*
  *********************************************************************************************************
  *                                      LOCAL FUNCTION PROTOTYPES
  *********************************************************************************************************
  */
+
+void debug_error_control_error_string_cache_modify(char *cache);
+
+void *debug_error_control_error_string_cache_inquire(void);
 
 /*
  *********************************************************************************************************
@@ -66,75 +88,137 @@ char *debug_error_control_error_string;
 *********************************************************************************************************
 */
 
+extern inline void
+debug_error_control_error_table_modify(errno_t *error_table)
+{
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(error_table);
+
+	debug_error_control_error.table.table_ptr = error_table;
+}
+
+extern inline void
+debug_error_control_error_table_index_modify(char index)
+{
+	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(index, >= , int, 0);
+
+	debug_error_control_error.table.index = index;
+}
+
 extern inline errno_t
 debug_error_control_error_inquire(void)
 {
-	if (NULL == debug_error_control_error_ptr) {
-		while (1) {
-		}
-	}
-
-	return *debug_error_control_error_ptr;
+	return *(debug_error_control_error.table.table_ptr + debug_error_control_error.table.index);
 }
 
-extern inline void
-debug_error_control_error_modify(errno_t error)
+extern inline char
+debug_error_control_error_table_index_inquire(void)
 {
-	if (NULL == debug_error_control_error_ptr) {
-		while (1) {
-		}
-	}
-
-	*debug_error_control_error_ptr = error;
-}
-
-extern inline void
-debug_error_control_error_pointer_modify(void *pointer)
-{
-	assert(NULL != pointer);
-
-	debug_error_control_error_ptr = pointer;
-}
-
-extern inline char *
-debug_error_control_error_string_inquire(void)
-{
-	if (NULL == debug_error_control_error_string) {
-		static errno_t error;
-
-		if (error = debug_error_control_error_inquire()) {
-			debug_error_control_error_string = strerror(error);
-		}
-	}
-
-	return debug_error_control_error_string;
+	return debug_error_control_error.table.index;
 }
 
 extern inline void
 debug_error_control_error_string_header_modify(char *string)
 {
-	debug_error_control_error_string = string;
+	debug_error_control_error.string.header_ptr = string;
 }
 
-extern inline void
-debug_error_control_error_string_modify(char *string)
+void debug_error_control_error_string_modify(char *string)
 {
-	if (NULL != debug_error_control_error_string) {
-		if (NULL != string) {
-            size_t num = 0;
-            num += strlen(debug_error_control_error_string);
-            num += strlen(string);
+	if (NULL != string
+		&& NULL != debug_error_control_error.string.header_ptr) {
+		size_t length = 0;
+		static size_t length_max;
 
-            char *temp = debug_error_control_error_string;
+		length += strlen(debug_error_control_error.string.header_ptr);						/* Calculate the length of the error string */
+		length += strlen(string);
 
-            debug_error_control_error_string = calloc(num, sizeof(char));
+		if (length_max < length) {
+			debug_error_control_error.string.body_ptr = calloc(1, length + 1);
 
-			strcat(debug_error_control_error_string, temp);
-			strcat(debug_error_control_error_string, string);
+			#if DEBUG_ERROR_CFG_DEBUG_EN
+
+			printf("debug_error.error.string.modify._cache_modify():%p\r\n",
+				   debug_error_control_error.string.body_ptr);
+
+			#endif // DEBUG_ERROR_CFG_DEBUG_EN
+
+			debug_error_control_error_string_cache_modify(debug_error_control_error.string.body_ptr);
+																							/* Modify the cache of error string */
+
+			length_max = length;
+		} else {
+			debug_error_control_error.string.body_ptr
+				= debug_error_control_error_string_cache_inquire();							/* Inquire the cache of error string */
+
+			memset(debug_error_control_error.string.body_ptr, '\0', length_max);
+
+			#if DEBUG_ERROR_CFG_DEBUG_EN
+
+			printf("debug_error.error.string.modify._cache_inquire():%p\r\n",
+				   debug_error_control_error.string.body_ptr);
+
+			#endif // DEBUG_ERROR_CFG_DEBUG_EN
 		}
 
-        return;
+		strcat(debug_error_control_error.string.body_ptr,
+			   debug_error_control_error.string.header_ptr);
+		strcat(debug_error_control_error.string.body_ptr, string);
+
+		return;
 	}
 
-	debug_error_control_error_string = string;
+	debug_error_control_error.string.body_ptr = string;
+}
+
+char *debug_error_control_error_string_inquire(void)
+{
+	if (NULL == debug_error_control_error.string.body_ptr) {
+		if (NULL == debug_error_control_error.string.header_ptr) {
+			static errno_t error;
+			static char *string;
+
+			if (0u == (error = debug_error_control_error_inquire())) {
+				debug_error_control_error.string.body_ptr =
+					"_INIT() not appoint error code correctly "
+					"or _JUMP() not appoint error string"
+					",but try to _LOG()!";
+			} else {
+				debug_error_control_error.string.body_ptr =
+					strerror(error);
+			}
+		} else {
+			if (NULL == debug_error_control_error.string.body_ptr) {
+				debug_error_control_error.string.body_ptr =
+					"_JUMP() not appoint error string"
+					",but have called _STRING_HEADER()!";
+			}
+		}
+	}
+
+	return debug_error_control_error.string.body_ptr;
+}
+
+static inline void
+debug_error_control_error_string_cache_modify(char *cache)
+{
+	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(cache);
+
+	if (NULL != debug_error_control_error.string.cache_ptr) {
+		#if DEBUG_ERROR_CFG_DEBUG_EN
+
+		printf("debug_error.error.string.cache.modify.free():cache:%p .cache:%p\r\n",
+			   cache, debug_error_control_error.string.body_cache_ptr);
+
+		#endif // DEBUG_ERROR_CFG_DEBUG_EN
+
+		free(debug_error_control_error.string.cache_ptr);
+	}
+
+	debug_error_control_error.string.cache_ptr = cache;
+}
+
+static inline void *
+debug_error_control_error_string_cache_inquire(void)
+{
+	return debug_error_control_error.string.cache_ptr;
 }

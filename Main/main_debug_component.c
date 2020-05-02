@@ -70,20 +70,33 @@ void main_debug_assert(void)
 
 #if MAIN_DEBUG_COMPONENT_CFG_ERROR_EN
 
+#define DEBUG_ERROR_CONTROL_PRINTF	printf
+
 struct debug_error_structure_s {
 	char *string;
 };
 
 errno_t debug_error_errno(void);
 struct debug_error_structure_s debug_error_structure(void);
+errno_t *debug_error_pointer(void);
+errno_t debug_error_log_test(size_t i);
+errno_t debug_error_test(void);
 
 void main_debug_error(void)
 {
 	debug_error_errno();
-	printf("debug_component.error.errno:%d\r\n", DEBUG_ERROR_CONTROL_ERROR());				/* Error, if the error have occurred, it will be not 0, in other words, true */
+	printf("debug_component.error.errno:%d \"%s\"\r\n",
+		   DEBUG_ERROR_CONTROL_ERROR(), 													/* Error, if the error have occurred, it won't be 0 */
+		   DEBUG_ERROR_CONTROL_ERROR_STRING());												/* Error string, if the error have occurred, it will be not NULL */
 
 	debug_error_structure();
 	printf("debug_component.error.structure:%d\r\n", DEBUG_ERROR_CONTROL_ERROR());
+
+	errno_t *pointer = debug_error_pointer();
+	printf("debug_component.error.pointer:%d\r\n",
+		   DEBUG_ERROR_CONTROL_ERROR());
+
+	debug_error_test();
 
 	return;
 }
@@ -99,7 +112,7 @@ errno_t debug_error_errno(void)
 		DEBUG_ERROR_CONTROL_JUMP(1, "test:succeed");										/* Appoint error string */
 	}
 
-	DEBUG_ERROR_CONTROL_PRINTF_EXIT();														/* Print the error string to the stdout, then exit with the error code */
+	DEBUG_ERROR_CONTROL_LOG_EXIT();															/* Print the error string to the stdout, then exit with the error code */
 }
 
 struct debug_error_structure_s debug_error_structure(void)
@@ -113,7 +126,61 @@ struct debug_error_structure_s debug_error_structure(void)
 		DEBUG_ERROR_CONTROL_JUMP(1);														/* No string,suggest the error code is explain by the strerror() */
 	}
 
-	DEBUG_ERROR_CONTROL_EXIT(DEBUG_ERROR_CONTROL_LOG(printf));								/* Exit with the error code, and log the error string with printf() */
+	DEBUG_ERROR_CONTROL_EXIT(DEBUG_ERROR_CONTROL_LOG(); printf("high point"),				/* Exit with the error code, and log the error string with printf() */
+							 printf(" \r\n"));
+}
+
+errno_t *debug_error_pointer(void)
+{
+	DEBUG_ERROR_CONTROL_POINTER_INIT(1, 1);
+
+	if (true) {
+		DEBUG_ERROR_CONTROL_JUMP(1, "debug_error.pointer.succeed");
+	}
+
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
+}
+
+errno_t debug_error_test(void)
+{
+	for (size_t i = 0; i < 5; i++) {
+		debug_error_log_test(i);
+	}
+
+	return 0;
+}
+
+errno_t debug_error_log_test(size_t i)
+{
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(2, 1);
+
+	printf("debug_error.test.log.%d\r\n", i);
+
+	switch (i) {
+		case 0:
+			DEBUG_ERROR_CONTROL_STRING_HEADER("debug_error.test.");
+			DEBUG_ERROR_CONTROL_JUMP(1);
+			break;
+		case 1:
+			DEBUG_ERROR_CONTROL_JUMP(1);
+			break;
+		case 2:
+			DEBUG_ERROR_CONTROL_JUMP(2);
+			break;
+		case 3:
+			DEBUG_ERROR_CONTROL_STRING_HEADER("debug_error.test.");
+			DEBUG_ERROR_CONTROL_JUMP(1, "succeed");
+			break;
+		case 4:
+			DEBUG_ERROR_CONTROL_JUMP(1, "succeed");
+			break;
+		default:
+			break;
+	}
+
+	//DEBUG_ERROR_CONTROL_LOG_EXIT();
+	//DEBUG_ERROR_CONTROL_LOG_EXIT(printf);
+	DEBUG_ERROR_CONTROL_LOG_EXIT(printf, printf("!!!"), printf(" \r\n"));
 }
 
 #endif // MAIN_DEBUG_COMPONENT_CFG_ERROR_EN
