@@ -28,11 +28,11 @@
 
 /* Define			debug micro control expand.								                            */
 #define DEBUG_MICRO_CONTROL_EXPAND(...)                                                                 \
-    (__VA_ARGS__)
+    __VA_ARGS__
 
 /* Define			debug micro control string.								                            */
 #define DEBUG_MICRO_CONTROL_STRING(...)                                                                 \
-    (#__VA_ARGS__)
+    #__VA_ARGS__
 
 /* Define			debug micro control probe, if zero, the compiler will throw warnings.		        */
 #define DEBUG_MICRO_CONTROL_PROBE(zero)                                                                 \
@@ -60,14 +60,18 @@
         __VA_ARGS__;                                                                                    \
     } while (0)
 
-/* Define			debug micro control get the cnt-th arg of the va_arg.				                */
-#define DEBUG_MICRO_CONTROL_VA_ARGS_ARG(cnt, ...)                                                       \
-    DEBUG_MICRO_CONTROL_VA_ARGS_ARG ## cnt DEBUG_MICRO_CONTROL_LEFTBRACKET __VA_ARGS__)
+/* Define			debug micro control get the index-th arg of the va_arg.				                */
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARG(index, ...)                                                     \
+    DEBUG_MICRO_CONTROL_VA_ARGS_ARG ## index DEBUG_MICRO_CONTROL_LEFTBRACKET __VA_ARGS__)
 
 /* Define			debug micro control get the number of the va_arg, the range between 0 and 6.		*/
 #define DEBUG_MICRO_CONTROL_VA_ARGS_ARG_NUM(...)                                                        \
 	DEBUG_MICRO_CONTROL_VA_ARGS_ARG DEBUG_MICRO_CONTROL_LEFTBRACKET                                     \
         7, __VA_ARGS__, 6, 5, 4, 3, 2, 1, 0)
+
+/* Define			debug micro control get the args of the va_arg from first to last.				    */
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM(first, ...)                                               \
+    DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM ## first DEBUG_MICRO_CONTROL_LEFTBRACKET __VA_ARGS__)
 
 /* Define			debug micro control get the arg1 of the va_arg.							            */
 #define DEBUG_MICRO_CONTROL_VA_ARGS_ARG1(arg1, ...)                                                     \
@@ -97,36 +101,36 @@
 #define DEBUG_MICRO_CONTROL_VA_ARGS_ARG7(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...)                 \
     arg7
 
-/* Define			debug micro control get the args2 of the va_arg.							        */
-#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS1(...)                                                          \
+/* Define			debug micro control get the args of the va_arg from 1 to last.				        */
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM1(...)                                                     \
     __VA_ARGS__
 
-/* Define			debug micro control get the args2 of the va_arg.							        */
-#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS2(arg1, ...)                                                    \
+/* Define			debug micro control get the args of the va_arg from 2 to last.				        */
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM2(arg1, ...)                                               \
     __VA_ARGS__
 
-/* Define			debug micro control get the args3 of the va_arg.							        */
-#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS3(arg1, arg2, ...)                                              \
+/* Define			debug micro control get the args of the va_arg from 3 to last.				        */
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM3(arg1, arg2, ...)                                         \
     __VA_ARGS__
 
-/* Define			debug micro control get the args4 of the va_arg.							        */
-#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS4(arg1, arg2, arg3, ...)                                        \
+/* Define			debug micro control get the args of the va_arg from 4 to last.				        */
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM4(arg1, arg2, arg3, ...)                                   \
     __VA_ARGS__
 
-/* Define			debug micro control get the args5 of the va_arg.							        */
-#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS5(arg1, arg2, arg3, arg4, ...)                                  \
+/* Define			debug micro control get the args of the va_arg from 5 to last.				        */
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM5(arg1, arg2, arg3, arg4, ...)                             \
     __VA_ARGS__
 
-/* Define			debug micro control get the args6 of the va_arg.							        */
-#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS6(arg1, arg2, arg3, arg4, arg5, ...)                            \
+/* Define			debug micro control get the args of the va_arg from 6 to last.				        */
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM6(arg1, arg2, arg3, arg4, arg5, ...)                       \
     __VA_ARGS__
 
-/* Define			debug micro control get the args7 of the va_arg.							        */
-#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS7(arg1, arg2, arg3, arg4, arg5, arg6, ...)                      \
+/* Define			debug micro control get the args of the va_arg from 7 to last.				        */
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM7(arg1, arg2, arg3, arg4, arg5, arg6, ...)                 \
     __VA_ARGS__
 
-/* Define			debug micro control get the args8 of the va_arg.							        */
-#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS8(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...)                \
+/* Define			debug micro control get the args of the va_arg from 8 to last.				        */
+#define DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM8(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...)           \
     __VA_ARGS__
 
 /*
