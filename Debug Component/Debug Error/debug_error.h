@@ -100,18 +100,20 @@
 /* Define			debug error control log and exit.										            */
 #define DEBUG_ERROR_CONTROL_LOG_EXIT(...)                                                               \
     do {                                                                                                \
-        DEBUG_ERROR_CONTROL_EXIT DEBUG_MICRO_CONTROL_LEFTBRACKET                                        \
-			DEBUG_ERROR_CONTROL_LOG DEBUG_MICRO_CONTROL_LEFTBRACKET									    \
-				DEBUG_MICRO_CONTROL_VA_ARGS_ARG(2, printf, __VA_ARGS__, DEBUG_ERROR_CFG_LOGGER));	    \
-            DEBUG_MICRO_CONTROL_VA_ARGS_ARGS2 DEBUG_MICRO_CONTROL_LEFTBRACKET                           \
-                __VA_ARGS__, NULL, NULL));                                                              \
+        DEBUG_ERROR_CONTROL_EXIT(                                                                       \
+			DEBUG_ERROR_CONTROL_LOG(									                                \
+				DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                        \
+                    2, printf, __VA_ARGS__, DEBUG_ERROR_CFG_LOGGER));	                                \
+            DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM(                                                      \
+                2, __VA_ARGS__, NULL, NULL));                                                           \
     } while (0)
 
 /* Define			debug error control set.										                    */
 #define _DEBUG_ERROR_CONTROL_SET_(count, ...)                                                           \
     do {                                                                                                \
         debug_error_control_error_table_index_modify(count);                                            \
-        debug_error_control_error_string_modify(DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                        \
+        debug_error_control_error_string_modify(                                                        \
+            DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                            \
                 2, NULL, __VA_ARGS__, NULL));                                                           \
     } while (0)
 
