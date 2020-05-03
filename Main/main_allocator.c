@@ -2,7 +2,7 @@
 
 #if MAIN_ALLOCATOR_EN
 
-#define MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN					0u
+#define MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN					1u
 
 #define MAIN_ALLOCATOR_CFG_STACK_BACK_TRACE_EN						1u
 
@@ -16,8 +16,6 @@
 
 void main_allocator_allocate(void **block);
 void main_allocator_deallocate(void **block);
-
-void test();
 
 struct allocator_control_s
 	*allocator_control_ptr = NULL;

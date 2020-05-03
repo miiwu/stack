@@ -125,7 +125,7 @@ errno_t allocator_control_configuration_destroy_stack_back_trace_log(struct allo
 extern inline struct allocator_control_s
 *allocator_control_get_function_address_table(enum allocator_type_e type)
 {
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(type, >= , int, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE(type, >= , int, 0);
 
 	return allocator_function_address_table_set[type];
 }
@@ -144,31 +144,32 @@ allocator_control_configuration_init(struct allocator_s **allocator,
 									 enum allocator_type_e type,
 									 struct allocator_memory_manage_init_package_s package)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(type, >= , int, 0);
+	DEBUG_ASSERT_CONTROL_POINTER(allocator);
+	DEBUG_ASSERT_CONTROL_VARIABLE(type, >= , int, 0);
 
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(5, -1, -2, 1, 2, 3);
+	DEBUG_ERROR_CONTROL_STRING_HEADER("allocator_control.configuration.init.error.");
 
 	static struct allocator_exception_s exception = { NULL };
 
 	if (NULL == ((*allocator)
 				 = calloc(1,																/* Allocate the allocator structure */
 						  sizeof(struct allocator_s)))) {
-		DEBUG_ERROR_CONTROL_JUMP(1);
+		DEBUG_ERROR_CONTROL_JUMP(1, "calloc():allocator block");
 	}
 
 	if (0 != package.memory_manage_length
 		&& NULL == ((*allocator)->memory_manage_unit.memory_manage_ptr
 					= calloc(1,																/* Allocate the allocator memory manage structure */
 							 package.memory_manage_length))) {
-		DEBUG_ERROR_CONTROL_JUMP(2);
+		DEBUG_ERROR_CONTROL_JUMP(2, "calloc():memory manage block");
 	}
 
 	if (NULL != package.memory_manage_ptr
 		&& NULL == memcpy((*allocator)->memory_manage_unit.memory_manage_ptr,
 						  package.memory_manage_ptr,
 						  package.memory_manage_length)) {
-		DEBUG_ERROR_CONTROL_JUMP(3);
+		DEBUG_ERROR_CONTROL_JUMP(3, "memcpy():package.memory_manage fail");
 	}
 
 	(*allocator)->allocator_type_id = type;
@@ -182,17 +183,17 @@ allocator_control_configuration_init(struct allocator_s **allocator,
 
 	if (debug_capture_stack_back_trace_init(&(*allocator)->stack_back_trace_package			/* Initialize the memory manage stack back trace package */
 											.allocate_ptr, 256)) {
-		DEBUG_ERROR_CONTROL_JUMP(4);
+		DEBUG_ERROR_CONTROL_JUMP(4, "debug_capture_stack_back_trace_init():allocate_ptr fail");
 	}
 
 	if (debug_capture_stack_back_trace_init(&(*allocator)->stack_back_trace_package			/* Initialize the memory manage stack back trace package */
 											.deallocate_ptr, 256)) {
-		DEBUG_ERROR_CONTROL_JUMP(5);
+		DEBUG_ERROR_CONTROL_JUMP(5, "debug_capture_stack_back_trace_init():deallocate_ptr fail");
 	}
 
 	#endif
 
-	DEBUG_ERROR_CONTROL_EXIT();
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
 
 /**
@@ -205,28 +206,29 @@ allocator_control_configuration_init(struct allocator_s **allocator,
 
 errno_t allocator_control_configuration_destroy(struct allocator_s **allocator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(*allocator);
+	DEBUG_ASSERT_CONTROL_POINTER(allocator);
+	DEBUG_ASSERT_CONTROL_POINTER(*allocator);
 
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(3, 1, 2, 3);
+	DEBUG_ERROR_CONTROL_STRING_HEADER("allocator_control.configuration.destroy.error.");
 
 	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
-	printf("allocator.destroy:memory free status : %d \r\n", (*allocator)->info.match);
+	printf("allocator_control.destroy:memory free status : %d \r\n", (*allocator)->info.match);
 
 	if ((int)0 != (int)(*allocator)->info.match
 		&& allocator_control_configuration_destroy_stack_back_trace_log((*allocator))) {
-		DEBUG_ERROR_CONTROL_JUMP(1);
+		DEBUG_ERROR_CONTROL_JUMP(1, "_stack_back_trace_log():fail");
 	}
 
 	if (debug_capture_stack_back_trace_destroy(&(*allocator)->stack_back_trace_package		/* Destroy the memory manage stack back trace package */
 											   .allocate_ptr)) {
-		DEBUG_ERROR_CONTROL_JUMP(2);
+		DEBUG_ERROR_CONTROL_JUMP(2, "_stack_back_trace_destroy():allocate_ptr fail");
 	}
 
 	if (debug_capture_stack_back_trace_destroy(&(*allocator)->stack_back_trace_package		/* Destroy the memory manage stack back trace package */
 											   .deallocate_ptr)) {
-		DEBUG_ERROR_CONTROL_JUMP(3);
+		DEBUG_ERROR_CONTROL_JUMP(3, "_stack_back_trace_destroy():deallocate_ptr fail");
 	}
 
 	#endif // (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
@@ -235,7 +237,7 @@ errno_t allocator_control_configuration_destroy(struct allocator_s **allocator)
 
 	(*allocator) = NULL;
 
-	DEBUG_ERROR_CONTROL_EXIT();
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
 
 /**
@@ -249,7 +251,7 @@ errno_t allocator_control_configuration_destroy(struct allocator_s **allocator)
 errno_t allocator_control_configuration_exception(struct allocator_s *allocator,
 												  struct allocator_exception_s exception)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
+	DEBUG_ASSERT_CONTROL_POINTER(allocator);
 
 	if (NULL == exception.lack_of_memory) {
 		allocator->exception.lack_of_memory = allocator_control_exception_default_lack_of_memory;
@@ -274,33 +276,34 @@ errno_t allocator_control_configuration_exception(struct allocator_s *allocator,
 void *allocator_control_allocate(struct allocator_s *allocator,
 								 size_t count, size_t size)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(count, > , int, 0);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(size, > , int, 0);
+	DEBUG_ASSERT_CONTROL_POINTER(allocator);
+	DEBUG_ASSERT_CONTROL_VARIABLE(count, > , int, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE(size, > , int, 0);
 
-	static void *block_alloced;
+	DEBUG_ERROR_CONTROL_INIT(void *, 3, 1);
+	DEBUG_ERROR_CONTROL_STRING_HEADER("allocator_control.allocate.error.");
+	
+	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
-	if (NULL == (block_alloced
+	if (debug_capture_stack_back_trace(allocator->stack_back_trace_package.					/* Trace and store the stack when the allocate() is called */
+									   allocate_ptr, 1)) {
+		DEBUG_ERROR_CONTROL_JUMP(1,"_stack_back_trace():fail");
+	}
+
+	#endif // (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
+
+	if (NULL == (DEBUG_ERROR_CONTROL_RETURN_VAL
 				 = allocator->memory_manage_unit.control
 				 .allocate(allocator->memory_manage_unit.memory_manage_ptr                  /* Allocate the memory block by the memory manage unit */
 						   , count, size))) {
 		allocator->exception.lack_of_memory(allocator);                                     /* Enter exception */
 
-		return NULL;
+		DEBUG_ERROR_CONTROL_JUMP(2, "memory_manage_control.allocate():fail");
 	}
 
 	allocator->info.match += 1;
 
-	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
-
-	if (debug_capture_stack_back_trace(allocator->stack_back_trace_package.					/* Trace and store the stack when the allocate() is called */
-									   allocate_ptr, 1)) {
-		return NULL;
-	}
-
-	#endif // (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
-
-	return block_alloced;
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
 
 /**
@@ -316,29 +319,30 @@ void *allocator_control_allocate(struct allocator_s *allocator,
 errno_t allocator_control_deallocate(struct allocator_s *allocator,
 									 void *block)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(block);
+	DEBUG_ASSERT_CONTROL_POINTER(allocator);
+	DEBUG_ASSERT_CONTROL_POINTER(block);
 
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(2, 1, 2);
+	DEBUG_ERROR_CONTROL_STRING_HEADER("allocator_control.deallocate.error.");
 
 	allocator->info.match -= 1;
-
-	if (allocator->memory_manage_unit.control
-		.deallocate(allocator->memory_manage_unit.memory_manage_ptr,						/* Deallocate the memory block by the memory manage unit */
-					block)) {
-		DEBUG_ERROR_CONTROL_JUMP(1);
-	}
 
 	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
 	if (debug_capture_stack_back_trace(allocator->stack_back_trace_package.					/* Trace and store the stack when the deallocate() is called */
 									   deallocate_ptr, 1)) {
-		DEBUG_ERROR_CONTROL_JUMP(2);
+		DEBUG_ERROR_CONTROL_JUMP(1, "_stack_back_trace(): fail");
 	}
 
 	#endif // (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
-	DEBUG_ERROR_CONTROL_EXIT();
+	if (allocator->memory_manage_unit.control
+		.deallocate(allocator->memory_manage_unit.memory_manage_ptr,						/* Deallocate the memory block by the memory manage unit */
+					block)) {
+		DEBUG_ERROR_CONTROL_JUMP(2, "memory_manage_control.deallocate():fail");
+	}
+
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
 
 /**
@@ -369,7 +373,7 @@ void allocator_control_exception_default_lack_of_memory(struct allocator_s *allo
 
 errno_t allocator_control_configuration_destroy_stack_back_trace_log(struct allocator_s *allocator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
+	DEBUG_ASSERT_CONTROL_POINTER(allocator);
 
 	printf("\r\n----------------------------------- allocator.stack_back_trace_log -----------------------------------\r\n");
 
