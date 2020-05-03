@@ -16,16 +16,48 @@
  *********************************************************************************************************
  */
 
+#include "debug_component_def.h"
+
+#include "debug_micro.h"
+
 /*
  *********************************************************************************************************
  *									            DEFINES
  *********************************************************************************************************
  */
 
-/* Define			debug assert control expression.										            */
+/* Configuration    debug assert configuration logger.										            */
+#define DEBUG_ASSERT_CFG_LOGGER                                                                         \
+    printf
+
+/* Define			debug assert control expression.								                    */
 #define DEBUG_ASSERT_CONTROL_EXPRESSION(expression, ...)                                                \
+    do {                                                                                                \
+        _DEBUG_ASSERT_CONTROL_ASSERT_(                                                                  \
+            expression, _DEBUG_ASSERT_CONTROL_LOG_(                                                     \
+                expression, __VA_ARGS__));                                                              \
+    } while (0)
+
+/* Define			debug assert control variable.								                        */
+#define DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value, ...)                           \
+    do {                                                                                                \
+        _DEBUG_ASSERT_CONTROL_ASSERT_(                                                                  \
+            ((value_type)(variable)) comp ((value_type)(value)), _DEBUG_ASSERT_CONTROL_LOG_(            \
+                variable comp value, __VA_ARGS__));                                                     \
+    } while (0)
+
+/* Define			debug assert control pointer.								                        */
+#define DEBUG_ASSERT_CONTROL_POINTER(pointer, ...)							                            \
+    do {                                                                                                \
+        _DEBUG_ASSERT_CONTROL_ASSERT_(                                                                  \
+            pointer != NULL, _DEBUG_ASSERT_CONTROL_LOG_(                                                \
+                pointer != NULL, __VA_ARGS__));                                                         \
+    } while (0)
+
+/* Define			debug assert control assert.										                */
+#define _DEBUG_ASSERT_CONTROL_ASSERT_(expression, ...)                                                  \
 	do {																								\
-		assert((expression));	                                                                        \
+		assert(expression);	                                                                            \
         if (!(expression)) {                                                                            \
             __VA_ARGS__;                                                                                \
             while (1) {                                                                                 \
@@ -33,33 +65,20 @@
         }                                                                                               \
 	} while (0)
 
-/* Define			debug assert control variable.										                */
-#define DEBUG_ASSERT_CONTROL_VARIABLE(variable, comp, value_type, value, ...)                           \
-	DEBUG_ASSERT_CONTROL_EXPRESSION((((value_type)(variable)) comp ((value_type)(value))),              \
-                                    __VA_ARGS__)
-
-/* Define			debug assert control pointer.										                */
-#define DEBUG_ASSERT_CONTROL_POINTER(pointer, ...)							                            \
-	DEBUG_ASSERT_CONTROL_VARIABLE(pointer, !=, void*, NULL,                                             \
-                                  __VA_ARGS__)
-
-/* Define			debug assert control expression with printf output.								    */
-#define DEBUG_ASSERT_CONTROL_EXPRESSION_PRINTF(expression)                                              \
-   DEBUG_ASSERT_CONTROL_EXPRESSION(expression,                                                          \
-                                   printf("Assert Failed: \"%s\"\r\n    "                               \
-                                          "func:\"%s\"\r\n    "                                         \
-                                          "file:\"%s\" line:%ld\r\n",                                   \
-                                          #expression,                                                  \
-                                          __FUNCTION__,                                                 \
-                                          __FILE__, (size_t)__LINE__))
-
-/* Define			debug assert control variable with printf output.								    */
-#define DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(variable, comp, value_type, value)                         \
-	DEBUG_ASSERT_CONTROL_EXPRESSION_PRINTF((((value_type)(variable)) comp ((value_type)(value))))
-
-/* Define			debug assert control pointer with printf output.								    */
-#define DEBUG_ASSERT_CONTROL_POINTER_PRINTF(pointer)							                        \
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(pointer, !=, void*, NULL)
+/* Define			debug assert control log.								                            */
+#define _DEBUG_ASSERT_CONTROL_LOG_(expression, ...)                                                     \
+    do {                                                                                                \
+        denug_assert_control_error_string_modify(                                                       \
+            #expression,                                                                                \
+            __FUNCTION__,                                                                               \
+            __FILE__,                                                                                   \
+            __LINE__);                                                                                  \
+        DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                                \
+            2, printf, __VA_ARGS__, DEBUG_ASSERT_CFG_LOGGER)(                                           \
+                denug_assert_control_error_string_inquire());                                           \
+        DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM(                                                          \
+            2, __VA_ARGS__, NULL, NULL);                                                                \
+    } while (0)
 
 /*
  *********************************************************************************************************
@@ -72,6 +91,13 @@
  *								            FUNCTION PROTOTYPES
  *********************************************************************************************************
  */
+
+void denug_assert_control_error_string_modify(char *expression,
+											  char *function,
+											  char *file,
+											  size_t line);
+
+char *denug_assert_control_error_string_inquire(void);
 
 /*
  *********************************************************************************************************

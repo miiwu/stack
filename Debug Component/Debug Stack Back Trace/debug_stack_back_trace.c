@@ -22,6 +22,8 @@
 
 #include "debug_assert.h"
 
+#include "debug_error.h"
+
 /*
  *********************************************************************************************************
  *                                            LOCAL DEFINES
@@ -178,38 +180,41 @@ bool debug_capture_stack_back_trace_empty_callback(stack_back_trace_stp stack_ba
 errno_t debug_capture_stack_back_trace_init(stack_back_trace_stpp stack_back_trace,
 											stack_back_trace_size_t count)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(count, > , int, 0);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_VARIABLE(count, > , int, 0);
+
+	DEBUG_ERROR_CONTROL_ERRNO_INIT(5, 1, 2, 3, 4, 5);
+	DEBUG_ERROR_CONTROL_STRING_HEADER("debug_stack_back_trace.init.error.");
 
 	if (NULL == ((*stack_back_trace)
 				 = calloc(1, sizeof(struct stack_back_trace_t)))) {
-		return 1;
+		DEBUG_ERROR_CONTROL_JUMP(1,"calloc():stack_back_trace block fail");
 	}
 
 	if (NULL == ((*stack_back_trace)->back_trace_count_ptr
 				 = calloc(count, sizeof(stack_back_trace_size_t)))) {
-		return 2;
+		DEBUG_ERROR_CONTROL_JUMP(2, "calloc():back_trace_count_ptr fail");
 	}
 
 	if (NULL == ((*stack_back_trace)->back_trace_ptr
 				 = calloc(count, sizeof(single_back_trace_t) * TRACE_MAX_DEPTH))) {
-		return 3;
+		DEBUG_ERROR_CONTROL_JUMP(3, "calloc():back_trace_ptr fail");
 	}
 
 	if (NULL == ((*stack_back_trace)->back_trace_frames_ptr
 				 = calloc(count, sizeof(stack_back_trace_frame_t)))) {
-		return 4;
+		DEBUG_ERROR_CONTROL_JUMP(4, "calloc():back_trace_frames_ptr fail");
 	}
 
 	if (NULL == ((*stack_back_trace)->back_trace_hash_ptr
 				 = calloc(count, sizeof(stack_back_trace_hash_t)))) {
-		return 5;
+		DEBUG_ERROR_CONTROL_JUMP(5, "calloc():back_trace_hash_ptr fail");
 	}
 
 	(*stack_back_trace)->max_type_count = count;
 	(*stack_back_trace)->type_count = 0u;
 
-	return 0;
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
 
 /**
@@ -222,7 +227,7 @@ errno_t debug_capture_stack_back_trace_init(stack_back_trace_stpp stack_back_tra
 
 errno_t debug_capture_stack_back_trace_destroy(stack_back_trace_stpp stack_back_trace)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
 
@@ -256,8 +261,8 @@ errno_t debug_capture_stack_back_trace_destroy(stack_back_trace_stpp stack_back_
 errno_t debug_capture_stack_back_trace(stack_back_trace_stp stack_back_trace,
 									   stack_back_trace_size_t frames_to_skip)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(frames_to_skip, >= , int, 0);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_VARIABLE(frames_to_skip, >= , int, 0);
 
 	void *back_trace_tmp[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH] = { 0 };
 	ULONG stack_back_trace_hash_tmp = 0;
@@ -318,7 +323,7 @@ extern struct stack_back_trace_string_package_s
 debug_capture_stack_back_trace_convert_to_string(stack_back_trace_stp stack_back_trace,
 												 size_t count)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	static stack_back_trace_string_st back_trace_string;
 	static back_trace_tp trace;
@@ -355,7 +360,7 @@ debug_capture_stack_back_trace_convert_to_string(stack_back_trace_stp stack_back
 stack_back_trace_hash_t debug_capture_stack_back_trace_get_hash(stack_back_trace_stp stack_back_trace,
 																stack_back_trace_size_t index)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
 
@@ -379,7 +384,7 @@ single_back_trace_t *debug_capture_stack_back_trace_get_trace(stack_back_trace_s
 															  stack_back_trace_size_t index,
 															  stack_back_trace_size_t sub_index)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	return *(*(stack_back_trace->back_trace_ptr + index) + sub_index);
 }
@@ -395,7 +400,7 @@ single_back_trace_t *debug_capture_stack_back_trace_get_trace(stack_back_trace_s
 extern inline struct stack_back_trace_count_package_s
 debug_capture_stack_back_trace_get_count_package(stack_back_trace_stp stack_back_trace)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	static struct stack_back_trace_count_package_s package;
 
@@ -419,8 +424,8 @@ errno_t debug_capture_stack_back_trace_copy(stack_back_trace_stp destination,
 											stack_back_trace_size_t dst_index,
 											stack_back_trace_size_t src_index)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(destination);
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(source);
+	DEBUG_ASSERT_CONTROL_POINTER(destination);
+	DEBUG_ASSERT_CONTROL_POINTER(source);
 
 	for (size_t sub_index = 0; sub_index < *(source->back_trace_frames_ptr + src_index); sub_index++) {
 		*(*(destination->back_trace_ptr + dst_index) + sub_index) = *(*(source->back_trace_ptr + src_index) + sub_index);
@@ -446,7 +451,7 @@ errno_t capture_stack_back_trace_convert_to_symbol(stack_back_trace_string_stp s
 												   back_trace_t trace,
 												   stack_back_trace_frame_t frames)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(trace);
+	DEBUG_ASSERT_CONTROL_POINTER(trace);
 
 	HANDLE process = GetCurrentProcess();
 	DWORD64 displacementSym = 0;
@@ -503,7 +508,7 @@ errno_t capture_stack_back_trace_convert_to_line(stack_back_trace_string_stp str
 												 back_trace_t trace,
 												 stack_back_trace_frame_t frames)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(trace);
+	DEBUG_ASSERT_CONTROL_POINTER(trace);
 
 	HANDLE process = GetCurrentProcess();
 	DWORD displacementLine = 0;
@@ -557,7 +562,7 @@ errno_t capture_stack_back_trace_convert_to_line(stack_back_trace_string_stp str
 
 bool debug_capture_stack_back_trace_empty_callback(stack_back_trace_stp stack_back_trace)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(stack_back_trace);
+	DEBUG_ASSERT_CONTROL_POINTER(stack_back_trace);
 
 	stack_back_trace->type_count -= 1;
 

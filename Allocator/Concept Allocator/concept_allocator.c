@@ -134,7 +134,7 @@ struct allocator_memory_manage_init_package_s
 
 errno_t concept_allocator_control_configuration_init(concept_allocator_stpp allocator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(allocator);
+	DEBUG_ASSERT_CONTROL_POINTER(allocator);
 
 	return allocator_control_configuration_init(allocator,
 												CONCEPT_ALLOCATOR,
@@ -155,8 +155,8 @@ void *concept_allocator_control_memory_manage_allocate(void *memory_manage,
 													   allocator_size_t count,
 													   allocator_size_t size)
 {
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(count, > , int, 0);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(size, > , int, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE(count, > , int, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE(size, > , int, 0);
 
 	#if CONCEPT_ALLOCATOR_CFG_DEBUG_MODE_EN
 
@@ -186,7 +186,7 @@ void *concept_allocator_control_memory_manage_allocate(void *memory_manage,
 errno_t concept_allocator_control_memory_manage_deallocate(void *memory_manage,
 														   void *block)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(block);
+	DEBUG_ASSERT_CONTROL_POINTER(block);
 
 	#if CONCEPT_ALLOCATOR_CFG_DEBUG_MODE_EN
 

@@ -69,30 +69,27 @@ struct unify_structure_construct_package_s
 									  size_t structure_mem_size)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(structure);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(allocator_type, > , int, 0);
-	DEBUG_ASSERT_CONTROL_VARIABLE_PRINTF(structure_mem_size, > , int, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE(allocator_type, > , int, 0);
+	DEBUG_ASSERT_CONTROL_VARIABLE(structure_mem_size, > , int, 0);
 
 	DEBUG_ERROR_CONTROL_STRUCTURE_INIT(struct unify_structure_construct_package_s, 3, 1, 2, 3);
+	DEBUG_ERROR_CONTROL_STRING_HEADER("unify_structure.construct.error.");
 
 	if (NULL == (DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr
 				 = allocator_control_get_function_address_table(allocator_type))) {
-		DEBUG_ERROR_CONTROL_JUMP(1);
-	}
+		DEBUG_ERROR_CONTROL_JUMP(1, "allocator_..._get_function_address_table():fail");
+    }
 
-	if (DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr->configuration
-		.init(&DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.allocator_ptr)) {              /* Initialize the structure pointer */
-		DEBUG_ERROR_CONTROL_JUMP(2);
-	}
+	DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr->configuration
+		.init(&DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.allocator_ptr);                /* Initialize the structure pointer */
+	DEBUG_ERROR_CONTROL_JUDGE(2, "allocator.configuration.init():fail");
 
-	if (NULL == ((*structure)
-				 = DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr
-				 ->allocate(DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.allocator_ptr,    /* Allocate the structure pointer */
-							1,
-							structure_mem_size))) {
-		DEBUG_ERROR_CONTROL_JUMP(3);
-	}
+	*structure = DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr
+		->allocate(DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.allocator_ptr,             /* Allocate the structure pointer */
+				   1, structure_mem_size);
+	DEBUG_ERROR_CONTROL_JUDGE(3, "allocator.allocator():fail");
 
-	DEBUG_ERROR_CONTROL_EXIT();
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
 
 /**
@@ -113,20 +110,19 @@ unify_structure_control_destruct(void **structure,
 	DEBUG_ASSERT_CONTROL_POINTER(allocator_unit.control_ptr);
 
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(3, 1, 2, 3);
+	DEBUG_ERROR_CONTROL_STRING_HEADER("unify_structure.construct.error");
 
-	if (allocator_unit.control_ptr
-		->deallocate(allocator_unit.allocator_ptr, *structure)) {
-		DEBUG_ERROR_CONTROL_JUMP(1);
-	}
+	allocator_unit.control_ptr
+		->deallocate(allocator_unit.allocator_ptr, *structure);
+	DEBUG_ERROR_CONTROL_JUDGE(1, "allocator.deallocate():fail");
 
-	if (allocator_unit.control_ptr->configuration
-		.destroy(&allocator_unit.allocator_ptr)) {
-		DEBUG_ERROR_CONTROL_JUMP(2);
-	}
+	allocator_unit.control_ptr->configuration
+		.destroy(&allocator_unit.allocator_ptr);
+	DEBUG_ERROR_CONTROL_JUDGE(1, "allocator.destroy():fail");
 
 	allocator_unit.allocator_ptr = NULL;
 	allocator_unit.control_ptr = NULL;
 	*structure = NULL;
 
-	DEBUG_ERROR_CONTROL_EXIT();
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
