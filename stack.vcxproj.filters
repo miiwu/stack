@@ -19,12 +19,6 @@
     <Filter Include="源文件\main">
       <UniqueIdentifier>{7ca82319-1053-4d84-a234-6e3364577b63}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\allocator">
-      <UniqueIdentifier>{c3a4dd55-7f03-49d1-bd22-08c24c842df1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\allocator">
-      <UniqueIdentifier>{615cf450-0b68-4f15-85e6-de9f73058835}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\debug component">
       <UniqueIdentifier>{5de867b5-a197-407f-b510-b03d777ab402}</UniqueIdentifier>
     </Filter>
@@ -49,24 +43,15 @@
     <Filter Include="源文件\debug component\debug error">
       <UniqueIdentifier>{95f35da3-5d80-4c68-b2f5-bc271a39d8dc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\allocator\allocator definition">
-      <UniqueIdentifier>{427c6bbe-f77b-4398-9277-6f383de07a19}</UniqueIdentifier>
+    <Filter Include="头文件\debug component\debug micro">
+      <UniqueIdentifier>{b4a3f066-283d-48a2-8890-73d97ffe939e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\allocator\allocator definition">
-      <UniqueIdentifier>{f3bd4783-c38b-4dbc-9e13-d2be785f6cc6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\allocator\concept allocator">
-      <UniqueIdentifier>{fb72073b-884a-43e6-9aae-66097e4de6c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\allocator\concept allocator">
-      <UniqueIdentifier>{ef21b18d-057c-4e71-8804-5cd8c9095c3d}</UniqueIdentifier>
+    <Filter Include="源文件\debug component\debug_assert">
+      <UniqueIdentifier>{8ba0de93-8024-4587-8244-99eb64d7d9a1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
-      <Filter>源文件\main</Filter>
-    </ClCompile>
-    <ClCompile Include="Main\main_allocator.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
     <ClCompile Include="Debug Component\Debug Stack Back Trace\debug_stack_back_trace.c">
@@ -75,19 +60,16 @@
     <ClCompile Include="Debug Component\Debug Error\debug_error.c">
       <Filter>源文件\debug component\debug error</Filter>
     </ClCompile>
-    <ClCompile Include="Allocator\Concept Allocator\concept_allocator.c">
-      <Filter>源文件\allocator\concept allocator</Filter>
+    <ClCompile Include="Main\main_debug_component.c">
+      <Filter>源文件\main</Filter>
     </ClCompile>
-    <ClCompile Include="Allocator\Allocator Definition\allocator_def.c">
-      <Filter>源文件\allocator\allocator definition</Filter>
+    <ClCompile Include="Debug Component\Debug Assert\debug_assert.c">
+      <Filter>源文件\debug component\debug_assert</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\main_cfg.h">
       <Filter>头文件\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Allocator\allocator.h">
-      <Filter>头文件\allocator</Filter>
     </ClInclude>
     <ClInclude Include="Debug Component\debug_component.h">
       <Filter>头文件\debug component</Filter>
@@ -104,17 +86,8 @@
     <ClInclude Include="Debug Component\Debug Error\debug_error.h">
       <Filter>头文件\debug component\debug error</Filter>
     </ClInclude>
-    <ClInclude Include="Allocator\Allocator Definition\allocator_cfg.h">
-      <Filter>头文件\allocator\allocator definition</Filter>
-    </ClInclude>
-    <ClInclude Include="Allocator\Allocator Definition\allocator_def.h">
-      <Filter>头文件\allocator\allocator definition</Filter>
-    </ClInclude>
-    <ClInclude Include="Allocator\Concept Allocator\concept_allocator.h">
-      <Filter>头文件\allocator\concept allocator</Filter>
-    </ClInclude>
-    <ClInclude Include="Allocator\Allocator Definition\allocator_pte_def.h">
-      <Filter>头文件\allocator\allocator definition</Filter>
+    <ClInclude Include="Debug Component\Debug Micro\debug_micro.h">
+      <Filter>头文件\debug component\debug micro</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
