@@ -119,7 +119,7 @@
       <UniqueIdentifier>{37e59659-fa7a-4982-90fa-46516e2ad931}</UniqueIdentifier>
     </Filter>
     <Filter Include="头文件\unify structure\unify struct">
-      <UniqueIdentifier>{a60827de-4b6e-4d3c-9d94-a6ab30481bb1}</UniqueIdentifier>
+      <UniqueIdentifier>{c31e8b21-7bc9-49af-9332-0ba00a913bc3}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件\unify structure\unify adaptor">
       <UniqueIdentifier>{c7ab05c8-4297-4621-b5ae-4f80533d0dec}</UniqueIdentifier>
