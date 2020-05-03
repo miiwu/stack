@@ -45,15 +45,8 @@
     static return_type DEBUG_ERROR_CONTROL_RETURN_VAL;                                                  \
     debug_error_control_error_table_modify(                                                             \
         &debug_error_control_nest_unit, debug_error_control_error_table);                               \
-    debug_error_control_error_string_header_modify(                                                     \
-        &debug_error_control_nest_unit, NULL);                                                          \
     debug_error_control_nest(debug_error_control_nest_unit);                                            \
     _DEBUG_ERROR_CONTROL_SET_(0)
-
-/* Define			debug error control init.										                    */
-#define DEBUG_ERROR_CONTROL_STRING_HEADER(header)                                                       \
-    debug_error_control_error_string_header_modify(                                                     \
-        &debug_error_control_nest_unit, header)
 
 /* Define			debug error control jump.										                    */
 #define DEBUG_ERROR_CONTROL_JUMP(index, ...)                                                            \
@@ -106,6 +99,12 @@
                     "debug_error.error occur: ");                                                       \
             DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                            \
                 2, printf, __VA_ARGS__, DEBUG_ERROR_CFG_LOGGER)(                                        \
+                    __FUNCTION__);                                                                      \
+            DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                            \
+                2, printf, __VA_ARGS__, DEBUG_ERROR_CFG_LOGGER)(                                        \
+                    "().");                                                                             \
+            DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                            \
+                2, printf, __VA_ARGS__, DEBUG_ERROR_CFG_LOGGER)(                                        \
                     debug_error_control_error_string_inquire());                                        \
             DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                            \
                 2, printf, __VA_ARGS__, DEBUG_ERROR_CFG_LOGGER)(                                        \
@@ -154,14 +153,14 @@
  *********************************************************************************************************
  */
 
+/**
+ * @brief This type is the debug error nest unit structure.
+ */
+
 struct debug_error_nest_unit_s {
-    errno_t *error_table_ptr;
+	errno_t *error_table_ptr;
 
-    struct {
-        char *header_ptr;
-
-        char *body_ptr;
-    } string;
+	char *error_string_ptr;
 };
 
 /*
@@ -171,7 +170,7 @@ struct debug_error_nest_unit_s {
  */
 
 void debug_error_control_error_table_modify(struct debug_error_nest_unit_s *nest_unit,
-                                            errno_t *error_table);
+											errno_t *error_table);
 
 void debug_error_control_error_table_index_modify(char index);
 
@@ -179,11 +178,8 @@ errno_t debug_error_control_error_inquire(void);
 
 char debug_error_control_error_table_index_inquire(void);
 
-void debug_error_control_error_string_header_modify(struct debug_error_nest_unit_s *nest_unit,
-                                                    char *string);
-
 void debug_error_control_error_string_modify(struct debug_error_nest_unit_s *nest_unit,
-                                             char *string);
+											 char *string);
 
 char *debug_error_control_error_string_inquire(void);
 

@@ -127,8 +127,6 @@ errno_t debug_error_errno(void)
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
 	/* DEBUG_ERROR_CONTROL_INIT(errno_t, 2, 0, 1); */
 
-	DEBUG_ERROR_CONTROL_STRING_HEADER("debug_error.errno.");								/* Modify the header of the error string */
-
 	if (true) {
 		DEBUG_ERROR_CONTROL_JUMP(1, "test:succeed");										/* Appoint error string */
 	}
@@ -143,7 +141,7 @@ errno_t *debug_error_pointer(void)
 	DEBUG_ERROR_CONTROL_POINTER_INIT(1, 1);
 
 	debug_error_errno();
-	DEBUG_ERROR_CONTROL_JUDGE(1, "debug_error.pointer.test:succeed");
+	DEBUG_ERROR_CONTROL_JUDGE(1, "test:succeed");
 
 	DEBUG_ERROR_CONTROL_LOG_EXIT(, NULL);
 }
@@ -161,12 +159,12 @@ struct debug_error_structure_s debug_error_structure(void)
 	printf("Must not reach here! \r\n");
 
 	DEBUG_ERROR_CONTROL_EXIT(printf("debug_error.error occur: "
-									"debug_error.structure.test:succeed\r\n"));
+									"debug_error_structure().test:succeed\r\n"));
 }
 
 errno_t debug_error_test(void)
 {
-	for (size_t i = 0; i < 5; i++) {
+	for (size_t i = 0; i < 2; i++) {
 		debug_error_log_test(i);
 	}
 
@@ -177,33 +175,20 @@ errno_t debug_error_log_test(size_t i)
 {
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(2, 1);
 
-	printf("debug_error.test.log.%d\r\n", i);
+	printf("\r\ndebug_error.test.log.%d\r\n", i);
 
 	switch (i) {
 		case 0:
-			DEBUG_ERROR_CONTROL_STRING_HEADER("debug_error.test.");
 			DEBUG_ERROR_CONTROL_JUMP(1);
 			break;
 		case 1:
-			DEBUG_ERROR_CONTROL_JUMP(1);
-			break;
-		case 2:
-			DEBUG_ERROR_CONTROL_JUMP(2);
-			break;
-		case 3:
-			DEBUG_ERROR_CONTROL_STRING_HEADER("debug_error.test.");
 			DEBUG_ERROR_CONTROL_JUMP(1, "succeed");
-			break;
-		case 4:
-			DEBUG_ERROR_CONTROL_JUMP(1, "debug_error.test.succeed");
 			break;
 		default:
 			break;
 	}
 
-	//DEBUG_ERROR_CONTROL_LOG_EXIT();
-	//DEBUG_ERROR_CONTROL_LOG_EXIT(printf);
-	DEBUG_ERROR_CONTROL_LOG_EXIT(printf, printf("!!!"), printf(" \r\n"));
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
 
 #endif // MAIN_DEBUG_COMPONENT_CFG_ERROR_EN

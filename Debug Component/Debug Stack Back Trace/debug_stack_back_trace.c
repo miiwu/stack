@@ -184,7 +184,6 @@ errno_t debug_capture_stack_back_trace_init(stack_back_trace_stpp stack_back_tra
 	DEBUG_ASSERT_CONTROL_VARIABLE(count, > , int, 0);
 
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(5, 1, 2, 3, 4, 5);
-	DEBUG_ERROR_CONTROL_STRING_HEADER("debug_stack_back_trace.init.error.");
 
 	if (NULL == ((*stack_back_trace)
 				 = calloc(1, sizeof(struct stack_back_trace_t)))) {
