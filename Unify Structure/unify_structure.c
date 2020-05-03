@@ -73,7 +73,6 @@ struct unify_structure_construct_package_s
 	DEBUG_ASSERT_CONTROL_VARIABLE(structure_mem_size, > , int, 0);
 
 	DEBUG_ERROR_CONTROL_STRUCTURE_INIT(struct unify_structure_construct_package_s, 3, 1, 2, 3);
-	DEBUG_ERROR_CONTROL_STRING_HEADER("unify_structure.construct.error.");
 
 	if (NULL == (DEBUG_ERROR_CONTROL_RETURN_VAL.allocator_unit.control_ptr
 				 = allocator_control_get_function_address_table(allocator_type))) {
@@ -110,7 +109,6 @@ unify_structure_control_destruct(void **structure,
 	DEBUG_ASSERT_CONTROL_POINTER(allocator_unit.control_ptr);
 
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(3, 1, 2, 3);
-	DEBUG_ERROR_CONTROL_STRING_HEADER("unify_structure.construct.error");
 
 	allocator_unit.control_ptr
 		->deallocate(allocator_unit.allocator_ptr, *structure);

@@ -17,9 +17,9 @@
 
 #define MAIN_ALGORITHM_EN			0u
 
-#define MAIN_ALLOCATOR_EN			1u
+#define MAIN_ALLOCATOR_EN			0u
 
-#define MAIN_UNIFY_STRUCTURE_EN		0u
+#define MAIN_UNIFY_STRUCTURE_EN		1u
 
 #define MAIN_ITERATOR_EN			0u
 

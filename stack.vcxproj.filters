@@ -73,6 +73,12 @@
     <Filter Include="源文件\debug component\debug assert">
       <UniqueIdentifier>{c31e8b21-7bc9-49af-9332-0ba00a913bc3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\unify structure">
+      <UniqueIdentifier>{2b661771-6a86-4718-8eb0-b85bce8a73ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\unify structure">
+      <UniqueIdentifier>{3025ca4e-b486-49e7-89fe-b0e00322c9e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -99,8 +105,11 @@
     <ClCompile Include="Debug Component\Debug Assert\debug_assert.c">
       <Filter>源文件\debug component\debug assert</Filter>
     </ClCompile>
-    <ClCompile Include="Main\main_allocator.c">
+    <ClCompile Include="Main\main_unify_structure.c">
       <Filter>源文件\main</Filter>
+    </ClCompile>
+    <ClCompile Include="Unify Structure\unify_structure.c">
+      <Filter>源文件\unify structure</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="Debug Component\Debug Error\debug_error.h">
       <Filter>头文件\debug component\debug error</Filter>
+    </ClInclude>
+    <ClInclude Include="Unify Structure\unify_structure.h">
+      <Filter>头文件\unify structure</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
