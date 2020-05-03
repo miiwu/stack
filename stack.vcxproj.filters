@@ -89,7 +89,7 @@
     </ClCompile>
     <ClCompile Include="Debug Component\Debug Error\debug_error.c">
       <Filter>源文件\debug component\debug error</Filter>
-    </ClCompile>    
+    </ClCompile>
     <ClCompile Include="Allocator\Allocator Definition\allocator_def.c">
       <Filter>源文件\allocator\allocator definition</Filter>
     </ClCompile>
@@ -99,7 +99,7 @@
     <ClCompile Include="Debug Component\Debug Assert\debug_assert.c">
       <Filter>源文件\debug component\debug assert</Filter>
     </ClCompile>
-    <ClCompile Include="Main\main_debug_component.c">
+    <ClCompile Include="Main\main_allocator.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
   </ItemGroup>

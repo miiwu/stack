@@ -148,7 +148,6 @@ allocator_control_configuration_init(struct allocator_s **allocator,
 	DEBUG_ASSERT_CONTROL_VARIABLE(type, >= , int, 0);
 
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(5, 1, 2, 3, 4, 5);
-	DEBUG_ERROR_CONTROL_STRING_HEADER("allocator_control.configuration.init.error.");
 
 	static struct allocator_exception_s exception = { NULL };
 
@@ -209,7 +208,6 @@ errno_t allocator_control_configuration_destroy(struct allocator_s **allocator)
 	DEBUG_ASSERT_CONTROL_POINTER(*allocator);
 
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(3, 1, 2, 3);
-	DEBUG_ERROR_CONTROL_STRING_HEADER("allocator_control.configuration.destroy.error.");
 
 	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
@@ -280,7 +278,6 @@ void *allocator_control_allocate(struct allocator_s *allocator,
 	DEBUG_ASSERT_CONTROL_VARIABLE(size, > , int, 0);
 
 	DEBUG_ERROR_CONTROL_POINTER_INIT(2, 1, 2);
-	DEBUG_ERROR_CONTROL_STRING_HEADER("allocator_control.allocate.error.");
 
 	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
@@ -322,7 +319,6 @@ errno_t allocator_control_deallocate(struct allocator_s *allocator,
 	DEBUG_ASSERT_CONTROL_POINTER(block);
 
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(2, 1, 2);
-	DEBUG_ERROR_CONTROL_STRING_HEADER("allocator_control.deallocate.error.");
 
 	allocator->info.match -= 1;
 
