@@ -70,7 +70,7 @@ struct debug_assert_control_error_string_s debug_assert_control_error_string;
  *********************************************************************************************************
  */
 
-void denug_assert_control_error_string_modify(char *expression,
+void debug_assert_control_error_string_modify(char *expression,
 											  char *function,
 											  char *file,
 											  size_t line)
@@ -97,12 +97,18 @@ void denug_assert_control_error_string_modify(char *expression,
 		debug_assert_control_error_string.string_ptr = debug_assert_control_error_string.cache_ptr;
 	}
 
-	sprintf_s(debug_assert_control_error_string.string_ptr, length,
-			  format, expression, function, file, line);
+	if (NULL == debug_assert_control_error_string.string_ptr) {
+		debug_assert_control_error_string.string_ptr =
+			"Assert Failed: "
+			"no more space for generating error string";
+	} else {
+		sprintf_s(debug_assert_control_error_string.string_ptr, length,
+				  format, expression, function, file, line);
+	}
 }
 
 extern inline char *
-denug_assert_control_error_string_inquire(void)
+debug_assert_control_error_string_inquire(void)
 {
 	return debug_assert_control_error_string.string_ptr;
 }

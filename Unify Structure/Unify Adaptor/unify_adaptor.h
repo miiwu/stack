@@ -51,12 +51,12 @@ struct unify_adaptor_package_s {
 	}adaptor;
 
 	struct {
+		void
+			*init_ptr,
+			*destroy_ptr,
+			*init_arg_ptr[8];
+
 		size_t allocator_unit_offest;
-
-		void *init_ptr;
-		void *init_arg_ptr[8];
-
-		void *destroy_ptr;
 	}adaptee;
 };
 

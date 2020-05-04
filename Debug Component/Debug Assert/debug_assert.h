@@ -68,14 +68,14 @@
 /* Define			debug assert control log.								                            */
 #define _DEBUG_ASSERT_CONTROL_LOG_(expression, ...)                                                     \
     do {                                                                                                \
-        denug_assert_control_error_string_modify(                                                       \
+        debug_assert_control_error_string_modify(                                                       \
             #expression,                                                                                \
             __FUNCTION__,                                                                               \
             __FILE__,                                                                                   \
             __LINE__);                                                                                  \
         DEBUG_MICRO_CONTROL_VA_ARGS_ARG(                                                                \
             2, printf, __VA_ARGS__, DEBUG_ASSERT_CFG_LOGGER)(                                           \
-                denug_assert_control_error_string_inquire());                                           \
+                debug_assert_control_error_string_inquire());                                           \
         DEBUG_MICRO_CONTROL_VA_ARGS_ARGS_FROM(                                                          \
             2, __VA_ARGS__, NULL, NULL);                                                                \
     } while (0)
@@ -92,12 +92,12 @@
  *********************************************************************************************************
  */
 
-void denug_assert_control_error_string_modify(char *expression,
+void debug_assert_control_error_string_modify(char *expression,
 											  char *function,
 											  char *file,
 											  size_t line);
 
-char *denug_assert_control_error_string_inquire(void);
+char *debug_assert_control_error_string_inquire(void);
 
 /*
  *********************************************************************************************************

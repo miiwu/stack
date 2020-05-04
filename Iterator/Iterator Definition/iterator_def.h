@@ -46,12 +46,43 @@
  */
 
 enum iterator_type_e {
-	INPUT_ITORATER = 1,
-	FORWARD_ITORATER,
-	BIDIRECTIONAL_ITORATER,
-	RANDOM_ACCESS_ITORATER,
-	OUTPUT_ITORATER,
-	CONTIGUOUS_ITERATOR,
+	INPUT_ITERATOR = 1,
+	FORWARD_ITERATOR,
+	BIDIRECTIONAL_ITERATOR,
+	RANDOM_ACCESS_ITERATOR,
+};
+
+enum iterator_adaptor_type_e {
+	OUTPUT_ITERATOR = 0x10,
+	CONTIGUOUS_ITERATOR = 0x20,
+};
+
+/**
+ * @brief This type is the iterator object control structure.
+ */
+
+struct iterator_control_s {
+	struct {
+		errno_t(*init)(struct iterator_s **iterator,
+					   struct iterator_object_unit_s object_unit);
+
+		errno_t(*destroy)(struct iterator_s **iterator);
+	}configuration;
+
+	struct {
+		void *(*advance)(struct iterator_s *iterator,
+						 int step);
+
+		size_t(*distance)(struct iterator_s *iterator);
+	}iterator_operations;
+
+	struct {
+		size_t(*size)(struct iterator_s *iterator);
+
+		bool (*empty)(struct iterator_s *iterator);
+
+		void *(*data)(struct iterator_s *iterator);
+	}range_access;
 };
 
 /**
@@ -97,6 +128,16 @@ struct iterator_common_information_s {
 	size_t position;
 
 	bool featured;
+};
+
+/**
+ * @brief This type is the unit of the iterator.
+ */
+
+struct iterator_unit_s {
+    struct iterator_s *iterator_ptr;
+
+	struct iterator_control_s *control_ptr;
 };
 
 /**

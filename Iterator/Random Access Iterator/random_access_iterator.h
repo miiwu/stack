@@ -109,6 +109,12 @@ errno_t random_access_iterator_control_configuration_init(random_access_iterator
 
 extern struct random_access_iterator_control_s random_access_iterator_control;
 
+/**
+ * @brief This variable is the iterator control function address table.
+ */
+
+extern const void *random_access_iterator_control_function_address_table[];
+
 /*
  *********************************************************************************************************
  *                                             MODULE END

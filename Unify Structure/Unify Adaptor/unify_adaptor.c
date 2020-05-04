@@ -125,12 +125,18 @@ errno_t unify_adaptor_control_destruct(void **adaptor,
 									package.adaptor.adapt_status_offset);
 
 	if (ADAPT == adapt_status) {
+		#if UNIFY_ADAPTOR_CFG_DEBUG_EN
+
+		printf("unify_adaptor_control_destruct(): adapt_status is ADAPT\r\n");
+
+		#endif // UNIFY_ADAPTOR_CFG_DEBUG_EN
+
 		void *adaptee = DEBUG_MICRO_CONTROL_FIELD(*adaptor,
 												  void *,
 												  package.adaptor.adaptee_offset);
 
 		unify_adaptor_package_adaptee_function(package.adaptee.destroy_ptr,
-											   adaptee, NULL);
+											   &adaptee, NULL);
 		DEBUG_ERROR_CONTROL_JUDGE(1, "allocator.deallocate():fail");
 	}
 

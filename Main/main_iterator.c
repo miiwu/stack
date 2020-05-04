@@ -2,6 +2,37 @@
 
 #if MAIN_ITERATOR_EN
 
+#define MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN								0
+#define MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN						0
+#define MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN							1
+
+void main_input_iterator(void);
+void main_random_access_iterator(void);
+void main_output_iterator(void);
+
+void main_iterator(void)
+{
+	#if MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN
+
+	main_input_iterator();
+
+	#endif // #define MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN
+
+	#if MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN
+
+	main_random_access_iterator();
+
+	#endif // MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN
+
+	#if MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN
+
+	main_output_iterator();
+
+	#endif // MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN
+
+	return;
+}
+
 void *string_element_access_at(char string[],
 							   size_t position);
 void *string_element_access_data(char string[]);
@@ -11,9 +42,6 @@ size_t string_capacity_size(char string[]);
 errno_t string_modifiers_modify(char string[],
 								size_t index,
 								void *source);
-
-void main_input_iterator(void);
-void main_random_access_iterator(void);
 
 char string[] = "this is a iterator test.";
 
@@ -35,17 +63,11 @@ struct iterator_object_unit_s
 	.control_ptr = &object_control,
 };
 
-struct iterator_s *input_iterator = NULL;
-struct iterator_s *random_access_iterator = NULL;
 char *element = NULL;
 
-void main_iterator(void)
-{
-	main_input_iterator();
-	main_random_access_iterator();
+#if MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN
 
-	return;
-}
+struct iterator_s *input_iterator = NULL;
 
 void main_input_iterator(void)
 {
@@ -83,6 +105,12 @@ void main_input_iterator(void)
 
 	printf("\r\n ------------------------+ input_iterator demo end +------------------------ \r\n");
 }
+
+#endif // MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN
+
+#if MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN
+
+struct iterator_s *random_access_iterator = NULL;
 
 void main_random_access_iterator(void)
 {
@@ -140,6 +168,33 @@ void main_random_access_iterator(void)
 
 	printf("\r\n ------------------------+ random_access_iterator demo end +------------------------ \r\n");
 }
+
+#endif // MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN
+
+#if MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN
+
+output_iterator_stp output_iterator = NULL;
+
+void main_output_iterator(void)
+{
+	printf("\r\n ------------------------+ output_iterator demo start +------------------------\r\n");
+
+	printf("\r\nrandom_access_iterator.configuration.init start\r\n");
+	if (output_iterator_control.configuration.init(&output_iterator, 0, object_unit)) {
+		return;
+	}
+
+	printf("\r\nrandom_access_iterator.configuration.destroy start\r\n");
+	if (output_iterator_control.configuration.destroy(&output_iterator)) {
+		return;
+	}
+
+	printf("\r\n ------------------------+ output_iterator demo end +------------------------ \r\n");
+
+	return;
+}
+
+#endif // MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN
 
 void *string_element_access_at(char string[],
 							   size_t position)

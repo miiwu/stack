@@ -36,6 +36,16 @@
  *********************************************************************************************************
  */
 
+errno_t iterator_adaptor_control_configuration_init(struct iterator_adaptor_s **iterator_adaptor,
+													enum iterator_adaptor_type_e iterator_adaptor_type,
+													enum iterator_type_e iterator_type,
+													enum allocator_type_e allocator_type,
+													struct iterator_object_unit_s object_unit);
+
+errno_t iterator_adaptor_control_configuration_readapt(struct iterator_adaptor_s **iterator_adaptor);
+
+errno_t iterator_adaptor_control_configuration_destroy(struct iterator_adaptor_s **iterator_adaptor);
+
 /*
  *********************************************************************************************************
  *                                       EXTERN GLOBAL VARIABLES

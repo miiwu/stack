@@ -36,7 +36,7 @@
 
 struct iterator_s {
 	/* @brief This variables will record the identity code of iterator type.							*/
-	enum iterator_type type_id;
+	enum iterator_type_e type_id;
 
 	/* @brief This variables will record the iterator common information structure.						*/
 	struct iterator_common_information_s info;

@@ -148,12 +148,14 @@ void debug_error_control_error_string_modify(struct debug_error_nest_unit_s *nes
 			#endif // DEBUG_ERROR_CFG_DEBUG_EN
 		}
 
-		strcat(nest_unit->error_string_ptr, string);
-
-		return;
+		if (NULL == nest_unit->error_string_ptr) {
+			nest_unit->error_string_ptr = "DEBUG ERROR STRING FAULT.no more space";
+		} else {
+			strcat(nest_unit->error_string_ptr, string);
+		}
+	} else {
+		nest_unit->error_string_ptr = string;
 	}
-
-	nest_unit->error_string_ptr = string;
 }
 
 char *debug_error_control_error_string_inquire(void)

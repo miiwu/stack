@@ -100,6 +100,12 @@ errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
 
 extern struct input_iterator_control_s input_iterator_control;
 
+/**
+ * @brief This variable is the iterator control function address table.
+ */
+
+extern const void *input_iterator_control_function_address_table[];
+
 /*
  *********************************************************************************************************
  *                                             MODULE END

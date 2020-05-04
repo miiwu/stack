@@ -42,6 +42,22 @@ struct input_iterator_control_s input_iterator_control = {
 	.range_access.data = iterator_control_range_access_data,
 };
 
+/**
+ * @brief This variable is the iterator control function address table.
+ */
+
+const void *input_iterator_control_function_address_table[] = {
+	input_iterator_control_configuration_init,
+	iterator_control_configuration_destroy,
+
+	iterator_control_iterator_operations_advance,
+	NULL,
+
+	iterator_control_range_access_empty,
+	iterator_control_range_access_size,
+	iterator_control_range_access_data,
+};
+
 /*
  *********************************************************************************************************
  *                                            LOCAL TABLES
@@ -93,15 +109,15 @@ bool input_iterator_control_feature_package_advance(int step);
 errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
 												  struct iterator_object_unit_s object_unit)
 {
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(iterator);
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(object_unit.object_ptr);
-	DEBUG_ASSERT_CONTROL_POINTER_PRINTF(object_unit.control_ptr);
+	DEBUG_ASSERT_CONTROL_POINTER(iterator);
+	DEBUG_ASSERT_CONTROL_POINTER(object_unit.object_ptr);
+	DEBUG_ASSERT_CONTROL_POINTER(object_unit.control_ptr);
 
 	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
 
 	if (iterator_control_configuration_init(iterator,
-											INPUT_ITORATER,
-                                            INPUT_ITERATOR_CFG_ALLOCATOR_TYPE,
+											INPUT_ITERATOR,
+											INPUT_ITERATOR_CFG_ALLOCATOR_TYPE,
 											object_unit,
 											sizeof(struct iterator_feature_package_s))) {
 		DEBUG_ERROR_CONTROL_JUMP(1);
