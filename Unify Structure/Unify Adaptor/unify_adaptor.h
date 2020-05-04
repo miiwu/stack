@@ -7,8 +7,8 @@
  *********************************************************************************************************
  */
 
-#ifndef __UNIFY_STRUCTURE_H
-#define __UNIFY_STRUCTURE_H
+#ifndef __UNIFY_ADAPTOR_H
+#define __UNIFY_ADAPTOR_H
 
 /*
  *********************************************************************************************************
@@ -18,13 +18,13 @@
 
 #include "unify_struct.h"
 
-#include "unify_adaptor.h"
-
 /*
  *********************************************************************************************************
  *									            DEFINES
  *********************************************************************************************************
  */
+
+#define UNIFY_ADAPTOR_CFG_DEBUG_EN                                                  1
 
 /*
  *********************************************************************************************************
@@ -32,11 +32,50 @@
  *********************************************************************************************************
  */
 
+enum unify_adaptor_adapt_status_e {
+	ADAPT,
+	ADAPT_EXIST,
+};
+
+typedef void (*unify_adaptor_package_adaptee_function_s)(void **adaptee, ...);
+
+struct unify_adaptor_package_s {
+	struct {
+		size_t
+			adaptee_offset,
+			adaptor_memory_size,
+			adapt_status_offset,
+			allocator_unit_offest;
+
+		enum allocator_type_e allocator_type;
+	}adaptor;
+
+	struct {
+		size_t allocator_unit_offest;
+
+		void *init_ptr;
+		void *init_arg_ptr[8];
+
+		void *destroy_ptr;
+	}adaptee;
+};
+
 /*
  *********************************************************************************************************
  *								            FUNCTION PROTOTYPES
  *********************************************************************************************************
  */
+
+errno_t unify_adaptor_control_construct(void **adaptor,
+										struct unify_adaptor_package_s package);
+
+errno_t unify_adaptor_control_readapt(void **adaptor,
+									  struct unify_adaptor_package_s package);
+
+errno_t unify_adaptor_control_adapt_exist(void **adaptor, void *adaptee, struct unify_adaptor_package_s package);
+
+errno_t unify_adaptor_control_destruct(void **adaptor,
+									   struct unify_adaptor_package_s package);
 
 /*
  *********************************************************************************************************
@@ -50,4 +89,4 @@
  *********************************************************************************************************
  */
 
-#endif // !__UNIFY_STRUCTURE_H
+#endif // !__UNIFY_ADAPTOR_H

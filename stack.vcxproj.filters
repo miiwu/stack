@@ -79,6 +79,18 @@
     <Filter Include="源文件\unify structure">
       <UniqueIdentifier>{3025ca4e-b486-49e7-89fe-b0e00322c9e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\unify structure\unify struct">
+      <UniqueIdentifier>{37e59659-fa7a-4982-90fa-46516e2ad931}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\unify structure\unify struct">
+      <UniqueIdentifier>{a60827de-4b6e-4d3c-9d94-a6ab30481bb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\unify structure\unify adaptor">
+      <UniqueIdentifier>{c7ab05c8-4297-4621-b5ae-4f80533d0dec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\unify structure\unify adaptor">
+      <UniqueIdentifier>{0ac2fd08-f75b-4afe-b6d8-050e4d93ba74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\main.c">
@@ -108,8 +120,11 @@
     <ClCompile Include="Main\main_unify_structure.c">
       <Filter>源文件\main</Filter>
     </ClCompile>
-    <ClCompile Include="Unify Structure\unify_structure.c">
-      <Filter>源文件\unify structure</Filter>
+    <ClCompile Include="Unify Structure\Unify Adaptor\unify_adaptor.c">
+      <Filter>源文件\unify structure\unify adaptor</Filter>
+    </ClCompile>
+    <ClCompile Include="Unify Structure\Unify Struct\unify_struct.c">
+      <Filter>源文件\unify structure\unify struct</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +163,12 @@
     </ClInclude>
     <ClInclude Include="Debug Component\Debug Error\debug_error.h">
       <Filter>头文件\debug component\debug error</Filter>
+    </ClInclude>
+    <ClInclude Include="Unify Structure\Unify Adaptor\unify_adaptor.h">
+      <Filter>头文件\unify structure\unify adaptor</Filter>
+    </ClInclude>
+    <ClInclude Include="Unify Structure\Unify Struct\unify_struct.h">
+      <Filter>头文件\unify structure\unify struct</Filter>
     </ClInclude>
     <ClInclude Include="Unify Structure\unify_structure.h">
       <Filter>头文件\unify structure</Filter>

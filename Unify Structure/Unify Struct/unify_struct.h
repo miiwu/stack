@@ -7,8 +7,8 @@
  *********************************************************************************************************
  */
 
-#ifndef __UNIFY_STRUCTURE_H
-#define __UNIFY_STRUCTURE_H
+#ifndef __UNIFY_STRUCT_H
+#define __UNIFY_STRUCT_H
 
 /*
  *********************************************************************************************************
@@ -16,9 +16,9 @@
  *********************************************************************************************************
  */
 
-#include "unify_struct.h"
+#include "debug_component.h"
 
-#include "unify_adaptor.h"
+#include "allocator.h"
 
 /*
  *********************************************************************************************************
@@ -38,6 +38,34 @@
  *********************************************************************************************************
  */
 
+/**
+ * @brief This function will construct the structure and initialize the allocator unit.
+ *
+ * @param structure the pointer to structure
+ * @param package the package of the unify structure allocate
+ *
+ * @return the construct package
+ */
+
+struct allocator_unit_s
+	unify_struct_control_construct(void **structure,
+								   enum allocator_type_e allocator_type,
+								   size_t structure_mem_size);
+
+/**
+ * @brief This function will destruct the structure and destroy the allocator unit.
+ *
+ * @param structure the pointer to structure
+ * @param allocator_unit the package of the unify structure allocator unit
+ *
+ * @return the error code
+ */
+
+errno_t
+unify_struct_control_destruct(void **structure,
+							  struct allocator_unit_s allocator_unit,
+							  bool destroy_allocator_unit);
+
 /*
  *********************************************************************************************************
  *                                       EXTERN GLOBAL VARIABLES
@@ -50,4 +78,4 @@
  *********************************************************************************************************
  */
 
-#endif // !__UNIFY_STRUCTURE_H
+#endif // !__UNIFY_STRUCT_H
