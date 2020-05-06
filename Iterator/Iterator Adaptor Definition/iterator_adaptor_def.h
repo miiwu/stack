@@ -83,6 +83,47 @@ errno_t iterator_adaptor_control_configuration_adapt_exist(struct iterator_adapt
 
 errno_t iterator_adaptor_control_configuration_destroy(struct iterator_adaptor_s **iterator_adaptor);
 
+/**
+ * @brief This function will advance base iterator of the iterator adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+void *iterator_adaptor_control_iterator_operations_advance(struct iterator_adaptor_s *iterator_adaptor,
+														   int step);
+
+/**
+ * @brief This function will access the size of base iterator of the iterator adaptor.
+ *
+ * @param
+ *
+ * @return
+ */
+
+size_t iterator_adaptor_control_range_access_size(struct iterator_adaptor_s *iterator_adaptor);
+
+/**
+ * @brief This function will access if base iterator of the iterator adaptor is empty.
+ *
+ * @param
+ *
+ * @return
+ */
+
+bool iterator_adaptor_control_range_access_empty(struct iterator_adaptor_s *iterator_adaptor);
+
+/**
+ * @brief This function will access the data pointer that base iterator of the iterator adaptor pointed.
+ *
+ * @param
+ *
+ * @return
+ */
+
+void *iterator_adaptor_control_range_access_data(struct iterator_adaptor_s *iterator_adaptor);
+
 /*
  *********************************************************************************************************
  *                                       EXTERN GLOBAL VARIABLES

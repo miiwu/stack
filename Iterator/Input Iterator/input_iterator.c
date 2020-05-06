@@ -53,8 +53,8 @@ const void *input_iterator_control_function_address_table[] = {
 	iterator_control_iterator_operations_advance,
 	NULL,
 
-	iterator_control_range_access_empty,
 	iterator_control_range_access_size,
+	iterator_control_range_access_empty,
 	iterator_control_range_access_data,
 };
 

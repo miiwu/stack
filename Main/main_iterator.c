@@ -180,16 +180,31 @@ void main_output_iterator(void)
 {
 	printf("\r\n ------------------------+ output_iterator demo start +------------------------\r\n");
 
-	printf("\r\nrandom_access_iterator.configuration.init start\r\n");
+	printf("\r\noutput_iterator.configuration.init start\r\n");
 	if (output_iterator_control.configuration.init(&output_iterator, 0, object_unit)) {
 		return;
 	}
 
-	printf("\r\nrandom_access_iterator.configuration.adapt_exist start\r\n");
+	printf("\r\noutput_iterator.configuration.adapt_exist start\r\n");
 	input_iterator_control.configuration.init(&input_iterator, object_unit);
 	output_iterator_control.configuration.adapt_exist(&output_iterator, input_iterator);
 
-	printf("\r\nrandom_access_iterator.configuration.destroy start\r\n");
+	printf("\r\noutput_iterator.iterator_operation.advance start\r\n");
+	element = output_iterator_control.iterator_operations.advance(output_iterator, 2);
+	printf("output_iterator.iterator_operations.advance:\"%c\" \r\n"
+		   , (NULL == element) ? '?' : *element);
+
+	printf("\r\noutput_iterator.range_access.size start\r\n");
+	element = (char *)output_iterator_control.range_access.size(output_iterator);
+	printf("output_iterator.range_access.size:%d \r\n"
+		   , (NULL == element) ? '?' : (size_t)element);
+
+	printf("\r\noutput_iterator.range_access.data start\r\n");
+	element = output_iterator_control.range_access.data(output_iterator);
+	printf("output_iterator.range_access.data:%p \r\n"
+		   , (NULL == element) ? NULL : element);
+
+	printf("\r\noutput_iterator.configuration.destroy start\r\n");
 	output_iterator_control.configuration.destroy(&output_iterator);
 	input_iterator_control.configuration.destroy(&input_iterator);
 

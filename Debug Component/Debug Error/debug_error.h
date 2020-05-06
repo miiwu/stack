@@ -137,6 +137,12 @@
                 DEBUG_ERROR_CFG_LOG_EXIT_SECOND_ARG));                                                  \
     } while (0)
 
+/* Define			debug error control single error.										            */
+#define DEBUG_ERROR_CONTROL_SINGLE_ERROR(return_type, error_code, expression, ...)                      \
+    DEBUG_ERROR_CONTROL_INIT(return_type, 2, 0, error_code);                                            \
+    expression;                                                                                         \
+    DEBUG_ERROR_CONTROL_JUDGE(1, __VA_ARGS__)
+
 /* Define			debug error control set.										                    */
 #define _DEBUG_ERROR_CONTROL_SET_(count, ...)                                                           \
     do {                                                                                                \

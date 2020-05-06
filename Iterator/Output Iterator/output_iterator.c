@@ -48,11 +48,11 @@ struct output_iterator_control_s output_iterator_control = {
 	.configuration.adapt_exist = iterator_adaptor_control_configuration_adapt_exist,
 	.configuration.destroy = iterator_adaptor_control_configuration_destroy,
 
-	//.iterator_operations.advance = iterator_control_iterator_operations_advance,
+	.iterator_operations.advance = iterator_adaptor_control_iterator_operations_advance,
 
-	//.range_access.empty = iterator_control_range_access_empty,
-	//.range_access.size = iterator_control_range_access_size,
-	//.range_access.data = iterator_control_range_access_data,
+	.range_access.empty = iterator_adaptor_control_range_access_empty,
+	.range_access.size = iterator_adaptor_control_range_access_size,
+	.range_access.data = iterator_adaptor_control_range_access_data,
 };
 
 /*

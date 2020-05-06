@@ -211,8 +211,6 @@ errno_t allocator_control_configuration_destroy(struct allocator_s **allocator)
 
 	#if (ALLOCATOR_GLOBAL_CFG_STACK_BACK_TRACE_EN)
 
-	printf("allocator_control.destroy:memory free status : %d \r\n", (*allocator)->info.match);
-
 	if ((int)0 != (int)(*allocator)->info.match
 		&& allocator_control_configuration_destroy_stack_back_trace_log((*allocator))) {
 		DEBUG_ERROR_CONTROL_JUMP(1, "_stack_back_trace_log():fail");

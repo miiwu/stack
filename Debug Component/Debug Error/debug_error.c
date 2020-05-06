@@ -124,12 +124,12 @@ void debug_error_control_error_string_modify(struct debug_error_nest_unit_s *nes
 		if (length_max < length) {
 			nest_unit->error_string_ptr = calloc(1, length + 1);
 
-			#if DEBUG_ERROR_CFG_DEBUG_EN
+		#if DEBUG_ERROR_CFG_DEBUG_EN
 
 			printf("debug_error.error.string.modify._cache_modify():%p\r\n",
 				   nest_unit->error_string_ptr);
 
-			#endif // DEBUG_ERROR_CFG_DEBUG_EN
+		#endif // DEBUG_ERROR_CFG_DEBUG_EN
 
 			debug_error_control_error_string_cache_modify(nest_unit->error_string_ptr);		/* Modify the cache of error string */
 
@@ -140,12 +140,12 @@ void debug_error_control_error_string_modify(struct debug_error_nest_unit_s *nes
 
 			memset(nest_unit->error_string_ptr, '\0', length_max);
 
-			#if DEBUG_ERROR_CFG_DEBUG_EN
+		#if DEBUG_ERROR_CFG_DEBUG_EN
 
 			printf("debug_error.error.string.modify._cache_inquire():%p\r\n",
 				   nest_unit->error_string_ptr);
 
-			#endif // DEBUG_ERROR_CFG_DEBUG_EN
+		#endif // DEBUG_ERROR_CFG_DEBUG_EN
 		}
 
 		if (NULL == nest_unit->error_string_ptr) {
@@ -175,12 +175,12 @@ debug_error_control_error_string_cache_modify(char *cache)
 	DEBUG_ASSERT_CONTROL_POINTER(cache);
 
 	if (NULL != debug_error.string_cache_ptr) {
-		#if DEBUG_ERROR_CFG_DEBUG_EN
+	#if DEBUG_ERROR_CFG_DEBUG_EN
 
 		printf("debug_error.error.string.cache.modify.free():cache:%p .cache:%p\r\n",
 			   cache, debug_error.string.body_cache_ptr);
 
-		#endif // DEBUG_ERROR_CFG_DEBUG_EN
+	#endif // DEBUG_ERROR_CFG_DEBUG_EN
 
 		free(debug_error.string_cache_ptr);
 	}
