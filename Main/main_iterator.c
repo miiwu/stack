@@ -12,23 +12,23 @@ void main_output_iterator(void);
 
 void main_iterator(void)
 {
-	#if MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN
+#if MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN
 
 	main_input_iterator();
 
-	#endif // #define MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN
+#endif // #define MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN
 
-	#if MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN
+#if MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN
 
 	main_random_access_iterator();
 
-	#endif // MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN
+#endif // MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN
 
-	#if MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN
+#if MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN
 
 	main_output_iterator();
 
-	#endif // MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN
+#endif // MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN
 
 	return;
 }
@@ -173,6 +173,7 @@ void main_random_access_iterator(void)
 
 #if MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN
 
+struct iterator_s *input_iterator = NULL;
 output_iterator_stp output_iterator = NULL;
 
 void main_output_iterator(void)
@@ -184,10 +185,13 @@ void main_output_iterator(void)
 		return;
 	}
 
+	printf("\r\nrandom_access_iterator.configuration.adapt_exist start\r\n");
+	input_iterator_control.configuration.init(&input_iterator, object_unit);
+	output_iterator_control.configuration.adapt_exist(&output_iterator, input_iterator);
+
 	printf("\r\nrandom_access_iterator.configuration.destroy start\r\n");
-	if (output_iterator_control.configuration.destroy(&output_iterator)) {
-		return;
-	}
+	output_iterator_control.configuration.destroy(&output_iterator);
+	input_iterator_control.configuration.destroy(&input_iterator);
 
 	printf("\r\n ------------------------+ output_iterator demo end +------------------------ \r\n");
 

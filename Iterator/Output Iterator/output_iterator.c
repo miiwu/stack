@@ -44,6 +44,8 @@
 
 struct output_iterator_control_s output_iterator_control = {
 	.configuration.init = output_iterator_control_configuration_init,
+	.configuration.readapt = iterator_adaptor_control_configuration_readapt,
+	.configuration.adapt_exist = iterator_adaptor_control_configuration_adapt_exist,
 	.configuration.destroy = iterator_adaptor_control_configuration_destroy,
 
 	//.iterator_operations.advance = iterator_control_iterator_operations_advance,

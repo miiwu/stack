@@ -24,8 +24,9 @@
  *********************************************************************************************************
  */
 
-/* Configure    the type of output iterator.                                                                  */
-#define OUTPUT_ITERATOR_CFG_ALLOCATOR_TYPE                                 CONCEPT_ALLOCATOR
+/* Configure    the type of output iterator.                                                            */
+#define OUTPUT_ITERATOR_CFG_ALLOCATOR_TYPE                                                              \
+    CONCEPT_ALLOCATOR
 
 /*
  *********************************************************************************************************
@@ -51,7 +52,14 @@ struct output_iterator_control_s {
 					   enum iterator_type_e iterator_type,
 					   struct iterator_object_unit_s object_unit);
 
-		errno_t(*destroy)(output_iterator_stpp iterator);
+		errno_t(*destroy)(output_iterator_stpp iterator_adaptor);
+
+		errno_t(*readapt)(output_iterator_stpp iterator_adaptor,
+						  enum iterator_type_e iterator_type,
+						  struct iterator_object_unit_s object_unit);
+
+		errno_t(*adapt_exist)(output_iterator_stpp iterator_adaptor,
+							  struct iterator_s *iterator);
 	}configuration;
 
 	struct {
@@ -69,9 +77,9 @@ struct output_iterator_control_s {
 		void *(*data)(output_iterator_stp iterator);
 	}range_access;
 
-    errno_t(*modify)(output_iterator_stp iterator,
-                     void **source,
-                     size_t count);
+	errno_t(*modify)(output_iterator_stp iterator,
+					 void **source,
+					 size_t count);
 };
 
 /*
@@ -81,8 +89,8 @@ struct output_iterator_control_s {
  */
 
 errno_t output_iterator_control_configuration_init(output_iterator_stpp output_iterator,
-												enum iterator_type_e iterator_type,
-												struct iterator_object_unit_s object_unit);
+												   enum iterator_type_e iterator_type,
+												   struct iterator_object_unit_s object_unit);
 
 /*
  *********************************************************************************************************

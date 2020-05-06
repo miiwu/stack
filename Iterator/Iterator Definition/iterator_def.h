@@ -125,9 +125,9 @@ struct iterator_object_control_s {
  */
 
 struct iterator_common_information_s {
-	size_t position;
+    size_t position;
 
-	bool featured;
+    bool featured;
 };
 
 /**
@@ -137,7 +137,7 @@ struct iterator_common_information_s {
 struct iterator_unit_s {
     struct iterator_s *iterator_ptr;
 
-	struct iterator_control_s *control_ptr;
+    struct iterator_control_s *control_ptr;
 };
 
 /**

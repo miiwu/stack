@@ -4,107 +4,107 @@
 
 void main(void)
 {
-	#if	(MAIN_DEBUG_COMPONENT_EN)
+#if	(MAIN_DEBUG_COMPONENT_EN)
 
 	main_debug_component();
 
-	#endif
+#endif
 
-	#if	(MAIN_ALGORITHM_EN)
+#if	(MAIN_ALGORITHM_EN)
 
 	main_algorithm();
 
-	#endif
+#endif
 
-	#if	(MAIN_ALLOCATOR_EN)
+#if	(MAIN_ALLOCATOR_EN)
 
 	main_allocator();
 
-	#endif
+#endif
 
-	#if	(MAIN_UNIFY_STRUCTURE_EN)
+#if	(MAIN_UNIFY_STRUCTURE_EN)
 
 	main_unify_structure();
 
-	#endif
+#endif
 
-	#if	(MAIN_ITERATOR_EN)
+#if	(MAIN_ITERATOR_EN)
 
 	main_iterator();
 
-	#endif
+#endif
 
-	#if	(MAIN_GENERIC_TYPE_EN)
+#if	(MAIN_GENERIC_TYPE_EN)
 
 	main_generic_type();
 
-	#endif
+#endif
 
-	#if	(MAIN_B_TREE_EN)
+#if	(MAIN_B_TREE_EN)
 
 	main_b_tree();
 
-	#endif
+#endif
 
-	#if	(MAIN_BINARY_SEARCH_TREE_EN)
+#if	(MAIN_BINARY_SEARCH_TREE_EN)
 
 	main_binary_search_tree();
 
-	#endif
+#endif
 
-	#if	(MAIN_RED_BLACK_TREE_EN)
+#if	(MAIN_RED_BLACK_TREE_EN)
 
 	main_red_black_tree();
 
-	#endif
+#endif
 
-	#if	(MAIN_ARRAY_EN)
+#if	(MAIN_ARRAY_EN)
 
 	main_array();
 
-	#endif
+#endif
 
-	#if	(MAIN_VECTOR_EN)
+#if	(MAIN_VECTOR_EN)
 
 	main_vector();
 
-	#endif
+#endif
 
-	#if	(MAIN_FORWARD_LIST_EN)
+#if	(MAIN_FORWARD_LIST_EN)
 
 	main_forward_list();
 
-	#endif
+#endif
 
-	#if	(MAIN_LIST_EN)
+#if	(MAIN_LIST_EN)
 
 	main_list();
 
-	#endif
+#endif
 
-	#if	(MAIN_STACK_EN)
+#if	(MAIN_STACK_EN)
 
 	main_stack();
 
-	#endif
+#endif
 
-	#if	(MAIN_QUEUE_EN)
+#if	(MAIN_QUEUE_EN)
 
 	main_queue();
 
-	#endif
+#endif
 
-	#if	(MAIN_PRIORITY_QUEUE_EN)
+#if	(MAIN_PRIORITY_QUEUE_EN)
 
 	main_priority_queue();
 
-	#endif
+#endif
 
-	#ifdef NDEDUG
+#ifdef NDEDUG
 
 	system("pause");
 
-	#endif // (NDEDUG)
+#endif // (NDEDUG)
 
 	return;
 }

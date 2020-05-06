@@ -37,24 +37,25 @@ enum unify_adaptor_adapt_status_e {
 	ADAPT_EXIST,
 };
 
-typedef void (*unify_adaptor_package_adaptee_function_s)(void **adaptee, ...);
-
 struct unify_adaptor_package_s {
 	struct {
 		size_t
-			adaptee_offset,
-			adaptor_memory_size,
+			adaptee_type,
+			adaptee_unit_offset,
+			adaptee_unit_size,
+			adaptor_size,
 			adapt_status_offset,
 			allocator_unit_offest;
 
 		enum allocator_type_e allocator_type;
+
+		void *get_adaptee_type;
 	}adaptor;
 
 	struct {
 		void
-			*init_ptr,
-			*destroy_ptr,
-			*init_arg_ptr[8];
+			*init_arg_ptr[8],
+			**function_address_table_set_ptr;
 
 		size_t allocator_unit_offest;
 	}adaptee;

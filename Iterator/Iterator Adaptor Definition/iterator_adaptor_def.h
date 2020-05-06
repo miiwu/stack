@@ -36,13 +36,50 @@
  *********************************************************************************************************
  */
 
+/**
+ * @brief This function will initialize the iterator adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
 errno_t iterator_adaptor_control_configuration_init(struct iterator_adaptor_s **iterator_adaptor,
 													enum iterator_adaptor_type_e iterator_adaptor_type,
 													enum iterator_type_e iterator_type,
 													enum allocator_type_e allocator_type,
 													struct iterator_object_unit_s object_unit);
 
-errno_t iterator_adaptor_control_configuration_readapt(struct iterator_adaptor_s **iterator_adaptor);
+/**
+ * @brief This function will readapt the iterator of the iterator adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+errno_t iterator_adaptor_control_configuration_readapt(struct iterator_adaptor_s **iterator_adaptor,
+													   enum iterator_type_e iterator_type,
+													   struct iterator_object_unit_s object_unit);
+
+/**
+ * @brief This function will adapt the exist iterator to the iterator adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
+
+errno_t iterator_adaptor_control_configuration_adapt_exist(struct iterator_adaptor_s **iterator_adaptor,
+														   struct iterator_s *iterator);
+
+/**
+ * @brief This function will destroy the iterator adaptor.
+ *
+ * @param void
+ *
+ * @return void
+ */
 
 errno_t iterator_adaptor_control_configuration_destroy(struct iterator_adaptor_s **iterator_adaptor);
 
