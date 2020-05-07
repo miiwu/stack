@@ -34,6 +34,14 @@
 #define DEBUG_MICRO_CONTROL_STRING(...)                                                                 \
     #__VA_ARGS__
 
+/* Define			debug micro control shortcuts.										                */
+#define DEBUG_MICRO_CONTROL_SHORTCUTS(body, shortcut, ...)                                              \
+    body ##_CONTROL_## shortcut DEBUG_MICRO_CONTROL_LEFTBRACKET __VA_ARGS__)
+
+/* Define			debug micro control shortcuts.										                */
+#define DBG_MIC(shortcut, ...)                                                                          \
+    DEBUG_MICRO_CONTROL_SHORTCUTS(DEBUG_MICRO, shortcut, __VA_ARGS__)
+
 /* Define			debug micro control field offset.								                    */
 #define DEBUG_MICRO_CONTROL_FIELD(variable_address, field_type, field_offset)                           \
     *(field_type*)((char *)variable_address + (field_offset))

@@ -63,23 +63,23 @@ struct output_iterator_control_s {
 	}configuration;
 
 	struct {
-		void *(*advance)(output_iterator_stp iterator,
+		void *(*advance)(output_iterator_stp output_iterator,
 						 int step);
 
-		size_t(*distance)(output_iterator_stp iterator);
+		size_t(*distance)(output_iterator_stp output_iterator);
 	}iterator_operations;
 
 	struct {
-		size_t(*size)(output_iterator_stp iterator);
+		size_t(*size)(output_iterator_stp output_iterator);
 
-		bool (*empty)(output_iterator_stp iterator);
+		bool (*empty)(output_iterator_stp output_iterator);
 
-		void *(*data)(output_iterator_stp iterator);
+		void *(*data)(output_iterator_stp output_iterator);
 	}range_access;
 
-	errno_t(*modify)(output_iterator_stp iterator,
-					 void **source,
-					 size_t count);
+	void *(*modify)(output_iterator_stp output_iterator,
+					size_t index,
+					void *source);
 };
 
 /*
@@ -91,6 +91,10 @@ struct output_iterator_control_s {
 errno_t output_iterator_control_configuration_init(output_iterator_stpp output_iterator,
 												   enum iterator_type_e iterator_type,
 												   struct iterator_object_unit_s object_unit);
+
+void *output_iterator_control_modify(output_iterator_stp output_iterator,
+									 size_t index,
+									 void *source);
 
 /*
  *********************************************************************************************************

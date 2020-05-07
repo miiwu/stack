@@ -39,9 +39,9 @@ void *string_element_access_data(char string[]);
 bool string_capacity_empty(char string[]);
 size_t string_capacity_max_size(char string[]);
 size_t string_capacity_size(char string[]);
-errno_t string_modifiers_modify(char string[],
-								size_t index,
-								void *source);
+void *string_modifiers_modify(char string[],
+							  size_t index,
+							  void *source);
 
 char string[] = "this is a iterator test.";
 
@@ -194,6 +194,12 @@ void main_output_iterator(void)
 	printf("output_iterator.iterator_operations.advance:\"%c\" \r\n"
 		   , (NULL == element) ? '?' : *element);
 
+	printf("\r\noutput_iterator.modify start\r\n");
+	element = output_iterator_control.modify(output_iterator, 1, "*");
+	element = output_iterator_control.iterator_operations.advance(output_iterator, 0);
+	printf("output_iterator.iterator_operations.advance:\"%c\" \r\n"
+		   , (NULL == element) ? '?' : *element);
+
 	printf("\r\noutput_iterator.range_access.size start\r\n");
 	element = (char *)output_iterator_control.range_access.size(output_iterator);
 	printf("output_iterator.range_access.size:%d \r\n"
@@ -201,8 +207,8 @@ void main_output_iterator(void)
 
 	printf("\r\noutput_iterator.range_access.data start\r\n");
 	element = output_iterator_control.range_access.data(output_iterator);
-	printf("output_iterator.range_access.data:%p \r\n"
-		   , (NULL == element) ? NULL : element);
+	printf("output_iterator.range_access.data:\"%s\" \r\n"
+		   , element);
 
 	printf("\r\noutput_iterator.configuration.destroy start\r\n");
 	output_iterator_control.configuration.destroy(&output_iterator);
@@ -241,11 +247,13 @@ size_t string_capacity_size(char string[])
 	return strlen(string);
 }
 
-errno_t string_modifiers_modify(char string[],
-								size_t index,
-								void *source)
+void *string_modifiers_modify(char string[],
+							  size_t index,
+							  void *source)
 {
-	return !memcpy(&string[index], source, 1);
+	char *result = memcpy(&string[index], source, 1);
+
+	return result;
 }
 
 #endif // MAIN_ITERATOR_EN

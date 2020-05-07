@@ -34,6 +34,10 @@
 #define DEBUG_ERROR_CFG_LOG_EXIT_SECOND_ARG                                                             \
     NULL                                                                                    /* TODO:not complete */
 
+/* Define			debug error control shortcut.										                */
+#define DBG_ERR(shortcut, ...)                                                                          \
+    DEBUG_MICRO_CONTROL_SHORTCUTS(DEBUG_ERROR, shortcut, __VA_ARGS__)
+
 /* Define			debug error control return.										                    */
 #define DEBUG_ERROR_CONTROL_RETURN_VAL                                                                  \
     (debug_error_control_return)

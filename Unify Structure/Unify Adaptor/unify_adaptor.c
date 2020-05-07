@@ -103,10 +103,11 @@ errno_t unify_adaptor_control_construct(void **adaptor,
 errno_t unify_adaptor_control_readapt(void **adaptor,
 									  struct unify_adaptor_package_s package)
 {
-	DEBUG_ERROR_CONTROL_SINGLE_ERROR(errno_t,
-									 1,
-									 unify_adaptor_control_adapt_core(adaptor, NULL, package),
-									 "unify_struct_control_construct():adaptor construct fail");
+	DBG_ERR(SINGLE_ERROR,
+			errno_t,
+			1,
+			unify_adaptor_control_adapt_core(adaptor, NULL, package),
+			"unify_struct_control_construct():adaptor construct fail");
 
 	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
@@ -183,15 +184,16 @@ static inline errno_t
 unify_adaptor_control_construct_core(void **adaptor,
 									 struct unify_adaptor_package_s package)
 {
-	DEBUG_ERROR_CONTROL_SINGLE_ERROR(errno_t,
-									 1,
-									 DEBUG_MICRO_CONTROL_FIELD(*adaptor,
-															   struct allocator_unit_s,
-															   package.adaptor.allocator_unit_offest)
-									 = unify_struct_control_construct(adaptor,
-																	  package.adaptor.allocator_type,
-																	  package.adaptor.adaptor_size),
-									 "unify_struct_control_construct():adaptor construct fail");
+	DBG_ERR(SINGLE_ERROR,
+			errno_t,
+			1,
+			DEBUG_MICRO_CONTROL_FIELD(*adaptor,
+									  struct allocator_unit_s,
+									  package.adaptor.allocator_unit_offest)
+			= unify_struct_control_construct(adaptor,
+											 package.adaptor.allocator_type,
+											 package.adaptor.adaptor_size),
+			"unify_struct_control_construct():adaptor construct fail");
 
 	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
@@ -230,7 +232,7 @@ unify_adaptor_control_adapt_core(void **adaptor,
 		unify_adaptor_package_adaptee_function(unify_adaptor_adaptee_control_ptr->destroy,
 											   &adaptee4adaptor, NULL);
 		DEBUG_ERROR_CONTROL_JUDGE(1, "package.adaptee.destroy():adaptee destroy fail");
-	}
+}
 
 	if (NULL != adaptee) {
 		DEBUG_MICRO_CONTROL_FIELD(*adaptor,

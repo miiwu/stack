@@ -114,9 +114,9 @@ struct iterator_object_control_s {
 
 	struct {
 		/* @brief This function will modify the specific element of the underlying object.			    */
-		errno_t(*modify)(void *object,
-						 size_t index,
-						 void *source);
+		void *(*modify)(void *object,
+						size_t index,
+						void *source);
 	}modifiers;
 };
 
@@ -282,6 +282,18 @@ bool iterator_control_range_access_empty(struct iterator_s *iterator);
  */
 
 void *iterator_control_range_access_data(struct iterator_s *iterator);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+void *iterator_control_modifiers_modify(struct iterator_s *iterator,
+										size_t index,
+										void *source);
 
 /**
  * @brief This function will inquire for the allocator unit of the iterator.

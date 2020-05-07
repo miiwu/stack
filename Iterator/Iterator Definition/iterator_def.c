@@ -311,6 +311,35 @@ void *iterator_control_range_access_data(struct iterator_s *iterator)
 }
 
 /**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+void *iterator_control_modifiers_modify(struct iterator_s *iterator,
+										size_t index,
+										void *source)
+{
+	DEBUG_ASSERT_CONTROL_POINTER(iterator);
+	DEBUG_ASSERT_CONTROL_VARIABLE(index, >= , int, 0);
+	DEBUG_ASSERT_CONTROL_POINTER(source);
+
+	DBG_ERR(SINGLE_ERROR,
+			void *,
+			1,
+			DEBUG_ERROR_CONTROL_RETURN_VAL
+			= iterator->object_unit.control_ptr->modifiers
+			.modify(iterator->object_unit.object_ptr,
+					index,
+					source),
+			"object_unit_control.modifiers.modify(): fail");
+
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
+}
+
+/**
  * @brief This function will check if the at iterator operations can perform.
  *
  * @param
