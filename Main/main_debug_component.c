@@ -1,6 +1,4 @@
-#include "main_cfg.h"
-
-#if MAIN_DEBUG_COMPONENT_EN
+#include "debug_component.h"
 
 #define MAIN_DEBUG_COMPONENT_CFG_MICRO_EN						0u
 #define MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN						0u
@@ -12,7 +10,7 @@ void main_debug_assert(void);
 void main_debug_error(void);
 void main_debug_stack_back_trace(void);
 
-void main_debug_component(void)
+void main(void)
 {
 	#if MAIN_DEBUG_COMPONENT_CFG_MICRO_EN
 
@@ -284,5 +282,3 @@ void stack_back_trace_link_function_shell(stack_back_trace_link_stp link)
 }
 
 #endif // MAIN_DEBUG_COMPONENT_CFG_STACK_BACK_TRACE_EN
-
-#endif // MAIN_DEBUG_COMPONENT_EN
