@@ -1,14 +1,14 @@
 /*
-*********************************************************************************************************
-*                                               MODULE
-*
-* Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
-*               through use of the definition module present pre-processor macro definition.
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                               MODULE
+ *
+ * Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
+ *               through use of the definition module present pre-processor macro definition.
+ *********************************************************************************************************
+ */
 
-#ifndef __ITERATOR_PRIVITE_DEFINITION_H
-#define __ITERATOR_PRIVITE_DEFINITION_H
+#ifndef __CONTINUOUS_ITERATOR_H
+#define __CONTINUOUS_ITERATOR_H
 
 /*
  *********************************************************************************************************
@@ -16,7 +16,7 @@
  *********************************************************************************************************
  */
 
-#include "iterator_def.h"
+#include "access_iterator_def.h"
 
 /*
  *********************************************************************************************************
@@ -31,24 +31,21 @@
  */
 
 /**
- * @brief This type is the iterator structure
+ * @brief This type is the continuous iterator structure.
  */
 
-struct iterator_s {
-	/* @brief This variables will record the identity code of iterator type.							*/
-	enum iterator_type type_id;
+struct continuous_iterator_s {
+	void *(*advance)(struct access_iterator_s *iterator,
+					 int step);
 
-	/* @brief This variables will record the iterator common information structure.						*/
-	struct iterator_common_information_s info;
+	size_t(*distance)(struct access_iterator_s *iterator);
 
-	/* @brief This variables will record the allocator unit structure.									*/
-	struct iterator_allocator_unit_s allocator_unit;
+	void *(*next)(struct access_iterator_s *iterator);
 
-	/* @brief This variables will record the object unit structure.										*/
-	//struct iterator_object_unit_s object_unit;
+	void *(*prev)(struct access_iterator_s *iterator);
 
-	/* @brief This variables will be a external addon, validity only depends on memory allocation.		*/
-	char addon[0];
+	void *(*at)(struct access_iterator_s *iterator,
+				size_t index);
 };
 
 /*
@@ -63,10 +60,16 @@ struct iterator_s {
  *********************************************************************************************************
  */
 
+/**
+ * @brief This type is the continuous iterator structure.
+ */
+
+extern struct continuous_iterator_s continuous_iterator;
+
 /*
  *********************************************************************************************************
  *                                             MODULE END
  *********************************************************************************************************
  */
 
-#endif // !__ITERATOR_PRIVITE_DEFINITION_H
+#endif // !__CONTINUOUS_ITERATOR_H

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{c9333da3-622c-4830-b43f-5bc748bb4c1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4f89e029-e8f5-497a-b093-25b513f95ce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\demo">
+      <UniqueIdentifier>{46a73c3a-29e3-477f-8a8f-74b803741c5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\demo">
+      <UniqueIdentifier>{0a0ac903-3eaf-4fa9-a916-f190c7f17803}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\.demo\self-define library\demo_sde_lib.c">
+      <Filter>源文件\demo</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\.demo\self-define library\demo_sde_lib.h">
+      <Filter>头文件\demo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Self-Define Library\sde_lib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -74,16 +74,16 @@ struct input_iterator_control_s {
  *********************************************************************************************************
  */
 
-/**
- * @brief This function will initialize the iterator.
- *
- * @param
- *
- * @return
- */
-
-errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
-												  struct iterator_object_unit_s object_unit);
+///**
+// * @brief This function will initialize the iterator.
+// *
+// * @param
+// *
+// * @return
+// */
+//
+//errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
+//												  struct iterator_object_unit_s object_unit);
 
 /*
  *********************************************************************************************************

@@ -16,7 +16,7 @@
 
 ## 版本
 
-[English Version](https://github.com/Miao-Mico/stack/blob/master/README_en.md)
+[English Version](https://github.com/Miao-Mico/stack/blob/_multi_projects_solution/.doc/.README/README.en.md)
 
 ## 关于
 

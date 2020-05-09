@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{416c729c-0f69-411c-a593-d3720c3e2936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{7ca43e98-6a4a-490a-a3e2-5549c76352ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\demo">
+      <UniqueIdentifier>{49571763-2e92-4d5e-bbe2-72923089927f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\demo">
+      <UniqueIdentifier>{6568df06-40bc-4b72-90b2-0b75ebb99bf2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\.demo\container\demo_container.h">
+      <Filter>头文件\demo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Container\container.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\.demo\container\demo_container.c">
+      <Filter>源文件\demo</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
