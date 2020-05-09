@@ -13,5 +13,59 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\allocator">
+      <UniqueIdentifier>{dc500cd3-2b0a-4a2b-928d-9ccdafd7230d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\allocator\allocator definition">
+      <UniqueIdentifier>{65be76e2-b409-4833-be19-bb1e3b36c0cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\allocator\concept allocator">
+      <UniqueIdentifier>{80e8dee9-e6c9-45b9-8d5c-6101f0a6dffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\allocator">
+      <UniqueIdentifier>{e98a211d-f01a-4e93-87d8-4226a342f9a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\allocator\allocator definition">
+      <UniqueIdentifier>{90891472-6309-4ef8-adf7-7879eb74693f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\allocator\concept allocator">
+      <UniqueIdentifier>{55478ff8-618f-4665-a052-d1fda9dfdc91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="库文件">
+      <UniqueIdentifier>{b5c5300e-2071-4d71-8260-7f6be1491453}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\allocator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Allocator Definition\allocator_cfg.h">
+      <Filter>头文件\allocator\allocator definition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Allocator Definition\allocator_def.h">
+      <Filter>头文件\allocator\allocator definition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Allocator Definition\allocator_pte_def.h">
+      <Filter>头文件\allocator\allocator definition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Concept Allocator\concept_allocator.h">
+      <Filter>头文件\allocator\concept allocator</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Main\main_allocator.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Allocator\Allocator Definition\allocator_def.c">
+      <Filter>源文件\allocator\allocator definition</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Allocator\Concept Allocator\concept_allocator.c">
+      <Filter>源文件\allocator\concept allocator</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\debug component\$(Platform)\$(Configuration)\debug component.lib">
+      <Filter>库文件</Filter>
+    </Library>
   </ItemGroup>
 </Project>

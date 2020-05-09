@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{202EB95E-E246-4C11-9B66-9832C0BE2EC6}</ProjectGuid>
+    <ProjectGuid>{1091303C-3186-4AC8-996F-122C767315F6}</ProjectGuid>
     <RootNamespace>allocator</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -71,15 +71,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)\Debug Component;$(SolutionDir)\Debug Component\Debug Component Definition;$(SolutionDir)\Debug Component\Debug Micro;$(SolutionDir)\Debug Component\Debug Assert;$(SolutionDir)\Debug Component\Debug Error;$(SolutionDir)\Debug Component\Debug Stack Back Trace;$(SolutionDir)\Algorithm;$(SolutionDir)\Algorithm\Algorithm Definition;$(SolutionDir)\Algorithm\Sort;$(SolutionDir)\Algorithm\Compare;$(SolutionDir)\Algorithm\Search Substring;$(SolutionDir)\Algorithm\Modify Sequence;$(SolutionDir)\Allocator;$(SolutionDir)\Allocator\Allocator Definition;$(SolutionDir)\Allocator\Concept Allocator;$(SolutionDir)\Unify Structure;$(SolutionDir)\Unify Structure\Unify Struct;$(SolutionDir)\Unify Structure\Unify Adaptor;$(SolutionDir)\Iterator;$(SolutionDir)\Iterator\Access Iterator;$(SolutionDir)\Iterator\Access Iterator\Access Iterator Definition;$(SolutionDir)\Iterator\Access Iterator\Forward Iterator;$(SolutionDir)\Iterator\Access Iterator\Bidirectional Iterator;$(SolutionDir)\Iterator\Access Iterator\Random Access Iterator;$(SolutionDir)\Iterator\Iterator Definition;$(SolutionDir)\Iterator\Iterator Adaptor Definition;$(SolutionDir)\Iterator\Input Iterator;$(SolutionDir)\Iterator\Output Iterator;$(SolutionDir)\Container;$(SolutionDir)\Container\Squence container;$(SolutionDir)\Container\Container adaptors;$(SolutionDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)\Debug Component;$(SolutionDir)\Debug Component\Debug Component Definition;$(SolutionDir)\Debug Component\Debug Micro;$(SolutionDir)\Debug Component\Debug Assert;$(SolutionDir)\Debug Component\Debug Error;$(SolutionDir)\Debug Component\Debug Stack Back Trace;$(SolutionDir)\Algorithm;$(SolutionDir)\Algorithm\Algorithm Definition;$(SolutionDir)\Algorithm\Sort;$(SolutionDir)\Algorithm\Compare;$(SolutionDir)\Algorithm\Search Substring;$(SolutionDir)\Algorithm\Modify Sequence;$(SolutionDir)\Allocator;$(SolutionDir)\Allocator\Allocator Definition;$(SolutionDir)\Allocator\Concept Allocator;$(SolutionDir)\Unify Structure;$(SolutionDir)\Unify Structure\Unify Struct;$(SolutionDir)\Unify Structure\Unify Adaptor;$(SolutionDir)\Iterator;$(SolutionDir)\Iterator\Access Iterator;$(SolutionDir)\Iterator\Access Iterator\Access Iterator Definition;$(SolutionDir)\Iterator\Access Iterator\Forward Iterator;$(SolutionDir)\Iterator\Access Iterator\Bidirectional Iterator;$(SolutionDir)\Iterator\Access Iterator\Random Access Iterator;$(SolutionDir)\Iterator\Iterator Definition;$(SolutionDir)\Iterator\Iterator Adaptor Definition;$(SolutionDir)\Iterator\Input Iterator;$(SolutionDir)\Iterator\Output Iterator;$(SolutionDir)\Container;$(SolutionDir)\Container\Squence container;$(SolutionDir)\Container\Container adaptors;$(SolutionDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\Debug Component;$(SolutionDir)\Debug Component\Debug Component Definition;$(SolutionDir)\Debug Component\Debug Micro;$(SolutionDir)\Debug Component\Debug Assert;$(SolutionDir)\Debug Component\Debug Error;$(SolutionDir)\Debug Component\Debug Stack Back Trace;$(SolutionDir)\Algorithm;$(SolutionDir)\Algorithm\Algorithm Definition;$(SolutionDir)\Algorithm\Sort;$(SolutionDir)\Algorithm\Compare;$(SolutionDir)\Algorithm\Search Substring;$(SolutionDir)\Algorithm\Modify Sequence;$(SolutionDir)\Allocator;$(SolutionDir)\Allocator\Allocator Definition;$(SolutionDir)\Allocator\Concept Allocator;$(SolutionDir)\Unify Structure;$(SolutionDir)\Unify Structure\Unify Struct;$(SolutionDir)\Unify Structure\Unify Adaptor;$(SolutionDir)\Iterator;$(SolutionDir)\Iterator\Access Iterator;$(SolutionDir)\Iterator\Access Iterator\Access Iterator Definition;$(SolutionDir)\Iterator\Access Iterator\Forward Iterator;$(SolutionDir)\Iterator\Access Iterator\Bidirectional Iterator;$(SolutionDir)\Iterator\Access Iterator\Random Access Iterator;$(SolutionDir)\Iterator\Iterator Definition;$(SolutionDir)\Iterator\Iterator Adaptor Definition;$(SolutionDir)\Iterator\Input Iterator;$(SolutionDir)\Iterator\Output Iterator;$(SolutionDir)\Container;$(SolutionDir)\Container\Squence container;$(SolutionDir)\Container\Container adaptors;$(SolutionDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\Debug Component;$(SolutionDir)\Debug Component\Debug Component Definition;$(SolutionDir)\Debug Component\Debug Micro;$(SolutionDir)\Debug Component\Debug Assert;$(SolutionDir)\Debug Component\Debug Error;$(SolutionDir)\Debug Component\Debug Stack Back Trace;$(SolutionDir)\Algorithm;$(SolutionDir)\Algorithm\Algorithm Definition;$(SolutionDir)\Algorithm\Sort;$(SolutionDir)\Algorithm\Compare;$(SolutionDir)\Algorithm\Search Substring;$(SolutionDir)\Algorithm\Modify Sequence;$(SolutionDir)\Allocator;$(SolutionDir)\Allocator\Allocator Definition;$(SolutionDir)\Allocator\Concept Allocator;$(SolutionDir)\Unify Structure;$(SolutionDir)\Unify Structure\Unify Struct;$(SolutionDir)\Unify Structure\Unify Adaptor;$(SolutionDir)\Iterator;$(SolutionDir)\Iterator\Access Iterator;$(SolutionDir)\Iterator\Access Iterator\Access Iterator Definition;$(SolutionDir)\Iterator\Access Iterator\Forward Iterator;$(SolutionDir)\Iterator\Access Iterator\Bidirectional Iterator;$(SolutionDir)\Iterator\Access Iterator\Random Access Iterator;$(SolutionDir)\Iterator\Iterator Definition;$(SolutionDir)\Iterator\Iterator Adaptor Definition;$(SolutionDir)\Iterator\Input Iterator;$(SolutionDir)\Iterator\Output Iterator;$(SolutionDir)\Container;$(SolutionDir)\Container\Squence container;$(SolutionDir)\Container\Container adaptors;$(SolutionDir)\Container\Tree;$(IncludePath)</IncludePath>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -138,6 +148,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Allocator Definition\allocator_cfg.h" />
+    <ClInclude Include="..\..\Allocator Definition\allocator_def.h" />
+    <ClInclude Include="..\..\Allocator Definition\allocator_pte_def.h" />
+    <ClInclude Include="..\..\allocator.h" />
+    <ClInclude Include="..\..\Concept Allocator\concept_allocator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Main\main_allocator.c" />
+    <ClCompile Include="..\..\Allocator\Allocator Definition\allocator_def.c" />
+    <ClCompile Include="..\..\Allocator\Concept Allocator\concept_allocator.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\debug component\$(Platform)\$(Configuration)\debug component.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

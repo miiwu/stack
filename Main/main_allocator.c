@@ -1,6 +1,4 @@
-#include "main_cfg.h"
-
-#if MAIN_ALLOCATOR_EN
+#include "allocator.h"
 
 #define MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN					1u
 
@@ -26,7 +24,7 @@ struct allocator_s
 struct allocator_s
 	*block = NULL;
 
-void main_allocator(void)
+void main(void)
 {
 	printf("\r\n------------------------+ allocator demo start +------------------------\r\n");
 
@@ -41,7 +39,7 @@ void main_allocator(void)
 	block = allocator_control_ptr->allocate(allocator, 1, 1);
 	printf("allocator.allocate:block %p \r\n", block);
 
-	#if MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN
+#if MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN
 
 	struct allocator_s
 		*allocator_second = { NULL };
@@ -61,14 +59,14 @@ void main_allocator(void)
 	printf("\r\nallocator_second.destroy start \r\n");
 	allocator_control_ptr->configuration.destroy(&allocator_second);
 
-	#endif // MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN
+#endif // MAIN_ALLOCATOR_CFG_POLY_INSTANTIATION_EN
 
-	#if (!MAIN_ALLOCATOR_CFG_STACK_BACK_TRACE_EN)
+#if (!MAIN_ALLOCATOR_CFG_STACK_BACK_TRACE_EN)
 
 	printf("\r\nallocator.deallocate start \r\n");
 	allocator_control_ptr->deallocate(allocator, block);
 
-	#endif // (MAIN_ALLOCATOR_CFG_STACK_BACK_TRACE_EN)
+#endif // (MAIN_ALLOCATOR_CFG_STACK_BACK_TRACE_EN)
 
 	main_allocator_allocate(&block);
 	main_allocator_deallocate(&block);
@@ -90,5 +88,3 @@ void main_allocator_deallocate(void **block)
 {
 	allocator_control_ptr->deallocate(allocator, *block);
 }
-
-#endif // MAIN_ALLOCATOR_EN
