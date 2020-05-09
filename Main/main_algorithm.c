@@ -1,8 +1,6 @@
-#include "main_cfg.h"
+#include "algorithm.h"
 
-#if MAIN_ALGORITHM_EN
-
-void main_algorithm(void)
+void main(void)
 {
 	printf("\r\n ------------------------+ algorithm.substring_search demo start +------------------------\r\n");
 
@@ -74,5 +72,3 @@ void main_algorithm(void)
 
 	return;
 }
-
-#endif // MAIN_ALGORITHM_EN

@@ -31,9 +31,6 @@
     <Filter Include="源文件\allocator\concept allocator">
       <UniqueIdentifier>{55478ff8-618f-4665-a052-d1fda9dfdc91}</UniqueIdentifier>
     </Filter>
-    <Filter Include="库文件">
-      <UniqueIdentifier>{b5c5300e-2071-4d71-8260-7f6be1491453}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\allocator.h">
@@ -62,10 +59,5 @@
     <ClCompile Include="..\..\Allocator\Concept Allocator\concept_allocator.c">
       <Filter>源文件\allocator\concept allocator</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\debug component\$(Platform)\$(Configuration)\debug component.lib">
-      <Filter>库文件</Filter>
-    </Library>
   </ItemGroup>
 </Project>

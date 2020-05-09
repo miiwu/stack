@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\algorithm">
+      <UniqueIdentifier>{e6a061d2-0745-465d-b400-944ed6211cb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\algorithm">
+      <UniqueIdentifier>{ade347e7-5b88-4c46-9c0d-483edfadb12e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\algorithm\sort">
+      <UniqueIdentifier>{247b46af-4908-4402-b424-7f236e9514ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\algorithm\compare">
+      <UniqueIdentifier>{c179a0f2-fa57-408a-af8e-6e6499b95a65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\algorithm\search substring">
+      <UniqueIdentifier>{4353430a-f3c6-4381-a4ef-4c23a64d9e26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\algorithm\modify sequence">
+      <UniqueIdentifier>{6c2b7d85-93d0-441b-8fef-3b1af095dff9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\algorithm\compare">
+      <UniqueIdentifier>{f8b0714b-33e5-44a2-80a7-29e47eb96330}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\algorithm\modify sequence">
+      <UniqueIdentifier>{fe18b2aa-c2ee-4072-9c6b-42d5c5c73acb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\algorithm\sort">
+      <UniqueIdentifier>{beeacbda-5c99-4fe2-b722-2638a4b2982a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\algorithm\search substring">
+      <UniqueIdentifier>{3a577183-788c-4074-8ff9-75a81056a190}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\algorithm\algorithm definition">
+      <UniqueIdentifier>{7acdf74e-5419-46e8-93d1-e52373eef855}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Algorithm\Compare\compare.h">
+      <Filter>头文件\algorithm\compare</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Algorithm\Modify Sequence\modify_sequence.h">
+      <Filter>头文件\algorithm\modify sequence</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Algorithm\Search Substring\search_substring.h">
+      <Filter>头文件\algorithm\search substring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Algorithm\Sort\sort.h">
+      <Filter>头文件\algorithm\sort</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Algorithm\Algorithm Definition\algorithm_def.h">
+      <Filter>头文件\algorithm\algorithm definition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Algorithm\algorithm.h">
+      <Filter>头文件\algorithm</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Algorithm\Compare\compare.c">
+      <Filter>源文件\algorithm\compare</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Algorithm\Modify Sequence\modify_sequence.c">
+      <Filter>源文件\algorithm\modify sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Algorithm\Search Substring\search_substring.c">
+      <Filter>源文件\algorithm\search substring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Algorithm\Sort\sort.c">
+      <Filter>源文件\algorithm\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Main\main_algorithm.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
