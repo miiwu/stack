@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\unify structure">
+      <UniqueIdentifier>{6547e18d-7cb2-4d06-8cff-51200ea84bb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\unify structure">
+      <UniqueIdentifier>{0356af21-3052-4eac-a8c2-78bb02255db7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\unify structure\unify struct">
+      <UniqueIdentifier>{d3fac613-304f-4e0e-8ed9-b86f945b0924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\unify structure\unify struct">
+      <UniqueIdentifier>{123ac6e7-4de6-4ed4-94d2-66b110edf48e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\unify structure\unify adaptor">
+      <UniqueIdentifier>{c0d188b1-509b-4c98-a137-80f1a226f97a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\unify structure\unify adaptor">
+      <UniqueIdentifier>{19b4c94c-2125-4ff7-83aa-e2866f963f80}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Unify Structure\Unify Adaptor\unify_adaptor.h">
+      <Filter>头文件\unify structure\unify adaptor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Unify Structure\Unify Struct\unify_struct.h">
+      <Filter>头文件\unify structure\unify struct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Unify Structure\unify_structure.h">
+      <Filter>头文件\unify structure</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Unify Structure\Unify Adaptor\unify_adaptor.c">
+      <Filter>源文件\unify structure\unify adaptor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Unify Structure\Unify Struct\unify_struct.c">
+      <Filter>源文件\unify structure\unify struct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Main\main_unify_structure.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

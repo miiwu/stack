@@ -33,20 +33,20 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\allocator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Allocator Definition\allocator_cfg.h">
+    <ClInclude Include="..\..\Allocator\Allocator Definition\allocator_cfg.h">
       <Filter>头文件\allocator\allocator definition</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Allocator Definition\allocator_def.h">
+    <ClInclude Include="..\..\Allocator\Allocator Definition\allocator_def.h">
       <Filter>头文件\allocator\allocator definition</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Allocator Definition\allocator_pte_def.h">
+    <ClInclude Include="..\..\Allocator\Allocator Definition\allocator_pte_def.h">
       <Filter>头文件\allocator\allocator definition</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Concept Allocator\concept_allocator.h">
+    <ClInclude Include="..\..\Allocator\Concept Allocator\concept_allocator.h">
       <Filter>头文件\allocator\concept allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Allocator\allocator.h">
+      <Filter>头文件\allocator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

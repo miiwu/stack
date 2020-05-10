@@ -1,26 +1,24 @@
-#include "main_cfg.h"
+#include "unify_structure.h"
 
-#if MAIN_UNIFY_STRUCTURE_EN
-
-#define MAIN_UNIFY_STRUCTURE_STRUCT_EN									0
-#define MAIN_UNIFY_STRUCTURE_ADAPTOR_EN									1
+#define MAIN_UNIFY_STRUCTURE_STRUCT_EN									1
+#define MAIN_UNIFY_STRUCTURE_ADAPTOR_EN									0
 
 void main_unify_struct(void);
 void main_unify_adaptor(void);
 
-void main_unify_structure(void)
+void main(void)
 {
-	#if MAIN_UNIFY_STRUCTURE_STRUCT_EN
+#if MAIN_UNIFY_STRUCTURE_STRUCT_EN
 
 	main_unify_struct();
 
-	#endif // MAIN_UNIFY_STRUCTURE_STRUCT_EN
+#endif // MAIN_UNIFY_STRUCTURE_STRUCT_EN
 
-	#if MAIN_UNIFY_STRUCTURE_ADAPTOR_EN
+#if MAIN_UNIFY_STRUCTURE_ADAPTOR_EN
 
 	main_unify_adaptor();
 
-	#endif // MAIN_UNIFY_STRUCTURE_ADAPTOR_EN
+#endif // MAIN_UNIFY_STRUCTURE_ADAPTOR_EN
 
 	return;
 }
@@ -45,7 +43,7 @@ void main_unify_struct(void)
 										 sizeof(struct unify_structure_s));
 
 	printf("\r\nunify_structure.destruct start\r\n");
-	if (unify_struct_control_destruct(&unify_structure, unify_structure->allocator_unit)) {
+	if (unify_struct_control_destruct(&unify_structure, unify_structure->allocator_unit, true)) {
 		return;
 	}
 
@@ -132,5 +130,3 @@ void main_unify_adaptor_adaptee_destroy(struct unify_adaptor_adaptee_s **adaptee
 }
 
 #endif // MAIN_UNIFY_STRUCTURE_ADAPTOR_EN
-
-#endif // MAIN_UNIFY_STRUCTURE_EN

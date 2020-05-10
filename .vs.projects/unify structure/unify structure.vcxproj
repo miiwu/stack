@@ -20,32 +20,32 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{1091303C-3186-4AC8-996F-122C767315F6}</ProjectGuid>
-    <RootNamespace>allocator</RootNamespace>
+    <ProjectGuid>{A3FB6014-29A5-464F-A65A-F6805B0A2DC2}</ProjectGuid>
+    <RootNamespace>unifystructure</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -148,20 +148,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Allocator\Allocator Definition\allocator_cfg.h" />
-    <ClInclude Include="..\..\Allocator\Allocator Definition\allocator_def.h" />
-    <ClInclude Include="..\..\Allocator\Allocator Definition\allocator_pte_def.h" />
-    <ClInclude Include="..\..\Allocator\allocator.h" />
-    <ClInclude Include="..\..\Allocator\Concept Allocator\concept_allocator.h" />
+    <ClInclude Include="..\..\Unify Structure\Unify Adaptor\unify_adaptor.h" />
+    <ClInclude Include="..\..\Unify Structure\Unify Struct\unify_struct.h" />
+    <ClInclude Include="..\..\Unify Structure\unify_structure.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Main\main_allocator.c" />
-    <ClCompile Include="..\..\Allocator\Allocator Definition\allocator_def.c" />
-    <ClCompile Include="..\..\Allocator\Concept Allocator\concept_allocator.c" />
+    <ClCompile Include="..\..\Main\main_unify_structure.c" />
+    <ClCompile Include="..\..\Unify Structure\Unify Adaptor\unify_adaptor.c" />
+    <ClCompile Include="..\..\Unify Structure\Unify Struct\unify_struct.c" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\debug component\debug component.vcxproj">
-      <Project>{1dd3d27d-e8e7-4835-8c13-d26edded94e3}</Project>
+    <ProjectReference Include="..\allocator\allocator.vcxproj">
+      <Project>{1091303c-3186-4ac8-996f-122c767315f6}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
