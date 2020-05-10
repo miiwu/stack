@@ -7,8 +7,8 @@
  *********************************************************************************************************
  */
 
-#ifndef __INPUT_ITERATOR_H
-#define __INPUT_ITERATOR_H
+#ifndef __ACCESS_ITERATOR_PRIVITE_DEFINITION_H
+#define __ACCESS_ITERATOR_PRIVITE_DEFINITION_H
 
 /*
  *********************************************************************************************************
@@ -16,16 +16,13 @@
  *********************************************************************************************************
  */
 
-#include "iterator_def.h"
+#include "access_iterator_def.h"
 
 /*
  *********************************************************************************************************
  *									            DEFINES
  *********************************************************************************************************
  */
-
-/* Configure    the type of input iterator.                                                                  */
-#define INPUT_ITERATOR_CFG_ALLOCATOR_TYPE                                 CONCEPT_ALLOCATOR
 
 /*
  *********************************************************************************************************
@@ -34,41 +31,17 @@
  */
 
 /**
- * @brief This type is the input iterator typedef.
+ * @brief This type is the access iterator structure.
  */
 
-typedef struct iterator_s
-*input_iterator_stp,
-**input_iterator_stpp;
+struct access_iterator_s {
+    struct {
+        size_t position;
+    }info;
 
-/**
- * @brief This type is the input iterator control structure.
- */
+	struct access_iterator_object_unit_s object_unit;
 
-struct input_iterator_control_s {
-	struct {
-		errno_t(*init)(input_iterator_stpp iterator,
-					   struct iterator_object_unit_s object_unit);
-
-		errno_t(*destroy)(input_iterator_stpp iterator);
-	}configuration;
-
-	struct {
-		void *(*advance)(input_iterator_stp iterator,
-						 int step);
-
-		size_t(*distance)(input_iterator_stp iterator);
-
-		void *(*next)(input_iterator_stp iterator);
-	}iterator_operations;
-
-	struct {
-		size_t(*size)(input_iterator_stp iterator);
-
-		bool (*empty)(input_iterator_stp iterator);
-
-		void *(*data)(input_iterator_stp iterator);
-	}range_access;
+	struct access_iterator_feature_unit_s feature_unit;
 };
 
 /*
@@ -77,34 +50,11 @@ struct input_iterator_control_s {
  *********************************************************************************************************
  */
 
-///**
-// * @brief This function will initialize the iterator.
-// *
-// * @param
-// *
-// * @return
-// */
-//
-//errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
-//												  struct iterator_object_unit_s object_unit);
-
 /*
  *********************************************************************************************************
  *                                       EXTERN GLOBAL VARIABLES
  *********************************************************************************************************
  */
-
-/**
- * @brief This type is the input iterator control structure.
- */
-
-extern struct input_iterator_control_s input_iterator_control;
-
-/**
- * @brief This variable is the iterator control function address table.
- */
-
-extern const void *input_iterator_control_function_address_table[];
 
 /*
  *********************************************************************************************************
@@ -112,4 +62,4 @@ extern const void *input_iterator_control_function_address_table[];
  *********************************************************************************************************
  */
 
-#endif // !__INPUT_ITERATOR_H
+#endif // !__ACCESS_ITERATOR_PRIVITE_DEFINITION_H

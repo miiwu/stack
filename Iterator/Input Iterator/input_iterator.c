@@ -31,7 +31,7 @@
  */
 
 struct input_iterator_control_s input_iterator_control = {
-	.configuration.init = input_iterator_control_configuration_init,
+	//.configuration.init = input_iterator_control_configuration_init,
 	.configuration.destroy = iterator_control_configuration_destroy,
 
 	.iterator_operations.advance = iterator_control_iterator_operations_advance,
@@ -47,7 +47,7 @@ struct input_iterator_control_s input_iterator_control = {
  */
 
 const void *input_iterator_control_function_address_table[] = {
-	input_iterator_control_configuration_init,
+	//input_iterator_control_configuration_init,
 	iterator_control_configuration_destroy,
 
 	iterator_control_iterator_operations_advance,
@@ -106,10 +106,9 @@ bool input_iterator_control_feature_package_advance(int step);
  * @return
  */
 
-errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
-												  struct iterator_object_unit_s object_unit)
+errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator);
+	DEBUG_ASSERT_CONTROL_POINTER(iterator);/*
 	DEBUG_ASSERT_CONTROL_POINTER(object_unit.object_ptr);
 	DEBUG_ASSERT_CONTROL_POINTER(object_unit.control_ptr);
 
@@ -119,32 +118,17 @@ errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
 											INPUT_ITERATOR,
 											INPUT_ITERATOR_CFG_ALLOCATOR_TYPE,
 											object_unit,
-											sizeof(struct iterator_feature_package_s))) {
+											sizeof(struct access_iterator_feature_package_s))) {
 		DEBUG_ERROR_CONTROL_JUMP(1);
 	}
 
-	static struct iterator_feature_package_s *feature_package;
+	static struct access_iterator_feature_package_s *feature_package;
 
-	feature_package = (struct iterator_feature_package_s *)(*iterator)->addon;
+	feature_package = (struct access_iterator_feature_package_s *)(*iterator)->addon;
 
 	feature_package->advance = input_iterator_control_feature_package_advance;
 
-	DEBUG_ERROR_CONTROL_EXIT();
-}
+	DEBUG_ERROR_CONTROL_EXIT();*/
 
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-static inline bool input_iterator_control_feature_package_advance(int step)
-{
-	if (0 > step) {
-		return false;
-	}
-
-	return true;
+    return 0;
 }

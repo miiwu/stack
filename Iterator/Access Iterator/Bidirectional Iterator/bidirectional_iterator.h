@@ -7,8 +7,8 @@
  *********************************************************************************************************
  */
 
-#ifndef __RANDOM_ACCESS_ITERATOR_H
-#define __RANDOM_ACCESS_ITERATOR_H
+#ifndef __BIDIRECTIONAL_ITERATOR_H
+#define __BIDIRECTIONAL_ITERATOR_H
 
 /*
  *********************************************************************************************************
@@ -16,16 +16,13 @@
  *********************************************************************************************************
  */
 
-#include "iterator_def.h"
+#include "access_iterator_def.h"
 
 /*
  *********************************************************************************************************
  *									            DEFINES
  *********************************************************************************************************
  */
-
-/* Configure    the type of random access iterator.                                                     */
-#define RANDOM_ACCESS_ITERATOR_CFG_ALLOCATOR_TYPE                           CONCEPT_ALLOCATOR
 
 /*
  *********************************************************************************************************
@@ -34,50 +31,18 @@
  */
 
 /**
- * @brief This type is the iterator typedef.
+ * @brief This type is the bidirectional iterator structure.
  */
 
-typedef struct iterator_s
-*random_access_iterator_stp,
-**random_access_iterator_stpp;
+struct bidirectional_iterator_s {
+	void *(*advance)(struct access_iterator_s *iterator,
+					 int step);
 
-/**
- * @brief This type is the iterator control structure.
- */
+	size_t(*distance)(struct access_iterator_s *iterator);
 
-struct random_access_iterator_control_s {
-	struct {
-		errno_t(*init)(random_access_iterator_stpp iterator,
-					   struct iterator_object_unit_s object_unit);
+	void *(*next)(struct access_iterator_s *iterator);
 
-		errno_t(*destroy)(random_access_iterator_stpp iterator);
-	}configuration;
-
-	struct {
-		void *(*advance)(random_access_iterator_stp iterator,
-						 int step);
-
-		size_t(*distance)(random_access_iterator_stp iterator);
-
-		void *(*next)(random_access_iterator_stp iterator);
-
-		void *(*prev)(random_access_iterator_stp iterator);
-
-		void *(*at)(random_access_iterator_stp iterator,
-					size_t index);
-	}iterator_operations;
-
-	struct {
-		void *(*begin)(random_access_iterator_stp iterator);
-
-		void *(*end)(random_access_iterator_stp iterator);
-
-		size_t(*size)(random_access_iterator_stp iterator);
-
-		bool (*empty)(random_access_iterator_stp iterator);
-
-		void *(*data)(random_access_iterator_stp iterator);
-	}range_access;
+	void *(*prev)(struct access_iterator_s *iterator);
 };
 
 /*
@@ -86,17 +51,6 @@ struct random_access_iterator_control_s {
  *********************************************************************************************************
  */
 
-/**
- * @brief This function will initialize the iterator.
- *
- * @param
- *
- * @return
- */
-
-errno_t random_access_iterator_control_configuration_init(random_access_iterator_stpp iterator,
-                                                          struct iterator_object_unit_s object_unit);
-
 /*
  *********************************************************************************************************
  *                                       EXTERN GLOBAL VARIABLES
@@ -104,16 +58,10 @@ errno_t random_access_iterator_control_configuration_init(random_access_iterator
  */
 
 /**
- * @brief This type is the iterator control structure.
+ * @brief This type is the bidirectional iterator structure.
  */
 
-extern struct random_access_iterator_control_s random_access_iterator_control;
-
-/**
- * @brief This variable is the iterator control function address table.
- */
-
-extern const void *random_access_iterator_control_function_address_table[];
+extern struct bidirectional_iterator_s bidirectional_iterator;
 
 /*
  *********************************************************************************************************
@@ -121,4 +69,4 @@ extern const void *random_access_iterator_control_function_address_table[];
  *********************************************************************************************************
  */
 
-#endif // !__RANDOM_ACCESS_ITERATOR_H
+#endif // !__BIDIRECTIONAL_ITERATOR_H

@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\iterator">
+      <UniqueIdentifier>{77f4eae3-9430-4f2e-a823-02868188f9b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator">
+      <UniqueIdentifier>{19d17f61-a4ab-429b-aabc-8dc02638ac98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\access iterator">
+      <UniqueIdentifier>{ea7b7525-de0b-4178-8d21-8cd063842f12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\access iterator">
+      <UniqueIdentifier>{e10fc88f-4f08-4f77-b7dc-f77a09ebe92d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\access iterator\access iterator definition">
+      <UniqueIdentifier>{1d1816e0-64cc-4eac-808c-8f3aad13f81d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\access iterator\access iterator definition">
+      <UniqueIdentifier>{cc0ab864-885a-4c3b-bd0f-c06a1337d67d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\access iterator\forward iterator">
+      <UniqueIdentifier>{d6e8819e-a3b0-4ca0-9f5e-0cf54965f3a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\access iterator\forward iterator">
+      <UniqueIdentifier>{b13c6bab-216a-4018-8092-2584dadfef0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\access iterator\bidirectional iterator">
+      <UniqueIdentifier>{090864b1-fbaa-4df2-9874-bbb60bd42069}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\access iterator\bidirectional iterator">
+      <UniqueIdentifier>{709b9192-ef51-4072-98cb-e844cf246469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\access iterator\random access iterator">
+      <UniqueIdentifier>{7c7cca47-0f13-49e0-bec9-c2b33e057ba3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\access iterator\random access iterator">
+      <UniqueIdentifier>{b15cfb5b-de0f-4867-b866-be260d7a9f06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\iterator definition">
+      <UniqueIdentifier>{d058c53f-d933-4b27-a6f3-53f1b3d0816e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\iterator definition">
+      <UniqueIdentifier>{4eba94b8-ab39-4a69-ba53-35e093cbf5ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\input iterator">
+      <UniqueIdentifier>{9cfccdd8-f0cd-483e-a9a0-8f8bb5ffb5c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\input iterator">
+      <UniqueIdentifier>{eeb73505-2619-4caa-9564-dda01870657b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\output iterator">
+      <UniqueIdentifier>{c0a08c7e-c787-4987-9892-8724013ebf25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\output iterator">
+      <UniqueIdentifier>{410111d8-305b-42e1-9b4a-7b4ca1c35566}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\iterator\access iterator\continuous iterator">
+      <UniqueIdentifier>{7e9f80db-a74f-4c5a-aed7-0ec68e515fa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\iterator\access iterator\continuous iterator">
+      <UniqueIdentifier>{2b88390a-24b9-4da8-9d8f-1f3e76b696e6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Iterator\Iterator Definition\iterator_def.h">
+      <Filter>头文件\iterator\iterator definition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Iterator Definition\iterator_pte_def.h">
+      <Filter>头文件\iterator\iterator definition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Input Iterator\input_iterator.h">
+      <Filter>头文件\iterator\input iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Output Iterator\output_iterator.h">
+      <Filter>头文件\iterator\output iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\iterator.h">
+      <Filter>头文件\iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Access Iterator\access_iterator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Access Iterator\Access Iterator Definition\access_iterator_def.h">
+      <Filter>头文件\iterator\access iterator\access iterator definition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Access Iterator\Bidirectional Iterator\bidirectional_iterator.h">
+      <Filter>头文件\iterator\access iterator\bidirectional iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Access Iterator\Continuous Iterator\continuous_Iterator.h">
+      <Filter>头文件\iterator\access iterator\continuous iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Access Iterator\Forward Iterator\forward_iterator.h">
+      <Filter>头文件\iterator\access iterator\forward iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Access Iterator\Random Access Iterator\random_access_iterator.h">
+      <Filter>头文件\iterator\access iterator\random access iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Access Iterator\Access Iterator Definition\access_iterator_pte_def.h">
+      <Filter>头文件\iterator\access iterator\access iterator definition</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Iterator\Iterator Definition\iterator_def.c">
+      <Filter>源文件\iterator\iterator definition</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Iterator\Input Iterator\input_iterator.c">
+      <Filter>源文件\iterator\input iterator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Iterator\Output Iterator\output_iterator.c">
+      <Filter>源文件\iterator\output iterator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Main\main_iterator.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Iterator\Access Iterator\Access Iterator Definition\access_iterator_def.c">
+      <Filter>源文件\iterator\access iterator\access iterator definition</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Iterator\Access Iterator\Bidirectional Iterator\bidirectional_iterator.c">
+      <Filter>源文件\iterator\access iterator\bidirectional iterator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Iterator\Access Iterator\Forward Iterator\forward_iterator.c">
+      <Filter>源文件\iterator\access iterator\forward iterator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Iterator\Access Iterator\Continuous Iterator\continuous_Iterator.c">
+      <Filter>源文件\iterator\access iterator\continuous iterator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Iterator\Access Iterator\Random Access Iterator\random_access_iterator.c">
+      <Filter>源文件\iterator\access iterator\random access iterator</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

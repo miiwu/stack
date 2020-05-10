@@ -45,7 +45,7 @@ struct iterator_s {
 	struct allocator_unit_s allocator_unit;
 
 	/* @brief This variables will record the object unit structure.										*/
-	struct iterator_object_unit_s object_unit;
+	//struct iterator_object_unit_s object_unit;
 
 	/* @brief This variables will be a external addon, validity only depends on memory allocation.		*/
 	char addon[0];

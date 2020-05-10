@@ -16,7 +16,7 @@
  *********************************************************************************************************
  */
 
-#include "iterator_adaptor_def.h"
+#include "iterator_def.h"
 
 /*
  *********************************************************************************************************
@@ -38,7 +38,7 @@
  * @brief This type is the output iterator structure typedef.
  */
 
-typedef struct iterator_adaptor_s
+typedef struct iterator_s
 *output_iterator_stp,
 **output_iterator_stpp;
 
@@ -88,13 +88,13 @@ struct output_iterator_control_s {
  *********************************************************************************************************
  */
 
-errno_t output_iterator_control_configuration_init(output_iterator_stpp output_iterator,
-												   enum iterator_type_e iterator_type,
-												   struct iterator_object_unit_s object_unit);
-
-void *output_iterator_control_modify(output_iterator_stp output_iterator,
-									 size_t index,
-									 void *source);
+//errno_t output_iterator_control_configuration_init(output_iterator_stpp output_iterator,
+//												   enum iterator_type_e iterator_type,
+//												   struct iterator_object_unit_s object_unit);
+//
+//void *output_iterator_control_modify(output_iterator_stp output_iterator,
+//									 size_t index,
+//									 void *source);
 
 /*
  *********************************************************************************************************

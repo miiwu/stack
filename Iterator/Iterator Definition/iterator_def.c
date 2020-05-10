@@ -46,17 +46,6 @@
  *********************************************************************************************************
  */
 
-/**
- * @brief This function will check if the at iterator operations can perform.
- *
- * @param
- *
- * @return
- */
-
-bool iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
-												   size_t index);
-
 /*
  *********************************************************************************************************
  *					LOCAL GLOBAL VARIABLES & LOCAL FUNCTION PROTOTYPES INTERSECTION
@@ -92,35 +81,35 @@ struct allocator_unit_s iterator_control_inquire_allocator_unit(struct iterator_
  * @return
  */
 
-errno_t iterator_control_configuration_init(struct iterator_s **iterator,
-											enum iterator_type_e iterator_type,
-											enum allocator_type_e allocator_type,
-											struct iterator_object_unit_s object_unit,
-											size_t addon_size)
-{
-	DEBUG_ASSERT_CONTROL_POINTER(iterator);
-	DEBUG_ASSERT_CONTROL_VARIABLE(iterator_type, > , int, 0);
-	DEBUG_ASSERT_CONTROL_VARIABLE(allocator_type, > , int, 0);
-	DEBUG_ASSERT_CONTROL_POINTER(object_unit.object_ptr);
-	DEBUG_ASSERT_CONTROL_POINTER(object_unit.control_ptr);
-	DEBUG_ASSERT_CONTROL_VARIABLE(addon_size, >= , int, 0);
-
-	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
-
-	struct allocator_unit_s allocator_unit
-		= unify_struct_control_construct(iterator,                    /* Construct the iterator */
-										 allocator_type,
-										 sizeof(struct iterator_s) + addon_size);
-	DEBUG_ERROR_CONTROL_JUDGE(1);
-
-	(*iterator)->type_id = iterator_type;
-	(*iterator)->info.position = (size_t)-1;
-	(*iterator)->info.featured = (addon_size) ? true : false;
-	(*iterator)->allocator_unit = allocator_unit;
-	(*iterator)->object_unit = object_unit;
-
-	DEBUG_ERROR_CONTROL_EXIT();
-}
+//errno_t iterator_control_configuration_init(struct iterator_s **iterator,
+//											enum iterator_type_e iterator_type,
+//											enum allocator_type_e allocator_type,
+//											struct iterator_object_unit_s object_unit,
+//											size_t addon_size)
+//{
+//	DEBUG_ASSERT_CONTROL_POINTER(iterator);
+//	DEBUG_ASSERT_CONTROL_VARIABLE(iterator_type, > , int, 0);
+//	DEBUG_ASSERT_CONTROL_VARIABLE(allocator_type, > , int, 0);
+//	DEBUG_ASSERT_CONTROL_POINTER(object_unit.object_ptr);
+//	DEBUG_ASSERT_CONTROL_POINTER(object_unit.control_ptr);
+//	DEBUG_ASSERT_CONTROL_VARIABLE(addon_size, >= , int, 0);
+//
+//	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
+//
+//	struct allocator_unit_s allocator_unit
+//		= unify_struct_control_construct(iterator,                    /* Construct the iterator */
+//										 allocator_type,
+//										 sizeof(struct iterator_s) + addon_size);
+//	DEBUG_ERROR_CONTROL_JUDGE(1);
+//
+//	(*iterator)->type_id = iterator_type;
+//	(*iterator)->info.position = (size_t)-1;
+//	(*iterator)->info.featured = (addon_size) ? true : false;
+//	(*iterator)->allocator_unit = allocator_unit;
+//	(*iterator)->object_unit = object_unit;
+//
+//	DEBUG_ERROR_CONTROL_EXIT();
+//}
 
 /**
  * @brief This function will destroy the iterator.
@@ -159,17 +148,7 @@ void *iterator_control_iterator_operations_advance(struct iterator_s *iterator,
 {
 	DEBUG_ASSERT_CONTROL_POINTER(iterator);
 
-	if (iterator->info.featured) {                                                          /* Check if is featured */
-		static struct iterator_feature_package_s *feature_package;
-
-		if (!(feature_package = (struct iterator_feature_package_s *)iterator->addon)
-			->advance(step)) {
-			return NULL;
-		}
-	}
-
-	return iterator_control_iterator_operations_at(iterator,
-												   (size_t)((int)iterator->info.position + step));
+	return NULL;
 }
 
 /**
@@ -184,8 +163,7 @@ void *iterator_control_iterator_operations_next(struct iterator_s *iterator)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(iterator);
 
-	return iterator_control_iterator_operations_at(iterator,
-												   (size_t)((int)iterator->info.position + 1));
+	return NULL;
 }
 
 /**
@@ -200,8 +178,7 @@ void *iterator_control_iterator_operations_prev(struct iterator_s *iterator)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(iterator);
 
-	return iterator_control_iterator_operations_at(iterator,
-												   (size_t)((int)iterator->info.position - 1));
+	return NULL;
 }
 
 /**
@@ -217,14 +194,7 @@ void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
 {
 	DEBUG_ASSERT_CONTROL_POINTER(iterator);
 
-	if (!iterator_control_iterator_operations_at_check(iterator,
-													   index)) {
-		return NULL;
-	}
-
-	return iterator->object_unit.control_ptr->element_access
-		.at(iterator->object_unit.object_ptr,
-			iterator->info.position = index);
+	return NULL;
 }
 
 /**
@@ -239,9 +209,7 @@ void *iterator_control_range_access_begin(struct iterator_s *iterator)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(iterator);
 
-	return iterator->object_unit.control_ptr->element_access
-		.at(iterator->object_unit.object_ptr,
-			0);
+	return NULL;
 }
 
 /**
@@ -256,10 +224,7 @@ void *iterator_control_range_access_end(struct iterator_s *iterator)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(iterator);
 
-	return iterator->object_unit.control_ptr->element_access
-		.at(iterator->object_unit.object_ptr,
-			iterator->object_unit.control_ptr->capacity
-			.max_size(iterator->object_unit.object_ptr) - 1);
+	return NULL;
 }
 
 /**
@@ -274,8 +239,7 @@ size_t iterator_control_range_access_size(struct iterator_s *iterator)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(iterator);
 
-	return iterator->object_unit.control_ptr->capacity
-		.size(iterator->object_unit.object_ptr);
+	return 0;
 }
 
 /**
@@ -290,8 +254,7 @@ bool iterator_control_range_access_empty(struct iterator_s *iterator)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(iterator);
 
-	return iterator->object_unit.control_ptr->capacity
-		.empty(iterator->object_unit.object_ptr);
+	return 0;
 }
 
 /**
@@ -306,8 +269,7 @@ void *iterator_control_range_access_data(struct iterator_s *iterator)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(iterator);
 
-	return iterator->object_unit.control_ptr->element_access
-		.data(iterator->object_unit.object_ptr);
+	return NULL;
 }
 
 /**
@@ -326,43 +288,5 @@ void *iterator_control_modifiers_modify(struct iterator_s *iterator,
 	DEBUG_ASSERT_CONTROL_VARIABLE(index, >= , int, 0);
 	DEBUG_ASSERT_CONTROL_POINTER(source);
 
-	DBG_ERR(SINGLE_ERROR,
-			void *,
-			1,
-			DEBUG_ERROR_CONTROL_RETURN_VAL
-			= iterator->object_unit.control_ptr->modifiers
-			.modify(iterator->object_unit.object_ptr,
-					index,
-					source),
-			"object_unit_control.modifiers.modify(): fail");
-
-	DEBUG_ERROR_CONTROL_LOG_EXIT();
-}
-
-/**
- * @brief This function will check if the at iterator operations can perform.
- *
- * @param
- *
- * @return
- */
-
-static inline bool
-iterator_control_iterator_operations_at_check(struct iterator_s *iterator,
-											  size_t index)
-{
-	DEBUG_ASSERT_CONTROL_POINTER(iterator);
-
-	if (iterator->object_unit.control_ptr->capacity
-		.empty(iterator->object_unit.object_ptr)) {                                         /* Check if empty() */
-		return false;
-	}
-
-	if ((int)iterator->object_unit.control_ptr->capacity
-		.max_size(iterator->object_unit.object_ptr) - 1 < (int)index                        /* Check if max_size() is less than index */
-		|| (int)0 > (int)index) {                                                           /* Check if 0 is greater than index */
-		return false;
-	}
-
-	return true;
+	return NULL;
 }
