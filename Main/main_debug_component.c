@@ -12,29 +12,29 @@ void main_debug_stack_back_trace(void);
 
 void main(void)
 {
-	#if MAIN_DEBUG_COMPONENT_CFG_MICRO_EN
+#if MAIN_DEBUG_COMPONENT_CFG_MICRO_EN
 
 	main_debug_micro();
 
-	#endif // MAIN_DEBUG_COMPONENT_CFG_MICRO_EN
+#endif // MAIN_DEBUG_COMPONENT_CFG_MICRO_EN
 
-	#if MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN
+#if MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN
 
 	main_debug_assert();
 
-	#endif // MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN
+#endif // MAIN_DEBUG_COMPONENT_CFG_ASSERT_EN
 
-	#if MAIN_DEBUG_COMPONENT_CFG_ERROR_EN
+#if MAIN_DEBUG_COMPONENT_CFG_ERROR_EN
 
 	main_debug_error();
 
-	#endif // MAIN_DEBUG_COMPONENT_CFG_ERROR_EN
+#endif // MAIN_DEBUG_COMPONENT_CFG_ERROR_EN
 
-	#if MAIN_DEBUG_COMPONENT_CFG_STACK_BACK_TRACE_EN
+#if MAIN_DEBUG_COMPONENT_CFG_STACK_BACK_TRACE_EN
 
 	main_debug_stack_back_trace();
 
-	#endif // MAIN_DEBUG_COMPONENT_CFG_STACK_BACK_TRACE_EN
+#endif // MAIN_DEBUG_COMPONENT_CFG_STACK_BACK_TRACE_EN
 
 	return;
 }
@@ -207,7 +207,7 @@ void main_debug_stack_back_trace(void)
 
 	printf("\r\n ------------------------+ debug component demo start +------------------------\r\n");
 
-	#if (MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_EN)
+#if (MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_EN)
 
 	back_trace_hash_t hash = 0;
 
@@ -233,9 +233,9 @@ void main_debug_stack_back_trace(void)
 	printf("\r\ndebug component.stack back trace.destroy start\r\n");
 	debug_capture_stack_back_trace_destroy(&capture_stack_back_trace);
 
-	#endif // (MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_EN)
+#endif // (MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_EN)
 
-	#if (MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_LINK_EN)
+#if (MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_LINK_EN)
 
 	printf("\r\ndebug component.stack back trace link.init start\r\n");
 	debug_capture_stack_back_trace_link_init(&link, 2);
@@ -260,7 +260,7 @@ void main_debug_stack_back_trace(void)
 	printf("\r\ndebug component.stack back trace link.destroy start\r\n");
 	debug_capture_stack_back_trace_link_destroy(&link);
 
-	#endif // (MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_EN)
+#endif // (MAIN_DEBUG_COMPONENT_CFG_BACK_TRACE_EN)
 
 	printf("\r\n ------------------------+ debug component demo end +------------------------\r\n");
 

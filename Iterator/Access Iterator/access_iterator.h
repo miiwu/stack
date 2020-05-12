@@ -7,8 +7,8 @@
  *********************************************************************************************************
  */
 
-#ifndef __ITERATOR_DEFINITION_H
-#define __ITERATOR_DEFINITION_H
+#ifndef __ACCESS_ITERATOR_H
+#define __ACCESS_ITERATOR_H
 
 /*
  *********************************************************************************************************
@@ -16,7 +16,13 @@
  *********************************************************************************************************
  */
 
-#include "iterator_def.h"
+#include "forward_iterator.h"
+
+#include "bidirectional_iterator.h"
+
+#include "random_access_iterator.h"
+
+#include "continuous_iterator.h"
 
 /*
  *********************************************************************************************************
@@ -36,108 +42,6 @@
  *********************************************************************************************************
  */
 
-/**
- * @brief This function will destroy the iterator.
- *
- * @param
- *
- * @return
- */
-
-errno_t access_iterator_control_configuration_destroy(struct iterator_s **iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *access_iterator_control_iterator_operations_advance(struct iterator_s *iterator,
-												   int step);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *access_iterator_control_iterator_operations_next(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *access_iterator_control_iterator_operations_prev(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *access_iterator_control_iterator_operations_at(struct iterator_s *iterator,
-											  size_t index);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *access_iterator_control_range_access_begin(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *access_iterator_control_range_access_end(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-size_t access_iterator_control_range_access_size(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-bool access_iterator_control_range_access_empty(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *access_iterator_control_range_access_data(struct iterator_s *iterator);
-
 /*
  *********************************************************************************************************
  *                                       EXTERN GLOBAL VARIABLES
@@ -150,4 +54,4 @@ void *access_iterator_control_range_access_data(struct iterator_s *iterator);
  *********************************************************************************************************
  */
 
-#endif // !__ITERATOR_DEFINITION_H
+#endif // !__ACCESS_ITERATOR_H

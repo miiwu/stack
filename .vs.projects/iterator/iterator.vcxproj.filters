@@ -90,17 +90,11 @@
     <ClInclude Include="..\..\Iterator\iterator.h">
       <Filter>头文件\iterator</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Iterator\Access Iterator\access_iterator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Iterator\Access Iterator\Access Iterator Definition\access_iterator_def.h">
       <Filter>头文件\iterator\access iterator\access iterator definition</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Iterator\Access Iterator\Bidirectional Iterator\bidirectional_iterator.h">
       <Filter>头文件\iterator\access iterator\bidirectional iterator</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Iterator\Access Iterator\Continuous Iterator\continuous_Iterator.h">
-      <Filter>头文件\iterator\access iterator\continuous iterator</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Iterator\Access Iterator\Forward Iterator\forward_iterator.h">
       <Filter>头文件\iterator\access iterator\forward iterator</Filter>
@@ -110,6 +104,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Iterator\Access Iterator\Access Iterator Definition\access_iterator_pte_def.h">
       <Filter>头文件\iterator\access iterator\access iterator definition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Access Iterator\Continuous Iterator\continuous_iterator.h">
+      <Filter>头文件\iterator\access iterator\continuous iterator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Iterator\Access Iterator\access_iterator.h">
+      <Filter>头文件\iterator\access iterator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -134,11 +134,11 @@
     <ClCompile Include="..\..\Iterator\Access Iterator\Forward Iterator\forward_iterator.c">
       <Filter>源文件\iterator\access iterator\forward iterator</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Iterator\Access Iterator\Continuous Iterator\continuous_Iterator.c">
-      <Filter>源文件\iterator\access iterator\continuous iterator</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Iterator\Access Iterator\Random Access Iterator\random_access_iterator.c">
       <Filter>源文件\iterator\access iterator\random access iterator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Iterator\Access Iterator\Continuous Iterator\continuous_iterator.c">
+      <Filter>源文件\iterator\access iterator\continuous iterator</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

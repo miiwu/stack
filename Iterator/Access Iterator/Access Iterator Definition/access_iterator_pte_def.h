@@ -40,8 +40,6 @@ struct access_iterator_s {
     }info;
 
 	struct access_iterator_object_unit_s object_unit;
-
-	struct access_iterator_feature_unit_s feature_unit;
 };
 
 /*

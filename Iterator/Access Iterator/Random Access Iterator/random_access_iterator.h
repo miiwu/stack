@@ -35,17 +35,19 @@
  */
 
 struct random_access_iterator_s {
-	void *(*advance)(struct access_iterator_s *iterator,
-					 int step);
+	struct access_iterator_advance_unit_s advance;
 
-	size_t(*distance)(struct access_iterator_s *iterator);
+	struct access_iterator_access_unit_s distance;
 
-	void *(*next)(struct access_iterator_s *iterator);
+	struct access_iterator_access_unit_s next;
 
-	void *(*prev)(struct access_iterator_s *iterator);
+	struct access_iterator_access_unit_s prev;
 
-	void *(*at)(struct access_iterator_s *iterator,
-				size_t index);
+	struct access_iterator_access_unit_s at;
+
+	struct access_iterator_access_unit_s front;
+
+	struct access_iterator_access_unit_s back;
 };
 
 /*

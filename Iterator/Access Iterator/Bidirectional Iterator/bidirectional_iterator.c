@@ -41,10 +41,17 @@
  */
 
 struct bidirectional_iterator_s bidirectional_iterator = {
-	.advance = access_iterator_control_iterator_operations_advance,
-	.distance = access_iterator_control_iterator_operations_distance,
-	.next = access_iterator_control_iterator_operations_next,
-	.prev = access_iterator_control_iterator_operations_prev,
+	.advance.access_unit.function_ptr = access_iterator_control_iterator_operations_advance,
+
+	.distance.function_ptr = access_iterator_control_iterator_operations_distance,
+
+	.next.function_ptr = access_iterator_control_iterator_operations_next,
+
+	.prev.function_ptr = access_iterator_control_iterator_operations_prev,
+
+	.front.function_ptr = access_iterator_control_iterator_operations_front,
+
+	.back.function_ptr = access_iterator_control_iterator_operations_back,
 };
 
 /*

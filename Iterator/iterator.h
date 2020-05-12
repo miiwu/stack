@@ -16,6 +16,8 @@
 *********************************************************************************************************
 */
 
+#include "access_iterator.h"
+
 #include "input_iterator.h"
 
 #include "random_access_iterator.h"

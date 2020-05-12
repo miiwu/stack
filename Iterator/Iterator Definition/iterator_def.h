@@ -37,15 +37,8 @@
  */
 
 enum iterator_type_e {
-	INPUT_ITERATOR = 1,
-	FORWARD_ITERATOR,
-	BIDIRECTIONAL_ITERATOR,
-	RANDOM_ACCESS_ITERATOR,
-};
-
-enum iterator_adaptor_type_e {
-	OUTPUT_ITERATOR = 0x10,
-	CONTIGUOUS_ITERATOR = 0x20,
+	INPUT_ITERATOR = 0x10,
+    OUTPUT_ITERATOR = 0x20,
 };
 
 /**
