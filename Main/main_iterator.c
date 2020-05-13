@@ -2,8 +2,7 @@
 
 #define MAIN_ITERATOR_CFG_ACCESS_ITERATOR_EN							1
 #define MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN								0
-#define MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN						0
-#define MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN							0
+#define MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN							1
 
 void main_access_iterator(void);
 void main_input_iterator(void);
@@ -24,12 +23,6 @@ void main(void)
 	main_input_iterator();
 
 #endif // #define MAIN_ITERATOR_CFG_INPUT_ITERATOR_EN
-
-#if MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN
-
-	main_random_access_iterator();
-
-#endif // MAIN_ITERATOR_CFG_RANDOM_ACCESS_ITERATOR_EN
 
 #if MAIN_ITERATOR_CFG_OUTPUT_ITERATOR_EN
 
@@ -75,6 +68,9 @@ struct access_iterator_object_unit_s
 };
 
 char *element = NULL;
+
+struct access_iterator_s *begin_iterator = NULL;
+struct access_iterator_s *end_iterator = NULL;
 
 #if MAIN_ITERATOR_CFG_ACCESS_ITERATOR_EN
 
@@ -134,26 +130,26 @@ void main_forward_iterator(void)
 {
 	printf("\r\n------------------------+ forward iterator demo start +------------------------\r\n");
 
-	printf("\r\nforward_iterator.iterator_operations.advance start \r\n");
-	printf("forward_iterator.iterator_operations.advance:%p \r\n",
-		   access_iterator_control.iterator_operations.advance(access_iterator,
-															   forward_iterator.advance,
-															   0));
+	printf("\r\nforward_iterator.element_access.advance start \r\n");
+	printf("forward_iterator.element_access.advance:%p \r\n",
+		   access_iterator_control.element_access.advance(access_iterator,
+														  forward_iterator.advance,
+														  0));
 
-	printf("\r\nforward_iterator.iterator_operations.distance start \r\n");
-	printf("forward_iterator.iterator_operations.distance:%d \r\n",
-		   access_iterator_control.iterator_operations.distance(access_iterator,
-																access_iterator_another));
+	printf("\r\nforward_iterator.element_access.distance start \r\n");
+	printf("forward_iterator.element_access.distance:%d \r\n",
+		   access_iterator_control.element_access.distance(access_iterator,
+														   access_iterator_another));
 
-	printf("\r\nforward_iterator.iterator_operations.front start \r\n");
-	printf("forward_iterator.iterator_operations.front:%p \r\n",
-		   access_iterator_control.iterator_operations.front(access_iterator,
-															 forward_iterator.front));
+	printf("\r\nforward_iterator.element_access.front start \r\n");
+	printf("forward_iterator.element_access.front:%p \r\n",
+		   access_iterator_control.element_access.front(access_iterator,
+														forward_iterator.front));
 
-	printf("\r\nforward_iterator.iterator_operations.back start \r\n");
-	printf("forward_iterator.iterator_operations.back:%p \r\n",
-		   access_iterator_control.iterator_operations.back(access_iterator,
-															forward_iterator.back));
+	printf("\r\nforward_iterator.element_access.back start \r\n");
+	printf("forward_iterator.element_access.back:%p \r\n",
+		   access_iterator_control.element_access.back(access_iterator,
+													   forward_iterator.back));
 
 	printf("\r\nforward_iterator.range_access.empty start \r\n");
 	printf("forward_iterator.range_access.empty:%d \r\n",
@@ -200,11 +196,11 @@ void main_continuous_iterator(void)
 {
 	printf("\r\n------------------------+ continuous iterator demo start +------------------------\r\n");
 
-	printf("\r\ncontinuous_iterator.iterator_operations.advance start \r\n");
-	printf("continuous_iterator.iterator_operations.advance:%p \r\n",
-		   access_iterator_control.iterator_operations.advance(access_iterator,
-															   continuous_iterator.advance,
-															   0));
+	printf("\r\ncontinuous_iterator.element_access.advance start \r\n");
+	printf("continuous_iterator.element_access.advance:%p \r\n",
+		   access_iterator_control.element_access.advance(access_iterator,
+														  continuous_iterator.advance,
+														  0));
 
 	printf("\r\n------------------------+ continuous iterator demo end +------------------------\r\n");
 
@@ -220,13 +216,13 @@ errno_t main_access_iterator_construct(void)
 	unify_struct_control_construct(&access_iterator,
 								   CONCEPT_ALLOCATOR,
 								   100);
-	access_iterator->object_unit = access_iterator_object_unit;
+	access_iterator->object_unit_ptr = &access_iterator_object_unit;
 
 	unify_struct_control_construct(&access_iterator_another,
 								   CONCEPT_ALLOCATOR,
 								   100);
-	access_iterator_another->object_unit = access_iterator_object_unit;
-	access_iterator_another->info.position = 24;
+	access_iterator_another->object_unit_ptr = &access_iterator_object_unit;
+	access_iterator_another->privite.position = 24;
 
 	return DEBUG_ERROR_CONTROL_ERROR();
 }
@@ -246,9 +242,9 @@ void main_input_iterator(void)
 		return;
 	}
 
-	printf("\r\ninput_iterator.iterator_operations.advance start\r\n");
-	element = input_iterator_control.iterator_operations.advance(input_iterator, -2);
-	printf("input_iterator.iterator_operations.advance:\"%c\" \r\n"
+	printf("\r\ninput_iterator.element_access.advance start\r\n");
+	element = input_iterator_control.element_access.advance(input_iterator, -2);
+	printf("input_iterator.element_access.advance:\"%c\" \r\n"
 		   , (NULL == element) ? '?' : *element);
 
 	printf("\r\ninput_iterator.iterator_operations.next start\r\n");
@@ -286,38 +282,25 @@ void main_output_iterator(void)
 	printf("\r\n ------------------------+ output_iterator demo start +------------------------\r\n");
 
 	printf("\r\noutput_iterator.configuration.init start\r\n");
-	if (output_iterator_control.configuration.init(&output_iterator, 0, object_unit)) {
-		return;
-	}
+	output_iterator_control.configuration.init(&output_iterator, access_iterator_object_unit);
 
-	printf("\r\noutput_iterator.configuration.adapt_exist start\r\n");
-	input_iterator_control.configuration.init(&input_iterator, object_unit);
-	output_iterator_control.configuration.adapt_exist(&output_iterator, input_iterator);
+	printf("\r\noutput_iterator.iterator_operations.begin start\r\n");
+	begin_iterator = output_iterator_control.iterator_operations.begin(output_iterator);
 
-	printf("\r\noutput_iterator.iterator_operation.advance start\r\n");
-	element = output_iterator_control.iterator_operations.advance(output_iterator, 2);
-	printf("output_iterator.iterator_operations.advance:\"%c\" \r\n"
-		   , (NULL == element) ? '?' : *element);
+	printf("\r\noutput_iterator.access start\r\n");
+	printf("output_iterator.access:\"%s\"\r\n",
+		   (char *)output_iterator_control.access(begin_iterator, random_access_iterator.at, 0));
 
 	printf("\r\noutput_iterator.modify start\r\n");
-	element = output_iterator_control.modify(output_iterator, 1, "*");
-	element = output_iterator_control.iterator_operations.advance(output_iterator, 0);
-	printf("output_iterator.iterator_operations.advance:\"%c\" \r\n"
-		   , (NULL == element) ? '?' : *element);
+	printf("output_iterator.modify:\"%s\"\r\n",
+		   (char *)output_iterator_control.modify(begin_iterator, "*", random_access_iterator.at, 1));
 
-	printf("\r\noutput_iterator.range_access.size start\r\n");
-	element = (char *)output_iterator_control.range_access.size(output_iterator);
-	printf("output_iterator.range_access.size:%d \r\n"
-		   , (NULL == element) ? '?' : (size_t)element);
-
-	printf("\r\noutput_iterator.range_access.data start\r\n");
-	element = output_iterator_control.range_access.data(output_iterator);
-	printf("output_iterator.range_access.data:\"%s\" \r\n"
-		   , element);
+	printf("\r\noutput_iterator.iterator_operations.dereferance start\r\n");
+	output_iterator_control.iterator_operations.dereferance(output_iterator,
+														   &begin_iterator);
 
 	printf("\r\noutput_iterator.configuration.destroy start\r\n");
 	output_iterator_control.configuration.destroy(&output_iterator);
-	input_iterator_control.configuration.destroy(&input_iterator);
 
 	printf("\r\n ------------------------+ output_iterator demo end +------------------------ \r\n");
 
@@ -354,7 +337,7 @@ size_t string_capacity_size(char string[])
 
 size_t string_capacity_element_size(char string[])
 {
-	return sizeof('t');
+	return sizeof(char);
 }
 
 void *string_modifiers_modify(char string[],

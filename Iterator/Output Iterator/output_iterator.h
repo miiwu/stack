@@ -24,7 +24,7 @@
  *********************************************************************************************************
  */
 
-/* Configure    the type of output iterator.                                                            */
+/* Configure    the allocator type of the output iterator.                                              */
 #define OUTPUT_ITERATOR_CFG_ALLOCATOR_TYPE                                                              \
     CONCEPT_ALLOCATOR
 
@@ -47,39 +47,16 @@ typedef struct iterator_s
  */
 
 struct output_iterator_control_s {
-	struct {
-		errno_t(*init)(output_iterator_stpp output_iterator,
-					   enum iterator_type_e iterator_type,
-					   struct iterator_object_unit_s object_unit);
+	struct iterator_control_s;
 
-		errno_t(*destroy)(output_iterator_stpp iterator_adaptor);
+	void *(*access)(struct access_iterator_s *access_iterator,
+					struct access_iterator_access_unit_s access_unit,
+					...);
 
-		errno_t(*readapt)(output_iterator_stpp iterator_adaptor,
-						  enum iterator_type_e iterator_type,
-						  struct iterator_object_unit_s object_unit);
-
-		errno_t(*adapt_exist)(output_iterator_stpp iterator_adaptor,
-							  struct iterator_s *iterator);
-	}configuration;
-
-	struct {
-		void *(*advance)(output_iterator_stp output_iterator,
-						 int step);
-
-		size_t(*distance)(output_iterator_stp output_iterator);
-	}iterator_operations;
-
-	struct {
-		size_t(*size)(output_iterator_stp output_iterator);
-
-		bool (*empty)(output_iterator_stp output_iterator);
-
-		void *(*data)(output_iterator_stp output_iterator);
-	}range_access;
-
-	void *(*modify)(output_iterator_stp output_iterator,
-					size_t index,
-					void *source);
+	void *(*modify)(struct access_iterator_s *access_iterator,
+					void *source,
+					struct access_iterator_access_unit_s access_unit,
+					...);
 };
 
 /*
@@ -88,13 +65,8 @@ struct output_iterator_control_s {
  *********************************************************************************************************
  */
 
-//errno_t output_iterator_control_configuration_init(output_iterator_stpp output_iterator,
-//												   enum iterator_type_e iterator_type,
-//												   struct iterator_object_unit_s object_unit);
-//
-//void *output_iterator_control_modify(output_iterator_stp output_iterator,
-//									 size_t index,
-//									 void *source);
+errno_t output_iterator_control_configuration_init(output_iterator_stpp output_iterator,
+												   struct access_iterator_object_unit_s object_unit);
 
 /*
  *********************************************************************************************************

@@ -107,7 +107,8 @@ struct access_iterator_object_unit_s {
  */
 
 struct access_iterator_access_unit_s {
-	void *function_ptr;
+	void *(*function_ptr)(struct access_iterator_s *access_iterator,
+						  ...);
 
 	void *(*extension_ptr)(struct access_iterator_s *access_iterator,
 						   size_t index);
@@ -136,12 +137,18 @@ struct access_iterator_control_s {
 		int(*distance)(struct access_iterator_s *lhs,
 					   struct access_iterator_s *rhs);
 
+		void *(*next)(struct access_iterator_s *access_iterator,
+					  struct access_iterator_access_unit_s access_unit);
+
+		void *(*prev)(struct access_iterator_s *access_iterator,
+					  struct access_iterator_access_unit_s access_unit);
+
 		void *(*front)(struct access_iterator_s *access_iterator,
 					   struct access_iterator_access_unit_s access_unit);
 
 		void *(*back)(struct access_iterator_s *access_iterator,
 					  struct access_iterator_access_unit_s access_unit);
-	}iterator_operations;
+	}element_access;
 
 	struct {
 		size_t(*size)(struct access_iterator_s *access_iterator);
@@ -151,6 +158,8 @@ struct access_iterator_control_s {
 		void *(*data)(struct access_iterator_s *access_iterator);
 
 		size_t(*max_size)(struct access_iterator_s *access_iterator);
+
+		size_t(*element_size)(struct access_iterator_s *access_iterator);
 	}range_access;
 
 	void *(*modify)(struct access_iterator_s *access_iterator,
@@ -172,9 +181,9 @@ struct access_iterator_control_s {
  */
 
 void
-*access_iterator_control_iterator_operations_advance(struct access_iterator_s *access_iterator,
-													 struct access_iterator_advance_unit_s advance_unit,
-													 int step);
+*access_iterator_control_element_access_advance(struct access_iterator_s *access_iterator,
+												struct access_iterator_advance_unit_s advance_unit,
+												int step);
 
 /**
  * @brief This function will.
@@ -185,8 +194,8 @@ void
  */
 
 int
-access_iterator_control_iterator_operations_distance(struct access_iterator_s *lhs,
-													 struct access_iterator_s *rhs);
+access_iterator_control_element_access_distance(struct access_iterator_s *lhs,
+												struct access_iterator_s *rhs);
 
 /**
  * @brief This function will.
@@ -197,8 +206,8 @@ access_iterator_control_iterator_operations_distance(struct access_iterator_s *l
  */
 
 void
-*access_iterator_control_iterator_operations_next(struct access_iterator_s *access_iterator,
-												  struct access_iterator_access_unit_s access_unit);
+*access_iterator_control_element_access_next(struct access_iterator_s *access_iterator,
+											 struct access_iterator_access_unit_s access_unit);
 
 /**
  * @brief This function will.
@@ -209,8 +218,8 @@ void
  */
 
 void
-*access_iterator_control_iterator_operations_prev(struct access_iterator_s *access_iterator,
-												  struct access_iterator_access_unit_s access_unit);
+*access_iterator_control_element_access_prev(struct access_iterator_s *access_iterator,
+											 struct access_iterator_access_unit_s access_unit);
 
 /**
  * @brief This function will.
@@ -234,8 +243,8 @@ void
  */
 
 void
-*access_iterator_control_iterator_operations_front(struct access_iterator_s *access_iterator,
-												   struct access_iterator_access_unit_s access_unit);
+*access_iterator_control_element_access_front(struct access_iterator_s *access_iterator,
+											  struct access_iterator_access_unit_s access_unit);
 
 /**
  * @brief This function will.
@@ -246,8 +255,8 @@ void
  */
 
 void
-*access_iterator_control_iterator_operations_back(struct access_iterator_s *access_iterator,
-												  struct access_iterator_access_unit_s access_unit);
+*access_iterator_control_element_access_back(struct access_iterator_s *access_iterator,
+											 struct access_iterator_access_unit_s access_unit);
 
 /**
  * @brief This function will.
@@ -268,6 +277,16 @@ size_t access_iterator_control_range_access_size(struct access_iterator_s *acces
  */
 
 size_t access_iterator_control_range_access_max_size(struct access_iterator_s *access_iterator);
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+size_t access_iterator_control_range_access_element_size(struct access_iterator_s *access_iterator);
 
 /**
  * @brief This function will.

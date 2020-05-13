@@ -41,19 +41,19 @@
  */
 
 struct random_access_iterator_s random_access_iterator = {
-	.advance.access_unit.function_ptr = access_iterator_control_iterator_operations_advance,
+	.advance.access_unit.function_ptr = (void *)access_iterator_control_element_access_advance,
 
-	.distance.function_ptr = access_iterator_control_iterator_operations_distance,
+	.distance.function_ptr = (void *)access_iterator_control_element_access_distance,
 
-	.next.function_ptr = access_iterator_control_iterator_operations_next,
+	.next.function_ptr = (void *)access_iterator_control_element_access_next,
 
-	.prev.function_ptr = access_iterator_control_iterator_operations_prev,
+	.prev.function_ptr = (void *)access_iterator_control_element_access_prev,
 
-	.at.function_ptr = access_iterator_control_iterator_operations_at,
+	.at.function_ptr = (void *)access_iterator_control_iterator_operations_at,
 
-	.front.function_ptr = access_iterator_control_iterator_operations_front,
+	.front.function_ptr = (void *)access_iterator_control_element_access_front,
 
-	.back.function_ptr = access_iterator_control_iterator_operations_back,
+	.back.function_ptr = (void *)access_iterator_control_element_access_back,
 };
 
 /*

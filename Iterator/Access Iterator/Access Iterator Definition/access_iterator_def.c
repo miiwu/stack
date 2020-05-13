@@ -43,15 +43,18 @@
  */
 
 struct access_iterator_control_s access_iterator_control = {
-	.iterator_operations.advance = access_iterator_control_iterator_operations_advance,
-	.iterator_operations.distance = access_iterator_control_iterator_operations_distance,
-	.iterator_operations.front = access_iterator_control_iterator_operations_front,
-	.iterator_operations.back = access_iterator_control_iterator_operations_back,
+	.element_access.advance = access_iterator_control_element_access_advance,
+	.element_access.distance = access_iterator_control_element_access_distance,
+	.element_access.next = access_iterator_control_element_access_next,
+	.element_access.prev = access_iterator_control_element_access_prev,
+	.element_access.front = access_iterator_control_element_access_front,
+	.element_access.back = access_iterator_control_element_access_back,
 
 	.range_access.empty = access_iterator_control_range_access_empty,
 	.range_access.size = access_iterator_control_range_access_size,
 	.range_access.data = access_iterator_control_range_access_data,
 	.range_access.max_size = access_iterator_control_range_access_max_size,
+	.range_access.element_size = access_iterator_control_range_access_element_size,
 };
 
 /*
@@ -92,8 +95,8 @@ access_iterator_control_iterator_operations_valid_object_unit(struct access_iter
  */
 
 bool
-access_iterator_control_iterator_operations_distance_same_object_unit(struct access_iterator_s *lhs,
-																	  struct access_iterator_s *rhs);
+access_iterator_control_element_access_distance_same_object_unit(struct access_iterator_s *lhs,
+																 struct access_iterator_s *rhs);
 
 /**
  * @brief This function will check if the object unit for the range access is valid.
@@ -126,9 +129,9 @@ access_iterator_control_range_access_valid_object_unit(struct access_iterator_s 
  * @return
  */
 
-void *access_iterator_control_iterator_operations_advance(struct access_iterator_s *access_iterator,
-														  struct access_iterator_advance_unit_s advance_unit,
-														  int step)
+void *access_iterator_control_element_access_advance(struct access_iterator_s *access_iterator,
+													 struct access_iterator_advance_unit_s advance_unit,
+													 int step)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(access_iterator);
 
@@ -141,7 +144,7 @@ void *access_iterator_control_iterator_operations_advance(struct access_iterator
 		}
 	}
 
-	size_t index = ((int)access_iterator->info.position + step);
+	size_t index = ((int)access_iterator->privite.position + step);
 
 	if (0 < index) {
 		index = 0;
@@ -163,8 +166,8 @@ void *access_iterator_control_iterator_operations_advance(struct access_iterator
  * @return
  */
 
-int access_iterator_control_iterator_operations_distance(struct access_iterator_s *lhs,
-														 struct access_iterator_s *rhs)
+int access_iterator_control_element_access_distance(struct access_iterator_s *lhs,
+													struct access_iterator_s *rhs)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(lhs);
 	DEBUG_ASSERT_CONTROL_POINTER(rhs);
@@ -172,10 +175,10 @@ int access_iterator_control_iterator_operations_distance(struct access_iterator_
 	DBG_ERR(SINGLE_ERROR,
 			int,
 			1,
-			access_iterator_control_iterator_operations_distance_same_object_unit(lhs, rhs),
+			access_iterator_control_element_access_distance_same_object_unit(lhs, rhs),
 			"_same_object_unit(): fail");
 
-	DEBUG_ERROR_CONTROL_RETURN_VAL = lhs->info.position - rhs->info.position;
+	DEBUG_ERROR_CONTROL_RETURN_VAL = lhs->privite.position - rhs->privite.position;
 	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
 
@@ -187,12 +190,12 @@ int access_iterator_control_iterator_operations_distance(struct access_iterator_
  * @return
  */
 
-void *access_iterator_control_iterator_operations_next(struct access_iterator_s *access_iterator,
-													   struct access_iterator_access_unit_s access_unit)
+void *access_iterator_control_element_access_next(struct access_iterator_s *access_iterator,
+												  struct access_iterator_access_unit_s access_unit)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(access_iterator);
 
-	size_t index = ((int)access_iterator->info.position + 1);
+	size_t index = ((int)access_iterator->privite.position + 1);
 
 	DBG_ERR(SINGLE_ERROR,
 			void *,
@@ -214,12 +217,12 @@ void *access_iterator_control_iterator_operations_next(struct access_iterator_s 
  * @return
  */
 
-void *access_iterator_control_iterator_operations_prev(struct access_iterator_s *access_iterator,
-													   struct access_iterator_access_unit_s access_unit)
+void *access_iterator_control_element_access_prev(struct access_iterator_s *access_iterator,
+												  struct access_iterator_access_unit_s access_unit)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(access_iterator);
 
-	size_t index = ((int)access_iterator->info.position - 1);
+	size_t index = ((int)access_iterator->privite.position - 1);
 
 	DBG_ERR(SINGLE_ERROR,
 			void *,
@@ -258,16 +261,16 @@ void *access_iterator_control_iterator_operations_at(struct access_iterator_s *a
 		DEBUG_ERROR_CONTROL_JUDGE(2, "_valid_object_unit(): object unit is not valid");
 	}
 
-	access_iterator->info.position = index;
+	access_iterator->privite.position = index;
 
 	if (NULL != access_unit.extension_ptr) {
 		DEBUG_ERROR_CONTROL_RETURN_VAL = access_unit
 			.extension_ptr(access_iterator,
-						   access_iterator->info.position);
+						   access_iterator->privite.position);
 	} else {
-		DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit.control_ptr->element_access
-			.at(access_iterator->object_unit.object_ptr,
-				access_iterator->info.position);
+		DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit_ptr->control_ptr->element_access
+			.at(access_iterator->object_unit_ptr->object_ptr,
+				access_iterator->privite.position);
 	}
 	DEBUG_ERROR_CONTROL_JUDGE(3, "access the element address fail");
 
@@ -282,8 +285,8 @@ void *access_iterator_control_iterator_operations_at(struct access_iterator_s *a
  * @return
  */
 
-void *access_iterator_control_iterator_operations_front(struct access_iterator_s *access_iterator,
-														struct access_iterator_access_unit_s access_unit)
+void *access_iterator_control_element_access_front(struct access_iterator_s *access_iterator,
+												   struct access_iterator_access_unit_s access_unit)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(access_iterator);
 
@@ -307,13 +310,13 @@ void *access_iterator_control_iterator_operations_front(struct access_iterator_s
  * @return
  */
 
-void *access_iterator_control_iterator_operations_back(struct access_iterator_s *access_iterator,
-													   struct access_iterator_access_unit_s access_unit)
+void *access_iterator_control_element_access_back(struct access_iterator_s *access_iterator,
+												  struct access_iterator_access_unit_s access_unit)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(access_iterator);
 
-	size_t index = access_iterator->object_unit.control_ptr->capacity
-		.max_size(access_iterator->object_unit.object_ptr) - 1;
+	size_t index = access_iterator->object_unit_ptr->control_ptr->capacity
+		.max_size(access_iterator->object_unit_ptr->object_ptr) - 1;
 
 	DBG_ERR(SINGLE_ERROR,
 			void *,
@@ -345,9 +348,9 @@ size_t access_iterator_control_range_access_size(struct access_iterator_s *acces
 		DEBUG_ERROR_CONTROL_JUMP(1, "_valid_object_unit(): invalid object unit");
 	}
 
-	DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit.control_ptr->capacity
-		.size(access_iterator->object_unit.object_ptr);
-	DEBUG_ERROR_CONTROL_JUDGE(2, "object_unit.control_ptr->capacity.size(): fail");
+	DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit_ptr->control_ptr->capacity
+		.size(access_iterator->object_unit_ptr->object_ptr);
+	DEBUG_ERROR_CONTROL_JUDGE(2, "object_unit_ptr->control_ptr->capacity.size(): fail");
 
 	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
@@ -370,9 +373,34 @@ size_t access_iterator_control_range_access_max_size(struct access_iterator_s *a
 		DEBUG_ERROR_CONTROL_JUMP(1, "_valid_object_unit(): invalid object unit");
 	}
 
-	DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit.control_ptr->capacity
-		.max_size(access_iterator->object_unit.object_ptr);
-	DEBUG_ERROR_CONTROL_JUDGE(2, "object_unit.control_ptr->capacity.max_size(): fail");
+	DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit_ptr->control_ptr->capacity
+		.max_size(access_iterator->object_unit_ptr->object_ptr);
+	DEBUG_ERROR_CONTROL_JUDGE(2, "object_unit_ptr->control_ptr->capacity.max_size(): fail");
+
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
+}
+
+/**
+ * @brief This function will.
+ *
+ * @param
+ *
+ * @return
+ */
+
+size_t access_iterator_control_range_access_element_size(struct access_iterator_s *access_iterator)
+{
+	DEBUG_ASSERT_CONTROL_POINTER(access_iterator);
+
+	DEBUG_ERROR_CONTROL_STRUCTURE_INIT(size_t, 2, 1, 2);
+
+	if (!access_iterator_control_range_access_valid_object_unit(access_iterator)) {
+		DEBUG_ERROR_CONTROL_JUMP(1, "_valid_object_unit(): invalid object unit");
+	}
+
+	DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit_ptr->control_ptr->capacity
+		.element_size(access_iterator->object_unit_ptr->object_ptr);
+	DEBUG_ERROR_CONTROL_JUDGE(2, "object_unit_ptr->control_ptr->capacity.element_size(): fail");
 
 	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
@@ -395,9 +423,9 @@ bool access_iterator_control_range_access_empty(struct access_iterator_s *access
 		DEBUG_ERROR_CONTROL_JUMP(1, "_valid_object_unit(): invalid object unit");
 	}
 
-	DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit.control_ptr->capacity
-		.empty(access_iterator->object_unit.object_ptr);
-	DEBUG_ERROR_CONTROL_JUDGE(2, "object_unit.control_ptr->capacity.empty(): fail");
+	DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit_ptr->control_ptr->capacity
+		.empty(access_iterator->object_unit_ptr->object_ptr);
+	DEBUG_ERROR_CONTROL_JUDGE(2, "object_unit_ptr->control_ptr->capacity.empty(): fail");
 
 	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
@@ -420,9 +448,9 @@ void *access_iterator_control_range_access_data(struct access_iterator_s *access
 		DEBUG_ERROR_CONTROL_JUMP(1, "_valid_object_unit(): invalid object unit");
 	}
 
-	DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit.control_ptr->element_access
-		.data(access_iterator->object_unit.object_ptr);
-	DEBUG_ERROR_CONTROL_JUDGE(2, "object_unit.control_ptr->element_access.data(): fail");
+	DEBUG_ERROR_CONTROL_RETURN_VAL = access_iterator->object_unit_ptr->control_ptr->element_access
+		.data(access_iterator->object_unit_ptr->object_ptr);
+	DEBUG_ERROR_CONTROL_JUDGE(2, "object_unit_ptr->control_ptr->element_access.data(): fail");
 
 	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }
@@ -443,15 +471,15 @@ access_iterator_control_iterator_operations_valid_index(struct access_iterator_s
 
 	DEBUG_ERROR_CONTROL_STRUCTURE_INIT(bool, 2, 1, 2);
 
-	if (access_iterator->object_unit.control_ptr->capacity
-		.empty(access_iterator->object_unit.object_ptr)) {                                  /* Check if empty() */
-		DEBUG_ERROR_CONTROL_JUMP(1, "object_unit.control_ptr.capacity.empty(): object is empty");
+	if (access_iterator->object_unit_ptr->control_ptr->capacity
+		.empty(access_iterator->object_unit_ptr->object_ptr)) {                                  /* Check if empty() */
+		DEBUG_ERROR_CONTROL_JUMP(1, "object_unit_ptr->control_ptr.capacity.empty(): object is empty");
 	}
 
-	if ((int)access_iterator->object_unit.control_ptr->capacity
-		.max_size(access_iterator->object_unit.object_ptr) - 1 < (int)index                 /* Check if max_size() is less than index */
+	if ((int)access_iterator->object_unit_ptr->control_ptr->capacity
+		.max_size(access_iterator->object_unit_ptr->object_ptr) - 1 < (int)index                 /* Check if max_size() is less than index */
 		|| (int)0 > (int)index) {                                                           /* Check if 0 is greater than index */
-		DEBUG_ERROR_CONTROL_JUMP(2, "object_unit.control_ptr.capacity.max_size(): index is greater than max size");
+		DEBUG_ERROR_CONTROL_JUMP(2, "object_unit_ptr->control_ptr.capacity.max_size(): index is greater than max size");
 	}
 
 	DEBUG_ERROR_CONTROL_RETURN_VAL = true;
@@ -473,12 +501,12 @@ access_iterator_control_iterator_operations_valid_object_unit(struct access_iter
 
 	DEBUG_ERROR_CONTROL_STRUCTURE_INIT(bool, 2, 1, 2);
 
-	if (NULL == access_iterator->object_unit.control_ptr->element_access.at) {
-		DEBUG_ERROR_CONTROL_JUMP(1, "object_unit.control_ptr.element_access.at(): not found");
+	if (NULL == access_iterator->object_unit_ptr->control_ptr->element_access.at) {
+		DEBUG_ERROR_CONTROL_JUMP(1, "object_unit_ptr->control_ptr.element_access.at(): not found");
 	}
 
-	if (NULL == access_iterator->object_unit.control_ptr->element_access.data) {
-		DEBUG_ERROR_CONTROL_JUMP(2, "object_unit.control_ptr.element_access.data(): not found");
+	if (NULL == access_iterator->object_unit_ptr->control_ptr->element_access.data) {
+		DEBUG_ERROR_CONTROL_JUMP(2, "object_unit_ptr->control_ptr.element_access.data(): not found");
 	}
 
 	DEBUG_ERROR_CONTROL_RETURN_VAL = true;
@@ -494,8 +522,8 @@ access_iterator_control_iterator_operations_valid_object_unit(struct access_iter
  */
 
 static inline bool
-access_iterator_control_iterator_operations_distance_same_object_unit(struct access_iterator_s *lhs,
-																	  struct access_iterator_s *rhs)
+access_iterator_control_element_access_distance_same_object_unit(struct access_iterator_s *lhs,
+																 struct access_iterator_s *rhs)
 {
 	DEBUG_ASSERT_CONTROL_POINTER(lhs);
 	DEBUG_ASSERT_CONTROL_POINTER(rhs);
@@ -503,8 +531,8 @@ access_iterator_control_iterator_operations_distance_same_object_unit(struct acc
 	DEBUG_ERROR_CONTROL_STRUCTURE_INIT(bool, 1, 1);
 
 	void
-		**lhs_ptr = (void *)&lhs->object_unit,
-		**rhs_ptr = (void *)&rhs->object_unit;
+		**lhs_ptr = (void *)&lhs->object_unit_ptr,
+		**rhs_ptr = (void *)&rhs->object_unit_ptr;
 
 	size_t
 		offset = 0,
@@ -538,20 +566,20 @@ access_iterator_control_range_access_valid_object_unit(struct access_iterator_s 
 
 	DEBUG_ERROR_CONTROL_STRUCTURE_INIT(bool, 4, 1, 2, 3, 4);
 
-	if (NULL == access_iterator->object_unit.control_ptr->capacity.size) {
-		DEBUG_ERROR_CONTROL_JUMP(1, "object_unit.control_ptr.capacity.size(): not found");
+	if (NULL == access_iterator->object_unit_ptr->control_ptr->capacity.size) {
+		DEBUG_ERROR_CONTROL_JUMP(1, "object_unit_ptr->control_ptr.capacity.size(): not found");
 	}
 
-	if (NULL == access_iterator->object_unit.control_ptr->capacity.empty) {
-		DEBUG_ERROR_CONTROL_JUMP(2, "object_unit.control_ptr.capacity.empty(): not found");
+	if (NULL == access_iterator->object_unit_ptr->control_ptr->capacity.empty) {
+		DEBUG_ERROR_CONTROL_JUMP(2, "object_unit_ptr->control_ptr.capacity.empty(): not found");
 	}
 
-	if (NULL == access_iterator->object_unit.control_ptr->capacity.max_size) {
-		DEBUG_ERROR_CONTROL_JUMP(3, "object_unit.control_ptr.capacity.max_size(): not found");
+	if (NULL == access_iterator->object_unit_ptr->control_ptr->capacity.max_size) {
+		DEBUG_ERROR_CONTROL_JUMP(3, "object_unit_ptr->control_ptr.capacity.max_size(): not found");
 	}
 
-	if (NULL == access_iterator->object_unit.control_ptr->element_access.at) {
-		DEBUG_ERROR_CONTROL_JUMP(4, "object_unit.control_ptr.element_access.at(): not found");
+	if (NULL == access_iterator->object_unit_ptr->control_ptr->element_access.at) {
+		DEBUG_ERROR_CONTROL_JUMP(4, "object_unit_ptr->control_ptr.element_access.at(): not found");
 	}
 
 	DEBUG_ERROR_CONTROL_RETURN_VAL = true;

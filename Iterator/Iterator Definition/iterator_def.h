@@ -38,7 +38,7 @@
 
 enum iterator_type_e {
 	INPUT_ITERATOR = 0x10,
-    OUTPUT_ITERATOR = 0x20,
+	OUTPUT_ITERATOR = 0x20,
 };
 
 /**
@@ -48,16 +48,18 @@ enum iterator_type_e {
 struct iterator_control_s {
 	struct {
 		errno_t(*init)(struct iterator_s **iterator,
-					   struct iterator_object_unit_s object_unit);
+					   struct access_iterator_object_unit_s object_unit);
 
 		errno_t(*destroy)(struct iterator_s **iterator);
 	}configuration;
 
 	struct {
-		void *(*advance)(struct iterator_s *iterator,
-						 int step);
+		struct access_iterator_s *(*begin)(struct iterator_s *iterator);
 
-		size_t(*distance)(struct iterator_s *iterator);
+		struct access_iterator_s *(*end)(struct iterator_s *iterator);
+
+		errno_t(*dereferance)(struct iterator_s *iterator,
+							  struct access_iterator_s **access_iterator);
 	}iterator_operations;
 
 	struct {
@@ -66,17 +68,7 @@ struct iterator_control_s {
 		bool (*empty)(struct iterator_s *iterator);
 
 		void *(*data)(struct iterator_s *iterator);
-	}range_access;
-};
-
-/**
- * @brief This type is the iterator common information structure.
- */
-
-struct iterator_common_information_s {
-	size_t position;
-
-	bool featured;
+	}capacity;
 };
 
 /**
@@ -106,7 +98,7 @@ struct iterator_unit_s {
 errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 											enum iterator_type_e iterator_type,
 											enum allocator_type_e allocator_type,
-											struct iterator_object_unit_s object_unit,
+											struct access_iterator_object_unit_s object_unit,
 											size_t addon_size);
 
 /**
@@ -120,15 +112,37 @@ errno_t iterator_control_configuration_init(struct iterator_s **iterator,
 errno_t iterator_control_configuration_destroy(struct iterator_s **iterator);
 
 /**
- * @brief This function will.
+ * @brief This function will .
  *
  * @param
  *
  * @return
  */
 
-void *iterator_control_iterator_operations_advance(struct iterator_s *iterator,
-												   int step);
+struct access_iterator_s
+	*iterator_control_iterator_operation_begin(struct iterator_s *iterator);
+
+/**
+ * @brief This function will .
+ *
+ * @param
+ *
+ * @return
+ */
+
+struct access_iterator_s
+	*iterator_control_iterator_operation_end(struct iterator_s *iterator);
+
+/**
+ * @brief This function will .
+ *
+ * @param
+ *
+ * @return
+ */
+
+errno_t iterator_control_iterator_operation_dereference(struct iterator_s *iterator,
+														struct access_iterator_s **access_iterator);
 
 /**
  * @brief This function will.
@@ -138,7 +152,9 @@ void *iterator_control_iterator_operations_advance(struct iterator_s *iterator,
  * @return
  */
 
-void *iterator_control_iterator_operations_next(struct iterator_s *iterator);
+void *iterator_control_access(struct access_iterator_s *access_iterator,
+							  struct access_iterator_access_unit_s access_unit,
+							  ...);
 
 /**
  * @brief This function will.
@@ -148,80 +164,10 @@ void *iterator_control_iterator_operations_next(struct iterator_s *iterator);
  * @return
  */
 
-void *iterator_control_iterator_operations_prev(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *iterator_control_iterator_operations_at(struct iterator_s *iterator,
-											  size_t index);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *iterator_control_range_access_begin(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *iterator_control_range_access_end(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-size_t iterator_control_range_access_size(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-bool iterator_control_range_access_empty(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *iterator_control_range_access_data(struct iterator_s *iterator);
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-void *iterator_control_modifiers_modify(struct iterator_s *iterator,
-										size_t index,
-										void *source);
+void *iterator_control_modify(struct access_iterator_s *access_iterator,
+							  void *source,
+							  struct access_iterator_access_unit_s access_unit,
+							  ...);
 
 /**
  * @brief This function will inquire for the allocator unit of the iterator.

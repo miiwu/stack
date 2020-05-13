@@ -34,12 +34,18 @@
  * @brief This type is the access iterator structure.
  */
 
-struct access_iterator_s {
-    struct {
-        size_t position;
-    }info;
+struct access_iterator_privite_s {
+    size_t position;
+};
 
-	struct access_iterator_object_unit_s object_unit;
+/**
+ * @brief This type is the access iterator structure.
+ */
+
+struct access_iterator_s {
+    struct access_iterator_privite_s privite;
+
+    struct access_iterator_object_unit_s *object_unit_ptr;
 };
 
 /*

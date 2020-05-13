@@ -50,7 +50,7 @@
  * @return
  */
 
-bool forward_iterator_control_iterator_operations_advance_valid_step(int step);
+bool forward_iterator_control_element_access_advance_valid_step(int step);
 
 /*
  *********************************************************************************************************
@@ -63,16 +63,16 @@ bool forward_iterator_control_iterator_operations_advance_valid_step(int step);
  */
 
 struct forward_iterator_s forward_iterator = {
-	.advance.access_unit.function_ptr = access_iterator_control_iterator_operations_advance,
-	.advance.valid_step_ptr = forward_iterator_control_iterator_operations_advance_valid_step,
+	.advance.access_unit.function_ptr = (void *)access_iterator_control_element_access_advance,
+	.advance.valid_step_ptr = forward_iterator_control_element_access_advance_valid_step,
 
-	.distance.function_ptr = access_iterator_control_iterator_operations_distance,
+	.distance.function_ptr = (void *)access_iterator_control_element_access_distance,
 
-	.next.function_ptr = access_iterator_control_iterator_operations_next,
+	.next.function_ptr = (void *)access_iterator_control_element_access_next,
 
-	.front.function_ptr = access_iterator_control_iterator_operations_front,
+	.front.function_ptr = (void *)access_iterator_control_element_access_front,
 
-	.back.function_ptr = access_iterator_control_iterator_operations_back,
+	.back.function_ptr = (void *)access_iterator_control_element_access_back,
 };
 
 /*
@@ -90,7 +90,7 @@ struct forward_iterator_s forward_iterator = {
  */
 
 static inline bool
-forward_iterator_control_iterator_operations_advance_valid_step(int step)
+forward_iterator_control_element_access_advance_valid_step(int step)
 {
 	if (0 > step) {
 		return false;

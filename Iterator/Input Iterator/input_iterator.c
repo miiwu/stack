@@ -31,31 +31,14 @@
  */
 
 struct input_iterator_control_s input_iterator_control = {
-	//.configuration.init = input_iterator_control_configuration_init,
+	.configuration.init = input_iterator_control_configuration_init,
 	.configuration.destroy = iterator_control_configuration_destroy,
 
-	.iterator_operations.advance = iterator_control_iterator_operations_advance,
-	.iterator_operations.next = iterator_control_iterator_operations_next,
+	.iterator_operations.begin = iterator_control_iterator_operation_begin,
+	.iterator_operations.end = iterator_control_iterator_operation_end,
+	.iterator_operations.dereferance = iterator_control_iterator_operation_dereference,
 
-	.range_access.empty = iterator_control_range_access_empty,
-	.range_access.size = iterator_control_range_access_size,
-	.range_access.data = iterator_control_range_access_data,
-};
-
-/**
- * @brief This variable is the iterator control function address table.
- */
-
-const void *input_iterator_control_function_address_table[] = {
-	//input_iterator_control_configuration_init,
-	iterator_control_configuration_destroy,
-
-	iterator_control_iterator_operations_advance,
-	NULL,
-
-	iterator_control_range_access_size,
-	iterator_control_range_access_empty,
-	iterator_control_range_access_data,
+	.access = iterator_control_access,
 };
 
 /*
@@ -75,16 +58,6 @@ const void *input_iterator_control_function_address_table[] = {
  *                                      LOCAL FUNCTION PROTOTYPES
  *********************************************************************************************************
  */
-
-/**
- * @brief This function will.
- *
- * @param
- *
- * @return
- */
-
-bool input_iterator_control_feature_package_advance(int step);
 
 /*
  *********************************************************************************************************
@@ -106,29 +79,22 @@ bool input_iterator_control_feature_package_advance(int step);
  * @return
  */
 
-errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator)
+errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
+												  struct access_iterator_object_unit_s object_unit)
 {
-	DEBUG_ASSERT_CONTROL_POINTER(iterator);/*
+	DEBUG_ASSERT_CONTROL_POINTER(iterator);
 	DEBUG_ASSERT_CONTROL_POINTER(object_unit.object_ptr);
 	DEBUG_ASSERT_CONTROL_POINTER(object_unit.control_ptr);
 
-	DEBUG_ERROR_CONTROL_ERRNO_INIT(1, 1);
+	DBG_ERR(SINGLE_ERROR,
+			errno_t,
+			1,
+			iterator_control_configuration_init(iterator,
+												INPUT_ITERATOR,
+												INPUT_ITERATOR_CFG_ALLOCATOR_TYPE,
+												object_unit,
+												0),
+			"iterator_control_configuration_init(): fail");
 
-	if (iterator_control_configuration_init(iterator,
-											INPUT_ITERATOR,
-											INPUT_ITERATOR_CFG_ALLOCATOR_TYPE,
-											object_unit,
-											sizeof(struct access_iterator_feature_package_s))) {
-		DEBUG_ERROR_CONTROL_JUMP(1);
-	}
-
-	static struct access_iterator_feature_package_s *feature_package;
-
-	feature_package = (struct access_iterator_feature_package_s *)(*iterator)->addon;
-
-	feature_package->advance = input_iterator_control_feature_package_advance;
-
-	DEBUG_ERROR_CONTROL_EXIT();*/
-
-    return 0;
+	DEBUG_ERROR_CONTROL_LOG_EXIT();
 }

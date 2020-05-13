@@ -24,8 +24,9 @@
  *********************************************************************************************************
  */
 
-/* Configure    the type of input iterator.                                                                  */
-#define INPUT_ITERATOR_CFG_ALLOCATOR_TYPE                                 CONCEPT_ALLOCATOR
+/* Configure    the allocator type of the input iterator.                                               */
+#define INPUT_ITERATOR_CFG_ALLOCATOR_TYPE                                                               \
+    CONCEPT_ALLOCATOR
 
 /*
  *********************************************************************************************************
@@ -46,29 +47,11 @@ typedef struct iterator_s
  */
 
 struct input_iterator_control_s {
-	struct {
-		errno_t(*init)(input_iterator_stpp iterator,
-					   struct iterator_object_unit_s object_unit);
+	struct iterator_control_s;
 
-		errno_t(*destroy)(input_iterator_stpp iterator);
-	}configuration;
-
-	struct {
-		void *(*advance)(input_iterator_stp iterator,
-						 int step);
-
-		size_t(*distance)(input_iterator_stp iterator);
-
-		void *(*next)(input_iterator_stp iterator);
-	}iterator_operations;
-
-	struct {
-		size_t(*size)(input_iterator_stp iterator);
-
-		bool (*empty)(input_iterator_stp iterator);
-
-		void *(*data)(input_iterator_stp iterator);
-	}range_access;
+	void *(*access)(struct access_iterator_s *access_iterator,
+					struct access_iterator_access_unit_s access_unit,
+					...);
 };
 
 /*
@@ -77,16 +60,16 @@ struct input_iterator_control_s {
  *********************************************************************************************************
  */
 
-///**
-// * @brief This function will initialize the iterator.
-// *
-// * @param
-// *
-// * @return
-// */
-//
-//errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
-//												  struct iterator_object_unit_s object_unit);
+/**
+ * @brief This function will initialize the iterator.
+ *
+ * @param
+ *
+ * @return
+ */
+
+errno_t input_iterator_control_configuration_init(input_iterator_stpp iterator,
+												  struct access_iterator_object_unit_s object_unit);
 
 /*
  *********************************************************************************************************
