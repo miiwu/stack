@@ -57,10 +57,6 @@
 #define SHORTCUTS(body, shortcut, ...)                                                                  \
     body ## shortcut LEFTBRACKET __VA_ARGS__)
 
-/* Define			shortcuts.										                                    */
-#define DBG_MIC(shortcut, ...)                                                                          \
-    SHORTCUTS(DEBUG_MICRO, shortcut, __VA_ARGS__)
-
 /* Define			field offset.								                                        */
 #define FIELD(variable_address, field_type, field_offset)                                               \
     *(field_type*)((char *)variable_address + (field_offset))
@@ -100,6 +96,10 @@
         __VA_ARGS__;                                                                                    \
     } while (0)
 
+/* Define			if the expression have input, it will execute if.				                    */
+#define VA_ARGS_IF_ELSE(expression, if, ...)	                                                        \
+	VA_ARGS_ARG(2, expression, if, __VA_ARGS__)
+
 /* Define			get the index-th arg of the va_arg.				                                    */
 #define VA_ARGS_ARG(index, ...)                                                                         \
     VA_ARGS_ARG ## index LEFTBRACKET __VA_ARGS__)
@@ -110,8 +110,8 @@
         7, __VA_ARGS__, 6, 5, 4, 3, 2, 1, 0)
 
 /* Define			get the args of the va_arg from first to last.				                        */
-#define VA_ARGS_ARGS_FROM(first, ...)                                                                   \
-    VA_ARGS_ARGS_FROM ## first LEFTBRACKET __VA_ARGS__)
+#define VA_ARGS_FROM(first, ...)                                                                        \
+    VA_ARGS_FROM ## first LEFTBRACKET __VA_ARGS__)
 
 /* Define			get the arg1 of the va_arg.							                                */
 #define VA_ARGS_ARG1(arg1, ...)                                                                         \
@@ -142,35 +142,35 @@
     arg7
 
 /* Define			get the args of the va_arg from 1 to last.				                            */
-#define VA_ARGS_ARGS_FROM1(...)                                                                         \
+#define VA_ARGS_FROM1(...)                                                                              \
     __VA_ARGS__
 
 /* Define			get the args of the va_arg from 2 to last.				                            */
-#define VA_ARGS_ARGS_FROM2(arg1, ...)                                                                   \
+#define VA_ARGS_FROM2(arg1, ...)                                                                        \
     __VA_ARGS__
 
 /* Define			get the args of the va_arg from 3 to last.				                            */
-#define VA_ARGS_ARGS_FROM3(arg1, arg2, ...)                                                             \
+#define VA_ARGS_FROM3(arg1, arg2, ...)                                                                  \
     __VA_ARGS__
 
 /* Define			get the args of the va_arg from 4 to last.				                            */
-#define VA_ARGS_ARGS_FROM4(arg1, arg2, arg3, ...)                                                       \
+#define VA_ARGS_FROM4(arg1, arg2, arg3, ...)                                                            \
     __VA_ARGS__
 
 /* Define			get the args of the va_arg from 5 to last.				                            */
-#define VA_ARGS_ARGS_FROM5(arg1, arg2, arg3, arg4, ...)                                                 \
+#define VA_ARGS_FROM5(arg1, arg2, arg3, arg4, ...)                                                      \
     __VA_ARGS__
 
 /* Define			get the args of the va_arg from 6 to last.				                            */
-#define VA_ARGS_ARGS_FROM6(arg1, arg2, arg3, arg4, arg5, ...)                                           \
+#define VA_ARGS_FROM6(arg1, arg2, arg3, arg4, arg5, ...)                                                \
     __VA_ARGS__
 
 /* Define			get the args of the va_arg from 7 to last.				                            */
-#define VA_ARGS_ARGS_FROM7(arg1, arg2, arg3, arg4, arg5, arg6, ...)                                     \
+#define VA_ARGS_FROM7(arg1, arg2, arg3, arg4, arg5, arg6, ...)                                          \
     __VA_ARGS__
 
 /* Define			get the args of the va_arg from 8 to last.				                            */
-#define VA_ARGS_ARGS_FROM8(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...)                               \
+#define VA_ARGS_FROM8(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...)                                    \
     __VA_ARGS__
 
 /*

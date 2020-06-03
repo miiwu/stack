@@ -26,17 +26,13 @@
  *********************************************************************************************************
  */
 
-/* Configuration    error configuration the logger of _LOG().									        */
+/* Configuration    config the logger of _EXIT().									                    */
 #define ERROR_CFG_LOGGER                                                                                \
     printf
 
-/* Define			error control shortcut.										                        */
-#define ERR(shortcut, ...)                                                                              \
-    SHORTCUTS(ERROR_CONTROL_, shortcut, __VA_ARGS__)
-
-/* Define			error control return.										                        */
-#define ERROR_CONTROL_RETURN                                                                            \
-    (error_control_return)
+/* Configuration    config enable log or not when _EXIT().									            */
+#define ERROR_CFG_LOG_EN                                                                                \
+    1u
 
 /* Define			error control init.										                            */
 #define ERROR_CONTROL_INIT(return_type, count, code, ...)                                               \
@@ -44,7 +40,7 @@
     struct error_nest_unit_s error_control_nest_unit = {                                                \
         .code_table_ptr = (void *)&error_control_code_table,                                            \
     };                                                                                                  \
-    return_type ERROR_CONTROL_RETURN = { 0 };                                                           \
+    _ERROR_CONTROL_VARIABLE_RETURN_(return_type);                                                       \
     _ERROR_CONTROL_SET_(0, NULL)
 
 /* Define			error control trap.										                            */
@@ -63,7 +59,7 @@
                     index, VA_ARGS_ARG(                                                                 \
                         2, NULL, __VA_ARGS__, NULL));                                                   \
             }                                                                                           \
-	        VA_ARGS_ARGS_FROM(                                                                          \
+	        VA_ARGS_FROM(                                                                               \
 		        2, __VA_ARGS__, NULL, NULL);                                                            \
             _ERROR_CONTROL_JUMP_(index);                                                                \
             /* The args from the 2st to the last will execute                                       */  \
@@ -73,17 +69,16 @@
 /* Define			error control judge.										                        */
 #define ERROR_CONTROL_JUDGE(index, ...)                                                                 \
     do {                                                                                                \
-        ERROR_CONTROL_TRAP LEFTBRACKET                                                                  \
-            0, index, __VA_ARGS__);                                                                     \
+        ERROR_CONTROL_TRAP(0, index, __VA_ARGS__);                                                      \
     } while (0)
 
 /* Define			error control exit.										                            */
 #define ERROR_CONTROL_EXIT(...)                                                                         \
-    do {                                                                                                \
-        ERROR_CONTROL_LABEL_EXIT:                                                                       \
-	        __VA_ARGS__;                                                                                \
-            return ERROR_CONTROL_RETURN;                                                                \
-    } while (0)
+    _ERROR_CONTROL_EXIT_(ERROR_CONTROL_RETURN, __VA_ARGS__)
+
+/* Define			error control return.										                        */
+#define ERROR_CONTROL_RETURN                                                                            \
+    (error_control_return)
 
 /* Define			error control code.										                            */
 #define ERROR_CONTROL_CODE()                                                                            \
@@ -93,16 +88,13 @@
 #define ERROR_CONTROL_STRING()                                                                          \
     (error_control_string_inquire())
 
-/* Define			error control log.										                            */
-#define ERROR_CONTROL_LOG(...)                                                                          \
-    do {                                                                                                \
-        PROBE_ARG_MAX(1, __VA_ARGS__);                                                                  \
-        if (0u != error_control_code_table_index_inquire()) {                                           \
-            VA_ARGS_ARG(                                                                                \
-                2, printf, __VA_ARGS__, ERROR_CFG_LOGGER)(                                              \
-                    error_control_string_inquire());                                                    \
-		}                                                                                               \
-    } while (0)
+/* Define			error control shortcut.										                        */
+#define ERR(shortcut, ...)                                                                              \
+    SHORTCUTS(ERROR_CONTROL_, shortcut, __VA_ARGS__)
+
+/* Define			error control void init.										                    */
+#define ERROR_CONTROL_VOID_INIT(count, ...)                                                             \
+    ERROR_CONTROL_INIT(, count + 1, 0, __VA_ARGS__)
 
 /* Define			error control errno init.										                    */
 #define ERROR_CONTROL_ERRNO_INIT(count, ...)                                                            \
@@ -116,22 +108,27 @@
 #define ERROR_CONTROL_POINTER_INIT(count, ...)                                                          \
     ERROR_CONTROL_INIT(void *, count + 1, 0, __VA_ARGS__)
 
-/* Define			error control log and exit.										                    */
-#define ERROR_CONTROL_LOG_EXIT(...)                                                                     \
-    do {                                                                                                \
-        ERROR_CONTROL_EXIT LEFTBRACKET                                                                  \
-			ERROR_CONTROL_LOG LEFTBRACKET									                            \
-				VA_ARGS_ARG(                                                                            \
-                    2, printf, __VA_ARGS__, ERROR_CFG_LOGGER));	                                        \
-            VA_ARGS_ARGS_FROM(                                                                          \
-                2, __VA_ARGS__, NULL, NULL));                                                           \
-    } while (0)
+/* Define			error control void exit.										                    */
+#define ERROR_CONTROL_VOID_EXIT(...)                                                                    \
+    _ERROR_CONTROL_EXIT_(, __VA_ARGS__)
 
 /* Define			error control single error.										                    */
 #define ERROR_CONTROL_SINGLE_ERROR(return_type, error_code, expression, ...)                            \
     ERROR_CONTROL_INIT(return_type, 2, 0, error_code);                                                  \
     expression;                                                                                         \
     ERROR_CONTROL_JUDGE(1, __VA_ARGS__)
+
+/* Define			error control variable.										                        */
+#define _ERROR_CONTROL_VARIABLE_(...)	                                                                \
+	VA_ARGS_ARG LEFTBRACKET                                                                             \
+		1, __VA_ARGS__, NULL)
+
+/* Define			error control variable return.										                */
+#define _ERROR_CONTROL_VARIABLE_RETURN_(...)	                                                        \
+	VA_ARGS_ARG LEFTBRACKET		                                                                        \
+		2, __VA_ARGS__,                                                                                 \
+        _ERROR_CONTROL_VARIABLE_(__VA_ARGS__ ERROR_CONTROL_RETURN = { 0 }),                             \
+        _ERROR_CONTROL_VARIABLE_())
 
 /* Define			error control set.										                            */
 #define _ERROR_CONTROL_SET_(index, ...)                                                                 \
@@ -153,6 +150,31 @@
         } else {                                                                                        \
             goto ERROR_CONTROL_LABEL_EXIT;                                                              \
         }                                                                                               \
+    } while (0)
+
+/* Define			error control log.										                            */
+#if ERROR_CFG_LOG_EN
+
+#define _ERROR_CONTROL_LOG_()                                                                           \
+    do {                                                                                                \
+        if (0u != error_control_code_table_index_inquire()) {                                           \
+            ERROR_CFG_LOGGER(error_control_string_inquire());                                           \
+		}                                                                                               \
+    } while (0)
+
+#else
+
+#define _ERROR_CONTROL_LOG_()
+
+#endif // ERROR_CFG_LOG_EN
+
+/* Define			error control exit.										                            */
+#define _ERROR_CONTROL_EXIT_(variable, ...)                                                             \
+    do {                                                                                                \
+        ERROR_CONTROL_LABEL_EXIT:                                                                       \
+	        __VA_ARGS__;                                                                                \
+            _ERROR_CONTROL_LOG_();	                                                                    \
+            return variable;                                                                            \
     } while (0)
 
 /*

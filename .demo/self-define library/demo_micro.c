@@ -16,10 +16,10 @@ void main_micro(void)
 	printf("\r\nsde.micro.va_arg.arg_num:\"%s\" \r\n",
 		   VA_ARGS_ARG_NUM(1, 2, 3, 4, 5, 6, "*"));
 
-	VA_ARGS_ARGS_FROM(2,
-					  printf("1"),
-					  printf("2"),
-					  printf("3\r\n"));
+	VA_ARGS_FROM(2,
+				 printf("1"),
+				 printf("2"),
+				 printf("3\r\n"));
 
 	printf("\r\n------------------------+ sde.micro demo end +------------------------\r\n");
 

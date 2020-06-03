@@ -76,7 +76,7 @@
         VA_ARGS_ARG(                                                                                    \
             2, printf, __VA_ARGS__, ASSERT_CFG_LOGGER)(                                                 \
                 assert_control_string_inquire());                                                       \
-        VA_ARGS_ARGS_FROM(                                                                              \
+        VA_ARGS_FROM(                                                                                   \
             2, __VA_ARGS__, NULL, NULL);                                                                \
     } while (0)
 

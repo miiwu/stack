@@ -10,6 +10,16 @@ struct error_structure_s {
 
 struct error_structure_s error_structure(void);
 
+size_t return_t(void)
+{
+	return 1;
+}
+
+void return_void(void)
+{
+	return;
+}
+
 void main_error(void)
 {
 	printf("\r\n------------------------+ sde.error demo start +------------------------\r\n");
@@ -24,22 +34,20 @@ void main_error(void)
 	return;
 }
 
-errno_t error_errno(void)
+void error_void(void)
 {
-	ERROR_CONTROL_ERRNO_INIT(1, 1);
+	ERROR_CONTROL_VOID_INIT(1, 1);
 	/* ERROR_CONTROL_INIT(errno_t, 2, 0, 1); */
 
 	bool fail = true;
 	ERROR_CONTROL_TRAP(fail,
 					   1, "test:succeed",
-					   printf("i will handle this errno error! #%d\r\n",
+					   printf("i will handle this void error! #%d\r\n",
 							  ERROR_CONTROL_CODE()));
-
-	ERROR_CONTROL_RETURN = 0;
 
 	printf("Must not reach here! \r\n");
 
-	ERROR_CONTROL_LOG_EXIT();
+	ERROR_CONTROL_VOID_EXIT();
 }
 
 errno_t *error_pointer(void)
@@ -48,12 +56,12 @@ errno_t *error_pointer(void)
 
 	printf("last string:%s \r\n", ERROR_CONTROL_STRING());
 
-	error_errno();
+	error_void();
 	ERROR_CONTROL_JUDGE(1, "test:succeed",
 						printf("i will handle this pointer error! #%d\r\n",
 							   ERROR_CONTROL_CODE()));
 
-	ERROR_CONTROL_LOG_EXIT(, printf(""));
+	ERROR_CONTROL_EXIT();
 }
 
 struct error_structure_s error_structure(void)
@@ -73,8 +81,7 @@ struct error_structure_s error_structure(void)
 
 	printf("Must not reach here! \r\n");
 
-	ERROR_CONTROL_EXIT(printf("error.error occur: "
-							  "error_structure().test:succeed\r\n"));
+	ERROR_CONTROL_EXIT(printf("is it exit?\r\n"));
 }
 
 #endif // DEMO_SDE_LIB_CFG_CFG_ERROR_EN
