@@ -30,16 +30,18 @@
 #define ERROR_CFG_LOGGER                                                                                \
     printf
 
+/* Configuration    config the code of no error.									                    */
+#define ERROR_CFG_NOERROR                                                                                \
+    0u
+
 /* Configuration    config enable log or not when _EXIT().									            */
 #define ERROR_CFG_LOG_EN                                                                                \
     1u
 
 /* Define			error control init.										                            */
-#define ERROR_CONTROL_INIT(return_type, count, code, ...)                                               \
-    static const errno_t error_control_code_table[count] = { code, __VA_ARGS__ };                       \
-    struct error_nest_unit_s error_control_nest_unit = {                                                \
-        .code_table_ptr = (void *)&error_control_code_table,                                            \
-    };                                                                                                  \
+#define ERROR_CONTROL_INIT(return_type, count, ...)                                                     \
+    _ERROR_CONTROL_NEST_(ERROR_CONTROL_INIT);                                                           \
+    error_control_code_table_modify(count + 1, ERROR_CFG_NOERROR, __VA_ARGS__);                          \
     _ERROR_CONTROL_VARIABLE_RETURN_(return_type);                                                       \
     _ERROR_CONTROL_SET_(0, NULL)
 
@@ -48,13 +50,14 @@
     do {                                                                                                \
 	    if ((trap)                                                                                      \
             /* The 1st priority, if it's result is 1, enter                                         */  \
-            || error_control_code_table[0] != error_control_code_inquire()                              \
+            || ERROR_CFG_NOERROR != error_control_code_inquire()                                         \
             /* The 2st priority                                                                     */  \
             || error_control_label_longjmp_modify(                                                      \
                 setjmp(*error_control_label_inquire(index)))) {                                         \
             /* The 3st priority, this won't be called when error occurs                             */  \
             if(!error_control_label_longjmp_inquire()) {                                                \
-            /* If reach not because longjmp()                                                       */  \
+            /* If enter not because longjmp()                                                       */  \
+                _ERROR_CONTROL_NEST_(ERROR_CONTROL_TRAP);                                               \
                 _ERROR_CONTROL_SET_ LEFTBRACKET                                                         \
                     index, VA_ARGS_ARG(                                                                 \
                         2, NULL, __VA_ARGS__, NULL));                                                   \
@@ -76,6 +79,12 @@
 #define ERROR_CONTROL_EXIT(...)                                                                         \
     _ERROR_CONTROL_EXIT_(ERROR_CONTROL_RETURN, __VA_ARGS__)
 
+/* Define			error control fault.										                        */
+#define ERROR_CONTROL_FAULT(before_loop)                                                                \
+    do {                                                                                                \
+        error_control_fault_before_loop(before_loop);                                                   \
+    } while (0)
+
 /* Define			error control return.										                        */
 #define ERROR_CONTROL_RETURN                                                                            \
     (error_control_return)
@@ -94,19 +103,19 @@
 
 /* Define			error control void init.										                    */
 #define ERROR_CONTROL_VOID_INIT(count, ...)                                                             \
-    ERROR_CONTROL_INIT(, count + 1, 0, __VA_ARGS__)
+    ERROR_CONTROL_INIT(, count, __VA_ARGS__)
 
 /* Define			error control errno init.										                    */
 #define ERROR_CONTROL_ERRNO_INIT(count, ...)                                                            \
-    ERROR_CONTROL_INIT(errno_t, count + 1, 0, __VA_ARGS__)
+    ERROR_CONTROL_INIT(errno_t, count, __VA_ARGS__)
 
 /* Define			error control structure init.										                */
 #define ERROR_CONTROL_STRUCTURE_INIT(return_type, count, ...)                                           \
-    ERROR_CONTROL_INIT(return_type, count + 1, 0, __VA_ARGS__)
+    ERROR_CONTROL_INIT(return_type, count, __VA_ARGS__)
 
 /* Define			error control pointer init.										                    */
 #define ERROR_CONTROL_POINTER_INIT(count, ...)                                                          \
-    ERROR_CONTROL_INIT(void *, count + 1, 0, __VA_ARGS__)
+    ERROR_CONTROL_INIT(void *, count, __VA_ARGS__)
 
 /* Define			error control void exit.										                    */
 #define ERROR_CONTROL_VOID_EXIT(...)                                                                    \
@@ -134,12 +143,11 @@
 #define _ERROR_CONTROL_SET_(index, ...)                                                                 \
     do {                                                                                                \
         error_control_code_table_index_modify(index);                                                   \
-        error_control_nest(error_control_nest_unit);                                                    \
         error_control_string_modify(                                                                    \
             VA_ARGS_ARG LEFTBRACKET                                                                     \
                 2, NULL, __VA_ARGS__, NULL),                                                            \
             error_control_code_inquire(),                                                               \
-            __FILE__, __LINE__);                                                                        \
+            __FUNCTION__, __FILE__, __LINE__);                                                          \
     } while (0)
 
 /* Define			error control jump.										                            */
@@ -174,7 +182,13 @@
         ERROR_CONTROL_LABEL_EXIT:                                                                       \
 	        __VA_ARGS__;                                                                                \
             _ERROR_CONTROL_LOG_();	                                                                    \
+            _ERROR_CONTROL_NEST_(ERROR_CONTROL_EXIT);                                                   \
             return variable;                                                                            \
+    } while (0)
+
+#define _ERROR_CONTROL_NEST_(type)                                                                      \
+    do {                                                                                                \
+        error_control_nest(type);                                                                       \
     } while (0)
 
 /*
@@ -184,11 +198,13 @@
  */
 
 /**
- * @brief This type is the error nest unit structure.
+ * @brief This type is the error control type enum.
  */
 
-struct error_nest_unit_s {
-    errno_t *code_table_ptr;
+enum error_control_type_e {
+	ERROR_CONTROL_INIT,
+	ERROR_CONTROL_TRAP,
+	ERROR_CONTROL_EXIT,
 };
 
 /*
@@ -197,16 +213,19 @@ struct error_nest_unit_s {
  *********************************************************************************************************
  */
 
-void error_control_code_table_index_modify(char index);
+void error_control_code_table_index_modify(size_t index);
 
 size_t error_control_code_table_index_inquire(void);
+
+void error_control_code_table_modify(size_t count, ...);
 
 errno_t error_control_code_inquire(void);
 
 void error_control_string_modify(char *message,
-                                 size_t code,
-                                 char *file,
-                                 size_t line);
+								 size_t code,
+								 char *function,
+								 char *file,
+								 size_t line);
 
 char *error_control_string_inquire(void);
 
@@ -216,7 +235,9 @@ int error_control_label_longjmp_modify(int value);
 
 bool error_control_label_longjmp_inquire(void);
 
-void error_control_nest(struct error_nest_unit_s nest_unit);
+void error_control_nest(enum error_control_type_e control_type);
+
+void error_control_fault_before_loop(void (*before_loop)(void));
 
 /*
  *********************************************************************************************************
