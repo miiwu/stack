@@ -196,18 +196,35 @@
 
   - [ ] ...
   
-- Self-Define Library / 自定义库
+- Self-Define Library
+
+  - Platform / 平台
+
+    包含平台相关的头文件。
 
   - Micro / 宏
 
     一些预处理器宏。
 
+  - Log / 日志、记录
+
+    可以为 Assert 和 Error  提供接口。
+
+    默认输出接口为 `printf()`，你可以通过 `LOG_CFG_LOGGER`，改成你想要的。
+
+    ```c
+    
+    LOG("i will log something");
+    LOG_DIAGNOSE("i will log something, with the head of __FUNCTION__");
+    
+    ```
+    
   - Assert / 断言
 
     尝试着用来断言函数入口参数。
 
     ```c
-    
+
     void main_assert(char *pointer, size_t variable)
     {
         ASSERT(true == true);
@@ -218,7 +235,7 @@
     }
     
     ```
-
+    
   - Error / 错误处理
 
     尝试处理函数内错误发生到返回期间的事情。

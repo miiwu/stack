@@ -80,8 +80,8 @@
 #define ERROR_CONTROL_EXIT(...)                                                                         \
     _ERROR_CONTROL_EXIT_(ERROR_CONTROL_RETURN, __VA_ARGS__)
 
-/* Define			error control fault.										                        */
-#define ERROR_CONTROL_FAULT(before_loop)                                                                \
+/* Define			error control at fault.										                        */
+#define ERROR_CONTROL_AT_FAULT(before_loop)                                                             \
     do {                                                                                                \
         error_control_fault_before_loop(before_loop);                                                   \
     } while (0)

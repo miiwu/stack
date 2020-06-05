@@ -10,13 +10,13 @@ struct error_structure_s {
 
 struct error_structure_s error_structure(void);
 
-void error_fault_befor_loop(void);
+void error_at_fault(void);
 
 void main_error(void)
 {
 	printf("\r\n------------------------+ sde.error demo start +------------------------\r\n");
 
-	ERROR_CONTROL_FAULT(error_fault_befor_loop);
+	ERROR_CONTROL_AT_FAULT(error_at_fault);
 
 	printf("\r\nsde.error.code: %d .string: \"%s\"\r\n",
 		   ERROR_CONTROL_CODE(), 													/* _CODE(), if the error have occurred, it won't be 0 */
@@ -85,7 +85,7 @@ struct error_structure_s error_structure(void)
 	ERROR_CONTROL_EXIT(printf("\r\nis it exit?\r\n"));
 }
 
-void error_fault_befor_loop(void)
+void error_at_fault(void)
 {
 	printf("enter error fault\r\n");
 }

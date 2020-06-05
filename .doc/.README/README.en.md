@@ -213,9 +213,27 @@ This package contains some simple data structures together.
 
 - Self-Define Library
 
+  - Platform
+
+    Include platform-dependent header files.
+
   - Micro
 
     Some preprocessor micro.
+
+  - Log
+
+    Can offer the log port for the Assert and Error.
+
+    The default logger is `printf()`, but you can config it by this micro `LOG_CFG_LOGGER`.
+
+    ```c
+    
+    LOG("i will log something");
+    LOG_DIAGNOSE("i will log something, with the head of __FUNCTION__");
+    
+    ```
+
 
   - Assert
 
@@ -234,15 +252,15 @@ This package contains some simple data structures together.
     }
     
     ```
-  
+
   - Error
-  
+
     A try on function  error return.
-  
+
     If any `_TRAP()` or `_JUDGE()` detect error, it will handle error in line with the decrease of index, then return.
-  
+
     The using sample is here:
-  
+
     ```c
     errno_t main_error(void)
     {
@@ -268,9 +286,9 @@ This package contains some simple data structures together.
     }
     
     ```
-  
+
   - ...
-  
+
 - Debug Component
 
   - Stack back trace
