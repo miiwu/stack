@@ -12,18 +12,6 @@
  *********************************************************************************************************
  */
 
-#define ERROR_CFG_DEBUG_EN																				\
-	0u
-
-#define ERROR_CFG_STRING_HEAD																			\
-	"\r\n""sde.error."
-
-#define ERROR_CFG_CACHE_NEST_UNIT_TABLE_GROWTH															\
-	1
-
-#define ERROR_CFG_CACHE_STRING_GROWTH																	\
-	1
-
 /*
  *********************************************************************************************************
  *                                           LOCAL CONSTANTS
@@ -174,7 +162,7 @@ struct error_s error = {
 		"Func: \"%s\"\r\n    "
 		"File: \"%s\"\r\n    "
 		"Line: %d\r\n",
-	.string.format.length = 105,
+	.string.format.length = 95 + sizeof(ERROR_CFG_STRING_HEAD),
 	.fault.out_of_memory.string_ptr = ERROR_CFG_STRING_HEAD
 		"fault:\r\n    "
 		"out of memory\r\n",
@@ -189,8 +177,13 @@ struct error_s error = {
 
 char *error_control_cache_string_inquire(size_t length);
 
+void *error_control_nest_unit_code_table_inquire(size_t count);
+
 struct error_nest_unit_s
-	*error_control_cache_nest_unit_table_inquire(size_t index);
+	*error_control_cache_nest_unit_inquire(size_t index);
+
+struct error_nest_unit_s
+	*error_control_cache_nest_unit_table_inquire(size_t count);
 
 void *error_control_cache_inquire(void *table,
 								  size_t *table_frames,
@@ -198,11 +191,6 @@ void *error_control_cache_inquire(void *table,
 								  size_t frames,
 								  size_t growth,
 								  bool copy);
-
-void *error_control_nest_unit_code_table_inquire(size_t count);
-
-struct error_nest_unit_s
-	*error_control_cache_nest_unit_inquire(size_t index);
 
 void *error_control_fault(struct error_fault_unit_s fault_unit);
 
@@ -381,12 +369,12 @@ error_control_nest(enum error_control_type_e control_type)
 }
 
 static struct error_nest_unit_s
-*error_control_cache_nest_unit_table_inquire(size_t index)
+*error_control_cache_nest_unit_table_inquire(size_t count)
 {
 	return error_control_cache_inquire(&error.cache.nest_unit.table_ptr,
 									   &error.cache.nest_unit.frames,
 									   sizeof(void *),
-									   index,
+									   count,
 									   ERROR_CFG_CACHE_NEST_UNIT_TABLE_GROWTH,
 									   true);
 }
@@ -394,13 +382,13 @@ static struct error_nest_unit_s
 static struct error_nest_unit_s
 *error_control_cache_nest_unit_inquire(size_t index)
 {
-	error_control_cache_nest_unit_table_inquire(index);
+	error_control_cache_nest_unit_table_inquire(index + 1);
 
 	return error_control_cache_inquire(&error.cache.nest_unit.table_ptr[index],
 									   NULL,
 									   sizeof(struct error_nest_unit_s),
-									   0,
 									   1,
+									   0,
 									   false);
 }
 
@@ -414,7 +402,7 @@ static void
 									   &nest_unit_ptr->code_table.count,
 									   sizeof(errno_t),
 									   count,
-									   0,
+									   ERROR_CFG_NEST_UNIT_TABLE_CODE_TABLE_GROWTH,
 									   false);
 }
 
@@ -440,7 +428,7 @@ static void
 	size_t **table_ptr = table;
 
 	if ((NULL == table_frames && NULL == *table_ptr)
-		|| (NULL != table_frames && *table_frames < frames + growth)) {
+		|| (NULL != table_frames && *table_frames <= frames)) {
 		void *block = calloc(frames + growth, element_size);
 
 		if (NULL == block) {

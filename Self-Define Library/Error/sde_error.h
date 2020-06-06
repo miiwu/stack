@@ -29,13 +29,36 @@
  *********************************************************************************************************
  */
 
-/* Configuration    config the code of no error.									                    */
-#define ERROR_CFG_NOERROR                                                                               \
-    0u
+/* Configuration    config if enable debug mode.														*/
+#define ERROR_CFG_DEBUG_EN																				\
+	0u
 
 /* Configuration    config enable log or not when _EXIT().									            */
 #define ERROR_CFG_LOG_EN                                                                                \
     1u
+
+/* Configuration    config the code of no error.									                    */
+#define ERROR_CFG_NOERROR                                                                               \
+    0u
+
+/* Configuration    config the growth of the nest unit table cache,
+ *						appropriate value can reduce the frequency of memory allocation.			    */
+#define ERROR_CFG_CACHE_NEST_UNIT_TABLE_GROWTH															\
+	5u
+
+/* Configuration    config the growth of the code table,
+ *						appropriate value can reduce the frequency of memory allocation.			    */
+#define ERROR_CFG_NEST_UNIT_TABLE_CODE_TABLE_GROWTH													    \
+	3u
+
+/* Configuration    config the growth of the string cache,
+ *						appropriate value can reduce the frequency of memory allocation.			    */
+#define ERROR_CFG_CACHE_STRING_GROWTH																	\
+	10u
+
+/* Configuration    config the head of the string.									                    */
+#define ERROR_CFG_STRING_HEAD																			\
+	"\r\n""sde.error."
 
 /* Define			error control init.										                            */
 #define ERROR_CONTROL_INIT(return_type, count, ...)                                                     \
