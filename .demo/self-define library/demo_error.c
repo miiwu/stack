@@ -1,6 +1,6 @@
 #include "demo_sde_lib.h"
 
-#if DEMO_SDE_LIB_CFG_CFG_ERROR_EN
+#if DEMO_SDE_LIB_CFG_ERROR_EN
 
 #define ERROR_CONTROL_PRINTF	printf
 
@@ -90,4 +90,4 @@ void error_at_fault(void)
 	printf("enter error fault\r\n");
 }
 
-#endif // DEMO_SDE_LIB_CFG_CFG_ERROR_EN
+#endif // DEMO_SDE_LIB_CFG_ERROR_EN

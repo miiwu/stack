@@ -1,9 +1,9 @@
 #include "demo_sde_lib.h"
 
-#if DEMO_SDE_LIB_CFG_CFG_ASSERT_EN
+#if DEMO_SDE_LIB_CFG_ASSERT_EN
 
 #define ASSERT_FAULT_EN																					\
-	1
+	0
 
 void main_assert(void)
 {
@@ -11,7 +11,7 @@ void main_assert(void)
 
 	char string[] = "sde.assert: succeed";
 
-	ASSERT(true == true);
+	ASSERT(string[0]);
 	ASSERT_POINTER(string);
 
 #if ASSERT_FAULT_EN
@@ -25,4 +25,4 @@ void main_assert(void)
 	return;
 }
 
-#endif // DEMO_SDE_LIB_CFG_CFG_ASSERT_EN
+#endif // DEMO_SDE_LIB_CFG_ASSERT_EN

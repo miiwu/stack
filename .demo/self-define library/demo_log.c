@@ -1,6 +1,6 @@
 #include "demo_sde_lib.h"
 
-#if DEMO_SDE_LIB_CFG_CFG_LOG_EN
+#if DEMO_SDE_LIB_CFG_LOG_EN
 
 void main_log(void)
 {
@@ -19,4 +19,4 @@ void main_log(void)
 	return;
 }
 
-#endif // DEMO_SDE_LIB_CFG_CFG_LOG_EN
+#endif // DEMO_SDE_LIB_CFG_LOG_EN

@@ -24,41 +24,41 @@
  *********************************************************************************************************
  */
 
-#define DEMO_SDE_LIB_CFG_CFG_MICRO_EN													\
-	0
-
-#define DEMO_SDE_LIB_CFG_CFG_LOG_EN														\
+#define DEMO_SDE_LIB_CFG_MICRO_EN													\
 	1
 
-#define DEMO_SDE_LIB_CFG_CFG_ASSERT_EN													\
+#define DEMO_SDE_LIB_CFG_LOG_EN														\
 	1
 
-#define DEMO_SDE_LIB_CFG_CFG_ERROR_EN													\
+#define DEMO_SDE_LIB_CFG_ASSERT_EN													\
 	1
 
-#if DEMO_SDE_LIB_CFG_CFG_MICRO_EN
+#define DEMO_SDE_LIB_CFG_ERROR_EN													\
+	1
+
+#if DEMO_SDE_LIB_CFG_MICRO_EN
 
 void main_micro(void);
 
-#endif // DEMO_SDE_LIB_CFG_CFG_MICRO_EN
+#endif // DEMO_SDE_LIB_CFG_MICRO_EN
 
-#if DEMO_SDE_LIB_CFG_CFG_LOG_EN
+#if DEMO_SDE_LIB_CFG_LOG_EN
 
 void main_log(void);
 
-#endif // DEMO_SDE_LIB_CFG_CFG_LOG_EN
+#endif // DEMO_SDE_LIB_CFG_LOG_EN
 
-#if DEMO_SDE_LIB_CFG_CFG_ASSERT_EN
+#if DEMO_SDE_LIB_CFG_ASSERT_EN
 
 void main_assert(void);
 
-#endif // DEMO_SDE_LIB_CFG_CFG_ASSERT_EN
+#endif // DEMO_SDE_LIB_CFG_ASSERT_EN
 
-#if DEMO_SDE_LIB_CFG_CFG_ERROR_EN
+#if DEMO_SDE_LIB_CFG_ERROR_EN
 
 void main_error(void);
 
-#endif // DEMO_SDE_LIB_CFG_CFG_ERROR_EN
+#endif // DEMO_SDE_LIB_CFG_ERROR_EN
 
 /*
  *********************************************************************************************************

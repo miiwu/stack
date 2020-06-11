@@ -46,13 +46,16 @@
 #define SHORTCUTS(body, shortcut, ...)                                                                  \
     body ## shortcut LEFTBRACKET __VA_ARGS__)
 
+/* Define			built-in.										                                    */
+#define BUILT_IN(structure, method, ...)                                                                \
+    method(structure, __VA_ARGS__)
+
 /* Define			field offset.								                                        */
 #define FIELD(variable_address, field_type, field_offset)                                               \
     *(field_type*)((char *)variable_address + (field_offset))
 
 /* Define			field offset.								                                        */
-#ifdef FIELD_OFFSET
-#else
+#ifndef FIELD_OFFSET
 
 #define FIELD_OFFSET(type, field)                                                                       \
     ((size_t)(size_t *) & (((type *)0)->field))

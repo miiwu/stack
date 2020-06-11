@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{A3FB6014-29A5-464F-A65A-F6805B0A2DC2}</ProjectGuid>
-    <RootNamespace>unifystructure</RootNamespace>
+    <RootNamespace>unify structure</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

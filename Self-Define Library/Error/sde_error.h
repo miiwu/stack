@@ -18,8 +18,6 @@
 
 #include "sde_assert.h"
 
-#include "sde_log.h"
-
 #include <errno.h>
 #include <setjmp.h>
 #include <stdarg.h>
@@ -32,7 +30,7 @@
  */
 
 /* Configuration    config the code of no error.									                    */
-#define ERROR_CFG_NOERROR                                                                                \
+#define ERROR_CFG_NOERROR                                                                               \
     0u
 
 /* Configuration    config enable log or not when _EXIT().									            */
@@ -42,7 +40,7 @@
 /* Define			error control init.										                            */
 #define ERROR_CONTROL_INIT(return_type, count, ...)                                                     \
     _ERROR_CONTROL_NEST_(ERROR_CONTROL_INIT);                                                           \
-    error_control_code_table_modify(count + 1, ERROR_CFG_NOERROR, __VA_ARGS__);                          \
+    error_control_code_table_modify(count + 1, ERROR_CFG_NOERROR, __VA_ARGS__);                         \
     _ERROR_CONTROL_VARIABLE_RETURN_(return_type);                                                       \
     _ERROR_CONTROL_SET_(0, NULL)
 
@@ -51,7 +49,7 @@
     do {                                                                                                \
 	    if ((trap)                                                                                      \
             /* The 1st priority, if it's result is 1, enter                                         */  \
-            || ERROR_CFG_NOERROR != error_control_code_inquire()                                         \
+            || ERROR_CFG_NOERROR != error_control_code_inquire()                                        \
             /* The 2st priority                                                                     */  \
             || error_control_label_longjmp_modify(                                                      \
                 setjmp(*error_control_label_inquire(index)))) {                                         \
