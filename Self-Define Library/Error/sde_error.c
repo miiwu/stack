@@ -13,7 +13,7 @@
  */
 
 #define ERROR_CFG_DEBUG_EN																				\
-	1u
+	0u
 
 #define ERROR_CFG_STRING_HEAD																			\
 	"\r\n""sde.error."
@@ -23,12 +23,6 @@
 
 #define ERROR_CFG_CACHE_STRING_GROWTH																	\
 	1
-
-#define ERROR_DIAGNOSE(...)																				\
-	ERROR_CFG_LOGGER(																					\
-		"%s()." VA_ARGS_ARG(1, __VA_ARGS__),															\
-		__FUNCTION__,																					\
-		VA_ARGS_FROM(2, __VA_ARGS__))
 
 /*
  *********************************************************************************************************
@@ -316,8 +310,8 @@ extern inline jmp_buf
 
 #if ERROR_CFG_DEBUG_EN
 
-	ERROR_DIAGNOSE("index: %d\r\n",
-				   index);
+	LOG_DIAGNOSE("index: %d\r\n",
+				 index);
 
 #endif // ERROR_CFG_DEBUG_EN
 
@@ -344,9 +338,9 @@ error_control_nest(enum error_control_type_e control_type)
 
 #if ERROR_CFG_DEBUG_EN
 
-	ERROR_DIAGNOSE("control type: .now: %d .last: %d \r\n",
-				   control_type, 
-				   last_control_type);
+	LOG_DIAGNOSE("control type: .now: %d .last: %d \r\n",
+				 control_type,
+				 last_control_type);
 
 #endif // ERROR_CFG_DEBUG_EN
 
@@ -376,9 +370,9 @@ error_control_nest(enum error_control_type_e control_type)
 
 	#if ERROR_CFG_DEBUG_EN
 
-		ERROR_DIAGNOSE("_cache_nest_unit_inquire().nest unit : % p.frame : % d\r\n",
-					   error.nest.nest_unit_ptr,
-					   error.nest.frames);
+		LOG_DIAGNOSE("_cache_nest_unit_inquire().nest unit : % p.frame : % d\r\n",
+					 error.nest.nest_unit_ptr,
+					 error.nest.frames);
 
 	#endif // ERROR_CFG_DEBUG_EN
 	}
@@ -488,7 +482,7 @@ error_control_fault_before_loop(void (*before_loop)(void))
 static void
 *error_control_fault(struct error_fault_unit_s fault_unit)
 {
-	ERROR_CFG_LOGGER(fault_unit.string_ptr);
+	LOG(fault_unit.string_ptr);
 
 	if (NULL != error.fault.before_loop) {
 		error.fault.before_loop();

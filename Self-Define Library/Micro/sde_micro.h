@@ -16,18 +16,7 @@
  *********************************************************************************************************
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <assert.h>
-#include <errno.h>
-#include <malloc.h>
-
-#include <windows.h>
-
-#pragma warning( disable : 4996)
-#pragma warning( disable : 26812)
+#include "sde_platform.h"
 
 /*
  *********************************************************************************************************

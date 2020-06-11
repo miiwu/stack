@@ -14,11 +14,9 @@ void main_assert(void)
 	ASSERT(true == true);
 	ASSERT_POINTER(string);
 
-	printf("\r\n%s\r\n", string);
-
 #if ASSERT_FAULT_EN
 
-	ASSERT_VARIABLE(-1, >= , int, 0);
+	ASSERT_VARIABLE(-1, >= , int, 0, printf("this assert is failed!\r\n"));
 
 #endif // ASSERT_FAULT_EN
 

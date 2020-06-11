@@ -34,6 +34,12 @@
     <Filter Include="头文件\demo">
       <UniqueIdentifier>{9e954496-79af-4b05-8e87-ae01db07bc3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\log">
+      <UniqueIdentifier>{7875e28a-a2bf-4007-b681-93f202f96273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\platform">
+      <UniqueIdentifier>{50b20ce0-8771-4f07-8340-7950f058b9d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\.demo\self-define library\demo_sde_lib.h">
@@ -50,6 +56,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Self-Define Library\Micro\sde_micro.h">
       <Filter>头文件\micro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Self-Define Library\Log\sde_log.h">
+      <Filter>头文件\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Self-Define Library\Platform\sde_platform.h">
+      <Filter>头文件\platform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +82,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Self-Define Library\Error\sde_error.c">
       <Filter>源文件\error</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\.demo\self-define library\demo_log.c">
+      <Filter>源文件\demo</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

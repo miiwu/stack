@@ -8,6 +8,12 @@ void main(void)
 
 #endif // DEMO_SDE_LIB_CFG_LIBARY_CFG_MICRO_EN
 
+#if DEMO_SDE_LIB_CFG_CFG_LOG_EN
+
+	main_log();
+
+#endif // DEMO_SDE_LIB_CFG_CFG_LOG_EN
+
 #if DEMO_SDE_LIB_CFG_CFG_ASSERT_EN
 
 	main_assert();

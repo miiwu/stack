@@ -7,8 +7,8 @@
  *********************************************************************************************************
  */
 
-#ifndef __DEMO_SELF_DEFINE_LIBRARY_H
-#define __DEMO_SELF_DEFINE_LIBRARY_H
+#ifndef __SELF_DEFINE_PLATFORM_H
+#define __SELF_DEFINE_PLATFORM_H
 
 /*
  *********************************************************************************************************
@@ -16,49 +16,21 @@
  *********************************************************************************************************
  */
 
-#include "sde_lib.h"
+#include <windows.h>
+
+#if defined(WIN32)
+
+/* Pargma			Disable warning for may unsafe std(), such as sprintf -> sprintf_s					*/
+#pragma warning (disable : 4996)
+#pragma warning (disable : 26812)
+
+#endif // WIN32
 
 /*
  *********************************************************************************************************
  *									            DEFINES
  *********************************************************************************************************
  */
-
-#define DEMO_SDE_LIB_CFG_CFG_MICRO_EN													\
-	0
-
-#define DEMO_SDE_LIB_CFG_CFG_LOG_EN														\
-	1
-
-#define DEMO_SDE_LIB_CFG_CFG_ASSERT_EN													\
-	1
-
-#define DEMO_SDE_LIB_CFG_CFG_ERROR_EN													\
-	1
-
-#if DEMO_SDE_LIB_CFG_CFG_MICRO_EN
-
-void main_micro(void);
-
-#endif // DEMO_SDE_LIB_CFG_CFG_MICRO_EN
-
-#if DEMO_SDE_LIB_CFG_CFG_LOG_EN
-
-void main_log(void);
-
-#endif // DEMO_SDE_LIB_CFG_CFG_LOG_EN
-
-#if DEMO_SDE_LIB_CFG_CFG_ASSERT_EN
-
-void main_assert(void);
-
-#endif // DEMO_SDE_LIB_CFG_CFG_ASSERT_EN
-
-#if DEMO_SDE_LIB_CFG_CFG_ERROR_EN
-
-void main_error(void);
-
-#endif // DEMO_SDE_LIB_CFG_CFG_ERROR_EN
 
 /*
  *********************************************************************************************************
@@ -84,4 +56,4 @@ void main_error(void);
  *********************************************************************************************************
  */
 
-#endif // !__DEMO_SELF_DEFINE_LIBRARY_H
+#endif // !__SELF_DEFINE_PLATFORM_H

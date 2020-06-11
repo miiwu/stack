@@ -18,17 +18,18 @@
 
 #include "sde_assert.h"
 
+#include "sde_log.h"
+
+#include <errno.h>
 #include <setjmp.h>
+#include <stdarg.h>
+#include <stdbool.h>
 
 /*
  *********************************************************************************************************
  *									            DEFINES
  *********************************************************************************************************
  */
-
-/* Configuration    config the logger of _EXIT().									                    */
-#define ERROR_CFG_LOGGER                                                                                \
-    printf
 
 /* Configuration    config the code of no error.									                    */
 #define ERROR_CFG_NOERROR                                                                                \
@@ -166,7 +167,7 @@
 #define _ERROR_CONTROL_LOG_()                                                                           \
     do {                                                                                                \
         if (0u != error_control_code_table_index_inquire()) {                                           \
-            ERROR_CFG_LOGGER(error_control_string_inquire());                                           \
+            LOG(error_control_string_inquire());                                                        \
 		}                                                                                               \
     } while (0)
 

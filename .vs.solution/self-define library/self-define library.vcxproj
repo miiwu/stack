@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\.demo\self-define library\demo_assert.c" />
     <ClCompile Include="..\..\.demo\self-define library\demo_error.c" />
+    <ClCompile Include="..\..\.demo\self-define library\demo_log.c" />
     <ClCompile Include="..\..\.demo\self-define library\demo_micro.c" />
     <ClCompile Include="..\..\.demo\self-define library\demo_sde_lib.c" />
     <ClCompile Include="..\..\Self-Define Library\Assert\sde_assert.c" />
@@ -30,7 +31,9 @@
     <ClInclude Include="..\..\.demo\self-define library\demo_sde_lib.h" />
     <ClInclude Include="..\..\Self-Define Library\Assert\sde_assert.h" />
     <ClInclude Include="..\..\Self-Define Library\Error\sde_error.h" />
+    <ClInclude Include="..\..\Self-Define Library\Log\sde_log.h" />
     <ClInclude Include="..\..\Self-Define Library\Micro\sde_micro.h" />
+    <ClInclude Include="..\..\Self-Define Library\Platform\sde_platform.h" />
     <ClInclude Include="..\..\Self-Define Library\sde_lib.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -86,24 +89,24 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

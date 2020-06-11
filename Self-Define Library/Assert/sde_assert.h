@@ -18,22 +18,29 @@
 
 #include "sde_micro.h"
 
+#include "sde_log.h"
+
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+
 /*
  *********************************************************************************************************
  *									            DEFINES
  *********************************************************************************************************
  */
 
-/* Configuration    assert configuration logger.										                */
-#define ASSERT_CFG_LOGGER                                                                               \
-    printf
+/* Configuration    config enable log or not when assert fail.									        */
+#define ASSERT_CFG_LOG_EN                                                                               \
+    1
 
 /* Define			assert expression.								                                    */
 #define ASSERT(expression, ...)                                                                         \
     do {                                                                                                \
         _ASSERT_(                                                                                       \
-            expression, _ASSERT_LOG_(                                                                   \
-                expression, __VA_ARGS__));                                                              \
+            expression,                                                                                 \
+            expression,                                                                                 \
+            __VA_ARGS__);                                                                               \
     } while (0)
 
 /* Define			assert variable.								                                    */
@@ -41,8 +48,8 @@
     do {                                                                                                \
         _ASSERT_(                                                                                       \
             ((value_type)(variable)) comp ((value_type)(value)),                                        \
-             _ASSERT_LOG_(                                                                              \
-                variable comp value, __VA_ARGS__));                                                     \
+            variable comp value,                                                                        \
+            __VA_ARGS__);                                                                               \
     } while (0)
 
 /* Define			assert pointer.								                                        */
@@ -50,15 +57,16 @@
     do {                                                                                                \
         _ASSERT_(                                                                                       \
             pointer != NULL,                                                                            \
-            _ASSERT_LOG_(                                                                               \
-                pointer != NULL, __VA_ARGS__));                                                         \
+            pointer != NULL,                                                                            \
+            __VA_ARGS__);                                                                               \
     } while (0)
 
 /* Define			assert.										                                        */
-#define _ASSERT_(expression, ...)                                                                       \
+#define _ASSERT_(expression, message, ...)                                                              \
 	do {																								\
 		assert(expression);	                                                                            \
         if (!(expression)) {                                                                            \
+            _ASSERT_LOG_(message);                                                                      \
             __VA_ARGS__;                                                                                \
             while (1) {                                                                                 \
             }                                                                                           \
@@ -66,19 +74,22 @@
 	} while (0)
 
 /* Define			assert log.								                                            */
-#define _ASSERT_LOG_(expression, ...)                                                                   \
-    do {                                                                                                \
-        assert_control_string_modify(                                                                   \
-            #expression,                                                                                \
-            __FUNCTION__,                                                                               \
-            __FILE__,                                                                                   \
-            __LINE__);                                                                                  \
-        VA_ARGS_ARG(                                                                                    \
-            2, printf, __VA_ARGS__, ASSERT_CFG_LOGGER)(                                                 \
-                assert_control_string_inquire());                                                       \
-        VA_ARGS_FROM(                                                                                   \
-            2, __VA_ARGS__, NULL, NULL);                                                                \
-    } while (0)
+#if ASSERT_CFG_LOG_EN
+
+#define _ASSERT_LOG_(message)                                                                           \
+    assert_control_string_modify(                                                                       \
+        #message,                                                                                       \
+        __FUNCTION__,                                                                                   \
+        __FILE__,                                                                                       \
+        __LINE__);                                                                                      \
+    LOG(assert_control_string_inquire());                                                               \
+    NULL
+
+#else
+
+#define _ASSERT_LOG_(message)
+
+#endif // ASSERT_CFG_LOG_EN
 
 /*
  *********************************************************************************************************
