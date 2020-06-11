@@ -1,86 +1,66 @@
 /*
-************************************************************************************************************************
-*                                  DEBUG COMPONENT OF CAPATURE STACK BACK TRACE FUNCTIONS
-*
-* File    : DEBUG_CAPATURE_STACK_BACK_TRACE.H
-* By      : lqq
-* Version : V0.01.00
-*
-* FIRST ENLIGHTENMENT : https://gist.github.com/t-mat/7979300
-* SECONDARY REFERANCE : https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb204633(v=vs.85)?redirectedfrom=MSDN
-*
-************************************************************************************************************************
-*/
+ ************************************************************************************************************************
+ *                                  DEBUG COMPONENT OF CAPATURE STACK BACK TRACE FUNCTIONS
+ *
+ * File    : DEBUG_CAPATURE_STACK_BACK_TRACE.H
+ * By      : Miao Mico
+ * Version : V0.01.00
+ *
+ * FIRST ENLIGHTENMENT : https://gist.github.com/t-mat/7979300
+ * SECONDARY REFERANCE : https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb204633(v=vs.85)?redirectedfrom=MSDN
+ *
+ ************************************************************************************************************************
+ */
 
 /*
-*********************************************************************************************************
-*                                               MODULE
-*
-* Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
-*               through use of the definition module present pre-processor macro definition.
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                               MODULE
+ *
+ * Note(s) : (1) This definition header file is protected from multiple pre-processor inclusion
+ *               through use of the definition module present pre-processor macro definition.
+ *********************************************************************************************************
+ */
 
 #ifndef __DEBUG_STACK_BACK_TRACE_H
 #define __DEBUG_STACK_BACK_TRACE_H
 
 /*
-*********************************************************************************************************
-*                                          INCLUDE FILES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                          INCLUDE FILES
+ *********************************************************************************************************
+ */
 
-#include "debug_component_def.h"
-
-/*
-*********************************************************************************************************
-*									      CONFIG DEFINES
-*********************************************************************************************************
-*/
-
-/* Configure the max depth of the capture stack back trace.                                             */
-#define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH	    64u
-
-/* Configure if enable the capture stack back trace debug mode.                                         */
-#define DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN	    0u
+#include "stack_back_trace_platform.h"
 
 /*
-*********************************************************************************************************
-*									           DATA TYPES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *									      CONFIG DEFINES
+ *********************************************************************************************************
+ */
 
-/* Configure    the back trace type.                                                                    */
-typedef void
-*single_back_trace_t,
-*back_trace_t[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH],
-*(*back_trace_pt)[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH];
+/* Configure        the max frames of the stack back trace can capture.									*/
+#define STACK_BACK_TRACE_CFG_FRAMES_CAPTURE_MAX															\
+	64u
 
-/* Configure    the back trace frame type.                                                              */
-typedef WORD back_trace_frame_t, *back_trace_frame_pt;
+/* Configure        if enable the capture stack back trace debug mode.                                  */
+#define STACK_BACK_TRACE_CFG_DEBUG_EN																	\
+	0u
 
-/* Configure    the back trace hash type.                                                               */
-typedef ULONG back_trace_hash_t, *back_trace_hash_pt;
-
-/* Configure    the back trace symbol type.                                                             */
-typedef struct stack_back_trace_string_t
-STACK_BACK_TRACE_STRING_TYPEDEF[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH],
-(*STACK_BACK_TRACE_STRING_TYPEDEF_PTR)[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH];
-
-/* Configure    the back trace line type.                                                               */
-typedef IMAGEHLP_LINE64 *back_trace_line_t;
-
-/* Configure    the stack back trace type.                                                              */
-typedef struct stack_back_trace_t *STACK_BACK_TRACE_TYPEDEF_PTR,**STACK_BACK_TRACE_TYPEDEF_PPTR;
-
-/* Configure    the stack back trace link type.                                                         */
-typedef struct stack_back_trace_link_t *STACK_BACK_TRACE_LINK_TYPEDEF_PTR;
+/* Define			built-in stack back trace.															*/
+#define STACK_BACK_TRACE(method, ...)																	\
+	BUILT_IN(&_built_in_stack_back_trace_, method, __VA_ARGS__)
 
 /*
-*********************************************************************************************************
-*											FUNCTION PROTOTYPES
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *									           DATA TYPES
+ *********************************************************************************************************
+ */
+
+/*
+ *********************************************************************************************************
+ *											FUNCTION PROTOTYPES
+ *********************************************************************************************************
+ */
 
 /**
  * @brief This function will initialize the capture stack back trace struct.
@@ -91,8 +71,8 @@ typedef struct stack_back_trace_link_t *STACK_BACK_TRACE_LINK_TYPEDEF_PTR;
  * @return NONE
  */
 
-void debug_capture_stack_back_trace_init(STACK_BACK_TRACE_TYPEDEF_PTR *stack_back_trace,
-										 DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE count);
+errno_t stack_back_trace_control_init(stack_back_trace_stpp stack_back_trace,
+									  stack_back_trace_size_t count);
 
 /**
  * @brief This function will destroy the capture stack back trace struct.
@@ -102,7 +82,7 @@ void debug_capture_stack_back_trace_init(STACK_BACK_TRACE_TYPEDEF_PTR *stack_bac
  * @return NONE
  */
 
-void debug_capture_stack_back_trace_destroy(STACK_BACK_TRACE_TYPEDEF_PTR *stack_back_trace);
+void stack_back_trace_control_destroy(stack_back_trace_stpp stack_back_trace);
 
 /**
  * @brief This function will back trace the stack.
@@ -114,20 +94,9 @@ void debug_capture_stack_back_trace_destroy(STACK_BACK_TRACE_TYPEDEF_PTR *stack_
  * @return NONE
  */
 
-void debug_capture_stack_back_trace(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace,
-									DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip);
-
-/**
- * @brief This function will reduce the count of the capture stack back trace type.
- *
- * @param stack_back_trace the pointer to the capture stack back trace struct
- * @param hash the hash of the capture stack back trace
- *
- * @return NONE
- */
-
-void debug_capture_stack_back_trace_reduce_count(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-												 back_trace_hash_t hash);
+errno_t stack_back_trace_control_trace_address(stack_back_trace_stp stack_back_trace,
+											   stack_back_trace_frame_t skip,
+											   stack_back_trace_frame_t capture);
 
 /**
  * @brief This function will back trace the stack.
@@ -139,7 +108,10 @@ void debug_capture_stack_back_trace_reduce_count(STACK_BACK_TRACE_TYPEDEF_PTR st
  * @return NONE
  */
 
-void debug_capture_stack_back_trace_convert_to_string(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace);
+struct stack_back_trace_string_package_s
+	stack_back_trace_control_trace_string(stack_back_trace_stp stack_back_trace,
+										  enum stack_back_trace_string_option_e option,
+										  size_t index);
 
 /**
  * @brief This function will return the specified hash.
@@ -150,71 +122,32 @@ void debug_capture_stack_back_trace_convert_to_string(STACK_BACK_TRACE_TYPEDEF_P
  * @return NONE
  */
 
-back_trace_hash_t debug_capture_stack_back_trace_get_hash(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-														  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index);
-
-single_back_trace_t *debug_capture_stack_back_trace_get_trace(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-															  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index,
-															  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE sub_index);
+stack_back_trace_hash_t stack_back_trace_control_get_hash(stack_back_trace_stp strcuture,
+														  stack_back_trace_size_t index);
 
 /**
- * @brief This function will initialize a link struct.
+ * @brief This function will return the count package.
  *
- * @param link the pointer to the stack back trace link struct
+ * @param stack_back_trace the pointer to the capture stack back trace struct
  *
  * @return NONE
  */
 
-void debug_capture_stack_back_trace_link_init(STACK_BACK_TRACE_LINK_TYPEDEF_PTR *link,
-											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE count);
-
-/**
- * @brief This function will destroy a link struct.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NONE
- */
-
-void debug_capture_stack_back_trace_link_destroy(STACK_BACK_TRACE_LINK_TYPEDEF_PTR *link);
-
-/**
- * @brief This function will make a sign.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return index
- */
-
-void debug_capture_stack_back_trace_link_mark(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip);
-
-/**
- * @brief This function will set a link via the sign.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NONE
- */
-
-void debug_capture_stack_back_trace_link_link(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip);
-
-/**
- * @brief This function will get the trace in the link.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NULL
- */
-
-void debug_capture_stack_back_trace_link_get_trace_ptr(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-                                                   STACK_BACK_TRACE_TYPEDEF_PPTR trace);
+struct stack_back_trace_count_package_s
+	stack_back_trace_control_get_count_package(stack_back_trace_stp stack_back_trace);
 
 /*
-*********************************************************************************************************
-*                                             MODULE END
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *                                       EXTERN GLOBAL VARIABLES
+ *********************************************************************************************************
+ */
+
+extern struct stack_back_trace_s _built_in_stack_back_trace_;
+
+/*
+ *********************************************************************************************************
+ *                                             MODULE END
+ *********************************************************************************************************
+ */
 
 #endif // !__DEBUG_STACK_BACK_TRACE_H

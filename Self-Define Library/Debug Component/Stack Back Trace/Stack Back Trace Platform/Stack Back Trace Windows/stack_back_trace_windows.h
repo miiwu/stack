@@ -7,8 +7,8 @@
  *********************************************************************************************************
  */
 
-#ifndef __DEBUG_COMPONENT_DEFINITION_H
-#define __DEBUG_COMPONENT_DEFINITION_H
+#ifndef __STACK_BACK_TRACE_WINDOWS_H
+#define __STACK_BACK_TRACE_WINDOWS_H
 
 /*
  *********************************************************************************************************
@@ -16,7 +16,10 @@
  *********************************************************************************************************
  */
 
-#include "sde_error.h"
+#include "stack_back_trace_def.h"
+
+#include <DbgHelp.h>
+#pragma comment (lib, "Dbghelp.lib")
 
 /*
  *********************************************************************************************************
@@ -24,11 +27,9 @@
  *********************************************************************************************************
  */
 
-/* Configure        allocator global size type.														    */
-#define DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE													size_t
-
-#pragma warning( disable : 4996)
-#pragma warning( disable : 26812)
+/* Configure        the main() depth of the capture stack back trace.                                   */
+#define STACK_BACK_TRACE_WINDOWS_CFG_FRAMES_BEFORE_MAIN													\
+	7u
 
 /*
  *********************************************************************************************************
@@ -42,15 +43,17 @@
  *********************************************************************************************************
  */
 
-/*
- *********************************************************************************************************
- *                                       EXTERN GLOBAL VARIABLES
- *********************************************************************************************************
- */
+stack_back_trace_frame_t
+stack_back_trace_control_platform_trace_address(struct stack_back_trace_trace_unit_s *trace_unit);
+
+stack_back_trace_frame_t
+stack_back_trace_control_platform_trace_string(struct stack_back_trace_string_s *string_list,
+											   struct stack_back_trace_trace_unit_s trace_unit,
+											   enum stack_back_trace_string_option_e option);
 
 /*
  *********************************************************************************************************
- *                                            FUNCTIONS
+ *                                       EXTERN GLOBAL VARIABLES
  *********************************************************************************************************
  */
 
@@ -60,4 +63,4 @@
  *********************************************************************************************************
  */
 
-#endif // !__DEBUG_COMPONENT_DEFINITION_H
+#endif // !__STACK_BACK_TRACE_WINDOWS_H

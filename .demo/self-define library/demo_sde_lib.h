@@ -25,15 +25,18 @@
  */
 
 #define DEMO_SDE_LIB_CFG_MICRO_EN													\
-	1
+	0
 
 #define DEMO_SDE_LIB_CFG_LOG_EN														\
-	1
+	0
 
 #define DEMO_SDE_LIB_CFG_ASSERT_EN													\
-	1
+	0
 
 #define DEMO_SDE_LIB_CFG_ERROR_EN													\
+	0
+
+#define DEMO_SDE_LIB_CFG_DBG_CMPT_STACK_BACK_TRACE_EN								\
 	1
 
 #if DEMO_SDE_LIB_CFG_MICRO_EN
@@ -59,6 +62,12 @@ void main_assert(void);
 void main_error(void);
 
 #endif // DEMO_SDE_LIB_CFG_ERROR_EN
+
+#if DEMO_SDE_LIB_CFG_DBG_CMPT_STACK_BACK_TRACE_EN
+
+void main_stack_back_trace(void);
+
+#endif // DEMO_SDE_LIB_CFG_DBG_CMPT_STACK_BACK_TRACE_EN
 
 /*
  *********************************************************************************************************

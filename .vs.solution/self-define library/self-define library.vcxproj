@@ -24,12 +24,22 @@
     <ClCompile Include="..\..\.demo\self-define library\demo_log.c" />
     <ClCompile Include="..\..\.demo\self-define library\demo_micro.c" />
     <ClCompile Include="..\..\.demo\self-define library\demo_sde_lib.c" />
+    <ClCompile Include="..\..\.demo\self-define library\demo_stack_back_trace.c" />
     <ClCompile Include="..\..\Self-Define Library\Assert\sde_assert.c" />
+    <ClCompile Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform\Stack Back Trace Windows\stack_back_trace_windows.c" />
+    <ClCompile Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\stack_back_trace.c" />
     <ClCompile Include="..\..\Self-Define Library\Error\sde_error.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\.demo\self-define library\demo_sde_lib.h" />
     <ClInclude Include="..\..\Self-Define Library\Assert\sde_assert.h" />
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Debug Component Definition\debug_component_def.h" />
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\debug_component.h" />
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Definition\stack_back_trace_def.h" />
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Definition\stack_back_trace_pvt_def.h" />
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform\Stack Back Trace Windows\stack_back_trace_windows.h" />
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform\stack_back_trace_platform.h" />
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\stack_back_trace.h" />
     <ClInclude Include="..\..\Self-Define Library\Error\sde_error.h" />
     <ClInclude Include="..\..\Self-Define Library\Log\sde_log.h" />
     <ClInclude Include="..\..\Self-Define Library\Micro\sde_micro.h" />
@@ -89,24 +99,24 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;..\..\Self-Define Library\Debug Component;..\..\Self-Define Library\Debug Component\Debug Component Definition;..\..\Self-Define Library\Debug Component\Stack Back Trace;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Definition;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform\Stack Back Trace Windows;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;..\..\Self-Define Library\Debug Component;..\..\Self-Define Library\Debug Component\Debug Component Definition;..\..\Self-Define Library\Debug Component\Stack Back Trace;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Definition;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform\Stack Back Trace Windows;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;..\..\Self-Define Library\Debug Component;..\..\Self-Define Library\Debug Component\Debug Component Definition;..\..\Self-Define Library\Debug Component\Stack Back Trace;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Definition;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform\Stack Back Trace Windows;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\Self-Define Library;..\..\Self-Define Library\Platform;..\..\Self-Define Library\Micro;..\..\Self-Define Library\Log;..\..\Self-Define Library\Assert;..\..\Self-Define Library\Error;..\..\Self-Define Library\Debug Component;..\..\Self-Define Library\Debug Component\Debug Component Definition;..\..\Self-Define Library\Debug Component\Stack Back Trace;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Definition;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform;..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform\Stack Back Trace Windows;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

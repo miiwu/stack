@@ -1,104 +1,44 @@
 /*
-************************************************************************************************************************
-*                                  DEBUG COMPONENT OF CAPATURE STACK BACK TRACE FUNCTIONS
-*
-* File    : DEBUG_CAPATURE_STACK_BACK_TRACE.C
-* By      : Miao Mico
-* Version : V0.01.00
-*
-* FIRST ENLIGHTENMENT : https://gist.github.com/t-mat/7979300
-* SECONDARY REFERANCE : https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb204633(v=vs.85)?redirectedfrom=MSDN
-*
-************************************************************************************************************************
-*/
-
-/*
-*********************************************************************************************************
-*                                            INCLUDE FILES
-*********************************************************************************************************
-*/
-
-#include "debug_stack_back_trace.h"
-
-/*
-*********************************************************************************************************
-*                                            LOCAL DEFINES
-*********************************************************************************************************
-*/
-
-#define TRACE_MAX_DEPTH	DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH
-#define TRACE_SIZE_TYPE	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE
-
-#define GET_ADDRESS_VIA_PTR(pointer,mem_type,index)	(void*)((size_t)(pointer) + index * mem_type)
-
-/*
-*********************************************************************************************************
-*                                           LOCAL CONSTANTS
-*********************************************************************************************************
-*/
-
-/*
-*********************************************************************************************************
-*                                          LOCAL DATA TYPES
-*********************************************************************************************************
-*/
-
-/**
- * @brief This struct is the stack back trace stack_back_trace module
+ ************************************************************************************************************************
+ *                                  DEBUG COMPONENT OF CAPATURE STACK BACK TRACE FUNCTIONS
+ *
+ * File    : DEBUG_CAPATURE_STACK_BACK_TRACE.C
+ * By      : Miao Mico
+ * Version : V0.01.00
+ *
+ * FIRST ENLIGHTENMENT : https://gist.github.com/t-mat/7979300
+ * SECONDARY REFERANCE : https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb204633(v=vs.85)?redirectedfrom=MSDN
+ *
+ ************************************************************************************************************************
  */
 
-struct stack_back_trace_t {
-	/* @brief This variables will record the max types.					                */
-	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE max_type_count;
-
-	/* @brief This variables will record how many types is recorded.					                */
-	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE type_count;
-
-	/* @brief This variables will record the amount of back trace.					                    */
-	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE *back_trace_count;
-
-	/* @brief This variables will record the back trace.					                            */
-	back_trace_pt back_trace;
-
-	/* @brief This variables will record the back trace frames.											*/
-	back_trace_frame_pt back_trace_frames;
-
-	/* @brief This variables will record the hash value of back trace.					                */
-	back_trace_hash_pt back_trace_hash;
-};
-
-/**
- * @brief This struct is the stack back trace link module
+/*
+ *********************************************************************************************************
+ *                                            INCLUDE FILES
+ *********************************************************************************************************
  */
 
-struct stack_back_trace_link_t {
-	/* @brief This variables will record the trace value of the both stack.					            */
-	struct stack_back_trace_t *mark_ptr;
+#include "stack_back_trace.h"
 
-	/* @brief This variables will record the hash value of the both stack.					            */
-	struct stack_back_trace_t *link_ptr;
-};
+#include "stack_back_trace_pvt_def.h"
 
-/**
- * @brief This struct is the stack back trace symbol module
+/*
+ *********************************************************************************************************
+ *                                            LOCAL DEFINES
+ *********************************************************************************************************
  */
 
-struct stack_back_trace_string_t {
-	/* @brief This variables will record the max types.													*/
-	size_t name_len;
+/*
+ *********************************************************************************************************
+ *                                           LOCAL CONSTANTS
+ *********************************************************************************************************
+ */
 
-	/* @brief This variables will record how many types is recorded.					                */
-	char *name;
-
-	/* @brief This variables will record the trace value of the both stack.					            */
-	size_t file_line;
-
-	/* @brief This variables will record the trace value of the both stack.					            */
-	size_t file_line_len;
-
-	/* @brief This variables will record the hash value of the both stack.					            */
-	char *file_name;
-};
+/*
+ *********************************************************************************************************
+ *                                          LOCAL DATA TYPES
+ *********************************************************************************************************
+ */
 
 /*
 *********************************************************************************************************
@@ -112,12 +52,9 @@ struct stack_back_trace_string_t {
 *********************************************************************************************************
 */
 
-DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE
-g_pre_single_trace_len = sizeof(single_back_trace_t),
-g_pre_trace_len = sizeof(single_back_trace_t) * DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH,
-g_pre_frame_len = sizeof(back_trace_frame_t);
+stack_back_trace_size_t _built_in_stack_back_trace_count_;
 
-STACK_BACK_TRACE_TYPEDEF_PTR global_link_stack_back_trace_tmp = NULL;
+struct stack_back_trace_trace_unit_s _built_in_stack_back_trace_trace_unit_ = { 0 };
 
 /*
 *********************************************************************************************************
@@ -125,50 +62,33 @@ STACK_BACK_TRACE_TYPEDEF_PTR global_link_stack_back_trace_tmp = NULL;
 *********************************************************************************************************
 */
 
-/**
- * @brief This function will reduce the count of the capture stack back trace type.
- *
- * @param stack_back_trace the pointer to the capture stack back trace struct
- * @param hash the hash of the capture stack back trace
- *
- * @return NONE
- */
+errno_t stack_back_trace_control_trace_address_group(stack_back_trace_stp stack_back_trace,
+													 struct stack_back_trace_trace_unit_s trace_unit);
 
-bool debug_capture_stack_back_trace_empty_callback(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace);
+bool stack_back_trace_control_exception_full_types_trap(stack_back_trace_stp stack_back_trace);
 
-/**
- * @brief This function will convert the back trace struct to the symbol description.
- *
- * @param symbol the pointer to symbol description buffer
- * @param trace the pointer to the trace of stack back trace captured
- * @param frames the amount of captured
- *
- * @return NONE
- */
-
-void capture_stack_back_trace_convert_to_symbol(STACK_BACK_TRACE_STRING_TYPEDEF_PTR string,
-												back_trace_t trace,
-												back_trace_frame_t frames);
-
-/**
- * @brief This function will convert the back trace struct to the line description.
- *
- * @param symbol the pointer to line description buffer
- * @param trace the pointer to the trace of stack back trace captured
- * @param frames the amount of captured
- *
- * @return NONE
- */
-
-void capture_stack_back_trace_convert_to_line(STACK_BACK_TRACE_STRING_TYPEDEF_PTR string,
-											  back_trace_t trace,
-											  back_trace_frame_t frames);
+bool stack_back_trace_control_exception_full_types_callback(stack_back_trace_stp stack_back_trace);
 
 /*
-*********************************************************************************************************
-*                                            FUNCTIONS
-*********************************************************************************************************
-*/
+ *********************************************************************************************************
+ *					LOCAL GLOBAL VARIABLES & LOCAL FUNCTION PROTOTYPES INTERSECTION
+ *********************************************************************************************************
+ */
+
+struct stack_back_trace_s _built_in_stack_back_trace_ = {
+	.info.types.max = 1,
+	.info.count_ptr = &_built_in_stack_back_trace_count_,
+
+	.trace_unit_ptr = &_built_in_stack_back_trace_trace_unit_,
+
+	.exception.full_types_callback = stack_back_trace_control_exception_full_types_callback,
+};
+
+/*
+ *********************************************************************************************************
+ *                                            FUNCTIONS
+ *********************************************************************************************************
+ */
 
 /**
  * @brief This function will initialize the capture stack back trace struct.
@@ -179,47 +99,62 @@ void capture_stack_back_trace_convert_to_line(STACK_BACK_TRACE_STRING_TYPEDEF_PT
  * @return NONE
  */
 
-void debug_capture_stack_back_trace_init(STACK_BACK_TRACE_TYPEDEF_PTR *stack_back_trace,
-										 DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE count)
+errno_t stack_back_trace_control_init(stack_back_trace_stpp stack_back_trace,
+									  stack_back_trace_size_t type_count)
 {
-	struct stack_back_trace_t
-		*strcuture_allocated = calloc(1, sizeof(struct stack_back_trace_t));
+	assert(stack_back_trace);
+	assert(0u < type_count);
 
-	TRACE_SIZE_TYPE
-		*count_allocated = calloc(count, sizeof(TRACE_SIZE_TYPE));
+	errno_t fail_code = 0;
 
-	back_trace_pt
-		trace_allocated = calloc(count, sizeof(single_back_trace_t) * TRACE_MAX_DEPTH);
+	if (NULL == stack_back_trace) {
+		fail_code = 1;
 
-	back_trace_frame_pt
-		frames_allocated = calloc(count, sizeof(back_trace_frame_t));
-
-	back_trace_hash_pt
-		hash_allocated = calloc(count, sizeof(back_trace_hash_t));
-
-	if (NULL == strcuture_allocated ||
-		NULL == count_allocated ||
-		NULL == trace_allocated ||
-		NULL == frames_allocated ||
-		NULL == hash_allocated) {
-		return;
+		goto EXIT;
 	}
 
-	#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
+	(*stack_back_trace)
+		= calloc(1, sizeof(struct stack_back_trace_s));
+	if (NULL == (*stack_back_trace)) {
+		fail_code = 2;
 
-	printf("trace:%p frames:%p hash:%p capture stack back trace.init:block \r\n",
-		   *trace_allocated, frames_allocated, hash_allocated);
+		goto EXIT;
 
-	#endif // (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
+	DEALLOCATE_1:
+		free((*stack_back_trace));
 
-	strcuture_allocated->max_type_count = count;
-	strcuture_allocated->type_count = 0u;
-	strcuture_allocated->back_trace_count = count_allocated;
-	strcuture_allocated->back_trace = trace_allocated;
-	strcuture_allocated->back_trace_frames = frames_allocated;
-	strcuture_allocated->back_trace_hash = hash_allocated;
+		goto EXIT;
+	}
 
-	*stack_back_trace = strcuture_allocated;
+	(*stack_back_trace)->trace_unit_ptr
+		= calloc(type_count, sizeof(struct stack_back_trace_trace_unit_s));
+	if (NULL == (*stack_back_trace)->trace_unit_ptr) {
+		fail_code = 3;
+
+		goto DEALLOCATE_1;
+
+	DEALLOCATE_2:
+		free((*stack_back_trace)->trace_unit_ptr);
+
+		goto DEALLOCATE_1;
+	}
+
+	if (1 < type_count) {
+		(*stack_back_trace)->info.count_ptr
+			= calloc(type_count, sizeof(stack_back_trace_size_t));
+		if (NULL == (*stack_back_trace)->info.count_ptr) {
+			fail_code = 4;
+
+			goto DEALLOCATE_2;
+		}
+	}
+
+	(*stack_back_trace)->info.types.max = type_count;
+	(*stack_back_trace)->info.types.current = 0u;
+
+EXIT:
+
+	return fail_code;
 }
 
 /**
@@ -230,25 +165,24 @@ void debug_capture_stack_back_trace_init(STACK_BACK_TRACE_TYPEDEF_PTR *stack_bac
  * @return NONE
  */
 
-void debug_capture_stack_back_trace_destroy(STACK_BACK_TRACE_TYPEDEF_PTR *strcuture)
+void stack_back_trace_control_destroy(stack_back_trace_stpp stack_back_trace)
 {
-	assert(strcuture);
+	assert(stack_back_trace);
 
-	#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
+	if (NULL == stack_back_trace
+		|| NULL == (*stack_back_trace)) {
+		return;
+	}
 
-	printf("trace:%p frames:%p hash:%p capture stack back trace.destroy:block \r\n",
-		   *(*strcuture)->back_trace, (*strcuture)->back_trace_frames, (*strcuture)->back_trace_hash);
+	free((*stack_back_trace)->trace_unit_ptr);
 
-	#endif // (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
+	if (NULL != (*stack_back_trace)->info.count_ptr) {
+		free((*stack_back_trace)->info.count_ptr);
+	}
 
-	free(*(*strcuture)->back_trace);
-	free((*strcuture)->back_trace_frames);
-	free((*strcuture)->back_trace_hash);
-	free((*strcuture)->back_trace_count);
+	free((*stack_back_trace));
 
-	(*strcuture)->type_count = 0u;
-
-	free((*strcuture));
+	(*stack_back_trace) = NULL;
 }
 
 /**
@@ -261,114 +195,42 @@ void debug_capture_stack_back_trace_destroy(STACK_BACK_TRACE_TYPEDEF_PTR *strcut
  * @return NONE
  */
 
-void debug_capture_stack_back_trace(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace,
-									DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip)
+errno_t stack_back_trace_control_trace_address(stack_back_trace_stp stack_back_trace,
+											   stack_back_trace_frame_t skip,
+											   stack_back_trace_frame_t capture)
 {
-	void *back_trace_tmp[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH] = { 0 };
-	ULONG back_trace_hash_tmp = 0;
-	SYMBOL_INFO back_trace_symbol_tmp[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH] = { 0 };
-	IMAGEHLP_LINE64 back_trace_line_tmp[DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH] = { 0 };
+	assert(stack_back_trace);
+	assert(0u <= skip);
+	assert(0u <= capture);
 
-	back_trace_frame_t back_trace_frames_tmp = CaptureStackBackTrace(frames_to_skip + 1
-																	 , DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH
-																	 , back_trace_tmp
-																	 , &back_trace_hash_tmp) - 7;	/* the stack of main() is start from the level 7 */
+	errno_t error_code = 0;
 
-	if (stack_back_trace->max_type_count <= stack_back_trace->type_count &&
-		10 > (stack_back_trace->type_count / stack_back_trace->max_type_count) &&		/* Exclude it have been reduced to a negative number. */
-		false == debug_capture_stack_back_trace_empty_callback(stack_back_trace)) {	
-		return;
+	if (NULL == stack_back_trace) {
+		error_code = 1;
+
+		goto EXIT;
 	}
 
-	for (size_t cnt = 0; cnt < stack_back_trace->type_count; cnt++) {
-		back_trace_hash_t
-			hash = *(stack_back_trace->back_trace_hash + cnt);
+	stack_back_trace_address_t
+		*address_list[STACK_BACK_TRACE_CFG_FRAMES_CAPTURE_MAX] = { NULL };
+	struct stack_back_trace_trace_unit_s trace_unit = {
+		.address_list = (void*)&address_list,
+		.frames.skip = skip + 1,																	/* Skip the stack of this function */
+		.frames.capture = capture,
+	};
 
-		if (hash == back_trace_hash_tmp) {
-			stack_back_trace->back_trace_count[cnt] += 1;
-
-			return;
-		}
+	if (!stack_back_trace_control_platform_trace_address(&trace_unit)) {							/* Trace the stack */
+		error_code = 2;
+		goto EXIT;
 	}
 
-	for (DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index = 0; index < DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_STACK_MAX_DEPTH; index++) {
-		*(*(stack_back_trace->back_trace + stack_back_trace->type_count) + index) = back_trace_tmp[index];
+	if (stack_back_trace_control_trace_address_group(stack_back_trace, trace_unit)) {				/* Group the stack */
+		error_code = 3;
+		goto EXIT;
 	}
 
-	memcpy((void *)(stack_back_trace->back_trace_frames + stack_back_trace->type_count),
-		(void *)&back_trace_frames_tmp, sizeof(back_trace_frame_t));
-
-	memcpy((void *)(stack_back_trace->back_trace_hash + stack_back_trace->type_count),
-		(void *)&back_trace_hash_tmp, sizeof(back_trace_hash_t));
-
-	stack_back_trace->back_trace_count[stack_back_trace->type_count] = 1;
-
-	stack_back_trace->type_count++;
-}
-
-/**
- * @brief This function will reduce the count of the capture stack back trace type.
- *
- * @param stack_back_trace the pointer to the capture stack back trace struct
- * @param hash the hash of the capture stack back trace
- *
- * @return NONE
- */
-
-bool debug_capture_stack_back_trace_empty_callback(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace)
-{
-	stack_back_trace->type_count -= 1;
-
-	printf("stack back trace buffer is empty,it will cover the last one. \r\n");
-
-	return true;
-}
-
-/**
- * @brief This function will reduce the count of the capture stack back trace type.
- *
- * @param stack_back_trace the pointer to the capture stack back trace struct
- * @param hash the hash of the capture stack back trace
- *
- * @return NONE
- */
-
-void debug_capture_stack_back_trace_reduce_count(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-												 back_trace_hash_t hash)
-{
-	assert(strcuture);
-
-	if (0u == hash) {
-		#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-
-		printf("capture stack back trace.reduce count:NULL_HASH\r\n");
-
-		#endif // (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-
-		return;
-	}
-
-	for (size_t cnt = 0; cnt < strcuture->type_count; cnt++) {
-		if (hash == *(strcuture->back_trace_hash + cnt)) {
-			if (0u < *(strcuture->back_trace_count + cnt)) {
-				*(strcuture->back_trace_count + cnt) -= 1;
-			}
-
-			#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-
-			printf("capture stack back trace.reduce count:No.%d reduce to %d \r\n", cnt, *(strcuture->back_trace_count + cnt));
-
-			#endif // (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-
-			return;
-		}
-	}
-
-	#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-
-	printf("capture stack back trace.reduce count:NULL_TRACE_HASH_MATCH\r\n");
-
-	#endif // (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
+EXIT:
+	return error_code;
 }
 
 /**
@@ -379,39 +241,45 @@ void debug_capture_stack_back_trace_reduce_count(STACK_BACK_TRACE_TYPEDEF_PTR st
  * @return NONE
  */
 
-void debug_capture_stack_back_trace_convert_to_string(STACK_BACK_TRACE_TYPEDEF_PTR stack_back_trace)
+extern struct stack_back_trace_string_package_s
+stack_back_trace_control_trace_string(stack_back_trace_stp stack_back_trace,
+									  enum stack_back_trace_string_option_e option,
+									  size_t index)
 {
 	assert(stack_back_trace);
 
-	STACK_BACK_TRACE_STRING_TYPEDEF back_trace_string_tmp = { 0 };
-	back_trace_frame_t frame_tmp = 0;
-	back_trace_pt trace_tmp = 0;
+	struct stack_back_trace_string_s
+		string_list[STACK_BACK_TRACE_CFG_FRAMES_CAPTURE_MAX] = { 0 };
+	struct stack_back_trace_string_package_s string_package = {
+		.frames = 0,
+		.string_list = string_list,
+	};
 
-	for (size_t cnt = 0; cnt < stack_back_trace->type_count; cnt++) {
-		if (0u < *(stack_back_trace->back_trace_count + cnt)) {
-			trace_tmp = (stack_back_trace->back_trace + cnt);
-			frame_tmp = *(stack_back_trace->back_trace_frames + cnt);
+	if (NULL != stack_back_trace) {
+		string_package.frames
+			= stack_back_trace_control_platform_trace_string(string_package.string_list,
+															 stack_back_trace->trace_unit_ptr[index],
+															 option);
 
-			capture_stack_back_trace_convert_to_symbol(&back_trace_string_tmp,
-													   *trace_tmp,
-													   frame_tmp);
+		if (string_package.frames) {
+			struct stack_back_trace_string_s *string_list = NULL;
+			stack_back_trace_size_t string_length = string_package.frames * sizeof(struct stack_back_trace_string_s);
 
-			capture_stack_back_trace_convert_to_line(&back_trace_string_tmp,
-													 *trace_tmp,
-													 frame_tmp);
-
-			for (size_t index = 0; index < frame_tmp; index++) {
-				printf("No.%d it have %d ,it's %d/%d level stack is \"%s\" (%p) function.\r\n",
-					   cnt, *(stack_back_trace->back_trace_count + cnt), index + 1, frame_tmp, back_trace_string_tmp[index].name, *(*trace_tmp + index));
-
-				/*printf("No.%d it have %d it's %d/%d level stack is \"%s\" (%p) function in \"%s\" file at %d line.\r\n",
-					   cnt, *(stack_back_trace->back_trace_count + cnt), index + 1, frame_tmp, back_trace_string_tmp[index].name, *(*trace_tmp + index),
-					   back_trace_string_tmp[index].file_name, back_trace_string_tmp[index].file_line);*/
+			if (NULL == (string_list = malloc(string_length))) {
+				string_package.frames = 0;
+				goto EXIT;
 			}
 
-			printf("\r\n");
+			memcpy(string_list,
+				   string_package.string_list,
+				   string_length);
+
+			string_package.string_list = string_list;
 		}
 	}
+
+EXIT:
+	return string_package;
 }
 
 /**
@@ -423,339 +291,150 @@ void debug_capture_stack_back_trace_convert_to_string(STACK_BACK_TRACE_TYPEDEF_P
  * @return NONE
  */
 
-back_trace_hash_t debug_capture_stack_back_trace_get_hash(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-														  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index)
+stack_back_trace_hash_t stack_back_trace_control_get_hash(stack_back_trace_stp stack_back_trace,
+														  stack_back_trace_size_t index)
 {
-	assert(strcuture);
+	assert(stack_back_trace);
 
-	return *(strcuture->back_trace_hash + index);
+	if (NULL == stack_back_trace) {
+		return 0;
+	}
 
-	#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-
-	printf("capture stack back trace.get index : hash:%d  \r\n", *(strcuture->back_trace_hash + index));
-
-	#endif // (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
+	return stack_back_trace->trace_unit_ptr[index].hash;
 }
 
 /**
- * @brief This function will return the specified hash.
+ * @brief This function will return the count package.
  *
  * @param stack_back_trace the pointer to the capture stack back trace struct
- * @param hash the hash of the capture stack back trace
  *
  * @return NONE
  */
 
-single_back_trace_t *debug_capture_stack_back_trace_get_trace(STACK_BACK_TRACE_TYPEDEF_PTR strcuture,
-															  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index,
-															  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE sub_index)
+extern inline struct stack_back_trace_count_package_s
+stack_back_trace_control_get_count_package(stack_back_trace_stp stack_back_trace)
 {
-	assert(strcuture);
+	assert(stack_back_trace);
 
-	return *(*(strcuture->back_trace + index) + sub_index);
-}
+	struct stack_back_trace_count_package_s package = { 0 };
 
-/**
- * @brief This function will return the specified hash.
- *
- * @param stack_back_trace the pointer to the capture stack back trace struct
- * @param hash the hash of the capture stack back trace
- *
- * @return NONE
- */
-
-void debug_capture_stack_back_trace_copy(STACK_BACK_TRACE_TYPEDEF_PTR destination,
-										 STACK_BACK_TRACE_TYPEDEF_PTR source,
-										 DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE dst_index,
-										 DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE src_index)
-{
-	assert(destination);
-	assert(source);
-
-	for (size_t sub_index = 0; sub_index < *(source->back_trace_frames + src_index); sub_index++) {
-		*(*(destination->back_trace + dst_index) + sub_index) = *(*(source->back_trace + src_index) + sub_index);
+	if (NULL == stack_back_trace) {
+		return package;
 	}
 
-	*(destination->back_trace_frames + dst_index) = *(source->back_trace_frames + src_index);
-	*(destination->back_trace_hash + dst_index) = *(source->back_trace_hash + src_index);
+	package.types = stack_back_trace->info.types.current;
+	package.back_trace_count_ptr = stack_back_trace->info.count_ptr;
+
+	return package;
 }
 
-/**
- * @brief This function will initialize a link struct.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NONE
- */
-
-void debug_capture_stack_back_trace_link_init(STACK_BACK_TRACE_LINK_TYPEDEF_PTR *link,
-											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE count)
+errno_t stack_back_trace_control_trace_address_group(stack_back_trace_stp stack_back_trace,
+													 struct stack_back_trace_trace_unit_s trace_unit)
 {
-	assert(link);
+	struct stack_back_trace_trace_unit_s
+		*trace_unit_ptr = stack_back_trace->trace_unit_ptr;
 
-	STACK_BACK_TRACE_LINK_TYPEDEF_PTR
-		link_allocated = calloc(1, sizeof(struct stack_back_trace_link_t));
+	errno_t error_code = 0;
+	stack_back_trace_size_t type = 0;
 
-	if (NULL == link_allocated) {
-		return;
-	}
+	if (0u == trace_unit.hash) {															/* Compare address list */
+		stack_back_trace_size_t frame = 0, frames = 0;
 
-	debug_capture_stack_back_trace_init(&global_link_stack_back_trace_tmp, 1);
+		while (stack_back_trace->info.types.current > type) {
+			frames = trace_unit_ptr->frames.capture;
 
-	debug_capture_stack_back_trace_init(&link_allocated->mark_ptr, count);
-	debug_capture_stack_back_trace_init(&link_allocated->link_ptr, count);
-
-	*link = link_allocated;
-}
-
-/**
- * @brief This function will destroy a link struct.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NONE
- */
-
-void debug_capture_stack_back_trace_link_destroy(STACK_BACK_TRACE_LINK_TYPEDEF_PTR *link)
-{
-	assert(link);
-
-	if (NULL == *link) {
-		return;
-	}
-
-	debug_capture_stack_back_trace_destroy(&(*link)->mark_ptr);
-	debug_capture_stack_back_trace_destroy(&(*link)->link_ptr);
-
-	free(*link);
-}
-
-/**
- * @brief This function will make a sign.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NONE
- */
-
-void debug_capture_stack_back_trace_link_mark(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip)
-{
-	assert(link);
-
-	debug_capture_stack_back_trace(global_link_stack_back_trace_tmp, frames_to_skip + 1);
-
-	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index = 0;
-
-	for (DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index_tmp = 0; index_tmp < link->mark_ptr->type_count; index_tmp++) {	/* Loop to see if it has been recored */
-		back_trace_hash_t hash = debug_capture_stack_back_trace_get_hash(link->mark_ptr, index_tmp);
-
-		//debug_capture_stack_back_trace_get_trace(link->mark_ptr, index_tmp, 0);								/* Get the top level stack address only */
-
-		if (0u != hash) {
-			if (*(global_link_stack_back_trace_tmp->back_trace_hash + global_link_stack_back_trace_tmp->type_count - 1) == hash) {
-				index = index_tmp;
-
-				goto COMMON_HANDLER;
-			}
-		}
-	}
-
-	index = link->mark_ptr->type_count;
-
-	if (link->mark_ptr->max_type_count <= index) {
-		return;
-	}
-
-	debug_capture_stack_back_trace_copy(link->mark_ptr, global_link_stack_back_trace_tmp, index, 0);
-
-	link->mark_ptr->type_count++;
-
-COMMON_HANDLER:
-
-	link->mark_ptr->back_trace_count[index] += 1;
-
-	#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-
-	printf("capture stack back trace link.mark:hash:%d  \r\n", *(link->mark_ptr->back_trace_hash + index));
-
-	#endif // (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-}
-
-/**
- * @brief This function will set a link via the sign.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return the hash value of the linker
- */
-
-void debug_capture_stack_back_trace_link_link(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-											  DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE frames_to_skip)
-{
-	assert(link);
-
-	debug_capture_stack_back_trace(global_link_stack_back_trace_tmp, frames_to_skip + 1);
-
-	DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index = 0;
-
-	for (DEBUG_COMPONENT_GLOBAL_CFG_SIZE_TYPE index_tmp = 0; index_tmp < link->link_ptr->type_count; index_tmp++) {	/* Loop to see if it has been recored */
-		back_trace_hash_t hash = debug_capture_stack_back_trace_get_hash(link->link_ptr, index_tmp);
-
-		if (0u != hash) {
-			if (*(global_link_stack_back_trace_tmp->back_trace_hash + global_link_stack_back_trace_tmp->type_count - 1) == hash) {
-				index = index_tmp;
-
-				goto COMMON_HANDLER;
-			}
-		}
-	}
-
-	index = link->link_ptr->type_count;
-
-	if (link->link_ptr->max_type_count <= index) {
-		return;
-	}
-
-	debug_capture_stack_back_trace_copy(link->link_ptr, global_link_stack_back_trace_tmp, index, 0);
-
-	link->link_ptr->type_count++;
-
-COMMON_HANDLER:
-
-	link->link_ptr->back_trace_count[index] += 1;
-
-	#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-
-	printf("capture stack back trace link.mark:hash:%d  \r\n", *(link->link_ptr->back_trace_hash + index));
-
-	#endif // (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-}
-
-/**
- * @brief This function will get the trace in the link.
- *
- * @param link the pointer to the stack back trace link struct
- *
- * @return NULL
- */
-
-void debug_capture_stack_back_trace_link_get_trace_ptr(STACK_BACK_TRACE_LINK_TYPEDEF_PTR link,
-													   STACK_BACK_TRACE_TYPEDEF_PPTR trace)
-{
-	assert(link);
-	assert(trace);
-
-	*(trace + 0) = link->mark_ptr;
-	*(trace + 1) = link->link_ptr;
-}
-
-/**
- * @brief This function will convert the back trace struct to the symbol description.
- *
- * @param symbol the pointer to symbol description buffer
- * @param trace the pointer to the trace of stack back trace captured
- * @param frames the amount of captured
- *
- * @return NONE
- */
-
-void capture_stack_back_trace_convert_to_symbol(STACK_BACK_TRACE_STRING_TYPEDEF_PTR string,
-												back_trace_t trace,
-												back_trace_frame_t frames)
-{
-	assert(trace);
-
-	HANDLE process = GetCurrentProcess();
-	DWORD64 displacementSym = 0;
-	DWORD64 single_back_trace = 0;
-
-	char buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
-	PSYMBOL_INFO symbol_info = (PSYMBOL_INFO)buffer;
-
-	SymInitialize(process, NULL, TRUE);
-
-	for (back_trace_frame_t i = 0; i < frames; ++i) {
-		single_back_trace = (DWORD64) * (trace + i);
-
-		symbol_info->SizeOfStruct = sizeof(SYMBOL_INFO);
-		symbol_info->MaxNameLen = MAX_SYM_NAME;
-
-		if (SymFromAddr(process, single_back_trace, &displacementSym, symbol_info)) {
-			char *name_copy = calloc(symbol_info->NameLen + 1, sizeof(char));
-
-			if (NULL == name_copy) {
-				return;
+			if (frames != trace_unit.frames.capture) {
+				goto CONTINUE;
 			}
 
-			memcpy(name_copy, symbol_info->Name, symbol_info->NameLen);
+			do {
+				if (trace_unit_ptr->address_list[frame] != trace_unit.address_list[frame]) {
+					goto CONTINUE;
+				}
 
-			(*string + i)->name = name_copy;
-			(*string + i)->name_len = (size_t)symbol_info->NameLen;
+				frame++;
+			} while (frames < frame);
 
-			#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
+			goto EXISTING_TYPE;
 
-			printf("\t No.%d total:%d name:%s ( %lld ) \r\n",
-				   frames - i, frames, symbol_info->Name, symbol_info->Address);
-
-			#endif // (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-		} else {
-			printf("SymFromAddr error : %d \r\n", GetLastError());
-		}
-	}
-}
-
-/**
- * @brief This function will convert the back trace struct to the line description.
- *
- * @param symbol the pointer to line description buffer
- * @param trace the pointer to the trace of stack back trace captured
- * @param frames the amount of captured
- *
- * @return NONE
- */
-
-void capture_stack_back_trace_convert_to_line(STACK_BACK_TRACE_STRING_TYPEDEF_PTR string,
-											  back_trace_t trace,
-											  back_trace_frame_t frames)
-{
-	assert(trace);
-
-	HANDLE process = GetCurrentProcess();
-	DWORD displacementLine = 0;
-	DWORD64 single_back_trace = 0;
-
-	IMAGEHLP_LINE64 line_info = { 0 };
-
-	SymInitialize(process, NULL, TRUE);
-
-	for (USHORT i = 0; i < frames; ++i) {
-		single_back_trace = (DWORD64) * (trace + i);
-
-		line_info.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
-
-		if (SymGetLineFromAddr64(process, single_back_trace, &displacementLine, &line_info)) {
-			size_t name_len = strlen(line_info.FileName);
-			char *name_copy = calloc(name_len + 1, sizeof(char));
-
-			if (NULL == name_copy) {
-				return;
+		CONTINUE:
+			trace_unit_ptr++;
+			type++;
+		};
+	} else {																				/* Compare the hash value */
+		while (stack_back_trace->info.types.current > type) {
+			if (trace_unit_ptr->hash == trace_unit.hash) {
+				goto EXISTING_TYPE;
 			}
 
-			memcpy(name_copy, line_info.FileName, name_len);
-
-			(*string + i)->file_line = line_info.LineNumber;
-			(*string + i)->file_name = name_copy;
-			(*string + i)->file_line_len = name_len;
-
-			#if (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-
-			printf("\t file_name: %s at line: %d \r\n",
-				   line_info.FileName, line_info.LineNumber);
-
-			#endif // (DEBUG_CAPTURE_STACK_BACK_TRACE_CFG_DEBUG_MODE_EN)
-		} else {
-			printf("SymFromAddr error : %d \r\n", GetLastError());
-		}
+			trace_unit_ptr++;
+			type++;
+		};
 	}
+
+	if (stack_back_trace_control_exception_full_types_trap(stack_back_trace)) {				/* Trap the full types */
+		error_code = 1;
+		goto EXIT;
+	}
+
+	stack_back_trace_size_t
+		address_list_length = trace_unit.frames.capture * sizeof(stack_back_trace_address_t);
+
+	if (NULL == (trace_unit_ptr->address_list = malloc(address_list_length))) {
+		error_code = 2;
+		goto EXIT;
+	}
+
+	trace_unit.frames.skip--;																/* Remove the affect skip the stack of this function */
+
+	memcpy(trace_unit_ptr->address_list, 													/* Copy the trace_unit */
+		   trace_unit.address_list,
+		   address_list_length);
+	memcpy(&trace_unit_ptr->frames,
+		   &trace_unit.frames,
+		   sizeof(struct stack_back_trace_trace_unit_s) - sizeof(stack_back_trace_address_tp));
+
+	stack_back_trace->info.types.current++;
+
+EXISTING_TYPE:
+	stack_back_trace->info.count_ptr[type] ++;
+
+EXIT:
+	return error_code;
+}
+
+static inline bool
+stack_back_trace_control_exception_full_types_trap(stack_back_trace_stp stack_back_trace)
+{
+	assert(stack_back_trace);
+
+	if (NULL == stack_back_trace) {
+		return true;
+	}
+
+	if (stack_back_trace->info.types.max <= stack_back_trace->info.types.current &&
+		0u < (stack_back_trace->info.types.current / stack_back_trace->info.types.max) &&			/* Exclude it have been reduced to a negative number */
+		false == stack_back_trace->exception.full_types_callback(stack_back_trace)) {
+	#if STACK_BACK_TRACE_CFG_DEBUG_EN
+
+		LOG_DIAGNOSE("%s\r\n", "traped");
+
+	#endif // STACK_BACK_TRACE_CFG_DEBUG_EN
+		return true;
+	}
+
+	return false;
+}
+
+bool stack_back_trace_control_exception_full_types_callback(stack_back_trace_stp stack_back_trace)
+{
+	assert(stack_back_trace);
+
+	if (NULL == stack_back_trace) {
+		return false;
+	}
+
+	stack_back_trace->info.types.current -= 1;
+
+	return true;
 }

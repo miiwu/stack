@@ -26,5 +26,11 @@ void main(void)
 
 #endif // DEMO_SDE_LIB_CFG_ERROR_EN
 
+#if DEMO_SDE_LIB_CFG_DBG_CMPT_STACK_BACK_TRACE_EN
+
+	main_stack_back_trace();
+
+#endif // DEMO_SDE_LIB_CFG_DBG_CMPT_STACK_BACK_TRACE_EN
+
 	return;
 }

@@ -40,6 +40,36 @@
     <Filter Include="头文件\platform">
       <UniqueIdentifier>{50b20ce0-8771-4f07-8340-7950f058b9d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\debug component">
+      <UniqueIdentifier>{db18d1d4-e455-49cc-b193-b2eb7903d06f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\debug component">
+      <UniqueIdentifier>{9d3d1e69-eb48-45cf-a8e1-926b0302aa3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\debug component\stack back trace">
+      <UniqueIdentifier>{5720bf4d-0225-4de8-b4f5-64ea8140f4d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\debug component\stack back trace">
+      <UniqueIdentifier>{8e20f816-8a7c-4e16-8f68-ee505fd77962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\debug component\definition">
+      <UniqueIdentifier>{80f10698-7bd5-4a62-86a0-230a54594301}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\debug component\stack back trace\platform">
+      <UniqueIdentifier>{0b4982be-4432-4cbf-a596-5225a148e12b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\debug component\stack back trace\platform\windows">
+      <UniqueIdentifier>{eea55ac8-2b24-4bea-974c-b92954beb0c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\debug component\stack back trace\definition">
+      <UniqueIdentifier>{dbdc96f9-1a48-40c5-a254-4a0eced45c9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\debug component\stack back trace\platform">
+      <UniqueIdentifier>{8e32e9c2-ae42-4add-9e04-d1f96790d997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\debug component\stack back trace\platform\windows">
+      <UniqueIdentifier>{f6f916a2-3002-41b4-848a-375791f74a76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\.demo\self-define library\demo_sde_lib.h">
@@ -63,6 +93,27 @@
     <ClInclude Include="..\..\Self-Define Library\Platform\sde_platform.h">
       <Filter>头文件\platform</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Debug Component Definition\debug_component_def.h">
+      <Filter>头文件\debug component\definition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\stack_back_trace.h">
+      <Filter>头文件\debug component\stack back trace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\debug_component.h">
+      <Filter>头文件\debug component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Definition\stack_back_trace_def.h">
+      <Filter>头文件\debug component\stack back trace\definition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform\stack_back_trace_platform.h">
+      <Filter>头文件\debug component\stack back trace\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform\Stack Back Trace Windows\stack_back_trace_windows.h">
+      <Filter>头文件\debug component\stack back trace\platform\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Definition\stack_back_trace_pvt_def.h">
+      <Filter>头文件\debug component\stack back trace\definition</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\.demo\self-define library\demo_sde_lib.c">
@@ -85,6 +136,15 @@
     </ClCompile>
     <ClCompile Include="..\..\.demo\self-define library\demo_log.c">
       <Filter>源文件\demo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\.demo\self-define library\demo_stack_back_trace.c">
+      <Filter>源文件\demo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\stack_back_trace.c">
+      <Filter>源文件\debug component\stack back trace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Self-Define Library\Debug Component\Stack Back Trace\Stack Back Trace Platform\Stack Back Trace Windows\stack_back_trace_windows.c">
+      <Filter>源文件\debug component\stack back trace\platform\windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
