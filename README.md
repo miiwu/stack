@@ -192,22 +192,85 @@
 
   - [ ] ...
 
+- Iterator / 迭代器
+
+  - [ ] ...
+  
+- Self-Define Library / 自定义库
+
+  - Micro / 宏
+
+    一些预处理器宏。
+
+  - Assert / 断言
+
+    尝试着用来断言函数入口参数。
+
+    ```c
+    
+    void main_assert(char *pointer, size_t variable)
+    {
+        ASSERT(true == true);
+        ASSERT_POINTER(pointer);
+        ASSERT_VARIABLE(variable, >= , int, 0);
+        
+        // ...
+    }
+    
+    ```
+
+  - Error / 错误处理
+
+    尝试处理函数内错误发生到返回期间的事情。
+
+    如果  `_TRAP()` 或 `_JUDGE()` 检测到错误发生，他会沿着错误序号往上执行用户定义的处理方法，最后返回。
+
+    用例:
+
+    ```c
+    
+    errno_t main_error(void)
+    {
+        ERROR_CONTROL_ERRNO_INIT(2, 1, 2);
+        /* ERROR_CONTROL_INIT(errno_t, 2, 0, 1, 2); */
+    
+        ERROR_CONTROL_JUDGE(1, "test:succeed_index_1",
+                            printf("i'm the 2st one to be printed!\r\n"));
+    
+        int fail = 1;
+        ERROR_CONTROL_TRAP(fail,
+                           2, "test:succeed_index_2",
+                           printf("i'm the 1st one to be printed!\r\n"));
+        
+        ERROR_CONTROL_RETURN = 1;
+        /* error_control_return = 1; */
+        
+        ERROR_CONTROL_EXIT(printf("error\r\n    "
+                                  ".code: %d\r\n    "
+                                  ".string: %s\r\n",
+                                  ERROR_CONTROL_CODE(),
+                                  ERROR_CONTROL_STRING()));
+    }
+    
+    ```
+
+  - ...
+
 - Debug Component / 调试组件
 
   - Stack back trace / 堆栈追踪
 
-    > 注意: 暂时仅支持 windows 平台。
+    主要是想确定 `malloc()` 和 `free()` 可以配对，防止内存泄漏。
 
-    主要是因为想确定 malloc() 和 free() 是不是成对出现的。
-
-    基于 `the WIN32 Api` 中的 `CaptureStackBackTrace()` ，你可以在[这里](https://docs.microsoft.com/en-us/windows/win32/debug/capturestackbacktrace)找到他的文档，下面是摘选：
-
+    现阶段只写了 Windows 平台的，基于 `the WIN32 Api`，你可以去 微软文档看到使用此 API 使用方法， [戳这里](https://docs.microsoft.com/en-us/windows/win32/debug/capturestackbacktrace)，`CaptureStackBackTrace()`;
+  
     ```c
-
+    
     #include <DbgHelp.h>
+    
     #pragma comment(lib, "Dbghelp.lib")
     
-    /* 上头是需要的库环境。 */
+    /* The Lib environment should be upward. */
     
     USHORT WINAPI CaptureStackBackTrace(
       _In_      ULONG  FramesToSkip,
@@ -217,6 +280,8 @@
     );
     
     ```
+    
+  - ...
 
 ## 应用
 

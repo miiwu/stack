@@ -207,6 +207,70 @@ This package contains some simple data structures together.
 
   - [ ] ...
 
+- Iterator
+
+  - [ ] ...
+
+- Self-Define Library
+
+  - Micro
+
+    Some preprocessor micro.
+
+  - Assert
+
+    A try on function entry check definition file.
+
+    The default logger is `printf()`, but you can config it by this micro `ASSERT_CFG_LOGGER`.
+
+    ```c
+    void main_assert(char *pointer, size_t variable)
+    {
+        ASSERT(true == true);
+        ASSERT_POINTER(pointer);
+        ASSERT_VARIABLE(variable, >= , int, 0);
+        
+        // ...
+    }
+    
+    ```
+  
+  - Error
+  
+    A try on function  error return.
+  
+    If any `_TRAP()` or `_JUDGE()` detect error, it will handle error in line with the decrease of index, then return.
+  
+    The using sample is here:
+  
+    ```c
+    errno_t main_error(void)
+    {
+        ERROR_CONTROL_ERRNO_INIT(2, 1, 2);
+        /* ERROR_CONTROL_INIT(errno_t, 2, 0, 1, 2); */
+    
+        ERROR_CONTROL_JUDGE(1, "test:succeed_index_1",
+                            printf("i'm the 2st one to be printed!\r\n"));
+    
+        int fail = 1;
+        ERROR_CONTROL_TRAP(fail,
+                           2, "test:succeed_index_2",
+                           printf("i'm the 1st one to be printed!\r\n"));
+        
+        ERROR_CONTROL_RETURN = 1;
+        /* error_control_return = 1; */
+        
+        ERROR_CONTROL_EXIT(printf("error\r\n    "
+                                  ".code: %d\r\n    "
+                                  ".string: %s\r\n",
+                                  ERROR_CONTROL_CODE(),
+                                  ERROR_CONTROL_STRING()));
+    }
+    
+    ```
+  
+  - ...
+  
 - Debug Component
 
   - Stack back trace
@@ -232,9 +296,10 @@ This package contains some simple data structures together.
       _Out_     PVOID  *BackTrace,
       _Out_opt_ PULONG BackTraceHash
     );
+    
     ```
 
-All these `...` mean they may be ready to add.
+  - ...
 
 ## Application
 

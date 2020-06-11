@@ -159,6 +159,11 @@
       <Project>{1dd3d27d-e8e7-4835-8c13-d26edded94e3}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\self-define library\self-define library.vcxproj">
+      <Project>{adfd773e-b25a-4346-b735-47ec038f670b}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
